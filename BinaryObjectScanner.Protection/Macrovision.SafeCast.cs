@@ -14,6 +14,7 @@ namespace BinaryObjectScanner.Protection
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
     /// There are multiple different versions of SafeCast out there.
     /// SafeCast ESD: https://web.archive.org/web/20000306044246/http://www.macrovision.com/safecast_ESD.html
+    /// SafeCast ESD Demo: https://web.archive.org/web/20010417215236/http://www.macrovision.com:80/demos/SafeCast_ESD.exe
     /// SafeCast Gold: https://web.archive.org/web/20000129071444/http://www.macrovision.com/scp_gold.html
     /// SafeCast LM: https://web.archive.org/web/20000128224337/http://www.macrovision.com/safecast_LM.html
     /// SafeCast UNSORTED samples:

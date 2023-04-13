@@ -15,13 +15,25 @@ namespace BinaryObjectScanner.Protection
     /// SafeDisc has been most commonly found on PC games and applications, though there a number of Mac discs that contain the protection as well.
     /// At least one system other than PC/Mac is known to use SafeDisc as well, this being the "ZAPiT Games Game Wave Family Entertainment System" which seems to use a form of SafeDisc 4 (Redump entry 46269).
     /// SafeDisc resources:
+    /// https://web.archive.org/web/20010707163339/http://www.macrovision.com:80/demos/safedisc.exe (SafeDisc Demo)
     /// https://web.archive.org/web/20000307003925/http://www.macrovision.com/scp_faq.html (SafeDisc FAQ)
+    /// https://web.archive.org/web/20030620175810/http://www.macrovision.com:80/solutions/software/cdrom/SafeDisc_V2_FAQ_April_2002.pdf (SafeDisc 2 FAQ)
+    /// https://web.archive.org/web/20040610212031/http://www.macrovision.com:80/pdfs/SafeDisc_V3_FAQ_Oct2003.pdf (SafeDisc 3 FAQ)
+    /// https://web.archive.org/web/20040610205241/http://www.macrovision.com:80/pdfs/SafeDisc_v315_FAQ_Dec2003.pdf (SafeDisc 3.15 FAQ)
+    /// https://web.archive.org/web/20051015170118/http://www.macrovision.com/pdfs/safedisc_v4_FAQ_sep2004.pdf (SafeDisc 4 FAQ)
+    /// https://web.archive.org/web/20070124144331/http://www.macrovision.com/pdfs/SafeDisc_Brochure_Oct04.pdf (SafeDisc brochure)
+    /// https://web.archive.org/web/20041008173722/http://www.macrovision.com/pdfs/safedisc_datasheet.pdf (SafeDisc datasheet)
+    /// https://web.archive.org/web/20030421023647/http://www.macrovision.com:80/solutions/software/cdrom/SafeDisc_WhitePaper_4-17-02-web.pdf (SafeDisc WhitePaper)
+    /// https://web.archive.org/web/20011005034102/http://www.macrovision.com/solutions/software/cdrom/pccdrom/safedischd.php3 (SafeDisc HD product page)
     /// https://web.archive.org/web/20031009091909/http://www.macrovision.com/products/safedisc/index.shtml
     /// https://web.archive.org/web/20041023011150/http://www.macrovision.com/products/safedisc/index.shtml (Marketed as "SafeDisc Advanced")
     /// https://web.archive.org/web/20080604020524/http://www.trymedia.com/safedisc-advanced.html
     /// https://web.archive.org/web/20041008173722/http://www.macrovision.com/pdfs/safedisc_datasheet.pdf
     /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safedisc.shtml
     /// https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html
+    /// 
+    /// SafeDisc Lite/LT is an alternate version of SafeDisc available that was based on SafeDisc 1 (https://web.archive.org/web/20030421023647/http://www.macrovision.com:80/solutions/software/cdrom/SafeDisc_WhitePaper_4-17-02-web.pdf).
+    /// Although seemingly only officially referred to as "SafeDisc LT", a multitude of sources, including one that seemingly worked directly with Macrovision, call it "SafeDisc Lite" (http://www.eclipsedata.com/insidepages.asp?pageID=149).
     /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
     /// SafeDisc HD (https://web.archive.org/web/20000129100449/http://www.macrovision.com/scp_hd.html).
@@ -36,6 +48,29 @@ namespace BinaryObjectScanner.Protection
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            // Found in Redump entry 57986.
+            bool hintNameTableMatch = pex.ImportHintNameTable?.Any(s => s == "LTDLL_Authenticate") ?? false;
+            if (hintNameTableMatch)
+                return "SafeDisc Lite";
+
+            // Found in Redump entry 57986.
+            bool importTableMatch = (pex.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "ltdll.dll") ?? false);
+            if (importTableMatch)
+                return "SafeDisc Lite";
+
+            // Get the .data/DATA section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
+            {
+                // Found in Redump entries 14928, 25579, 32751.
+                if (strs.Any(s => s.Contains("LTDLL_Initialise")))
+                    return "SafeDisc Lite";
+                if (strs.Any(s => s.Contains("LTDLL_Authenticate")))
+                    return "SafeDisc Lite";
+                if (strs.Any(s => s.Contains("LTDLL_Unwrap")))
+                    return "SafeDisc Lite";
+            }
 
             string name = pex.FileDescription;
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
@@ -674,7 +709,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 56320.
                 case "84480ABCE4676EEB9C43DFF7C5C49F0D574FAC25":
                     return "4.70.000";
-                // Found distributed in https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe, but unknown what version it is associated with.
+                // Found distributed in https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe and https://web.archive.org/web/20010707163339/http://www.macrovision.com:80/demos/safedisc.exe, but unknown what version it is associated with.
                 case "8426690FA43076EE466FD1B2D1F2F1267F9CC3EC":
                     return "Unknown Version (Report this to us on GitHub)";
                 default:
@@ -694,6 +729,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
+        // TODO: Move to generic Macrovision, due to SafeCast ESD at a minimum using this file as well.
         internal static string GetSafeDiscSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
@@ -760,6 +796,9 @@ namespace BinaryObjectScanner.Protection
                 // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
                 case 23_040:
                     return "4.03.086 / Unknown SafeDisc version";
+                // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
+                case 10_784:
+                    return "/ SafeCast ESD 2.02.040";
                 // This file is not currently known to be used in versions past 4.70.000.
                 default:
                     return "Unknown Version (Report this to us on GitHub)";

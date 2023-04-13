@@ -14,6 +14,7 @@ namespace BinaryObjectScanner.Protection
     /// Macrovision was a company that specialized in various forms of DRM. They had an extensive product line, their most infamous product (within this context) being SafeDisc.
     /// Due to there being a significant amount of backend tech being shared between various protections, a separate class is needed for generic Macrovision detections.
     /// 
+    /// Macrovision Corporation CD-ROM Unauthorized Copying Study: https://web.archive.org/web/20011005161810/http://www.macrovision.com/solutions/software/cdrom/images/Games_CD-ROM_Study.PDF
     /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
     public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
@@ -333,6 +334,10 @@ namespace BinaryObjectScanner.Protection
                 case "2.67.010": // Found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                     return "SafeCast (Unconfirmed - Please report to us on GitHub)";
 
+                // SafeCast ESD (Confirmed)
+                case "2.02.040": // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
+                    return "SafeCast ESD";
+
                 // SafeDisc (Confirmed)
                 case "1.00.025": // Found in Redump entry 66005.
                 case "1.00.026": // Found in Redump entries 1882 and 30049.
@@ -394,6 +399,10 @@ namespace BinaryObjectScanner.Protection
                 // SafeDisc (Unconfirmed)
                 case "1.01.045": // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
                     return "SafeDisc (Unconfirmed - Please report to us on GitHub)";
+
+                // SafeDisc Lite (Confirmed)
+                case "2.60.020": // Found in Redump entry 14928.
+                    return "SafeDisc Lite";
 
                 default:
                     return "Macrovision Protected Application (Generic detection - Report to us on GitHub)";
