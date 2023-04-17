@@ -73,11 +73,8 @@ namespace BinaryObjectScanner.Protection
             }
 
             string name = pex.FileDescription;
-            // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
-            if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SafeDisc Security Driver {GetSecDrvExecutableVersion(pex)}";
             // Present in "Diag.exe" files from SafeDisc 4.50.000+.
-            else if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
+            if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
             // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
@@ -162,7 +159,6 @@ namespace BinaryObjectScanner.Protection
 
                 new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
 
                 // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
                 // Each file appears to contain strings for a specific language each.
@@ -237,7 +233,6 @@ namespace BinaryObjectScanner.Protection
 
                 new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSafeDiscSecdrvVersion, "SafeDisc Security Driver"),
 
                 // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
                 // Each file appears to contain strings for a specific language each.
@@ -728,83 +723,6 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
-        // TODO: Move to generic Macrovision, due to SafeCast ESD at a minimum using this file as well.
-        internal static string GetSafeDiscSecdrvVersion(string firstMatchedString, IEnumerable<string> files)
-        {
-            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
-                return string.Empty;
-
-            FileInfo fi = new FileInfo(firstMatchedString);
-            switch (fi.Length)
-            {
-                // Found in Redump entry 102979.
-                case 1:
-                    return "(Empty File)";
-                // Found in Redump entries 9718, 12885, 21154, 31149, 37523, 37920.
-                case 14_304:
-                    return "/ SafeDisc 1.06.000-1.20.001";
-                // Found in Redump entries 9617 and 31526.
-                case 14_368:
-                    return "/ SafeDisc 1.30.010-1.35.000";
-                // Found in Redump entries 2595, 37832, and 44350.
-                case 10_848:
-                    return "/ SafeDisc 1.40.004-1.41.001";
-                // Found in Redump entries 30555 and 55078.
-                case 11_968:
-                    return "/ SafeDisc 1.45.011";
-                // Found in Redump entries 28810 and 62935.
-                case 11_616:
-                    return "/ SafeDisc 1.50.020";
-                // Found in Redump entries 72195 and 73502.
-                case 18_768:
-                    return "/ SafeDisc 2.05.030";
-                // Found in Redump entries 38541 and 59462.
-                case 20_128:
-                    return "/ SafeDisc 2.10.030";
-                // Found in Redump entries 9819, 15312, 55823.
-                case 27_440:
-                    return "/ SafeDisc 2.30.030-2.30.033";
-                // Found in Redump entries 9846 and 23786.
-                case 28_624:
-                    return "/ SafeDisc 2.40.010-2.40.011";
-                // Found in Redump entries 30022 and 31666.
-                case 28_400:
-                    return "/ SafeDisc 2.51.020-2.51.021";
-                // Found in Redump entries 2064 and 47047.
-                case 29_392:
-                    return "/ SafeDisc 2.60.052";
-                // Found in Redump entries 13048 and 48101.
-                case 11_376:
-                    return "/ SafeDisc 2.70.030-2.72.000";
-                // Found in Redump entries 32783 and 39273.
-                case 12_464:
-                    return "3.17.000 / SafeDisc 2.80.010";
-                // Found in Redump entries 11638 and 52606.
-                case 12_400:
-                    return "3.18.000 / SafeDisc 2.90.010-2.90.040";
-                // Found in Redump entries 13230, 15383, and 36511.
-                case 12_528:
-                    return "3.19.000 / SafeDisc 3.10.020-3.15.011";
-                // Found in Redump entries 58625 and 84586.
-                case 11_973:
-                    return "3.22.000 / SafeDisc 3.20.020-3.20.022";
-                // Found in Redump entries 15614, 42034, 45686, 56320, 60021, 79729, and 80776.
-                case 163_644:
-                    return "4.00.060 / SafeDisc 4.00.000-4.70.000";
-                // Found distributed online, but so far not in a game release. TODO: Discover original source.
-                // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
-                case 23_040:
-                    return "4.03.086 / Unknown SafeDisc version";
-                // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
-                case 10_784:
-                    return "/ SafeCast ESD 2.02.040";
-                // This file is not currently known to be used in versions past 4.70.000.
-                default:
-                    return "Unknown Version (Report this to us on GitHub)";
-            }
-        }
-
         private string GetVersionFromSHA1Hash(string sha1Hash)
         {
             switch (sha1Hash.ToLowerInvariant())
@@ -873,48 +791,6 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.70.00.1941 2006/04/26".
                     case "4.70.00.1941":
                         return "4.70.0.1941 / SafeDisc 4.70.000";
-                    default:
-                        return $"Unknown Version {version} (Report this to us on GitHub)";
-                }
-            }
-
-            return "Unknown Version (Report this to us on GitHub)";
-        }
-
-        private string GetSecDrvExecutableVersion(PortableExecutable pex)
-        {
-            // Different versions of this driver correspond to different SafeDisc versions.
-            // TODO: Check if earlier versions of this driver contain the version string in a less obvious place. 
-            string version = pex.FileVersion;
-            if (!string.IsNullOrEmpty(version))
-            {
-                switch (version)
-                {
-                    // Found to be in Redump entry 32783.
-                    // The product version is "3.17.000 Windows NT 2002/07/01".
-                    case "3.17.000":
-                        return "3.17.000 / SafeDisc 2.80.010-2.80.011";
-                    // Found to be in Redump entry 52606.
-                    // The product version is "3.18.000 Windows NT 2002/11/14".
-                    case "3.18.000":
-                        return "3.18.000 / SafeDisc 2.90.010-2.90.040";
-                    // Found to be in Redump entry 13230.
-                    // The product version is "3.19.000 Windows NT/2K/XP 2003/03/19".
-                    case "3.19.000":
-                        return "3.19.000 / SafeDisc 3.10.020-3.15.011";
-                    // Found to be in Redump entry 58625.
-                    // The product version is "SECURITY Driver 3.22.000 2004/01/16".
-                    case "3.22.000":
-                        return "3.22.000 / SafeDisc 3.20.020-3.20.022";
-                    // Found to be in Redump entry 15614.
-                    // The product version is "SECURITY Driver 4.00.060 2004/08/31".
-                    case "4.00.060":
-                        return "4.00.060 / SafeDisc 4.00.000-4.70.000";
-                    // Found distributed online, but so far not in a game release. TODO: Discover original source.
-                    // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
-                    // The product version is "SECURITY Driver 4.03.086 2006/09/13".
-                    case "4.03.086":
-                        return "4.03.086 / Unknown SafeDisc version";
                     default:
                         return $"Unknown Version {version} (Report this to us on GitHub)";
                 }

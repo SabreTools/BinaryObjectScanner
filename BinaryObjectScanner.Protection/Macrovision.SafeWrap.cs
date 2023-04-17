@@ -1,5 +1,4 @@
-﻿using System;
-using BinaryObjectScanner.Wrappers;
+﻿using BinaryObjectScanner.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -10,7 +9,7 @@ namespace BinaryObjectScanner.Protection
     /// No direct SafeWrap only sample has currently been found, nor is it exactly clear what parts of SafeCast/SafeDisc are SafeWrap.
     /// It's claimed that SafeWrap uses one DLL and one .SYS "security driver" (https://www.cdrinfo.com/d7/content/macrovision-invests-next-generation-security-and-transport-technologies-internet-delivery Section #30).
     /// This would appear to be referring to the "drvmgt.dll" and "secdrv.sys" files, the latter of which is officially referred to as the "Macrovision SECURITY Driver" in some SafeDisc versions.
-    /// This may not be fully accurate, as neither of those files are known to be used with SafeCast, though this does need further investigation.
+    /// This may not be fully accurate, as not all of these files are known to always be used with SafeCast, though this does need further investigation.
     /// The .stxt* sections found in various Macrovision products may indicate SafeWrap, as they started being used around the time that SafeWrap was made public.
     /// It may also be that the "BoG" string known to be present in Macrovision executables could be related to SafeWrap, though its use predates the first known mention of SafeWrap by a few years.
     /// SafeWrap may have its origins in SafeDisc-related tech if that's the case, further confusing matters.
