@@ -13,6 +13,11 @@ namespace BinaryObjectScanner.Protection
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
     /// There are multiple different versions of SafeCast out there.
+    /// C-Dilla is directly linked to SafeCast, for example in Redump entry 26211, one of the SafeCast associated DLLs literally include a C-Dilla LMS related executable as an embedded executable.
+    /// This game appears to use a SafeDisc LT launcher, though this may simply be due to the fact that Microsoft had previously published several SafeDisc LT games, and may have been using the same base launcher in multiple projects.
+    /// The game itself (and expansion discs) appear to be protected with SafeDisc, and appear to have the number of bad sectors as expected for base SafeDisc, not LT.
+    /// The base game appears to be completely unprotected by SafeCast, though files for SafeCast are included in the directories for the expansions.
+    /// The expansions themselves appear to use SafeCast directly, as they require a license key and the base game doesn't.
     /// SafeCast ESD: https://web.archive.org/web/20000306044246/http://www.macrovision.com/safecast_ESD.html
     /// SafeCast ESD Demo: https://web.archive.org/web/20010417215236/http://www.macrovision.com:80/demos/SafeCast_ESD.exe
     /// SafeCast Gold: https://web.archive.org/web/20000129071444/http://www.macrovision.com/scp_gold.html
@@ -84,6 +89,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the dialog box resources
+            // Found in "CDAC21BA.DLL" in Redump entry 95524.
             var resource = pex.FindDialogByTitle("SafeCast API");
             if (resource.Any())
                 return "SafeCast";
@@ -110,6 +116,14 @@ namespace BinaryObjectScanner.Protection
             // Found in "SCRfrsh.exe" in Redump entry 102979.
             if (name?.Equals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast {pex.FileVersion}";
+
+            // Found in "CDAC14BA.DLL" in Redump entry 95524.
+            if (name?.Equals("32-bit SafeCast Anchor Installer", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeCast";
+
+            // Found in "CDAC21BA.DLL" in Redump entry 95524.
+            if (name?.Equals("32-bit CdaC20BA", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeCast";
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
             name = pex.ProductName;
@@ -142,6 +156,15 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 102979.
                 new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entries 26211 and 95524.
+                new PathMatchSet(new PathMatch("SCSHD.CSA", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entries 95524.
+                new PathMatchSet(new PathMatch("SCSHD.EXE", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entries 95524.
+                new PathMatchSet(new PathMatch("CDAC14BA.DLL", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -166,6 +189,15 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 102979.
                 new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
+                
+                // Found in Redump entries 26211 and 95524.
+                new PathMatchSet(new PathMatch("SCSHD.CSA", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entries 95524.
+                new PathMatchSet(new PathMatch("SCSHD.EXE", useEndsWith: true), "SafeCast"),
+
+                // Found in Redump entries 95524.
+                new PathMatchSet(new PathMatch("CDAC14BA.DLL", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

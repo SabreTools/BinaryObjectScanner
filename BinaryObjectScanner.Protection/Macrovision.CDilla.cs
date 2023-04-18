@@ -27,6 +27,7 @@ namespace BinaryObjectScanner.Protection
     /// 3.23.000 (IA item "3ds-max-4.2original").
     /// 3.24.010 (IA item "ejay_nestle_trial").
     /// 3.27.000 (https://download.autodesk.com/mne/web/support/3dstudio/C-Dilla3.27.zip).
+    /// 4.11.000 (Possibly an internal version used by SafeCast in Redump entry 95524).
     /// 
     /// TODO:
     /// Investigate C-Dilla CD-Compress.
@@ -93,9 +94,9 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("C-Dilla Windows NT RTS", StringComparison.OrdinalIgnoreCase) == true)
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
-            // Found in "CDANTSRV.EXE" from C-Dilla LMS version 3.27.000 for Windows NT.
+            // Found in "CDANTSRV.EXE" from C-Dilla LMS version 3.27.000 for Windows NT, and an embedded executable contained in Redump entry 95524.
             if (name?.Equals("C-Dilla RTS Service", StringComparison.OrdinalIgnoreCase) == true)
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
+                return $"C-Dilla RTS Service Version {pex.ProductVersion}";
 
             name = pex.ProductName;
 
