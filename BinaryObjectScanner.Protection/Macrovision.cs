@@ -70,7 +70,7 @@ namespace BinaryObjectScanner.Protection
             List<string> resultsList = new List<string>();
 
             // Check the header padding
-            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
+            string match = CheckOldSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
             if (!string.IsNullOrWhiteSpace(match))
             {
                 resultsList.Add(match);
@@ -78,7 +78,21 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 // Get the .data section, if it exists
-                match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
+                match = CheckOldSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
+                if (!string.IsNullOrWhiteSpace(match))
+                    resultsList.Add(match);
+            }
+
+            // Check the header padding
+            match = CheckNewSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
+            if (!string.IsNullOrWhiteSpace(match))
+            {
+                resultsList.Add(match);
+            }
+            else
+            {
+                // Get the .data section, if it exists
+                match = CheckNewSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
                 if (!string.IsNullOrWhiteSpace(match))
                     resultsList.Add(match);
             }
@@ -313,7 +327,7 @@ namespace BinaryObjectScanner.Protection
                     return "/ SafeDisc 2.70.030-2.72.000";
                 // Found in Redump entries 32783 and 39273.
                 case 12_464:
-                    return "3.17.000 / SafeDisc 2.80.010";
+                    return "3.17.000 / SafeDisc 2.80.010-2.80.011";
                 // Found in Redump entries 11638 and 52606.
                 case 12_400:
                     return "3.18.000 / SafeDisc 2.90.010-2.90.040";
@@ -382,13 +396,43 @@ namespace BinaryObjectScanner.Protection
             return "Unknown Version (Report this to us on GitHub)";
         }
 
-        private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
+        private string CheckNewSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
         {
             // Get the section strings, if they exist
             if (sectionStrings == null)
                 return null;
 
             // If we don't have the "BoG_" string
+            if (!sectionStrings.Any(s => s.Contains("BoG_")))
+                return null;
+
+            // If we don't have the "BoG_ *90.0&!!  Yy>" string
+            // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
+            if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+                return "Macrovision Protected Application [Version Expunged]";
+
+            // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
+            var matchers = new List<ContentMatchSet>
+            {
+                // BoG_ *90.0&!!  Yy>
+                new ContentMatchSet(new byte?[]
+                {
+                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                    0x79, 0x3E
+                }, GetMacrovisionVersion, string.Empty),
+            };
+
+            return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
+        }
+
+        private string CheckOldSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
+        {
+            // Get the section strings, if they exist
+            if (sectionStrings == null)
+                return null;
+
+            // If we don't have the "BoG_ *90.0&!!  Yy>" string
             if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
                 return null;
 
@@ -450,13 +494,14 @@ namespace BinaryObjectScanner.Protection
                 case "2.11.060": // Found in Redump entry 102979.
                 case "2.16.050": // Found in IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002".
                 case "2.60.030": // Found in Redump entry 74384 (Semi-confirmed) and "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/ (Unconfirmed).
+                case "2.67.010": // Found in "[Win] Photoshop CS2.7z" in IA item "Adobe-CS2".
                     return "SafeCast";
 
                 // SafeCast (Unconfirmed)
+                case "2.41.000": // Found in Adobe Photoshop according to http://www.reversing.be/article.php?story=2006102413541932
                 case "2.42.000": // Found in "Dreamweaver MX 2004 v7.0.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                 case "2.50.030": // Found in "ArcSoft Media Card Companion v1.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                 case "2.51.000": // Found in "Autodesk Inventor Professional v9.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
-                case "2.67.010": // Found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                     return "SafeCast (Unconfirmed - Please report to us on GitHub)";
 
                 // SafeCast ESD (Confirmed)
@@ -539,45 +584,6 @@ namespace BinaryObjectScanner.Protection
             // If we have an invalid result list
             if (resultsList == null || resultsList.Count == 0)
                 return resultsList;
-
-            // Cache the version expunged string
-            string versionExpunged = GetSafeDisc320to4xVersion(null, null, null);
-
-            // Clean SafeCast results
-            if (resultsList.Any(s => s == "SafeCast") && resultsList.Any(s => s.StartsWith("Macrovision Protected Application")))
-            {
-                resultsList = resultsList.Select(s =>
-                {
-                    if (s.StartsWith("Macrovision Protected Application"))
-                        return s.Replace("Macrovision Protected Application", "SafeCast");
-                    else if (s == "SafeCast" || s.EndsWith(versionExpunged))
-                        return null;
-                    else
-                        return s;
-                })
-                .Where(s => s != null)
-                .ToList();
-            }
-
-            // Clean SafeDisc results
-            if (resultsList.Any(s => s == "SafeDisc") && resultsList.Any(s => s.StartsWith("Macrovision Protected Application")))
-            {
-                resultsList = resultsList.Select(s =>
-                {
-                    if (s.StartsWith("Macrovision Protected Application"))
-                        return s.Replace("Macrovision Protected Application", "SafeDisc");
-                    else if (s == "SafeDisc" || s.EndsWith(versionExpunged))
-                        return null;
-                    else
-                        return s;
-                })
-                .Where(s => s != null)
-                .ToList();
-            }
-
-            // Clean incorrect version expunged results
-            if (resultsList.Any(s => s.StartsWith("Macrovision Protected Application")) && resultsList.Any(s => s.EndsWith(versionExpunged)))
-                resultsList = resultsList.Where(s => !s.EndsWith(versionExpunged)).ToList();
 
             // Get distinct and order
             return resultsList.Distinct().OrderBy(s => s).ToList();

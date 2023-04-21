@@ -13,11 +13,7 @@ namespace BinaryObjectScanner.Protection
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
     /// There are multiple different versions of SafeCast out there.
-    /// C-Dilla is directly linked to SafeCast, for example in Redump entry 26211, one of the SafeCast associated DLLs literally include a C-Dilla LMS related executable as an embedded executable.
-    /// This game appears to use a SafeDisc LT launcher, though this may simply be due to the fact that Microsoft had previously published several SafeDisc LT games, and may have been using the same base launcher in multiple projects.
-    /// The game itself (and expansion discs) appear to be protected with SafeDisc, and appear to have the number of bad sectors as expected for base SafeDisc, not LT.
-    /// The base game appears to be completely unprotected by SafeCast, though files for SafeCast are included in the directories for the expansions.
-    /// The expansions themselves appear to use SafeCast directly, as they require a license key and the base game doesn't.
+    /// Deep dive of MechWarrior 4 and its expansions, which use SafeDisc, possibly SafeDisc LT, and SafeCast: https://digipres.club/@TheRogueArchivist/110224192068908590
     /// SafeCast ESD: https://web.archive.org/web/20000306044246/http://www.macrovision.com/safecast_ESD.html
     /// SafeCast ESD Demo: https://web.archive.org/web/20010417215236/http://www.macrovision.com:80/demos/SafeCast_ESD.exe
     /// SafeCast Gold: https://web.archive.org/web/20000129071444/http://www.macrovision.com/scp_gold.html
@@ -31,6 +27,7 @@ namespace BinaryObjectScanner.Protection
     /// https://archive.org/details/eJayXtremeSoundtraxx
     /// https://community.ptc.com/t5/Mathcad/SafeCast/td-p/25233
     /// SafeCast resources: 
+    /// http://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html (Press release introducing SafeCast)
     /// https://web.archive.org/web/20000129013431/http://www.macrovision.com/safecast_faq.html (SafeCast FAQ)
     /// https://web.archive.org/web/20040223025801/http://www.macrovision.com/products/legacy_products/safecast/safecast_cdilla_faq.shtml
     /// https://web.archive.org/web/20031204024544mp_/http://www.macrovision.com/products/safecast/index.shtml
@@ -113,6 +110,14 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("CdaC01BA", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast";
 
+            // Found in "C2CDEL.EXE" in IA item "britney-spears-special-edition-cd-rom".
+            if (name?.Equals("32-bit SafeCast Copy To Clear Delete", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeCast";
+
+            // Found in "C2C.DLL" in IA item "britney-spears-special-edition-cd-rom".
+            if (name?.Equals("32-bit SafeCast Shell Copy To Clear DLL", StringComparison.OrdinalIgnoreCase) == true)
+                return $"SafeCast";
+
             // Found in "SCRfrsh.exe" in Redump entry 102979.
             if (name?.Equals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeCast {pex.FileVersion}";
@@ -144,11 +149,20 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in IA item "britney-spears-special-edition-cd-rom".
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("C2C.16", useEndsWith: true),
+                    new PathMatch("C2C.DLL", useEndsWith: true),
+                    new PathMatch("C2CDEL.16", useEndsWith: true),
+                    new PathMatch("C2CDEL.EXE", useEndsWith: true),
+                }, "SafeCast"),
+
                 // Found in IA item "ejay_nestle_trial".
                 new PathMatchSet(new PathMatch("cdac01aa.dll", useEndsWith: true), "SafeCast"),
                 new PathMatchSet(new PathMatch("cdac01ba.dll", useEndsWith: true), "SafeCast"),
 
-                // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
+                // Found in multiple versions of SafeCast, including Redump entries 83145 and 95524, as well as IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
                 new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
 
                 // Found in Redump entry 83145.
@@ -163,8 +177,11 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 95524.
                 new PathMatchSet(new PathMatch("SCSHD.EXE", useEndsWith: true), "SafeCast"),
 
-                // Found in Redump entries 95524.
-                new PathMatchSet(new PathMatch("CDAC14BA.DLL", useEndsWith: true), "SafeCast"),
+                // Found in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
+                new PathMatchSet(new PathMatch("CDAC15BA.SYS", useEndsWith: true), "SafeCast"),
+
+                // Found in "cdac14ba.dll" in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
+                new PathMatchSet(new PathMatch("CDAC13BA.EXE", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -196,8 +213,11 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 95524.
                 new PathMatchSet(new PathMatch("SCSHD.EXE", useEndsWith: true), "SafeCast"),
 
-                // Found in Redump entries 95524.
-                new PathMatchSet(new PathMatch("CDAC14BA.DLL", useEndsWith: true), "SafeCast"),
+                // Found in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
+                new PathMatchSet(new PathMatch("CDAC15BA.SYS", useEndsWith: true), "SafeCast"),
+
+                // Found in "cdac14ba.dll" in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
+                new PathMatchSet(new PathMatch("CDAC13BA.EXE", useEndsWith: true), "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

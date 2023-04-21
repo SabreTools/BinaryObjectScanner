@@ -294,8 +294,6 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        internal static string GetSafeDisc320to4xVersion(string file, byte[] fileContent, List<int> positions) => "3.20-4.xx [version expunged]";
-
         internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string> files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
@@ -314,7 +312,7 @@ namespace BinaryObjectScanner.Protection
                     return "1.00.026";
                 // Found in Redump entries 31149 and 28810.
                 case "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A":
-                    return "1.06.000-1.50.020";
+                    return "1.06.000-1.50.020/Lite";
                 default:
                     return "Unknown Version (Report this to us on GitHub)";
             }
