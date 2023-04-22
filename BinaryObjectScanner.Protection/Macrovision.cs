@@ -67,7 +67,6 @@ namespace BinaryObjectScanner.Protection
             // 4.16.050 Windows NT 2002/04/24
             if (name?.Equals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase) == true)
                 resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
-            string match;
 
             // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
             // They may indicate SafeWrap, but this hasn't been confirmed yet.
@@ -76,23 +75,23 @@ namespace BinaryObjectScanner.Protection
             if (stxt371Section || stxt774Section)
             {
                 // Check the header padding for protected sections.
-                match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
-                if (!string.IsNullOrWhiteSpace(match))
+                string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
+                if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
-                    resultsList.Add(match);
+                    resultsList.Add(sectionMatch);
                 }
                 else
                 {
                     // Get the .data section, if it exists, for protected sections.
-                    match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        resultsList.Add(match);
+                    sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
+                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                        resultsList.Add(sectionMatch);
                 }
 
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
                 string entryPointSectionName = pex.SectionNames[entryPointIndex];
 
-                switch(entryPointSectionName)
+                switch (entryPointSectionName)
                 {
                     // Check if the entry point is in the expected section for normal protected executables.
                     // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
@@ -113,22 +112,22 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 // Check the header padding for protected sections.
-                match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
-                if (!string.IsNullOrWhiteSpace(match))
+                string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
+                if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
-                    resultsList.Add(match);
+                    resultsList.Add(sectionMatch);
                 }
                 else
                 {
                     // Check the .data section, if it exists, for protected sections.
-                    match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        resultsList.Add(match);
+                    sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
+                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                        resultsList.Add(sectionMatch);
                 }
             }
 
             // Run Cactus Data Shield PE checks
-            match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
+            string match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 resultsList.Add(match);
 
