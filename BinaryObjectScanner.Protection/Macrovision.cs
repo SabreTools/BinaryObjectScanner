@@ -11,7 +11,11 @@ using System;
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>
-    /// This is a placeholder for all Macrovision-based protections. See partial classes for more details
+    /// Macrovision was a company that specialized in various forms of DRM. They had an extensive product line, their most infamous product (within this context) being SafeDisc.
+    /// Due to there being a significant amount of backend tech being shared between various protections, a separate class is needed for generic Macrovision detections.
+    /// 
+    /// Macrovision Corporation CD-ROM Unauthorized Copying Study: https://web.archive.org/web/20011005161810/http://www.macrovision.com/solutions/software/cdrom/images/Games_CD-ROM_Study.PDF
+    /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
     public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
     {
@@ -48,36 +52,82 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
+            // Check for specific indications for individual Macrovision protections.
+            List<string> resultsList = new List<string>();
+
             // Check for generic indications of Macrovision protections first.
             string name = pex.FileDescription;
 
+            // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
+            if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
+                resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}");
+
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
-            // TODO: Fix File Description not getting properly pulled for this executable.
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
             if (name?.Equals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Macrovision RTS Service {pex.FileVersion}";
+                resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
 
-            // Check for specific indications for individual Macrovision protections.
-
-            List<string> resultsList = new List<string>();
-
-            // Check the header padding
-            string match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
-            if (!string.IsNullOrWhiteSpace(match))
+            // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
+            // They may indicate SafeWrap, but this hasn't been confirmed yet.
+            bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
+            bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
+            if (stxt371Section || stxt774Section)
             {
-                resultsList.Add(match);
+                // Check the header padding for protected sections.
+                string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
+                if (!string.IsNullOrWhiteSpace(sectionMatch))
+                {
+                    resultsList.Add(sectionMatch);
+                }
+                else
+                {
+                    // Get the .data section, if it exists, for protected sections.
+                    sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
+                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                        resultsList.Add(sectionMatch);
+                }
+
+                int entryPointIndex = pex.FindEntryPointSectionIndex();
+                string entryPointSectionName = pex.SectionNames[entryPointIndex];
+
+                switch (entryPointSectionName)
+                {
+                    // Check if the entry point is in the expected section for normal protected executables.
+                    // If it isn't, the executable has likely been cracked to remove the protection, or has been corrupted or tampered with and is no longer functional.
+                    case "stxt371":
+                        resultsList.Add("Macrovision Protected Application");
+                        break;
+                    // It isn't known if this section ever contains the entry point, so if that does happen, it's worth investigating.
+                    case "stxt774":
+                        resultsList.Add("Macrovision Protected Application (Report this to us on GitHub)");
+                        break;
+                    default:
+                        resultsList.Add("Macrovision Protected Application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)");
+                        break;
+                }
             }
+
+            // If the file doesn't have the stxt* sections, check if any sections are protected assuming it's an older Macrovision product.
             else
             {
-                // Get the .data section, if it exists
-                match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
-                if (!string.IsNullOrWhiteSpace(match))
-                    resultsList.Add(match);
+                // Check the header padding for protected sections.
+                string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
+                if (!string.IsNullOrWhiteSpace(sectionMatch))
+                {
+                    resultsList.Add(sectionMatch);
+                }
+                else
+                {
+                    // Check the .data section, if it exists, for protected sections.
+                    sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
+                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                        resultsList.Add(sectionMatch);
+                }
             }
 
             // Run Cactus Data Shield PE checks
-            match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
+            string match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 resultsList.Add(match);
 
@@ -187,6 +237,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -198,6 +249,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -228,15 +280,138 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
+        // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
+        internal static string GetSecdrvFileSizeVersion(string firstMatchedString, IEnumerable<string> files)
+        {
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            FileInfo fi = new FileInfo(firstMatchedString);
+            switch (fi.Length)
+            {
+                // Found in Redump entry 102979.
+                case 1:
+                    return "(Empty File)";
+                // Found in Redump entries 9718, 12885, 21154, 31149, 37523, 37920.
+                case 14_304:
+                    return "/ SafeDisc 1.06.000-1.20.001";
+                // Found in Redump entries 9617 and 31526.
+                case 14_368:
+                    return "/ SafeDisc 1.30.010-1.35.000";
+                // Found in Redump entries 2595, 37832, and 44350.
+                case 10_848:
+                    return "/ SafeDisc 1.40.004-1.41.001";
+                // Found in Redump entries 30555 and 55078.
+                case 11_968:
+                    return "/ SafeDisc 1.45.011";
+                // Found in Redump entries 28810 and 62935.
+                case 11_616:
+                    return "/ SafeDisc 1.50.020";
+                // Found in Redump entries 72195 and 73502.
+                case 18_768:
+                    return "/ SafeDisc 2.05.030";
+                // Found in Redump entries 38541 and 59462.
+                case 20_128:
+                    return "/ SafeDisc 2.10.030";
+                // Found in Redump entries 9819, 15312, 55823.
+                case 27_440:
+                    return "/ SafeDisc 2.30.030-2.30.033";
+                // Found in Redump entries 9846 and 23786.
+                case 28_624:
+                    return "/ SafeDisc 2.40.010-2.40.011";
+                // Found in Redump entries 30022 and 31666.
+                case 28_400:
+                    return "/ SafeDisc 2.51.020-2.51.021";
+                // Found in Redump entries 2064 and 47047.
+                case 29_392:
+                    return "/ SafeDisc 2.60.052";
+                // Found in Redump entries 13048 and 48101.
+                case 11_376:
+                    return "/ SafeDisc 2.70.030-2.72.000";
+                // Found in Redump entries 32783 and 39273.
+                case 12_464:
+                    return "3.17.000 / SafeDisc 2.80.010-2.80.011";
+                // Found in Redump entries 11638 and 52606.
+                case 12_400:
+                    return "3.18.000 / SafeDisc 2.90.010-2.90.040";
+                // Found in Redump entries 13230, 15383, and 36511.
+                case 12_528:
+                    return "3.19.000 / SafeDisc 3.10.020-3.15.011";
+                // Found in Redump entries 58625 and 84586.
+                case 11_973:
+                    return "3.22.000 / SafeDisc 3.20.020-3.20.022";
+                // Found in Redump entries 15614, 42034, 45686, 56320, 60021, 79729, and 80776.
+                case 163_644:
+                    return "4.00.060 / SafeDisc 4.00.000-4.70.000";
+                // Found distributed online, but so far not in a game release. TODO: Discover original source.
+                // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
+                case 23_040:
+                    return "4.03.086 / Product Unknown";
+                // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
+                case 10_784:
+                    return "/ SafeCast ESD 2.02.040";
+                // This file is not currently known to be used in versions past 4.70.000.
+                default:
+                    return "/ Product Unknown (Report this to us on GitHub)";
+            }
+        }
+
+        // TODO: Combine with filesize version checks if possible.
+        private string GetSecDrvExecutableVersion(PortableExecutable pex)
+        {
+            // Different versions of this driver correspond to different SafeDisc versions.
+            // TODO: Check if earlier versions of this driver contain the version string in a less obvious place. 
+            string version = pex.FileVersion;
+            if (!string.IsNullOrEmpty(version))
+            {
+                switch (version)
+                {
+                    // Found to be in Redump entry 32783.
+                    // The product version is "3.17.000 Windows NT 2002/07/01".
+                    case "3.17.000":
+                        return "3.17.000 / SafeDisc 2.80.010-2.80.011";
+                    // Found to be in Redump entry 52606.
+                    // The product version is "3.18.000 Windows NT 2002/11/14".
+                    case "3.18.000":
+                        return "3.18.000 / SafeDisc 2.90.010-2.90.040";
+                    // Found to be in Redump entry 13230.
+                    // The product version is "3.19.000 Windows NT/2K/XP 2003/03/19".
+                    case "3.19.000":
+                        return "3.19.000 / SafeDisc 3.10.020-3.15.011";
+                    // Found to be in Redump entry 58625.
+                    // The product version is "SECURITY Driver 3.22.000 2004/01/16".
+                    case "3.22.000":
+                        return "3.22.000 / SafeDisc 3.20.020-3.20.022";
+                    // Found to be in Redump entry 15614.
+                    // The product version is "SECURITY Driver 4.00.060 2004/08/31".
+                    case "4.00.060":
+                        return "4.00.060 / SafeDisc 4.00.000-4.70.000";
+                    // Found distributed online, but so far not in a game release. TODO: Discover original source.
+                    // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
+                    // The product version is "SECURITY Driver 4.03.086 2006/09/13".
+                    case "4.03.086":
+                        return "4.03.086 / Unknown SafeDisc version";
+                    default:
+                        return $"Unknown Version {version} (Report this to us on GitHub)";
+                }
+            }
+
+            return "Unknown Version (Report this to us on GitHub)";
+        }
+
+        private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw, bool newVersion)
         {
             // Get the section strings, if they exist
             if (sectionStrings == null)
                 return null;
 
-            // If we don't have the "BoG_" string
-            if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+            // If we don't have the "BoG_" string, the section isn't protected.
+            if (!sectionStrings.Any(s => s.Contains("BoG_")))
                 return null;
+
+            // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
+            if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+                return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
 
             // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
             var matchers = new List<ContentMatchSet>
@@ -255,8 +430,8 @@ namespace BinaryObjectScanner.Protection
 
         internal static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
         {
-            // Begin reading after "BoG_ *90.0&!!  Yy>" for older versions
-            int index = positions[0] + 20;
+            // Begin reading 2 bytes after "BoG_ *90.0&!!  Yy>" for older versions
+            int index = positions[0] + 18 + 2;
             int version = fileContent.ReadInt32(ref index);
             int subVersion = fileContent.ReadInt32(ref index);
             int subsubVersion = fileContent.ReadInt32(ref index);
@@ -267,8 +442,8 @@ namespace BinaryObjectScanner.Protection
                 return $"{MacrovisionVersionToProductName(versionString)} {versionString}";
             }
 
-            // Begin reading after "BoG_ *90.0&!!  Yy>" for newer versions
-            index = positions[0] + 18 + 14; // Begin reading after "BoG_ *90.0&!!  Yy>" for newer SafeDisc
+            // Begin reading 14 bytes after "BoG_ *90.0&!!  Yy>" for newer versions
+            index = positions[0] + 18 + 14;
             version = fileContent.ReadInt32(ref index);
             subVersion = fileContent.ReadInt32(ref index);
             subsubVersion = fileContent.ReadInt32(ref index);
@@ -286,18 +461,29 @@ namespace BinaryObjectScanner.Protection
         {
             switch (version)
             {
+                // CDS-300 (Confirmed)
+                case "2.90.044": // Found in "American Made World Played" by Les Paul & Friends (Japan) (https://www.discogs.com/release/18934432-Les-Paul-Friends-American-Made-World-Played) and "X&Y" by Coldplay (Japan) (https://www.discogs.com/release/822378-Coldplay-XY).
+                    return "CDS-300";
+
                 // SafeCast (Confirmed)
+                // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
                 case "2.11.010": // Found in Redump entry 83145.
+                case "2.11.060": // Found in Redump entry 102979.
                 case "2.16.050": // Found in IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002".
                 case "2.60.030": // Found in Redump entry 74384 (Semi-confirmed) and "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/ (Unconfirmed).
+                case "2.67.010": // Found in "[Win] Photoshop CS2.7z" in IA item "Adobe-CS2".
                     return "SafeCast";
 
                 // SafeCast (Unconfirmed)
+                case "2.41.000": // Found in Adobe Photoshop according to http://www.reversing.be/article.php?story=2006102413541932
                 case "2.42.000": // Found in "Dreamweaver MX 2004 v7.0.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                 case "2.50.030": // Found in "ArcSoft Media Card Companion v1.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                 case "2.51.000": // Found in "Autodesk Inventor Professional v9.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
-                case "2.67.010": // Found in "Adobe Photoshop CS2" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
                     return "SafeCast (Unconfirmed - Please report to us on GitHub)";
+
+                // SafeCast ESD (Confirmed)
+                case "2.02.040": // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
+                    return "SafeCast ESD";
 
                 // SafeDisc (Confirmed)
                 case "1.00.025": // Found in Redump entry 66005.
@@ -361,6 +547,10 @@ namespace BinaryObjectScanner.Protection
                 case "1.01.045": // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
                     return "SafeDisc (Unconfirmed - Please report to us on GitHub)";
 
+                // SafeDisc Lite (Confirmed)
+                case "2.60.020": // Found in Redump entry 14928.
+                    return "SafeDisc Lite";
+
                 default:
                     return "Macrovision Protected Application (Generic detection - Report to us on GitHub)";
             }
@@ -371,45 +561,6 @@ namespace BinaryObjectScanner.Protection
             // If we have an invalid result list
             if (resultsList == null || resultsList.Count == 0)
                 return resultsList;
-
-            // Cache the version expunged string
-            string versionExpunged = GetSafeDisc320to4xVersion(null, null, null);
-
-            // Clean SafeCast results
-            if (resultsList.Any(s => s == "SafeCast") && resultsList.Any(s => s.StartsWith("Macrovision Protected Application")))
-            {
-                resultsList = resultsList.Select(s =>
-                {
-                    if (s.StartsWith("Macrovision Protected Application"))
-                        return s.Replace("Macrovision Protected Application", "SafeCast");
-                    else if (s == "SafeCast" || s.EndsWith(versionExpunged))
-                        return null;
-                    else
-                        return s;
-                })
-                .Where(s => s != null)
-                .ToList();
-            }
-
-            // Clean SafeDisc results
-            if (resultsList.Any(s => s == "SafeDisc") && resultsList.Any(s => s.StartsWith("Macrovision Protected Application")))
-            {
-                resultsList = resultsList.Select(s =>
-                {
-                    if (s.StartsWith("Macrovision Protected Application"))
-                        return s.Replace("Macrovision Protected Application", "SafeDisc");
-                    else if (s == "SafeDisc" || s.EndsWith(versionExpunged))
-                        return null;
-                    else
-                        return s;
-                })
-                .Where(s => s != null)
-                .ToList();
-            }
-
-            // Clean incorrect version expunged results
-            if (resultsList.Any(s => s.StartsWith("Macrovision Protected Application")) && resultsList.Any(s => s.EndsWith(versionExpunged)))
-                resultsList = resultsList.Where(s => !s.EndsWith(versionExpunged)).ToList();
 
             // Get distinct and order
             return resultsList.Distinct().OrderBy(s => s).ToList();
