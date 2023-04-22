@@ -50,7 +50,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Found in Redump entry 57986.
-            bool hintNameTableMatch = pex.ImportHintNameTable?.Any(s => s == "LTDLL_Authenticate") ?? false;
+            bool hintNameTableMatch = pex.ImportHintNameTable?.Any(ihne => ihne == "LTDLL_Authenticate") ?? false;
             if (hintNameTableMatch)
                 return "SafeDisc Lite";
 

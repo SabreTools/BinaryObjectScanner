@@ -52,57 +52,43 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
+            // Check for specific indications for individual Macrovision protections.
+            List<string> resultsList = new List<string>();
+
             // Check for generic indications of Macrovision protections first.
             string name = pex.FileDescription;
 
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}";
+                resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}");
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
             if (name?.Equals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase) == true)
-                return $"Macrovision RTS Service {pex.FileVersion}";
+                resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
+            string match;
 
-            // Check for specific indications for individual Macrovision protections.
-
-            List<string> resultsList = new List<string>();
-
-            // Check the header padding
-            string match = CheckOldSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
-            if (!string.IsNullOrWhiteSpace(match))
-            {
-                resultsList.Add(match);
-            }
-            else
-            {
-                // Get the .data section, if it exists
-                match = CheckOldSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
-                if (!string.IsNullOrWhiteSpace(match))
-                    resultsList.Add(match);
-            }
-
-            // Check the header padding
-            match = CheckNewSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData);
-            if (!string.IsNullOrWhiteSpace(match))
-            {
-                resultsList.Add(match);
-            }
-            else
-            {
-                // Get the .data section, if it exists
-                match = CheckNewSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"));
-                if (!string.IsNullOrWhiteSpace(match))
-                    resultsList.Add(match);
-            }
-
-            // The stxt371 and stxt774 sections are found in various Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
+            // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
             // They may indicate SafeWrap, but this hasn't been confirmed yet.
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
             {
+                // Check the header padding for protected sections.
+                match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
+                if (!string.IsNullOrWhiteSpace(match))
+                {
+                    resultsList.Add(match);
+                }
+                else
+                {
+                    // Get the .data section, if it exists, for protected sections.
+                    match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        resultsList.Add(match);
+                }
+
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
                 string entryPointSectionName = pex.SectionNames[entryPointIndex];
 
@@ -120,6 +106,24 @@ namespace BinaryObjectScanner.Protection
                     default:
                         resultsList.Add("Macrovision Protected Application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)");
                         break;
+                }
+            }
+
+            // If the file doesn't have the stxt* sections, check if any sections are protected assuming it's an older Macrovision product.
+            else
+            {
+                // Check the header padding for protected sections.
+                match = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
+                if (!string.IsNullOrWhiteSpace(match))
+                {
+                    resultsList.Add(match);
+                }
+                else
+                {
+                    // Check the .data section, if it exists, for protected sections.
+                    match = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        resultsList.Add(match);
                 }
             }
 
@@ -396,45 +400,19 @@ namespace BinaryObjectScanner.Protection
             return "Unknown Version (Report this to us on GitHub)";
         }
 
-        private string CheckNewSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
+        private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw, bool newVersion)
         {
             // Get the section strings, if they exist
             if (sectionStrings == null)
                 return null;
 
-            // If we don't have the "BoG_" string
+            // If we don't have the "BoG_" string, the section isn't protected.
             if (!sectionStrings.Any(s => s.Contains("BoG_")))
                 return null;
 
-            // If we don't have the "BoG_ *90.0&!!  Yy>" string
             // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
             if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
-                return "Macrovision Protected Application [Version Expunged]";
-
-            // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
-            var matchers = new List<ContentMatchSet>
-            {
-                // BoG_ *90.0&!!  Yy>
-                new ContentMatchSet(new byte?[]
-                {
-                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                    0x79, 0x3E
-                }, GetMacrovisionVersion, string.Empty),
-            };
-
-            return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
-        }
-
-        private string CheckOldSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw)
-        {
-            // Get the section strings, if they exist
-            if (sectionStrings == null)
-                return null;
-
-            // If we don't have the "BoG_ *90.0&!!  Yy>" string
-            if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
-                return null;
+                return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
 
             // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
             var matchers = new List<ContentMatchSet>
