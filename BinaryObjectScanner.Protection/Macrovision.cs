@@ -366,23 +366,23 @@ namespace BinaryObjectScanner.Protection
             {
                 switch (version)
                 {
-                    // Found to be in Redump entry 32783.
+                    // Found in Redump entries 32783 and 39273.
                     // The product version is "3.17.000 Windows NT 2002/07/01".
                     case "3.17.000":
                         return "3.17.000 / SafeDisc 2.80.010-2.80.011";
-                    // Found to be in Redump entry 52606.
+                    // Found in Redump entries 11638 and 52606.
                     // The product version is "3.18.000 Windows NT 2002/11/14".
                     case "3.18.000":
                         return "3.18.000 / SafeDisc 2.90.010-2.90.040";
-                    // Found to be in Redump entry 13230.
+                    // Found in Redump entries 13230, 15383, and 36511.
                     // The product version is "3.19.000 Windows NT/2K/XP 2003/03/19".
                     case "3.19.000":
                         return "3.19.000 / SafeDisc 3.10.020-3.15.011";
-                    // Found to be in Redump entry 58625.
+                    // Found in Redump entries 58625 and 84586.
                     // The product version is "SECURITY Driver 3.22.000 2004/01/16".
                     case "3.22.000":
                         return "3.22.000 / SafeDisc 3.20.020-3.20.022";
-                    // Found to be in Redump entry 15614.
+                    // Found in Redump entries 15614, 42034, 45686, 56320, 60021, 79729, and 80776.
                     // The product version is "SECURITY Driver 4.00.060 2004/08/31".
                     case "4.00.060":
                         return "4.00.060 / SafeDisc 4.00.000-4.70.000";
@@ -390,7 +390,7 @@ namespace BinaryObjectScanner.Protection
                     // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
                     // The product version is "SECURITY Driver 4.03.086 2006/09/13".
                     case "4.03.086":
-                        return "4.03.086 / Unknown SafeDisc version";
+                        return "4.03.086 / Unknown Product";
                     default:
                         return $"Unknown Version {version} (Report this to us on GitHub)";
                 }
