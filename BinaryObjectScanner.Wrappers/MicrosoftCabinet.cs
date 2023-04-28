@@ -244,7 +244,9 @@ namespace BinaryObjectScanner.Wrappers
                         decompressed = dataBlock.CompressedData;
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
+                        decompressed = new byte[Models.Compression.MSZIP.Constants.ZIPWSIZE];
                         Compression.MSZIP.Decompressor.Decompress(mszip, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
+                        Array.Resize(ref decompressed, dataBlock.UncompressedSize);
                         break;
                     case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
                         Compression.Quantum.Decompressor.Decompress(qtm, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
