@@ -89,6 +89,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
 | Rainbow Sentinel | True | True | |
 | Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
+| RipGuard | True | True | Partially unconfirmed² |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
 | SafeLock | False | True | |
 | SecuROM | True | True | v8.x and White Label detected partially² |
