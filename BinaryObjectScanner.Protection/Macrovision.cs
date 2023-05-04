@@ -136,6 +136,11 @@ namespace BinaryObjectScanner.Protection
             if (!string.IsNullOrWhiteSpace(match))
                 resultsList.Add(match);
 
+            // Run RipGuard PE checks
+            match = RipGuardCheckPortableExecutable(file, pex, includeDebug);
+            if (!string.IsNullOrWhiteSpace(match))
+                resultsList.Add(match);
+
             // Run SafeCast PE checks
             match = SafeCastCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
@@ -179,6 +184,11 @@ namespace BinaryObjectScanner.Protection
             if (cDilla != null && !cDilla.IsEmpty)
                 results.AddRange(cDilla);
 
+            // Run RipGuard directory checks
+            var ripGuard = RipGuardCheckDirectoryPath(path, files);
+            if (ripGuard != null && !ripGuard.IsEmpty)
+                results.AddRange(ripGuard);
+
             // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
             if (safeCast != null && !safeCast.IsEmpty)
@@ -214,6 +224,11 @@ namespace BinaryObjectScanner.Protection
             string cDilla = CDillaCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(cDilla))
                 resultsList.Add(cDilla);
+
+            // Run RipGuard file checks
+            string ripGuard = RipGuardCheckFilePath(path);
+            if (!string.IsNullOrWhiteSpace(ripGuard))
+                resultsList.Add(ripGuard);
 
             // Run SafeCast file checks
             string safeCast = SafeCastCheckFilePath(path);
