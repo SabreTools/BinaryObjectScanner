@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
+using static BinaryObjectScanner.Utilities.Hashing;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -14,6 +14,7 @@ namespace BinaryObjectScanner.Protection
     /// Discs known to have it: 
     /// https://forum.redfox.bz/threads/resolved-installs-rootkit-black-lagoon-vol-2-3-region-1.29660/
     /// https://forum.redfox.bz/threads/resolved-one-on-one-with-tony-horton-vol2-disc3.33901/
+    /// https://moral.net.au/writing/2015/10/10/backing_up_dvds/
     /// </summary>
     public partial class Macrovision
     {
@@ -24,6 +25,16 @@ namespace BinaryObjectScanner.Protection
             var sections = pex?.SectionTable;
             if (sections == null)
                 return null;
+
+            FileInfo fi = new FileInfo(file);
+
+            // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
+            if (fi.Length == 49_152)
+            {
+                string sha1 = GetFileSHA1(file);
+                if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
+                    return "RipGuard";
+            }
 
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             string name = pex.FileDescription;
