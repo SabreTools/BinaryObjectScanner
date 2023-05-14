@@ -26,16 +26,6 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            FileInfo fi = new FileInfo(file);
-
-            // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
-            if (fi.Length == 49_152)
-            {
-                string sha1 = GetFileSHA1(file);
-                if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
-                    return "RipGuard";
-            }
-
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             string name = pex.FileDescription;
             if (name?.Equals("rgasdev", StringComparison.OrdinalIgnoreCase) == true)
@@ -45,6 +35,19 @@ namespace BinaryObjectScanner.Protection
             name = pex.ProductName;
             if (name?.Equals("rgasdev", StringComparison.OrdinalIgnoreCase) == true)
                 return "RipGuard";
+
+            if (!File.Exists(file))
+                return null;
+
+            FileInfo fi = new FileInfo(file);
+
+            // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
+            if (fi.Length == 49_152)
+            {
+                string sha1 = GetFileSHA1(file);
+                if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
+                    return "RipGuard";
+            }
 
             return null;
         }
