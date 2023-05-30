@@ -29,6 +29,9 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
+                // TODO: Fix/re-enable/do ANYTHING to get this working again
+                return null;
+
                 // Open the cab file
                 var cabFile = MicrosoftCabinet.Create(stream);
                 if (cabFile == null)
