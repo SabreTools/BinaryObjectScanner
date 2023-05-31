@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
@@ -53,6 +54,15 @@ namespace BinaryObjectScanner.Protection
             name = pex.ProductName;
             if (name?.StartsWith("HCPS", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Hexalock AutoLock 4.5";
+
+            // Get the .text section strings, if they exist
+            List<string> strs = pex.GetFirstSectionStrings(".text");
+            if (strs != null)
+            {
+                // Found in "The Sudoku Challenge Collection.exe" in "The Sudoku Challenge! Collection" by Play at Joe's.
+                if (strs.Any(s => s.Contains("mfint.dll")))
+                    return "Hexalock Autolock";
+            }
 
             return null;
         }
