@@ -15,14 +15,7 @@ namespace BinaryObjectScanner.Protection
     /// https://store.steampowered.com/curator/26095454-Denuvo-Games/
     /// https://www.pcgamingwiki.com/wiki/Denuvo
     /// Denuvo Anti-Cheat (https://irdeto.com/denuvo/anti-cheat/) is a form of anti-cheat, though information on what games use it is rather sparse.
-    /// It was used briefly in Doom Eternal Update 1 (https://store.steampowered.com/news/app/782330/view/2187005925152148469), before being completely removed in Update 1.1 (https://store.steampowered.com/news/app/782330/view/2187006557874536446).
-    /// It's somewhat difficult to find other games that may use this, as quite a few sources seem to erroneously refer to Anti-Tamper as Anti-Cheat.
-    /// Support page for Denuvo Anti-Cheat: https://support.codefusion.technology/anti-cheat
-    /// Announcements for Denuvo Anti-Cheat: 
-    /// https://irdeto.com/news/leveling-the-playing-field-with-denuvo-anti-cheat/
-    /// https://irdeto.com/news/denuvo-anti-cheat-now-available-on-steamworks/
-    /// https://irdeto.com/news/denuvo-joins-exclusive-playstation5-tools-and-middleware-program-to-offer-anti-cheat-technology-to-game-developers/
-    /// Denuvo Anti-Cheat datasheet: https://web.archive.org/web/20190512082146/https://resources.irdeto.com/video-games/datasheet-anti-cheat
+    /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/Denuvo_Anti-Cheat/Denuvo_Anti-Cheat.md"/>
     /// Denuvo also has a number of products available, such as ones targeting mobile games:
     /// https://irdeto.com/denuvo/mobile-games-protection/
     /// https://resources.irdeto.com/video-games/datasheet-anti-tamper-and-anti-cheat-technology-for-mobile
