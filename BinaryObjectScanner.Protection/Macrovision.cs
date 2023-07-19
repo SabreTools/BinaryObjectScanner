@@ -483,6 +483,7 @@ namespace BinaryObjectScanner.Protection
                 // SafeCast (Confirmed)
                 // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
                 case "2.11.010": // Found in Redump entry 83145.
+                case "2.11.020": // Found in IA item "microsoft-software-jukebox-for-toshiba-1.0".
                 case "2.11.060": // Found in Redump entry 102979.
                 case "2.16.050": // Found in IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002".
                 case "2.60.030": // Found in Redump entry 74384 (Semi-confirmed) and "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/ (Unconfirmed).
