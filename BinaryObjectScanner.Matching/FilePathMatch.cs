@@ -11,8 +11,6 @@ namespace BinaryObjectScanner.Matching
         /// Constructor
         /// </summary>
         /// <param name="needle">String representing the search</param>
-        /// <param name="matchExact">True to match exact casing, false otherwise</param>
-        /// <param name="useEndsWith">True to match the end only, false for all contents</param>
         public FilePathMatch(string needle) : base($"{Path.DirectorySeparatorChar}{needle}", false, true) { }
     }
 }
