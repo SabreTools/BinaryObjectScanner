@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
@@ -111,12 +110,12 @@ namespace BurnOutSharp.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 68166.
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}tdvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}tdvm.vds", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new FilePathMatch("tdvm.dll"), "SolidShield"),
+                new PathMatchSet(new FilePathMatch("tdvm.vds"), "SolidShield"),
                 new PathMatchSet(new PathMatch("vfs20.dll", useEndsWith: true), "SolidShield"),
 
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}dvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}hc.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new FilePathMatch("dvm.dll"), "SolidShield"),
+                new PathMatchSet(new FilePathMatch("hc.dll"), "SolidShield"),
                 new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
                 new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };
@@ -130,8 +129,8 @@ namespace BurnOutSharp.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}dvm.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}hc.dll", useEndsWith: true), "SolidShield"),
+                new PathMatchSet(new FilePathMatch("dvm.dll"), "SolidShield"),
+                new PathMatchSet(new FilePathMatch("hc.dll"), "SolidShield"),
                 new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
                 new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };

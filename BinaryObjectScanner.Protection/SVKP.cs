@@ -1,9 +1,8 @@
-﻿using BinaryObjectScanner.Interfaces;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
+using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Wrappers;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -96,11 +95,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the SVKP 1.05-1.32 demos.
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}svkp.exe", useEndsWith: true), "SVKP"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}svkp.key", useEndsWith: true), "SVKP"),
+                new PathMatchSet(new FilePathMatch("svkp.exe"), "SVKP"),
+                new PathMatchSet(new FilePathMatch("svkp.key"), "SVKP"),
 
                 // Found in the SVKP 1.32 demo.
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}svkpnd.dll", useEndsWith: true), "SVKP"),
+                new PathMatchSet(new FilePathMatch("svkpnd.dll"), "SVKP"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -112,11 +111,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the SVKP 1.05-1.32 demos.
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}svkp.exe", useEndsWith: true), "SVKP"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}svkp.key", useEndsWith: true), "SVKP"),
+                new PathMatchSet(new FilePathMatch("svkp.exe"), "SVKP"),
+                new PathMatchSet(new FilePathMatch("svkp.key"), "SVKP"),
 
                 // Found in the SVKP 1.32 demo.
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}svkpnd.dll", useEndsWith: true), "SVKP"),
+                new PathMatchSet(new FilePathMatch("svkpnd.dll"), "SVKP"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

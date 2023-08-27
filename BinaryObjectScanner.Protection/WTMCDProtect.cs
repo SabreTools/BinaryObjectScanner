@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
@@ -58,8 +57,8 @@ namespace BinaryObjectScanner.Protection
             {
                 new PathMatchSet(new List<PathMatch>
                 {
-                    new PathMatch($"{Path.DirectorySeparatorChar}wtmfiles.dat", useEndsWith: true),
-                    new PathMatch($"{Path.DirectorySeparatorChar}Viewer.exe", useEndsWith: true),
+                    new FilePathMatch("wtmfiles.dat"),
+                    new FilePathMatch("Viewer.exe"),
                 }, "WTM Protection Viewer"),
             };
 
@@ -72,10 +71,10 @@ namespace BinaryObjectScanner.Protection
             // TODO: Add ImageX.imp as a wildcard, if possible
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}Image.imp", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}Image1.imp", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}imp.dat", useEndsWith: true), "WTM CD Protect"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}wtmfiles.dat", useEndsWith: true), "WTM Protection Viewer"),
+                new PathMatchSet(new FilePathMatch("Image.imp"), "WTM CD Protect"),
+                new PathMatchSet(new FilePathMatch("Image1.imp"), "WTM CD Protect"),
+                new PathMatchSet(new FilePathMatch("imp.dat"), "WTM CD Protect"),
+                new PathMatchSet(new FilePathMatch("wtmfiles.dat"), "WTM Protection Viewer"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

@@ -117,8 +117,8 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet($"LASERLOK{Path.DirectorySeparatorChar}", "LaserLok [Check disc for physical ring]"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}NOMOUSE.SP", useEndsWith: true), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}NOMOUSE.COM", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
                 new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
                 new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
                 new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
@@ -135,10 +135,10 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}NOMOUSE.SP", useEndsWith: true), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}NOMOUSE.COM", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new PathMatchSet(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
                 new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
                 new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
                 new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +7,6 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
-using System;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -252,7 +252,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
+                new PathMatchSet(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -264,7 +264,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}secdrv.sys", useEndsWith: true), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
+                new PathMatchSet(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

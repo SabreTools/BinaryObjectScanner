@@ -157,8 +157,8 @@ namespace BinaryObjectScanner.Protection
                 // Found in many versions of SafeDisc, beginning in 2.05.030 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("DPLAYERX.DLL"), GetSafeDiscDPlayerXVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("drvmgt.dll"), GetSafeDiscDrvmgtVersion, "SafeDisc"),
 
                 // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
                 // Each file appears to contain strings for a specific language each.
@@ -231,8 +231,8 @@ namespace BinaryObjectScanner.Protection
 
                 // TODO: Research "splash16.bmp" and "splash256.bmp".
 
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}DPLAYERX.DLL", useEndsWith: true), GetSafeDiscDPlayerXVersion, "SafeDisc"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}drvmgt.dll", useEndsWith: true), GetSafeDiscDrvmgtVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("DPLAYERX.DLL"), GetSafeDiscDPlayerXVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("drvmgt.dll"), GetSafeDiscDrvmgtVersion, "SafeDisc"),
 
                 // The SD0XXX.dll files appear to solely contain custom strings that allowed the publisher to customize the SafeDisc error messages. They are currently only known to be used by EA.
                 // Each file appears to contain strings for a specific language each.

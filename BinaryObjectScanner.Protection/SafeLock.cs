@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
@@ -26,7 +25,7 @@ namespace BinaryObjectScanner.Protection
             // Technically all need to exist but some might be renamed
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}SafeLock.DAT", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
@@ -41,7 +40,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}SafeLock.DAT", useEndsWith: true), "SafeLock"),
+                new PathMatchSet(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
                 new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),

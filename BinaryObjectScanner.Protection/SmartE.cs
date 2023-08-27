@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
@@ -36,8 +35,8 @@ namespace BinaryObjectScanner.Protection
             {
                 new PathMatchSet(new List<PathMatch>
                 {
-                    new PathMatch($"{Path.DirectorySeparatorChar}00001.TMP", useEndsWith: true),
-                    new PathMatch($"{Path.DirectorySeparatorChar}00002.TMP", useEndsWith: true)
+                    new FilePathMatch("00001.TMP"),
+                    new FilePathMatch("00002.TMP")
                  }, "SmartE"),
             };
 
@@ -49,8 +48,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}00001.TMP", useEndsWith: true), "SmartE"),
-                new PathMatchSet(new PathMatch($"{Path.DirectorySeparatorChar}00002.TMP", useEndsWith: true), "SmartE"),
+                new PathMatchSet(new FilePathMatch("00001.TMP"), "SmartE"),
+                new PathMatchSet(new FilePathMatch("00002.TMP"), "SmartE"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
