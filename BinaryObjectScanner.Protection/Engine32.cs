@@ -27,10 +27,10 @@ namespace BinaryObjectScanner.Protection
             // Most every tested sample of "engine32.dll" has a product name of "engine32", and the file description typically follows the naming pattern of "[Game Name] DLL-helper".
 
             // Detects Engine32 within the game executables that contain it.
-            if (pex.ImportTable?.ImportDirectoryTable != null)
+            if (pex.ImportTable?.ImportDirectoryTable != null && pex.ImportHintNameTable != null)
             {
                 bool importDirectoryTableMatch = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase) == true);
-                bool hintNameTableMatch = pex.ImportHintNameTable?.Any(ihne => ihne == "InitEngine") ?? false;
+                bool hintNameTableMatch = pex.ImportHintNameTable.Any(ihne => ihne == "InitEngine");
 
                 // The Hint/Name Table Entry "DeinitEngine" is present in every tested sample, aside from TOCA Race Driver 2 (Redump entries 104593-104596).
 
