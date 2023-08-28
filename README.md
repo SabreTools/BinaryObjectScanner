@@ -59,6 +59,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | DVD Crypt | False | True | Unconfirmed¹ |
 | EA Protections | True | False | Including EA CDKey and EA DRM. |
 | Easy Anti-Cheat | True | True | |
+| Engine32 | True | False | |
 | ~~Executable-Based CD Check~~ | True | False | Disabled due to overly-broad checks |
 | Executable-Based Online Registration | True | False | Possibly too broad |
 | Freelock | False | True | |
