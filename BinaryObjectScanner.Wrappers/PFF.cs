@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Segments
 
         /// <inheritdoc cref="Models.PFF.Archive.Segments"/>
-        public Models.PFF.Segment[] Segments => _archive.Segments;
+        public SabreTools.Models.PFF.Segment[] Segments => _archive.Segments;
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the archive
         /// </summary>
-        private Models.PFF.Archive _archive;
+        private SabreTools.Models.PFF.Archive _archive;
 
         #endregion
 

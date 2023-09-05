@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.N3DS;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.N3DS.Constants;
+using SabreTools.Models.N3DS;
+using static SabreTools.Models.N3DS.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

@@ -177,35 +177,35 @@ namespace BinaryObjectScanner.Wrappers
         #region File Descriptors
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptors"/>
-        public Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => _cabinet.FileDescriptors;
+        public SabreTools.Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => _cabinet.FileDescriptors;
 
         #endregion
 
         #region File Group Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroupOffsets"/>
-        public Dictionary<long, Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => _cabinet.FileGroupOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => _cabinet.FileGroupOffsets;
 
         #endregion
 
         #region File Groups
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroups"/>
-        public Models.InstallShieldCabinet.FileGroup[] FileGroups => _cabinet.FileGroups;
+        public SabreTools.Models.InstallShieldCabinet.FileGroup[] FileGroups => _cabinet.FileGroups;
 
         #endregion
 
         #region Component Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.ComponentOffsets"/>
-        public Dictionary<long, Models.InstallShieldCabinet.OffsetList> ComponentOffsets => _cabinet.ComponentOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> ComponentOffsets => _cabinet.ComponentOffsets;
 
         #endregion
 
         #region Components
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.Components"/>
-        public Models.InstallShieldCabinet.Component[] Components => _cabinet.Components;
+        public SabreTools.Models.InstallShieldCabinet.Component[] Components => _cabinet.Components;
 
         #endregion
 
@@ -243,7 +243,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the cabinet
         /// </summary>
-        private Models.InstallShieldCabinet.Cabinet _cabinet;
+        private SabreTools.Models.InstallShieldCabinet.Cabinet _cabinet;
 
         #endregion
 

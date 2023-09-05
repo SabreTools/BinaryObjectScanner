@@ -49,7 +49,7 @@ namespace BinaryObjectScanner.Wrappers
         public ushort FileCount => _cabinet.Header.FileCount;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
-        public Models.MicrosoftCabinet.HeaderFlags Flags => _cabinet.Header.Flags;
+        public SabreTools.Models.MicrosoftCabinet.HeaderFlags Flags => _cabinet.Header.Flags;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.SetID"/>
         public ushort SetID => _cabinet.Header.SetID;
@@ -86,14 +86,14 @@ namespace BinaryObjectScanner.Wrappers
         #region Folders
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Folders"/>
-        public Models.MicrosoftCabinet.CFFOLDER[] Folders => _cabinet.Folders;
+        public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => _cabinet.Folders;
 
         #endregion
 
         #region Files
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Files"/>
-        public Models.MicrosoftCabinet.CFFILE[] Files => _cabinet.Files;
+        public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => _cabinet.Files;
 
         #endregion
 
@@ -104,7 +104,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the cabinet
         /// </summary>
-        private Models.MicrosoftCabinet.Cabinet _cabinet;
+        private SabreTools.Models.MicrosoftCabinet.Cabinet _cabinet;
 
         #endregion
 
@@ -238,20 +238,20 @@ namespace BinaryObjectScanner.Wrappers
             foreach (var dataBlock in folder.DataBlocks)
             {
                 byte[] decompressed = new byte[dataBlock.UncompressedSize];
-                switch (folder.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
+                switch (folder.CompressionType & SabreTools.Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
                 {
-                    case Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
+                    case SabreTools.Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
                         decompressed = dataBlock.CompressedData;
                         break;
-                    case Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
-                        decompressed = new byte[Models.Compression.MSZIP.Constants.ZIPWSIZE];
+                    case SabreTools.Models.MicrosoftCabinet.CompressionType.TYPE_MSZIP:
+                        decompressed = new byte[SabreTools.Models.Compression.MSZIP.Constants.ZIPWSIZE];
                         Compression.MSZIP.Decompressor.Decompress(mszip, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
                         Array.Resize(ref decompressed, dataBlock.UncompressedSize);
                         break;
-                    case Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
+                    case SabreTools.Models.MicrosoftCabinet.CompressionType.TYPE_QUANTUM:
                         Compression.Quantum.Decompressor.Decompress(qtm, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
                         break;
-                    case Models.MicrosoftCabinet.CompressionType.TYPE_LZX:
+                    case SabreTools.Models.MicrosoftCabinet.CompressionType.TYPE_LZX:
                         Compression.LZX.Decompressor.Decompress(state: lzx, dataBlock.CompressedSize, dataBlock.CompressedData, dataBlock.UncompressedSize, decompressed);
                         break;
                     default:
@@ -443,7 +443,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Set ID: {SetID} (0x{SetID:X})");
             builder.AppendLine($"  Cabinet index: {CabinetIndex} (0x{CabinetIndex:X})");
 
-            if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.RESERVE_PRESENT))
+            if (Flags.HasFlag(SabreTools.Models.MicrosoftCabinet.HeaderFlags.RESERVE_PRESENT))
             {
                 builder.AppendLine($"  Header reserved size: {HeaderReservedSize} (0x{HeaderReservedSize:X})");
                 builder.AppendLine($"  Folder reserved size: {FolderReservedSize} (0x{FolderReservedSize:X})");
@@ -454,13 +454,13 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"  Reserved data = {BitConverter.ToString(ReservedData).Replace("-", " ")}");
             }
 
-            if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.PREV_CABINET))
+            if (Flags.HasFlag(SabreTools.Models.MicrosoftCabinet.HeaderFlags.PREV_CABINET))
             {
                 builder.AppendLine($"  Previous cabinet: {CabinetPrev}");
                 builder.AppendLine($"  Previous disk: {DiskPrev}");
             }
 
-            if (Flags.HasFlag(Models.MicrosoftCabinet.HeaderFlags.NEXT_CABINET))
+            if (Flags.HasFlag(SabreTools.Models.MicrosoftCabinet.HeaderFlags.NEXT_CABINET))
             {
                 builder.AppendLine($"  Next cabinet: {CabinetNext}");
                 builder.AppendLine($"  Next disk: {DiskNext}");
@@ -490,7 +490,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Cab start offset = {entry.CabStartOffset} (0x{entry.CabStartOffset:X})");
                     builder.AppendLine($"    Data count = {entry.DataCount} (0x{entry.DataCount:X})");
                     builder.AppendLine($"    Compression type = {entry.CompressionType} (0x{entry.CompressionType:X})");
-                    builder.AppendLine($"    Masked compression type = {entry.CompressionType & Models.MicrosoftCabinet.CompressionType.MASK_TYPE}");
+                    builder.AppendLine($"    Masked compression type = {entry.CompressionType & SabreTools.Models.MicrosoftCabinet.CompressionType.MASK_TYPE}");
                     if (entry.ReservedData == null)
                         builder.AppendLine($"    Reserved data = [NULL]");
                     else
@@ -507,7 +507,7 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         for (int j = 0; j < entry.DataBlocks.Length; j++)
                         {
-                            Models.MicrosoftCabinet.CFDATA dataBlock = entry.DataBlocks[j];
+                            SabreTools.Models.MicrosoftCabinet.CFDATA dataBlock = entry.DataBlocks[j];
                             builder.AppendLine($"    Data Block {j}");
                             builder.AppendLine($"      Checksum = {dataBlock.Checksum} (0x{dataBlock.Checksum:X})");
                             builder.AppendLine($"      Compressed size = {dataBlock.CompressedSize} (0x{dataBlock.CompressedSize:X})");

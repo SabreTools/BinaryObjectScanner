@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.PFF;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.PFF.Constants;
+using SabreTools.Models.PFF;
+using static SabreTools.Models.PFF.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

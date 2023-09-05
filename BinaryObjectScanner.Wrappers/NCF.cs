@@ -100,7 +100,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryEntries"/>
-        public Models.NCF.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public SabreTools.Models.NCF.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
 
         #endregion
 
@@ -114,28 +114,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Info 1 Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo1Entries"/>
-        public Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _file.DirectoryInfo1Entries;
+        public SabreTools.Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _file.DirectoryInfo1Entries;
 
         #endregion
 
         #region Directory Info 2 Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo2Entries"/>
-        public Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _file.DirectoryInfo2Entries;
+        public SabreTools.Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _file.DirectoryInfo2Entries;
 
         #endregion
 
         #region Directory Copy Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryCopyEntries"/>
-        public Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => _file.DirectoryCopyEntries;
+        public SabreTools.Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => _file.DirectoryCopyEntries;
 
         #endregion
 
         #region Directory Local Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryLocalEntries"/>
-        public Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => _file.DirectoryLocalEntries;
+        public SabreTools.Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => _file.DirectoryLocalEntries;
 
         #endregion
 
@@ -152,7 +152,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Entries
 
         /// <inheritdoc cref="Models.NCF.File.UnknownEntries"/>
-        public Models.NCF.UnknownEntry[] UnknownEntries => _file.UnknownEntries;
+        public SabreTools.Models.NCF.UnknownEntry[] UnknownEntries => _file.UnknownEntries;
 
         #endregion
 
@@ -185,14 +185,14 @@ namespace BinaryObjectScanner.Wrappers
         #region Checksum Map Entries
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumMapEntries"/>
-        public Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => _file.ChecksumMapEntries;
+        public SabreTools.Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => _file.ChecksumMapEntries;
 
         #endregion
 
         #region Checksum Entries
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumEntries"/>
-        public Models.NCF.ChecksumEntry[] ChecksumEntries => _file.ChecksumEntries;
+        public SabreTools.Models.NCF.ChecksumEntry[] ChecksumEntries => _file.ChecksumEntries;
 
         #endregion
 
@@ -203,7 +203,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the NCF
         /// </summary>
-        private Models.NCF.File _file;
+        private SabreTools.Models.NCF.File _file;
 
         #endregion
 

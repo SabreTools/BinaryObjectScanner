@@ -96,7 +96,7 @@ namespace BinaryObjectScanner.Wrappers
         #region COFF File Header
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Machine"/>
-        public Models.PortableExecutable.MachineType Machine => _executable.COFFFileHeader.Machine;
+        public SabreTools.Models.PortableExecutable.MachineType Machine => _executable.COFFFileHeader.Machine;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSections"/>
         public ushort NumberOfSections => _executable.COFFFileHeader.NumberOfSections;
@@ -114,7 +114,7 @@ namespace BinaryObjectScanner.Wrappers
         public uint SizeOfOptionalHeader => _executable.COFFFileHeader.SizeOfOptionalHeader;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Characteristics"/>
-        public Models.PortableExecutable.Characteristics Characteristics => _executable.COFFFileHeader.Characteristics;
+        public SabreTools.Models.PortableExecutable.Characteristics Characteristics => _executable.COFFFileHeader.Characteristics;
 
         #endregion
 
@@ -123,7 +123,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Machine"/>
-        public Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _executable.OptionalHeader.Magic;
+        public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _executable.OptionalHeader.Magic;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorLinkerVersion"/>
         public byte OH_MajorLinkerVersion => _executable.OptionalHeader.MajorLinkerVersion;
@@ -147,7 +147,7 @@ namespace BinaryObjectScanner.Wrappers
         public uint OH_BaseOfCode => _executable.OptionalHeader.BaseOfCode;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfData"/>
-        public uint? OH_BaseOfData => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public uint? OH_BaseOfData => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? (uint?)_executable.OptionalHeader.BaseOfData
             : null;
 
@@ -156,7 +156,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Windows-Specific Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImageBase_PE32"/>
-        public ulong OH_ImageBase => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_ImageBase => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.ImageBase_PE32
             : _executable.OptionalHeader.ImageBase_PE32Plus;
 
@@ -197,28 +197,28 @@ namespace BinaryObjectScanner.Wrappers
         public uint OH_CheckSum => _executable.OptionalHeader.CheckSum;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Subsystem"/>
-        public Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _executable.OptionalHeader.Subsystem;
+        public SabreTools.Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _executable.OptionalHeader.Subsystem;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DllCharacteristics"/>
-        public Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _executable.OptionalHeader.DllCharacteristics;
+        public SabreTools.Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _executable.OptionalHeader.DllCharacteristics;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackReserve_PE32"/>
-        public ulong OH_SizeOfStackReserve => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfStackReserve => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfStackReserve_PE32
             : _executable.OptionalHeader.SizeOfStackReserve_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackCommit_PE32"/>
-        public ulong OH_SizeOfStackCommit => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfStackCommit => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfStackCommit_PE32
             : _executable.OptionalHeader.SizeOfStackCommit_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapReserve_PE32"/>
-        public ulong OH_SizeOfHeapReserve => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfHeapReserve => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfHeapReserve_PE32
             : _executable.OptionalHeader.SizeOfHeapReserve_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapCommit_PE32"/>
-        public ulong OH_SizeOfHeapCommit => _executable.OptionalHeader.Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfHeapCommit => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _executable.OptionalHeader.SizeOfHeapCommit_PE32
             : _executable.OptionalHeader.SizeOfHeapCommit_PE32Plus;
 
@@ -233,49 +233,49 @@ namespace BinaryObjectScanner.Wrappers
         #region Data Directories
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExportTable"/>
-        public Models.PortableExecutable.DataDirectory OH_ExportTable => _executable.OptionalHeader.ExportTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExportTable => _executable.OptionalHeader.ExportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportTable"/>
-        public Models.PortableExecutable.DataDirectory OH_ImportTable => _executable.OptionalHeader.ImportTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportTable => _executable.OptionalHeader.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ResourceTable"/>
-        public Models.PortableExecutable.DataDirectory OH_ResourceTable => _executable.OptionalHeader.ResourceTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ResourceTable => _executable.OptionalHeader.ResourceTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExceptionTable"/>
-        public Models.PortableExecutable.DataDirectory OH_ExceptionTable => _executable.OptionalHeader.ExceptionTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExceptionTable => _executable.OptionalHeader.ExceptionTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CertificateTable"/>
-        public Models.PortableExecutable.DataDirectory OH_CertificateTable => _executable.OptionalHeader.CertificateTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_CertificateTable => _executable.OptionalHeader.CertificateTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseRelocationTable"/>
-        public Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _executable.OptionalHeader.BaseRelocationTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _executable.OptionalHeader.BaseRelocationTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Debug"/>
-        public Models.PortableExecutable.DataDirectory OH_Debug => _executable.OptionalHeader.Debug;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_Debug => _executable.OptionalHeader.Debug;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Architecture"/>
         public ulong OH_Architecture => _executable.OptionalHeader.Architecture;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.GlobalPtr"/>
-        public Models.PortableExecutable.DataDirectory OH_GlobalPtr => _executable.OptionalHeader.GlobalPtr;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_GlobalPtr => _executable.OptionalHeader.GlobalPtr;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ThreadLocalStorageTable"/>
-        public Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _executable.OptionalHeader.ThreadLocalStorageTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _executable.OptionalHeader.ThreadLocalStorageTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoadConfigTable"/>
-        public Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _executable.OptionalHeader.LoadConfigTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _executable.OptionalHeader.LoadConfigTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BoundImport"/>
-        public Models.PortableExecutable.DataDirectory OH_BoundImport => _executable.OptionalHeader.BoundImport;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_BoundImport => _executable.OptionalHeader.BoundImport;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportAddressTable"/>
-        public Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _executable.OptionalHeader.ImportAddressTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _executable.OptionalHeader.ImportAddressTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DelayImportDescriptor"/>
-        public Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _executable.OptionalHeader.DelayImportDescriptor;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _executable.OptionalHeader.DelayImportDescriptor;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CLRRuntimeHeader"/>
-        public Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _executable.OptionalHeader.CLRRuntimeHeader;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _executable.OptionalHeader.CLRRuntimeHeader;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Reserved"/>
         public ulong OH_Reserved => _executable.OptionalHeader.Reserved;
@@ -287,38 +287,38 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.PortableExecutable.SectionTable"/>
-        public Models.PortableExecutable.SectionHeader[] SectionTable => _executable.SectionTable;
+        public SabreTools.Models.PortableExecutable.SectionHeader[] SectionTable => _executable.SectionTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFSymbolTable"/>
-        public Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _executable.COFFSymbolTable;
+        public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _executable.COFFSymbolTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFStringTable"/>
-        public Models.PortableExecutable.COFFStringTable COFFStringTable => _executable.COFFStringTable;
+        public SabreTools.Models.PortableExecutable.COFFStringTable COFFStringTable => _executable.COFFStringTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.AttributeCertificateTable"/>
-        public Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _executable.AttributeCertificateTable;
+        public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _executable.AttributeCertificateTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.DelayLoadDirectoryTable"/>
-        public Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _executable.DelayLoadDirectoryTable;
+        public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _executable.DelayLoadDirectoryTable;
 
         #endregion
 
         #region Sections
 
         /// <inheritdoc cref="Models.PortableExecutable.BaseRelocationTable"/>
-        public Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _executable.BaseRelocationTable;
+        public SabreTools.Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _executable.BaseRelocationTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
-        public Models.PortableExecutable.DebugTable DebugTable => _executable.DebugTable;
+        public SabreTools.Models.PortableExecutable.DebugTable DebugTable => _executable.DebugTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable"/>
-        public Models.PortableExecutable.ExportTable ExportTable => _executable.ExportTable;
+        public SabreTools.Models.PortableExecutable.ExportTable ExportTable => _executable.ExportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable.ExportNameTable"/>
         public string[] ExportNameTable => _executable.ExportTable?.ExportNameTable?.Strings;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable"/>
-        public Models.PortableExecutable.ImportTable ImportTable => _executable.ImportTable;
+        public SabreTools.Models.PortableExecutable.ImportTable ImportTable => _executable.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
         public string[] ImportHintNameTable => _executable.ImportTable?.HintNameTable != null
@@ -326,7 +326,7 @@ namespace BinaryObjectScanner.Wrappers
             : null;
 
         /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
-        public Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _executable.ResourceDirectoryTable;
+        public SabreTools.Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _executable.ResourceDirectoryTable;
 
         #endregion
 
@@ -906,7 +906,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the executable
         /// </summary>
-        private Models.PortableExecutable.Executable _executable;
+        private SabreTools.Models.PortableExecutable.Executable _executable;
 
         /// <summary>
         /// Header padding data, if it exists
@@ -981,12 +981,12 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Cached version info data
         /// </summary>
-        private Models.PortableExecutable.VersionInfo _versionInfo = null;
+        private SabreTools.Models.PortableExecutable.VersionInfo _versionInfo = null;
 
         /// <summary>
         /// Cached assembly manifest data
         /// </summary>
-        private Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
+        private SabreTools.Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
 
         /// <summary>
         /// Lock object for reading from the source
@@ -1091,7 +1091,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Get the assembly manifest, if possible
         /// </summary>
         /// <returns>Assembly manifest object, null on error</returns>
-        private Models.PortableExecutable.AssemblyManifest GetAssemblyManifest()
+        private SabreTools.Models.PortableExecutable.AssemblyManifest GetAssemblyManifest()
         {
             // Use the cached data if possible
             if (_assemblyManifest != null)
@@ -1224,7 +1224,7 @@ namespace BinaryObjectScanner.Wrappers
                 builder.AppendLine($"  Size of uninitialized data: {OH_SizeOfUninitializedData} (0x{OH_SizeOfUninitializedData:X})");
                 builder.AppendLine($"  Address of entry point: {OH_AddressOfEntryPoint} (0x{OH_AddressOfEntryPoint:X})");
                 builder.AppendLine($"  Base of code: {OH_BaseOfCode} (0x{OH_BaseOfCode:X})");
-                if (OH_Magic == Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
+                if (OH_Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32)
                     builder.AppendLine($"  Base of data: {OH_BaseOfData} (0x{OH_BaseOfData:X})");
 
                 builder.AppendLine($"  Image base: {OH_ImageBase} (0x{OH_ImageBase:X})");
@@ -1446,36 +1446,36 @@ namespace BinaryObjectScanner.Wrappers
                         if (auxSymbolsRemaining == 0)
                             continue;
 
-                        if (entry.StorageClass == Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_EXTERNAL
-                        && entry.SymbolType == Models.PortableExecutable.SymbolType.IMAGE_SYM_TYPE_FUNC
+                        if (entry.StorageClass == SabreTools.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                        && entry.SymbolType == SabreTools.Models.PortableExecutable.SymbolType.IMAGE_SYM_TYPE_FUNC
                         && entry.SectionNumber > 0)
                         {
                             currentSymbolType = 1;
                         }
-                        else if (entry.StorageClass == Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_FUNCTION
+                        else if (entry.StorageClass == SabreTools.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_FUNCTION
                             && entry.ShortName != null
                             && ((entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x62 && entry.ShortName[2] == 0x66)  // .bf
                                 || (entry.ShortName[0] == 0x2E && entry.ShortName[1] == 0x65 && entry.ShortName[2] == 0x66))) // .ef
                         {
                             currentSymbolType = 2;
                         }
-                        else if (entry.StorageClass == Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_EXTERNAL
-                            && entry.SectionNumber == (ushort)Models.PortableExecutable.SectionNumber.IMAGE_SYM_UNDEFINED
+                        else if (entry.StorageClass == SabreTools.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_EXTERNAL
+                            && entry.SectionNumber == (ushort)SabreTools.Models.PortableExecutable.SectionNumber.IMAGE_SYM_UNDEFINED
                             && entry.Value == 0)
                         {
                             currentSymbolType = 3;
                         }
-                        else if (entry.StorageClass == Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_FILE)
+                        else if (entry.StorageClass == SabreTools.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_FILE)
                         {
                             // TODO: Symbol name should be ".file"
                             currentSymbolType = 4;
                         }
-                        else if (entry.StorageClass == Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_STATIC)
+                        else if (entry.StorageClass == SabreTools.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_STATIC)
                         {
                             // TODO: Should have the name of a section (like ".text")
                             currentSymbolType = 5;
                         }
-                        else if (entry.StorageClass == Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
+                        else if (entry.StorageClass == SabreTools.Models.PortableExecutable.StorageClass.IMAGE_SYM_CLASS_CLR_TOKEN)
                         {
                             currentSymbolType = 6;
                         }
@@ -1582,7 +1582,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Revision: {entry.Revision} (0x{entry.Revision:X})");
                     builder.AppendLine($"    Certificate type: {entry.CertificateType} (0x{entry.CertificateType:X})");
                     builder.AppendLine();
-                    if (entry.CertificateType == Models.PortableExecutable.WindowsCertificateType.WIN_CERT_TYPE_PKCS_SIGNED_DATA)
+                    if (entry.CertificateType == SabreTools.Models.PortableExecutable.WindowsCertificateType.WIN_CERT_TYPE_PKCS_SIGNED_DATA)
                     {
                         builder.AppendLine("    Certificate Data [Formatted]");
                         builder.AppendLine("    -------------------------");
@@ -2001,7 +2001,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Pretty print the resource directory table information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, int level, List<object> types, StringBuilder builder)
+        private static void PrintResourceDirectoryTable(SabreTools.Models.PortableExecutable.ResourceDirectoryTable table, int level, List<object> types, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2041,7 +2041,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Pretty print the resource directory entry information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types, StringBuilder builder)
+        private static void PrintResourceDirectoryEntry(SabreTools.Models.PortableExecutable.ResourceDirectoryEntry entry, int level, List<object> types, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2066,7 +2066,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Pretty print the resource data entry information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, int level, List<object> types, StringBuilder builder)
+        private static void PrintResourceDataEntry(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, List<object> types, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2082,69 +2082,69 @@ namespace BinaryObjectScanner.Wrappers
             // TODO: Print out per-type data
             if (types != null && types.Count > 0 && types[0] is uint resourceType)
             {
-                switch ((Models.PortableExecutable.ResourceType)resourceType)
+                switch ((SabreTools.Models.PortableExecutable.ResourceType)resourceType)
                 {
-                    case Models.PortableExecutable.ResourceType.RT_CURSOR:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_CURSOR:
                         PrintResourceRT_CURSOR(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_BITMAP:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_BITMAP:
                         PrintResourceRT_BITMAP(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_ICON:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_ICON:
                         PrintResourceRT_ICON(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_MENU:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_MENU:
                         PrintResourceRT_MENU(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_DIALOG:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_DIALOG:
                         PrintResourceRT_DIALOG(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_STRING:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_STRING:
                         PrintResourceRT_STRING(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_FONTDIR:
                         PrintResourceRT_FONTDIR(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_FONT:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_FONT:
                         PrintResourceRT_FONT(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
                         PrintResourceRT_ACCELERATOR(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_RCDATA:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_RCDATA:
                         PrintResourceRT_RCDATA(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
                         PrintResourceRT_MESSAGETABLE(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
                         PrintResourceRT_GROUP_CURSOR(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
                         PrintResourceRT_GROUP_ICON(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_VERSION:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_VERSION:
                         PrintResourceRT_VERSION(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
                         PrintResourceRT_DLGINCLUDE(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
                         PrintResourceRT_PLUGPLAY(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_VXD:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_VXD:
                         PrintResourceRT_VXD(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_ANICURSOR:
                         PrintResourceRT_ANICURSOR(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_ANIICON:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_ANIICON:
                         PrintResourceRT_ANIICON(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_HTML:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_HTML:
                         PrintResourceRT_HTML(entry, level, builder);
                         break;
-                    case Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                    case SabreTools.Models.PortableExecutable.ResourceType.RT_MANIFEST:
                         PrintResourceRT_MANIFEST(entry, level, builder);
                         break;
                     default:
@@ -2164,7 +2164,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_CURSOR resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_CURSOR(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Hardware-dependent cursor resource found, not parsed yet");
@@ -2174,7 +2174,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_BITMAP resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_BITMAP(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_BITMAP(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Bitmap resource found, not parsed yet");
@@ -2184,7 +2184,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_ICON resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_ICON(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Hardware-dependent icon resource found, not parsed yet");
@@ -2194,11 +2194,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_MENU resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_MENU(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_MENU(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Models.PortableExecutable.MenuResource menu = null;
+            SabreTools.Models.PortableExecutable.MenuResource menu = null;
             try { menu = entry.AsMenu(); } catch { }
             if (menu == null)
             {
@@ -2277,11 +2277,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_DIALOG resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_DIALOG(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_DIALOG(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Models.PortableExecutable.DialogBoxResource dialogBox = null;
+            SabreTools.Models.PortableExecutable.DialogBoxResource dialogBox = null;
             try { dialogBox = entry.AsDialogBox(); } catch { }
             if (dialogBox == null)
             {
@@ -2406,7 +2406,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_STRING resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_STRING(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_STRING(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
@@ -2430,7 +2430,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_FONTDIR resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_FONTDIR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_FONTDIR(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Font directory resource found, not parsed yet");
@@ -2440,7 +2440,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_FONT resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_FONT(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_FONT(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Font resource found, not parsed yet");
@@ -2450,11 +2450,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_ACCELERATOR resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_ACCELERATOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_ACCELERATOR(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Models.PortableExecutable.AcceleratorTableEntry[] acceleratorTable = null;
+            SabreTools.Models.PortableExecutable.AcceleratorTableEntry[] acceleratorTable = null;
             try { acceleratorTable = entry.AsAcceleratorTableResource(); } catch { }
             if (acceleratorTable == null)
             {
@@ -2477,7 +2477,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_RCDATA resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_RCDATA(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_RCDATA(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Application-defined resource found, not parsed yet");
@@ -2520,11 +2520,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_MESSAGETABLE resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_MESSAGETABLE(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_MESSAGETABLE(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Models.PortableExecutable.MessageResourceData messageTable = null;
+            SabreTools.Models.PortableExecutable.MessageResourceData messageTable = null;
             try { messageTable = entry.AsMessageResourceData(); } catch { }
             if (messageTable == null)
             {
@@ -2582,7 +2582,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_GROUP_CURSOR resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_GROUP_CURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_GROUP_CURSOR(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Hardware-independent cursor resource found, not parsed yet");
@@ -2592,7 +2592,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_GROUP_ICON resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_GROUP_ICON(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_GROUP_ICON(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Hardware-independent icon resource found, not parsed yet");
@@ -2602,11 +2602,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_VERSION resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_VERSION(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_VERSION(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Models.PortableExecutable.VersionInfo versionInfo = null;
+            SabreTools.Models.PortableExecutable.VersionInfo versionInfo = null;
             try { versionInfo = entry.AsVersionInfo(); } catch { }
             if (versionInfo == null)
             {
@@ -2712,7 +2712,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_DLGINCLUDE resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_DLGINCLUDE(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_DLGINCLUDE(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}External header resource found, not parsed yet");
@@ -2722,7 +2722,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_PLUGPLAY resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_PLUGPLAY(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_PLUGPLAY(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Plug and Play resource found, not parsed yet");
@@ -2732,7 +2732,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_VXD resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_VXD(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_VXD(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}VXD found, not parsed yet");
@@ -2742,7 +2742,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_ANICURSOR resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_ANICURSOR(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_ANICURSOR(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Animated cursor found, not parsed yet");
@@ -2752,7 +2752,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_ANIICON resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_ANIICON(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_ANIICON(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}Animated icon found, not parsed yet");
@@ -2762,7 +2762,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_HTML resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_HTML(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_HTML(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
             builder.AppendLine($"{padding}HTML resource found, not parsed yet");
@@ -2779,11 +2779,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an RT_MANIFEST resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceRT_MANIFEST(Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
+        private static void PrintResourceRT_MANIFEST(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
-            Models.PortableExecutable.AssemblyManifest assemblyManifest = null;
+            SabreTools.Models.PortableExecutable.AssemblyManifest assemblyManifest = null;
             try { assemblyManifest = entry.AsAssemblyManifest(); } catch { }
             if (assemblyManifest == null)
             {
@@ -2946,13 +2946,13 @@ namespace BinaryObjectScanner.Wrappers
         /// Print an UNKNOWN or custom resource
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private static void PrintResourceUNKNOWN(Models.PortableExecutable.ResourceDataEntry entry, int level, object resourceType, StringBuilder builder)
+        private static void PrintResourceUNKNOWN(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, int level, object resourceType, StringBuilder builder)
         {
             string padding = new string(' ', (level + 1) * 2);
 
             // Print the type first
             if (resourceType is uint numericType)
-                builder.AppendLine($"{padding}Type {(Models.PortableExecutable.ResourceType)numericType} found, not parsed yet");
+                builder.AppendLine($"{padding}Type {(SabreTools.Models.PortableExecutable.ResourceType)numericType} found, not parsed yet");
             else if (resourceType is string stringType)
                 builder.AppendLine($"{padding}Type {stringType} found, not parsed yet");
             else
@@ -3015,13 +3015,13 @@ namespace BinaryObjectScanner.Wrappers
                 return Enumerable.Empty<object>();
 
             var nb10Found = DebugData.Select(r => r.Value)
-                .Select(r => r as Models.PortableExecutable.NB10ProgramDatabase)
+                .Select(r => r as SabreTools.Models.PortableExecutable.NB10ProgramDatabase)
                 .Where(n => n != null)
                 .Where(n => n.PdbFileName.Contains(path))
                 .Select(n => (object)n);
 
             var rsdsFound = DebugData.Select(r => r.Value)
-                .Select(r => r as Models.PortableExecutable.RSDSProgramDatabase)
+                .Select(r => r as SabreTools.Models.PortableExecutable.RSDSProgramDatabase)
                 .Where(r => r != null)
                 .Where(r => r.PathAndFileName.Contains(path))
                 .Select(r => (object)r);
@@ -3095,7 +3095,7 @@ namespace BinaryObjectScanner.Wrappers
                     continue;
 
                 // If we have CodeView debug data, try to parse it
-                if (entry.DebugType == Models.PortableExecutable.DebugType.IMAGE_DEBUG_TYPE_CODEVIEW)
+                if (entry.DebugType == SabreTools.Models.PortableExecutable.DebugType.IMAGE_DEBUG_TYPE_CODEVIEW)
                 {
                     // Read the signature
                     int offset = 0;
@@ -3142,14 +3142,14 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="title">Dialog box title to check for</param>
         /// <returns>Enumerable of matching resources</returns>
-        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
+        public IEnumerable<SabreTools.Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
-                return Enumerable.Empty<Models.PortableExecutable.DialogBoxResource>();
+                return Enumerable.Empty<SabreTools.Models.PortableExecutable.DialogBoxResource>();
 
             return ResourceData.Select(r => r.Value)
-                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
+                .Select(r => r as SabreTools.Models.PortableExecutable.DialogBoxResource)
                 .Where(d => d != null)
                 .Where(d =>
                 {
@@ -3163,14 +3163,14 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="title">Dialog box item title to check for</param>
         /// <returns>Enumerable of matching resources</returns>
-        public IEnumerable<Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
+        public IEnumerable<SabreTools.Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
-                return Enumerable.Empty<Models.PortableExecutable.DialogBoxResource>();
+                return Enumerable.Empty<SabreTools.Models.PortableExecutable.DialogBoxResource>();
 
             return ResourceData.Select(r => r.Value)
-                .Select(r => r as Models.PortableExecutable.DialogBoxResource)
+                .Select(r => r as SabreTools.Models.PortableExecutable.DialogBoxResource)
                 .Where(d => d != null)
                 .Where(d =>
                 {
@@ -3276,7 +3276,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Parse the resource directory table information
         /// </summary>
-        private void ParseResourceDirectoryTable(Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
+        private void ParseResourceDirectoryTable(SabreTools.Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
         {
             int totalEntries = table?.Entries?.Length ?? 0;
             for (int i = 0; i < totalEntries; i++)
@@ -3296,7 +3296,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Parse the name resource directory entry information
         /// </summary>
-        private void ParseResourceDirectoryEntry(Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
+        private void ParseResourceDirectoryEntry(SabreTools.Models.PortableExecutable.ResourceDirectoryEntry entry, List<object> types)
         {
             if (entry.DataEntry != null)
                 ParseResourceDataEntry(entry.DataEntry, types);
@@ -3312,7 +3312,7 @@ namespace BinaryObjectScanner.Wrappers
         /// of those resources in the entire exectuable. This means that only the last found version or manifest will
         /// ever be cached.
         /// </remarks>
-        private void ParseResourceDataEntry(Models.PortableExecutable.ResourceDataEntry entry, List<object> types)
+        private void ParseResourceDataEntry(SabreTools.Models.PortableExecutable.ResourceDataEntry entry, List<object> types)
         {
             // Create the key and value objects
             string key = types == null ? $"UNKNOWN_{Guid.NewGuid()}" : string.Join(", ", types);
@@ -3323,70 +3323,70 @@ namespace BinaryObjectScanner.Wrappers
             {
                 try
                 {
-                    switch ((Models.PortableExecutable.ResourceType)resourceType)
+                    switch ((SabreTools.Models.PortableExecutable.ResourceType)resourceType)
                     {
-                        case Models.PortableExecutable.ResourceType.RT_CURSOR:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_CURSOR:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_BITMAP:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_BITMAP:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_ICON:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_ICON:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_MENU:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_MENU:
                             value = entry.AsMenu();
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_DIALOG:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_DIALOG:
                             value = entry.AsDialogBox();
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_STRING:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_STRING:
                             value = entry.AsStringTable();
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_FONTDIR:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_FONTDIR:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_FONT:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_FONT:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_ACCELERATOR:
                             value = entry.AsAcceleratorTableResource();
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_RCDATA:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_RCDATA:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_MESSAGETABLE:
                             value = entry.AsMessageResourceData();
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_GROUP_CURSOR:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_GROUP_ICON:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_VERSION:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_VERSION:
                             _versionInfo = entry.AsVersionInfo();
                             value = _versionInfo;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_DLGINCLUDE:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_PLUGPLAY:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_VXD:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_VXD:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_ANICURSOR:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_ANICURSOR:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_ANIICON:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_ANIICON:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_HTML:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_HTML:
                             value = entry.Data;
                             break;
-                        case Models.PortableExecutable.ResourceType.RT_MANIFEST:
+                        case SabreTools.Models.PortableExecutable.ResourceType.RT_MANIFEST:
                             _assemblyManifest = entry.AsAssemblyManifest();
                             value = _versionInfo;
                             break;
@@ -3457,7 +3457,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
-        public Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
+        public SabreTools.Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())
@@ -3482,7 +3482,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
-        public Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
+        public SabreTools.Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())
@@ -3506,7 +3506,7 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the section to check for</param>
         /// <returns>Section data on success, null on error</returns>
-        public Models.PortableExecutable.SectionHeader GetSection(int index)
+        public SabreTools.Models.PortableExecutable.SectionHeader GetSection(int index)
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())

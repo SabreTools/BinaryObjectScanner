@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Wrappers
         public uint CrcChecksum => _executable.Header.CrcChecksum;
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.FlagWord"/>
-        public Models.NewExecutable.HeaderFlag FlagWord => _executable.Header.FlagWord;
+        public SabreTools.Models.NewExecutable.HeaderFlag FlagWord => _executable.Header.FlagWord;
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.AutomaticDataSegmentNumber"/>
         public ushort AutomaticDataSegmentNumber => _executable.Header.AutomaticDataSegmentNumber;
@@ -161,10 +161,10 @@ namespace BinaryObjectScanner.Wrappers
         public ushort ResourceEntriesCount => _executable.Header.ResourceEntriesCount;
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.TargetOperatingSystem"/>
-        public Models.NewExecutable.OperatingSystem TargetOperatingSystem => _executable.Header.TargetOperatingSystem;
+        public SabreTools.Models.NewExecutable.OperatingSystem TargetOperatingSystem => _executable.Header.TargetOperatingSystem;
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.AdditionalFlags"/>
-        public Models.NewExecutable.OS2Flag AdditionalFlags => _executable.Header.AdditionalFlags;
+        public SabreTools.Models.NewExecutable.OS2Flag AdditionalFlags => _executable.Header.AdditionalFlags;
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ReturnThunkOffset"/>
         public ushort ReturnThunkOffset => _executable.Header.ReturnThunkOffset;
@@ -186,25 +186,25 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.NewExecutable.SegmentTable"/>
-        public Models.NewExecutable.SegmentTableEntry[] SegmentTable => _executable.SegmentTable;
+        public SabreTools.Models.NewExecutable.SegmentTableEntry[] SegmentTable => _executable.SegmentTable;
 
         /// <inheritdoc cref="Models.NewExecutable.ResourceTable"/>
-        public Models.NewExecutable.ResourceTable ResourceTable => _executable.ResourceTable;
+        public SabreTools.Models.NewExecutable.ResourceTable ResourceTable => _executable.ResourceTable;
 
         /// <inheritdoc cref="Models.NewExecutable.ResidentNameTable"/>
-        public Models.NewExecutable.ResidentNameTableEntry[] ResidentNameTable => _executable.ResidentNameTable;
+        public SabreTools.Models.NewExecutable.ResidentNameTableEntry[] ResidentNameTable => _executable.ResidentNameTable;
 
         /// <inheritdoc cref="Models.NewExecutable.ModuleReferenceTable"/>
-        public Models.NewExecutable.ModuleReferenceTableEntry[] ModuleReferenceTable => _executable.ModuleReferenceTable;
+        public SabreTools.Models.NewExecutable.ModuleReferenceTableEntry[] ModuleReferenceTable => _executable.ModuleReferenceTable;
 
         /// <inheritdoc cref="Models.NewExecutable.ImportedNameTable"/>
-        public Dictionary<ushort, Models.NewExecutable.ImportedNameTableEntry> ImportedNameTable => _executable.ImportedNameTable;
+        public Dictionary<ushort, SabreTools.Models.NewExecutable.ImportedNameTableEntry> ImportedNameTable => _executable.ImportedNameTable;
 
         /// <inheritdoc cref="Models.NewExecutable.EntryTable"/>
-        public Models.NewExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
+        public SabreTools.Models.NewExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
 
         /// <inheritdoc cref="Models.NewExecutable.NonResidentNameTable"/>
-        public Models.NewExecutable.NonResidentNameTableEntry[] NonResidentNameTable => _executable.NonResidentNameTable;
+        public SabreTools.Models.NewExecutable.NonResidentNameTableEntry[] NonResidentNameTable => _executable.NonResidentNameTable;
 
         #endregion
 
@@ -221,7 +221,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the executable
         /// </summary>
-        private Models.NewExecutable.Executable _executable;
+        private SabreTools.Models.NewExecutable.Executable _executable;
 
         #endregion
 
@@ -577,11 +577,11 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Segment indicator: {entry.SegmentIndicator} (0x{entry.SegmentIndicator:X}) ({entry.GetEntryType()})");
                     switch (entry.GetEntryType())
                     {
-                        case Models.NewExecutable.SegmentEntryType.FixedSegment:
+                        case SabreTools.Models.NewExecutable.SegmentEntryType.FixedSegment:
                             builder.AppendLine($"    Flag word: {entry.FixedFlagWord} (0x{entry.FixedFlagWord:X})");
                             builder.AppendLine($"    Offset: {entry.FixedOffset} (0x{entry.FixedOffset:X})");
                             break;
-                        case Models.NewExecutable.SegmentEntryType.MoveableSegment:
+                        case SabreTools.Models.NewExecutable.SegmentEntryType.MoveableSegment:
                             builder.AppendLine($"    Flag word: {entry.MoveableFlagWord} (0x{entry.MoveableFlagWord:X})");
                             builder.AppendLine($"    Reserved: {entry.MoveableReserved} (0x{entry.MoveableReserved:X})");
                             builder.AppendLine($"    Segment number: {entry.MoveableSegmentNumber} (0x{entry.MoveableSegmentNumber:X})");

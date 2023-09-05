@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using static BinaryObjectScanner.Models.BSP.Constants;
+using static SabreTools.Models.BSP.Constants;
 
 namespace BinaryObjectScanner.Wrappers
 {
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Lumps
 
         /// <inheritdoc cref="Models.BSP.File.Lumps"/>
-        public Models.BSP.Lump[] Lumps => _file.Lumps;
+        public SabreTools.Models.BSP.Lump[] Lumps => _file.Lumps;
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Textures
 
         /// <inheritdoc cref="Models.BSP.File.Textures"/>
-        public Models.BSP.Texture[] Textures => _file.Textures;
+        public SabreTools.Models.BSP.Texture[] Textures => _file.Textures;
 
         #endregion
 
@@ -55,7 +55,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the BSP
         /// </summary>
-        private Models.BSP.File _file;
+        private SabreTools.Models.BSP.File _file;
 
         #endregion
 
@@ -410,14 +410,14 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="texture">Texture object to format</param>
         /// <returns>Byte array representing the texture as a bitmap</returns>
-        private static byte[] CreateTextureData(Models.BSP.Texture texture)
+        private static byte[] CreateTextureData(SabreTools.Models.BSP.Texture texture)
         {
             // If there's no texture data
             if (texture.TextureData == null || texture.TextureData.Length == 0)
                 return null;
 
             // Create the bitmap file header
-            var fileHeader = new Models.BMP.BITMAPFILEHEADER()
+            var fileHeader = new SabreTools.Models.BMP.BITMAPFILEHEADER()
             {
                 Type = ('M' << 8) | 'B',
                 Size = 14 + 40 + (texture.PaletteSize * 4) + (texture.Width * texture.Height),
@@ -425,7 +425,7 @@ namespace BinaryObjectScanner.Wrappers
             };
 
             // Create the bitmap info header
-            var infoHeader = new Models.BMP.BITMAPINFOHEADER
+            var infoHeader = new SabreTools.Models.BMP.BITMAPINFOHEADER
             {
                 Size = 40,
                 Width = (int)texture.Width,

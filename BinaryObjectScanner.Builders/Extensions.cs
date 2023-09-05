@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource type information entry to check</param>
         /// <returns>True if the entry is an integer type, false if an offset, null on error</returns>
-        public static bool? IsIntegerType(this Models.NewExecutable.ResourceTypeInformationEntry entry)
+        public static bool? IsIntegerType(this SabreTools.Models.NewExecutable.ResourceTypeInformationEntry entry)
         {
             // We can't do anything with an invalid entry
             if (entry == null)
@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource type resource entry to check</param>
         /// <returns>True if the entry is an integer type, false if an offset, null on error</returns>
-        public static bool? IsIntegerType(this Models.NewExecutable.ResourceTypeResourceEntry entry)
+        public static bool? IsIntegerType(this SabreTools.Models.NewExecutable.ResourceTypeResourceEntry entry)
         {
             // We can't do anything with an invalid entry
             if (entry == null)
@@ -47,22 +47,22 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Entry table bundle to check</param>
         /// <returns>SegmentEntryType corresponding to the type</returns>
-        public static Models.NewExecutable.SegmentEntryType GetEntryType(this Models.NewExecutable.EntryTableBundle entry)
+        public static SabreTools.Models.NewExecutable.SegmentEntryType GetEntryType(this SabreTools.Models.NewExecutable.EntryTableBundle entry)
         {
             // We can't do anything with an invalid entry
             if (entry == null)
-                return Models.NewExecutable.SegmentEntryType.Unused;
+                return SabreTools.Models.NewExecutable.SegmentEntryType.Unused;
 
             // Determine the entry type based on segment indicator
             if (entry.SegmentIndicator == 0x00)
-                return Models.NewExecutable.SegmentEntryType.Unused;
+                return SabreTools.Models.NewExecutable.SegmentEntryType.Unused;
             else if (entry.SegmentIndicator >= 0x01 && entry.SegmentIndicator <= 0xFE)
-                return Models.NewExecutable.SegmentEntryType.FixedSegment;
+                return SabreTools.Models.NewExecutable.SegmentEntryType.FixedSegment;
             else if (entry.SegmentIndicator == 0xFF)
-                return Models.NewExecutable.SegmentEntryType.MoveableSegment;
+                return SabreTools.Models.NewExecutable.SegmentEntryType.MoveableSegment;
 
             // We should never get here
-            return Models.NewExecutable.SegmentEntryType.Unused;
+            return SabreTools.Models.NewExecutable.SegmentEntryType.Unused;
         }
 
         #endregion
@@ -75,7 +75,7 @@ namespace BinaryObjectScanner.Builders
         /// <param name="rva">Relative virtual address to convert</param>
         /// <param name="sections">Array of sections to check against</param>
         /// <returns>Physical address, 0 on error</returns>
-        public static uint ConvertVirtualAddress(this uint rva, Models.PortableExecutable.SectionHeader[] sections)
+        public static uint ConvertVirtualAddress(this uint rva, SabreTools.Models.PortableExecutable.SectionHeader[] sections)
         {
             // If we have an invalid section table, we can't do anything
             if (sections == null || sections.Length == 0)
@@ -118,7 +118,7 @@ namespace BinaryObjectScanner.Builders
         /// <param name="rva">Relative virtual address to convert</param>
         /// <param name="sections">Array of sections to check against</param>
         /// <returns>Section index, null on error</returns>
-        public static int ContainingSectionIndex(this uint rva, Models.PortableExecutable.SectionHeader[] sections)
+        public static int ContainingSectionIndex(this uint rva, SabreTools.Models.PortableExecutable.SectionHeader[] sections)
         {
             // If we have an invalid section table, we can't do anything
             if (sections == null || sections.Length == 0)
@@ -156,14 +156,14 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Data to parse into overlay data</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled SecuROM AddD overlay data on success, null on error</returns>
-        public static Models.PortableExecutable.SecuROMAddD AsSecuROMAddD(this byte[] data, ref int offset)
+        public static SabreTools.Models.PortableExecutable.SecuROMAddD AsSecuROMAddD(this byte[] data, ref int offset)
         {
             // If we have data that's invalid, we can't do anything
             if (data == null)
                 return null;
 
             // Read in the table
-            var addD = new Models.PortableExecutable.SecuROMAddD();
+            var addD = new SabreTools.Models.PortableExecutable.SecuROMAddD();
 
             addD.Signature = data.ReadUInt32(ref offset);
             if (addD.Signature != 0x44646441)
@@ -189,10 +189,10 @@ namespace BinaryObjectScanner.Builders
 
             addD.Unknown14h = data.ReadBytes(ref offset, bytesToRead);
 
-            addD.Entries = new Models.PortableExecutable.SecuROMAddDEntry[addD.EntryCount];
+            addD.Entries = new SabreTools.Models.PortableExecutable.SecuROMAddDEntry[addD.EntryCount];
             for (int i = 0; i < addD.EntryCount; i++)
             {
-                var addDEntry = new Models.PortableExecutable.SecuROMAddDEntry();
+                var addDEntry = new SabreTools.Models.PortableExecutable.SecuROMAddDEntry();
 
                 addDEntry.PhysicalOffset = data.ReadUInt32(ref offset);
                 addDEntry.Length = data.ReadUInt32(ref offset);
@@ -219,13 +219,13 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Data to parse into a database</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled NB10 Program Database on success, null on error</returns>
-        public static Models.PortableExecutable.NB10ProgramDatabase AsNB10ProgramDatabase(this byte[] data, ref int offset)
+        public static SabreTools.Models.PortableExecutable.NB10ProgramDatabase AsNB10ProgramDatabase(this byte[] data, ref int offset)
         {
             // If we have data that's invalid, we can't do anything
             if (data == null)
                 return null;
 
-            var nb10ProgramDatabase = new Models.PortableExecutable.NB10ProgramDatabase();
+            var nb10ProgramDatabase = new SabreTools.Models.PortableExecutable.NB10ProgramDatabase();
 
             nb10ProgramDatabase.Signature = data.ReadUInt32(ref offset);
             if (nb10ProgramDatabase.Signature != 0x3031424E)
@@ -245,13 +245,13 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Data to parse into a database</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled RSDS Program Database on success, null on error</returns>
-        public static Models.PortableExecutable.RSDSProgramDatabase AsRSDSProgramDatabase(this byte[] data, ref int offset)
+        public static SabreTools.Models.PortableExecutable.RSDSProgramDatabase AsRSDSProgramDatabase(this byte[] data, ref int offset)
         {
             // If we have data that's invalid, we can't do anything
             if (data == null)
                 return null;
 
-            var rsdsProgramDatabase = new Models.PortableExecutable.RSDSProgramDatabase();
+            var rsdsProgramDatabase = new SabreTools.Models.PortableExecutable.RSDSProgramDatabase();
 
             rsdsProgramDatabase.Signature = data.ReadUInt32(ref offset);
             if (rsdsProgramDatabase.Signature != 0x53445352)
@@ -275,20 +275,20 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Data to parse into a resource header</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled resource header on success, null on error</returns>
-        public static Models.PortableExecutable.ResourceHeader AsResourceHeader(this byte[] data, ref int offset)
+        public static SabreTools.Models.PortableExecutable.ResourceHeader AsResourceHeader(this byte[] data, ref int offset)
         {
             // If we have data that's invalid, we can't do anything
             if (data == null)
                 return null;
 
             // Read in the table
-            var header = new Models.PortableExecutable.ResourceHeader();
+            var header = new SabreTools.Models.PortableExecutable.ResourceHeader();
             header.DataSize = data.ReadUInt32(ref offset);
             header.HeaderSize = data.ReadUInt32(ref offset);
-            header.ResourceType = (Models.PortableExecutable.ResourceType)data.ReadUInt32(ref offset); // TODO: Could be a string too
+            header.ResourceType = (SabreTools.Models.PortableExecutable.ResourceType)data.ReadUInt32(ref offset); // TODO: Could be a string too
             header.Name = data.ReadUInt32(ref offset); // TODO: Could be a string too
             header.DataVersion = data.ReadUInt32(ref offset);
-            header.MemoryFlags = (Models.PortableExecutable.MemoryFlags)data.ReadUInt16(ref offset);
+            header.MemoryFlags = (SabreTools.Models.PortableExecutable.MemoryFlags)data.ReadUInt16(ref offset);
             header.LanguageId = data.ReadUInt16(ref offset);
             header.Version = data.ReadUInt32(ref offset);
             header.Characteristics = data.ReadUInt32(ref offset);
@@ -301,7 +301,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into an accelerator table resource</param>
         /// <returns>A filled accelerator table resource on success, null on error</returns>
-        public static Models.PortableExecutable.AcceleratorTableEntry[] AsAcceleratorTableResource(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.AcceleratorTableEntry[] AsAcceleratorTableResource(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have data that's invalid for this resource type, we can't do anything
             if (entry?.Data == null || entry.Data.Length % 8 != 0)
@@ -314,14 +314,14 @@ namespace BinaryObjectScanner.Builders
             int offset = 0;
 
             // Create the output object
-            var table = new Models.PortableExecutable.AcceleratorTableEntry[count];
+            var table = new SabreTools.Models.PortableExecutable.AcceleratorTableEntry[count];
 
             // Read in the table
             for (int i = 0; i < count; i++)
             {
-                var acceleratorTableEntry = new Models.PortableExecutable.AcceleratorTableEntry();
+                var acceleratorTableEntry = new SabreTools.Models.PortableExecutable.AcceleratorTableEntry();
 
-                acceleratorTableEntry.Flags = (Models.PortableExecutable.AcceleratorTableFlags)entry.Data.ReadUInt16(ref offset);
+                acceleratorTableEntry.Flags = (SabreTools.Models.PortableExecutable.AcceleratorTableFlags)entry.Data.ReadUInt16(ref offset);
                 acceleratorTableEntry.Ansi = entry.Data.ReadUInt16(ref offset);
                 acceleratorTableEntry.Id = entry.Data.ReadUInt16(ref offset);
                 acceleratorTableEntry.Padding = entry.Data.ReadUInt16(ref offset);
@@ -337,7 +337,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a side-by-side assembly manifest</param>
         /// <returns>A filled side-by-side assembly manifest on success, null on error</returns>
-        public static Models.PortableExecutable.AssemblyManifest AsAssemblyManifest(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.AssemblyManifest AsAssemblyManifest(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -345,8 +345,8 @@ namespace BinaryObjectScanner.Builders
 
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Models.PortableExecutable.AssemblyManifest));
-                return serializer.Deserialize(new MemoryStream(entry.Data)) as Models.PortableExecutable.AssemblyManifest;
+                XmlSerializer serializer = new XmlSerializer(typeof(SabreTools.Models.PortableExecutable.AssemblyManifest));
+                return serializer.Deserialize(new MemoryStream(entry.Data)) as SabreTools.Models.PortableExecutable.AssemblyManifest;
             }
             catch
             {
@@ -359,7 +359,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a dialog box</param>
         /// <returns>A filled dialog box on success, null on error</returns>
-        public static Models.PortableExecutable.DialogBoxResource AsDialogBox(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.DialogBoxResource AsDialogBox(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -369,7 +369,7 @@ namespace BinaryObjectScanner.Builders
             int offset = 0;
 
             // Create the output object
-            var dialogBoxResource = new Models.PortableExecutable.DialogBoxResource();
+            var dialogBoxResource = new SabreTools.Models.PortableExecutable.DialogBoxResource();
 
             // Try to read the signature for an extended dialog box template
             int signatureOffset = sizeof(ushort);
@@ -378,13 +378,13 @@ namespace BinaryObjectScanner.Builders
             {
                 #region Extended dialog template
 
-                var dialogTemplateExtended = new Models.PortableExecutable.DialogTemplateExtended();
+                var dialogTemplateExtended = new SabreTools.Models.PortableExecutable.DialogTemplateExtended();
 
                 dialogTemplateExtended.Version = entry.Data.ReadUInt16(ref offset);
                 dialogTemplateExtended.Signature = entry.Data.ReadUInt16(ref offset);
                 dialogTemplateExtended.HelpID = entry.Data.ReadUInt32(ref offset);
-                dialogTemplateExtended.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
-                dialogTemplateExtended.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplateExtended.ExtendedStyle = (SabreTools.Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplateExtended.Style = (SabreTools.Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
                 dialogTemplateExtended.DialogItems = entry.Data.ReadUInt16(ref offset);
                 dialogTemplateExtended.PositionX = entry.Data.ReadInt16(ref offset);
                 dialogTemplateExtended.PositionY = entry.Data.ReadInt16(ref offset);
@@ -493,7 +493,7 @@ namespace BinaryObjectScanner.Builders
                 #region Point size and typeface
 
                 // Only if DS_SETFONT is set are the values here used
-                if (dialogTemplateExtended.Style.HasFlag(Models.PortableExecutable.WindowStyles.DS_SETFONT))
+                if (dialogTemplateExtended.Style.HasFlag(SabreTools.Models.PortableExecutable.WindowStyles.DS_SETFONT))
                 {
                     dialogTemplateExtended.PointSize = entry.Data.ReadUInt16(ref offset);
                     dialogTemplateExtended.Weight = entry.Data.ReadUInt16(ref offset);
@@ -517,15 +517,15 @@ namespace BinaryObjectScanner.Builders
 
                 #region Extended dialog item templates
 
-                var dialogItemExtendedTemplates = new List<Models.PortableExecutable.DialogItemTemplateExtended>();
+                var dialogItemExtendedTemplates = new List<SabreTools.Models.PortableExecutable.DialogItemTemplateExtended>();
 
                 for (int i = 0; i < dialogTemplateExtended.DialogItems; i++)
                 {
-                    var dialogItemTemplate = new Models.PortableExecutable.DialogItemTemplateExtended();
+                    var dialogItemTemplate = new SabreTools.Models.PortableExecutable.DialogItemTemplateExtended();
 
                     dialogItemTemplate.HelpID = entry.Data.ReadUInt32(ref offset);
-                    dialogItemTemplate.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
-                    dialogItemTemplate.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.ExtendedStyle = (SabreTools.Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.Style = (SabreTools.Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
                     dialogItemTemplate.PositionX = entry.Data.ReadInt16(ref offset);
                     dialogItemTemplate.PositionY = entry.Data.ReadInt16(ref offset);
                     dialogItemTemplate.WidthX = entry.Data.ReadInt16(ref offset);
@@ -545,7 +545,7 @@ namespace BinaryObjectScanner.Builders
                         _ = entry.Data.ReadUInt16(ref offset);
 
                         // Read the ordinal
-                        dialogItemTemplate.ClassResourceOrdinal = (Models.PortableExecutable.DialogItemTemplateOrdinal)entry.Data.ReadUInt16(ref offset);
+                        dialogItemTemplate.ClassResourceOrdinal = (SabreTools.Models.PortableExecutable.DialogItemTemplateOrdinal)entry.Data.ReadUInt16(ref offset);
                     }
                     else
                     {
@@ -623,10 +623,10 @@ namespace BinaryObjectScanner.Builders
             {
                 #region Dialog template
 
-                var dialogTemplate = new Models.PortableExecutable.DialogTemplate();
+                var dialogTemplate = new SabreTools.Models.PortableExecutable.DialogTemplate();
 
-                dialogTemplate.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
-                dialogTemplate.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplate.Style = (SabreTools.Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                dialogTemplate.ExtendedStyle = (SabreTools.Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
                 dialogTemplate.ItemCount = entry.Data.ReadUInt16(ref offset);
                 dialogTemplate.PositionX = entry.Data.ReadInt16(ref offset);
                 dialogTemplate.PositionY = entry.Data.ReadInt16(ref offset);
@@ -735,7 +735,7 @@ namespace BinaryObjectScanner.Builders
                 #region Point size and typeface
 
                 // Only if DS_SETFONT is set are the values here used
-                if (dialogTemplate.Style.HasFlag(Models.PortableExecutable.WindowStyles.DS_SETFONT))
+                if (dialogTemplate.Style.HasFlag(SabreTools.Models.PortableExecutable.WindowStyles.DS_SETFONT))
                 {
                     dialogTemplate.PointSizeValue = entry.Data.ReadUInt16(ref offset);
 
@@ -758,14 +758,14 @@ namespace BinaryObjectScanner.Builders
 
                 #region Dialog item templates
 
-                var dialogItemTemplates = new List<Models.PortableExecutable.DialogItemTemplate>();
+                var dialogItemTemplates = new List<SabreTools.Models.PortableExecutable.DialogItemTemplate>();
 
                 for (int i = 0; i < dialogTemplate.ItemCount; i++)
                 {
-                    var dialogItemTemplate = new Models.PortableExecutable.DialogItemTemplate();
+                    var dialogItemTemplate = new SabreTools.Models.PortableExecutable.DialogItemTemplate();
 
-                    dialogItemTemplate.Style = (Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
-                    dialogItemTemplate.ExtendedStyle = (Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.Style = (SabreTools.Models.PortableExecutable.WindowStyles)entry.Data.ReadUInt32(ref offset);
+                    dialogItemTemplate.ExtendedStyle = (SabreTools.Models.PortableExecutable.ExtendedWindowStyles)entry.Data.ReadUInt32(ref offset);
                     dialogItemTemplate.PositionX = entry.Data.ReadInt16(ref offset);
                     dialogItemTemplate.PositionY = entry.Data.ReadInt16(ref offset);
                     dialogItemTemplate.WidthX = entry.Data.ReadInt16(ref offset);
@@ -785,7 +785,7 @@ namespace BinaryObjectScanner.Builders
                         _ = entry.Data.ReadUInt16(ref offset);
 
                         // Read the ordinal
-                        dialogItemTemplate.ClassResourceOrdinal = (Models.PortableExecutable.DialogItemTemplateOrdinal)entry.Data.ReadUInt16(ref offset);
+                        dialogItemTemplate.ClassResourceOrdinal = (SabreTools.Models.PortableExecutable.DialogItemTemplateOrdinal)entry.Data.ReadUInt16(ref offset);
                     }
                     else
                     {
@@ -868,7 +868,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a font group</param>
         /// <returns>A filled font group on success, null on error</returns>
-        public static Models.PortableExecutable.FontGroupHeader AsFontGroup(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.FontGroupHeader AsFontGroup(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -878,19 +878,19 @@ namespace BinaryObjectScanner.Builders
             int offset = 0;
 
             // Create the output object
-            var fontGroupHeader = new Models.PortableExecutable.FontGroupHeader();
+            var fontGroupHeader = new SabreTools.Models.PortableExecutable.FontGroupHeader();
 
             fontGroupHeader.NumberOfFonts = entry.Data.ReadUInt16(ref offset);
             if (fontGroupHeader.NumberOfFonts > 0)
             {
-                fontGroupHeader.DE = new Models.PortableExecutable.DirEntry[fontGroupHeader.NumberOfFonts];
+                fontGroupHeader.DE = new SabreTools.Models.PortableExecutable.DirEntry[fontGroupHeader.NumberOfFonts];
                 for (int i = 0; i < fontGroupHeader.NumberOfFonts; i++)
                 {
-                    var dirEntry = new Models.PortableExecutable.DirEntry();
+                    var dirEntry = new SabreTools.Models.PortableExecutable.DirEntry();
 
                     dirEntry.FontOrdinal = entry.Data.ReadUInt16(ref offset);
 
-                    dirEntry.Entry = new Models.PortableExecutable.FontDirEntry();
+                    dirEntry.Entry = new SabreTools.Models.PortableExecutable.FontDirEntry();
                     dirEntry.Entry.Version = entry.Data.ReadUInt16(ref offset);
                     dirEntry.Entry.Size = entry.Data.ReadUInt32(ref offset);
                     dirEntry.Entry.Copyright = entry.Data.ReadBytes(ref offset, 60);
@@ -937,7 +937,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a menu</param>
         /// <returns>A filled menu on success, null on error</returns>
-        public static Models.PortableExecutable.MenuResource AsMenu(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.MenuResource AsMenu(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -947,7 +947,7 @@ namespace BinaryObjectScanner.Builders
             int offset = 0;
 
             // Create the output object
-            var menuResource = new Models.PortableExecutable.MenuResource();
+            var menuResource = new SabreTools.Models.PortableExecutable.MenuResource();
 
             // Try to read the version for an extended header
             int versionOffset = 0;
@@ -956,7 +956,7 @@ namespace BinaryObjectScanner.Builders
             {
                 #region Extended menu header
 
-                var menuHeaderExtended = new Models.PortableExecutable.MenuHeaderExtended();
+                var menuHeaderExtended = new SabreTools.Models.PortableExecutable.MenuHeaderExtended();
 
                 menuHeaderExtended.Version = entry.Data.ReadUInt16(ref offset);
                 menuHeaderExtended.Offset = entry.Data.ReadUInt16(ref offset);
@@ -968,7 +968,7 @@ namespace BinaryObjectScanner.Builders
 
                 #region Extended dialog item templates
 
-                var extendedMenuItems = new List<Models.PortableExecutable.MenuItemExtended>();
+                var extendedMenuItems = new List<SabreTools.Models.PortableExecutable.MenuItemExtended>();
 
                 if (offset != 0)
                 {
@@ -976,12 +976,12 @@ namespace BinaryObjectScanner.Builders
 
                     while (offset < entry.Data.Length)
                     {
-                        var extendedMenuItem = new Models.PortableExecutable.MenuItemExtended();
+                        var extendedMenuItem = new SabreTools.Models.PortableExecutable.MenuItemExtended();
 
-                        extendedMenuItem.ItemType = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
-                        extendedMenuItem.State = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.ItemType = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.State = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
                         extendedMenuItem.ID = entry.Data.ReadUInt32(ref offset);
-                        extendedMenuItem.Flags = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        extendedMenuItem.Flags = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
                         extendedMenuItem.MenuText = entry.Data.ReadString(ref offset, Encoding.Unicode);
 
                         // Align to the DWORD boundary if we're not at the end
@@ -1003,7 +1003,7 @@ namespace BinaryObjectScanner.Builders
             {
                 #region Menu header
 
-                var menuHeader = new Models.PortableExecutable.MenuHeader();
+                var menuHeader = new SabreTools.Models.PortableExecutable.MenuHeader();
 
                 menuHeader.Version = entry.Data.ReadUInt16(ref offset);
                 menuHeader.HeaderSize = entry.Data.ReadUInt16(ref offset);
@@ -1014,26 +1014,26 @@ namespace BinaryObjectScanner.Builders
 
                 #region Menu items
 
-                var menuItems = new List<Models.PortableExecutable.MenuItem>();
+                var menuItems = new List<SabreTools.Models.PortableExecutable.MenuItem>();
 
                 while (offset < entry.Data.Length)
                 {
-                    var menuItem = new Models.PortableExecutable.MenuItem();
+                    var menuItem = new SabreTools.Models.PortableExecutable.MenuItem();
 
                     // Determine if this is a popup
                     int flagsOffset = offset;
-                    var initialFlags = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt16(ref flagsOffset);
-                    if (initialFlags.HasFlag(Models.PortableExecutable.MenuFlags.MF_POPUP))
+                    var initialFlags = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt16(ref flagsOffset);
+                    if (initialFlags.HasFlag(SabreTools.Models.PortableExecutable.MenuFlags.MF_POPUP))
                     {
-                        menuItem.PopupItemType = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
-                        menuItem.PopupState = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupItemType = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupState = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
                         menuItem.PopupID = entry.Data.ReadUInt32(ref offset);
-                        menuItem.PopupResInfo = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
+                        menuItem.PopupResInfo = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt32(ref offset);
                         menuItem.PopupMenuText = entry.Data.ReadString(ref offset, Encoding.Unicode);
                     }
                     else
                     {
-                        menuItem.NormalResInfo = (Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt16(ref offset);
+                        menuItem.NormalResInfo = (SabreTools.Models.PortableExecutable.MenuFlags)entry.Data.ReadUInt16(ref offset);
                         menuItem.NormalMenuText = entry.Data.ReadString(ref offset, Encoding.Unicode);
                     }
 
@@ -1060,7 +1060,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a message table resource</param>
         /// <returns>A filled message table resource on success, null on error</returns>
-        public static Models.PortableExecutable.MessageResourceData AsMessageResourceData(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.MessageResourceData AsMessageResourceData(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -1070,17 +1070,17 @@ namespace BinaryObjectScanner.Builders
             int offset = 0;
 
             // Create the output object
-            var messageResourceData = new Models.PortableExecutable.MessageResourceData();
+            var messageResourceData = new SabreTools.Models.PortableExecutable.MessageResourceData();
 
             // Message resource blocks
             messageResourceData.NumberOfBlocks = entry.Data.ReadUInt32(ref offset);
             if (messageResourceData.NumberOfBlocks > 0)
             {
-                var messageResourceBlocks = new List<Models.PortableExecutable.MessageResourceBlock>();
+                var messageResourceBlocks = new List<SabreTools.Models.PortableExecutable.MessageResourceBlock>();
 
                 for (int i = 0; i < messageResourceData.NumberOfBlocks; i++)
                 {
-                    var messageResourceBlock = new Models.PortableExecutable.MessageResourceBlock();
+                    var messageResourceBlock = new SabreTools.Models.PortableExecutable.MessageResourceBlock();
 
                     messageResourceBlock.LowId = entry.Data.ReadUInt32(ref offset);
                     messageResourceBlock.HighId = entry.Data.ReadUInt32(ref offset);
@@ -1095,7 +1095,7 @@ namespace BinaryObjectScanner.Builders
             // Message resource entries
             if (messageResourceData.Blocks != null && messageResourceData.Blocks.Length != 0)
             {
-                var messageResourceEntries = new Dictionary<uint, Models.PortableExecutable.MessageResourceEntry>();
+                var messageResourceEntries = new Dictionary<uint, SabreTools.Models.PortableExecutable.MessageResourceEntry>();
 
                 for (int i = 0; i < messageResourceData.Blocks.Length; i++)
                 {
@@ -1104,7 +1104,7 @@ namespace BinaryObjectScanner.Builders
 
                     for (uint j = messageResourceBlock.LowId; j <= messageResourceBlock.HighId; j++)
                     {
-                        var messageResourceEntry = new Models.PortableExecutable.MessageResourceEntry();
+                        var messageResourceEntry = new SabreTools.Models.PortableExecutable.MessageResourceEntry();
 
                         messageResourceEntry.Length = entry.Data.ReadUInt16(ref offset);
                         messageResourceEntry.Flags = entry.Data.ReadUInt16(ref offset);
@@ -1128,7 +1128,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a string table resource</param>
         /// <returns>A filled string table resource on success, null on error</returns>
-        public static Dictionary<int, string> AsStringTable(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static Dictionary<int, string> AsStringTable(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -1171,7 +1171,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="entry">Resource data entry to parse into a version info resource</param>
         /// <returns>A filled version info resource on success, null on error</returns>
-        public static Models.PortableExecutable.VersionInfo AsVersionInfo(this Models.PortableExecutable.ResourceDataEntry entry)
+        public static SabreTools.Models.PortableExecutable.VersionInfo AsVersionInfo(this SabreTools.Models.PortableExecutable.ResourceDataEntry entry)
         {
             // If we have an invalid entry, just skip
             if (entry?.Data == null)
@@ -1181,11 +1181,11 @@ namespace BinaryObjectScanner.Builders
             int offset = 0;
 
             // Create the output object
-            var versionInfo = new Models.PortableExecutable.VersionInfo();
+            var versionInfo = new SabreTools.Models.PortableExecutable.VersionInfo();
 
             versionInfo.Length = entry.Data.ReadUInt16(ref offset);
             versionInfo.ValueLength = entry.Data.ReadUInt16(ref offset);
-            versionInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
+            versionInfo.ResourceType = (SabreTools.Models.PortableExecutable.VersionResourceType)entry.Data.ReadUInt16(ref offset);
             versionInfo.Key = entry.Data.ReadString(ref offset, Encoding.Unicode);
             if (versionInfo.Key != "VS_VERSION_INFO")
                 return null;
@@ -1196,7 +1196,7 @@ namespace BinaryObjectScanner.Builders
             // Read fixed file info
             if (versionInfo.ValueLength > 0)
             {
-                var fixedFileInfo = new Models.PortableExecutable.FixedFileInfo();
+                var fixedFileInfo = new SabreTools.Models.PortableExecutable.FixedFileInfo();
                 fixedFileInfo.Signature = entry.Data.ReadUInt32(ref offset);
                 if (fixedFileInfo.Signature != 0xFEEF04BD)
                     return null;
@@ -1207,10 +1207,10 @@ namespace BinaryObjectScanner.Builders
                 fixedFileInfo.ProductVersionMS = entry.Data.ReadUInt32(ref offset);
                 fixedFileInfo.ProductVersionLS = entry.Data.ReadUInt32(ref offset);
                 fixedFileInfo.FileFlagsMask = entry.Data.ReadUInt32(ref offset);
-                fixedFileInfo.FileFlags = (Models.PortableExecutable.FixedFileInfoFlags)(entry.Data.ReadUInt32(ref offset) & fixedFileInfo.FileFlagsMask);
-                fixedFileInfo.FileOS = (Models.PortableExecutable.FixedFileInfoOS)entry.Data.ReadUInt32(ref offset);
-                fixedFileInfo.FileType = (Models.PortableExecutable.FixedFileInfoFileType)entry.Data.ReadUInt32(ref offset);
-                fixedFileInfo.FileSubtype = (Models.PortableExecutable.FixedFileInfoFileSubtype)entry.Data.ReadUInt32(ref offset);
+                fixedFileInfo.FileFlags = (SabreTools.Models.PortableExecutable.FixedFileInfoFlags)(entry.Data.ReadUInt32(ref offset) & fixedFileInfo.FileFlagsMask);
+                fixedFileInfo.FileOS = (SabreTools.Models.PortableExecutable.FixedFileInfoOS)entry.Data.ReadUInt32(ref offset);
+                fixedFileInfo.FileType = (SabreTools.Models.PortableExecutable.FixedFileInfoFileType)entry.Data.ReadUInt32(ref offset);
+                fixedFileInfo.FileSubtype = (SabreTools.Models.PortableExecutable.FixedFileInfoFileSubtype)entry.Data.ReadUInt32(ref offset);
                 fixedFileInfo.FileDateMS = entry.Data.ReadUInt32(ref offset);
                 fixedFileInfo.FileDateLS = entry.Data.ReadUInt32(ref offset);
                 versionInfo.Value = fixedFileInfo;
@@ -1275,16 +1275,16 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Data to parse into a string file info</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled string file info resource on success, null on error</returns>
-        private static Models.PortableExecutable.StringFileInfo AsStringFileInfo(byte[] data, ref int offset)
+        private static SabreTools.Models.PortableExecutable.StringFileInfo AsStringFileInfo(byte[] data, ref int offset)
         {
-            var stringFileInfo = new Models.PortableExecutable.StringFileInfo();
+            var stringFileInfo = new SabreTools.Models.PortableExecutable.StringFileInfo();
 
             // Cache the initial offset
             int currentOffset = offset;
 
             stringFileInfo.Length = data.ReadUInt16(ref offset);
             stringFileInfo.ValueLength = data.ReadUInt16(ref offset);
-            stringFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+            stringFileInfo.ResourceType = (SabreTools.Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
             stringFileInfo.Key = data.ReadString(ref offset, Encoding.Unicode);
             if (stringFileInfo.Key != "StringFileInfo")
             {
@@ -1299,14 +1299,14 @@ namespace BinaryObjectScanner.Builders
                     stringFileInfo.Padding = data.ReadByte(ref offset);
             }
 
-            var stringFileInfoChildren = new List<Models.PortableExecutable.StringTable>();
+            var stringFileInfoChildren = new List<SabreTools.Models.PortableExecutable.StringTable>();
             while ((offset - currentOffset) < stringFileInfo.Length)
             {
-                var stringTable = new Models.PortableExecutable.StringTable();
+                var stringTable = new SabreTools.Models.PortableExecutable.StringTable();
 
                 stringTable.Length = data.ReadUInt16(ref offset);
                 stringTable.ValueLength = data.ReadUInt16(ref offset);
-                stringTable.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+                stringTable.ResourceType = (SabreTools.Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
                 stringTable.Key = data.ReadString(ref offset, Encoding.Unicode);
 
                 // Align to the DWORD boundary if we're not at the end
@@ -1316,14 +1316,14 @@ namespace BinaryObjectScanner.Builders
                         stringTable.Padding = data.ReadByte(ref offset);
                 }
 
-                var stringTableChildren = new List<Models.PortableExecutable.StringData>();
+                var stringTableChildren = new List<SabreTools.Models.PortableExecutable.StringData>();
                 while ((offset - currentOffset) < stringTable.Length)
                 {
-                    var stringData = new Models.PortableExecutable.StringData();
+                    var stringData = new SabreTools.Models.PortableExecutable.StringData();
 
                     stringData.Length = data.ReadUInt16(ref offset);
                     stringData.ValueLength = data.ReadUInt16(ref offset);
-                    stringData.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+                    stringData.ResourceType = (SabreTools.Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
                     stringData.Key = data.ReadString(ref offset, Encoding.Unicode);
 
                     // Align to the DWORD boundary if we're not at the end
@@ -1365,16 +1365,16 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Data to parse into a var file info</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>A filled var file info resource on success, null on error</returns>
-        private static Models.PortableExecutable.VarFileInfo AsVarFileInfo(byte[] data, ref int offset)
+        private static SabreTools.Models.PortableExecutable.VarFileInfo AsVarFileInfo(byte[] data, ref int offset)
         {
-            var varFileInfo = new Models.PortableExecutable.VarFileInfo();
+            var varFileInfo = new SabreTools.Models.PortableExecutable.VarFileInfo();
 
             // Cache the initial offset
             int initialOffset = offset;
 
             varFileInfo.Length = data.ReadUInt16(ref offset);
             varFileInfo.ValueLength = data.ReadUInt16(ref offset);
-            varFileInfo.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+            varFileInfo.ResourceType = (SabreTools.Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
             varFileInfo.Key = data.ReadString(ref offset, Encoding.Unicode);
             if (varFileInfo.Key != "VarFileInfo")
                 return null;
@@ -1386,14 +1386,14 @@ namespace BinaryObjectScanner.Builders
                     varFileInfo.Padding = data.ReadByte(ref offset);
             }
 
-            var varFileInfoChildren = new List<Models.PortableExecutable.VarData>();
+            var varFileInfoChildren = new List<SabreTools.Models.PortableExecutable.VarData>();
             while ((offset - initialOffset) < varFileInfo.Length)
             {
-                var varData = new Models.PortableExecutable.VarData();
+                var varData = new SabreTools.Models.PortableExecutable.VarData();
 
                 varData.Length = data.ReadUInt16(ref offset);
                 varData.ValueLength = data.ReadUInt16(ref offset);
-                varData.ResourceType = (Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
+                varData.ResourceType = (SabreTools.Models.PortableExecutable.VersionResourceType)data.ReadUInt16(ref offset);
                 varData.Key = data.ReadString(ref offset, Encoding.Unicode);
                 if (varData.Key != "Translation")
                 {

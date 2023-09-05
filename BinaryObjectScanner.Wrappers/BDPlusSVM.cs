@@ -46,7 +46,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the SVM
         /// </summary>
-        private Models.BDPlus.SVM _svm;
+        private SabreTools.Models.BDPlus.SVM _svm;
 
         #endregion
 

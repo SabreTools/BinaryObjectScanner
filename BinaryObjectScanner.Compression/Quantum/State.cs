@@ -1,4 +1,4 @@
-using BinaryObjectScanner.Models.Compression.Quantum;
+using SabreTools.Models.Compression.Quantum;
 
 namespace BinaryObjectScanner.Compression.Quantum
 {

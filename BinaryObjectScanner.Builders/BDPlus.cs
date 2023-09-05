@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.BDPlus;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.BDPlus.Constants;
+using SabreTools.Models.BDPlus;
+using static SabreTools.Models.BDPlus.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

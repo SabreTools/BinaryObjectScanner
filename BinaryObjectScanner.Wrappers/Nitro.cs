@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Wrappers
         public string MakerCode => _cart.CommonHeader.MakerCode;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.UnitCode"/>
-        public Models.Nitro.Unitcode UnitCode => _cart.CommonHeader.UnitCode;
+        public SabreTools.Models.Nitro.Unitcode UnitCode => _cart.CommonHeader.UnitCode;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.EncryptionSeedSelect"/>
         public byte EncryptionSeedSelect => _cart.CommonHeader.EncryptionSeedSelect;
@@ -300,17 +300,17 @@ namespace BinaryObjectScanner.Wrappers
         #region Name Table
 
         /// <inheritdoc cref="Models.Nitro.NameTable.FolderAllocationTable"/>
-        public Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _cart.NameTable.FolderAllocationTable;
+        public SabreTools.Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _cart.NameTable.FolderAllocationTable;
 
         /// <inheritdoc cref="Models.Nitro.NameTable.NameList"/>
-        public Models.Nitro.NameListEntry[] NameList => _cart.NameTable.NameList;
+        public SabreTools.Models.Nitro.NameListEntry[] NameList => _cart.NameTable.NameList;
 
         #endregion
 
         #region File Allocation Table
 
         /// <inheritdoc cref="Models.Nitro.Cart.FileAllocationTable"/>
-        public Models.Nitro.FileAllocationTableEntry[] FileAllocationTable => _cart.FileAllocationTable;
+        public SabreTools.Models.Nitro.FileAllocationTableEntry[] FileAllocationTable => _cart.FileAllocationTable;
 
         #endregion
 
@@ -321,7 +321,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the cart
         /// </summary>
-        private Models.Nitro.Cart _cart;
+        private SabreTools.Models.Nitro.Cart _cart;
 
         #endregion
 

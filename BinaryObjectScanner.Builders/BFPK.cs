@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.BFPK;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.BFPK.Constants;
+using SabreTools.Models.BFPK;
+using static SabreTools.Models.BFPK.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

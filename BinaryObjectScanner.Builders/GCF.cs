@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.GCF;
 using BinaryObjectScanner.Utilities;
+using SabreTools.Models.GCF;
 
 namespace BinaryObjectScanner.Builders
 {
@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled Half-Life Game Cache on success, null on error</returns>
-        public static Models.GCF.File ParseFile(byte[] data, int offset)
+        public static SabreTools.Models.GCF.File ParseFile(byte[] data, int offset)
         {
             // If the data is invalid
             if (data == null)
@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled Half-Life Game Cache on success, null on error</returns>
-        public static Models.GCF.File ParseFile(Stream data)
+        public static SabreTools.Models.GCF.File ParseFile(Stream data)
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Builders
             long initialOffset = data.Position;
 
             // Create a new Half-Life Game Cache to fill
-            var file = new Models.GCF.File();
+            var file = new SabreTools.Models.GCF.File();
 
             #region Header
 

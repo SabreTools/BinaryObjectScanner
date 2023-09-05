@@ -34,11 +34,11 @@ namespace BinaryObjectScanner.FileType
                     return null;
 
                 // Derive the version, if possible
-                var typeAndVersion = mkb.Records.FirstOrDefault(r => r.RecordType == Models.AACS.RecordType.TypeAndVersion);
+                var typeAndVersion = mkb.Records.FirstOrDefault(r => r.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
                 if (typeAndVersion == null)
                     return "AACS (Unknown Version)";
                 else
-                    return $"AACS {(typeAndVersion as Models.AACS.TypeAndVersionRecord).VersionNumber}";
+                    return $"AACS {(typeAndVersion as SabreTools.Models.AACS.TypeAndVersionRecord).VersionNumber}";
             }
             catch (Exception ex)
             {

@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.MSDOS;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.MSDOS.Constants;
+using SabreTools.Models.MSDOS;
+using static SabreTools.Models.MSDOS.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

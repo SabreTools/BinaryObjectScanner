@@ -75,22 +75,22 @@ namespace BinaryObjectScanner.Wrappers
             byte[] magic = stream.ReadBytes(4);
 
             // New Executable
-            if (magic.StartsWith(BinaryObjectScanner.Models.NewExecutable.Constants.SignatureBytes))
+            if (magic.StartsWith(SabreTools.Models.NewExecutable.Constants.SignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return NewExecutable.Create(stream);
             }
 
             // Linear Executable
-            else if (magic.StartsWith(BinaryObjectScanner.Models.LinearExecutable.Constants.LESignatureBytes)
-                || magic.StartsWith(BinaryObjectScanner.Models.LinearExecutable.Constants.LXSignatureBytes))
+            else if (magic.StartsWith(SabreTools.Models.LinearExecutable.Constants.LESignatureBytes)
+                || magic.StartsWith(SabreTools.Models.LinearExecutable.Constants.LXSignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return LinearExecutable.Create(stream);
             }
 
             // Portable Executable
-            else if (magic.StartsWith(BinaryObjectScanner.Models.PortableExecutable.Constants.SignatureBytes))
+            else if (magic.StartsWith(SabreTools.Models.PortableExecutable.Constants.SignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return PortableExecutable.Create(stream);

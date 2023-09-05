@@ -1,4 +1,4 @@
-using static BinaryObjectScanner.Models.Compression.LZX.Constants;
+using static SabreTools.Models.Compression.LZX.Constants;
 
 namespace BinaryObjectScanner.Compression.LZX
 {

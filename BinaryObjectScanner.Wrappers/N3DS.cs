@@ -32,13 +32,13 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] MediaId => _cart.Header.MediaId;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsFSType"/>
-        public Models.N3DS.FilesystemType PartitionsFSType => _cart.Header.PartitionsFSType;
+        public SabreTools.Models.N3DS.FilesystemType PartitionsFSType => _cart.Header.PartitionsFSType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsCryptType"/>
         public byte[] PartitionsCryptType => _cart.Header.PartitionsCryptType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsTable"/>
-        public Models.N3DS.PartitionTableEntry[] PartitionsTable => _cart.Header.PartitionsTable;
+        public SabreTools.Models.N3DS.PartitionTableEntry[] PartitionsTable => _cart.Header.PartitionsTable;
 
         #endregion
 
@@ -142,7 +142,7 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] DCIH_ID_Reserved => _cart.DevelopmentCardInfoHeader?.InitialData?.Reserved;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.BackupHeader"/>
-        public Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _cart.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
+        public SabreTools.Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _cart.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
 
         #endregion
 
@@ -194,28 +194,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.Cart.Partitions"/>
-        public Models.N3DS.NCCHHeader[] Partitions => _cart.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _cart.Partitions;
 
         #endregion
 
         #region Extended Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExtendedHeaders"/>
-        public Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _cart.ExtendedHeaders;
+        public SabreTools.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _cart.ExtendedHeaders;
 
         #endregion
 
         #region ExeFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExeFSHeaders"/>
-        public Models.N3DS.ExeFSHeader[] ExeFSHeaders => _cart.ExeFSHeaders;
+        public SabreTools.Models.N3DS.ExeFSHeader[] ExeFSHeaders => _cart.ExeFSHeaders;
 
         #endregion
 
         #region RomFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.RomFSHeaders"/>
-        public Models.N3DS.RomFSHeader[] RomFSHeaders => _cart.RomFSHeaders;
+        public SabreTools.Models.N3DS.RomFSHeader[] RomFSHeaders => _cart.RomFSHeaders;
 
         #endregion
 
@@ -226,7 +226,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the cart
         /// </summary>
-        private Models.N3DS.Cart _cart;
+        private SabreTools.Models.N3DS.Cart _cart;
 
         #endregion
 
@@ -334,7 +334,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine();
 
             // If we have a cart image
-            if (PartitionsFSType == Models.N3DS.FilesystemType.Normal || PartitionsFSType == Models.N3DS.FilesystemType.None)
+            if (PartitionsFSType == SabreTools.Models.N3DS.FilesystemType.Normal || PartitionsFSType == SabreTools.Models.N3DS.FilesystemType.None)
             {
                 builder.AppendLine($"  Exheader SHA-256 hash: {BitConverter.ToString(ExheaderHash).Replace('-', ' ')}");
                 builder.AppendLine($"  Additional header size: {AdditionalHeaderSize} (0x{AdditionalHeaderSize:X})");
@@ -357,7 +357,7 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // If we have a firmware image
-            else if (PartitionsFSType == Models.N3DS.FilesystemType.FIRM)
+            else if (PartitionsFSType == SabreTools.Models.N3DS.FilesystemType.FIRM)
             {
                 builder.AppendLine($"  Unknown: {BitConverter.ToString(Unknown).Replace('-', ' ')}");
                 builder.AppendLine($"  Encrypted MBR: {BitConverter.ToString(EncryptedMBR).Replace('-', ' ')}");
@@ -488,7 +488,7 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         builder.AppendLine($"    Empty partition, no data can be parsed");
                     }
-                    else if (partitionHeader.MagicID != Models.N3DS.Constants.NCCHMagicNumber)
+                    else if (partitionHeader.MagicID != SabreTools.Models.N3DS.Constants.NCCHMagicNumber)
                     {
                         builder.AppendLine($"    Unrecognized partition data, no data can be parsed");
                     }

@@ -23,6 +23,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SabreTools.Models" Version="1.1.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
     <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="1.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -60,10 +64,6 @@
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
     <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\BinaryObjectScanner.Models\BinaryObjectScanner.Models.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>

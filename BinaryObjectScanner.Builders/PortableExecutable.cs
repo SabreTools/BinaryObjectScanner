@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BinaryObjectScanner.Models.PortableExecutable;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.PortableExecutable.Constants;
+using SabreTools.Models.PortableExecutable;
+using static SabreTools.Models.PortableExecutable.Constants;
 
 namespace BinaryObjectScanner.Builders
 {
@@ -1303,7 +1303,7 @@ namespace BinaryObjectScanner.Builders
             while (data.Position - initialOffset < size && data.Position % 0x200 != 0 && data.Position < data.Length - 1)
             {
                 // If we find the start of an MS-DOS header
-                if (data.ReadUInt16() == Models.MSDOS.Constants.SignatureUInt16)
+                if (data.ReadUInt16() == SabreTools.Models.MSDOS.Constants.SignatureUInt16)
                 {
                     data.Seek(-2, origin: SeekOrigin.Current);
                     break;

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using BinaryObjectScanner.Models.Compression.MSZIP;
-using static BinaryObjectScanner.Models.Compression.MSZIP.Constants;
+using SabreTools.Models.Compression.MSZIP;
+using static SabreTools.Models.Compression.MSZIP.Constants;
 
 namespace BinaryObjectScanner.Compression.MSZIP
 {

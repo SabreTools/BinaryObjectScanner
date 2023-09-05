@@ -31,13 +31,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpCompress" Version="0.32.2" />
-    <PackageReference Include="SharpZipLib" Version="1.4.1" />
+    <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BinaryObjectScanner.Models\BinaryObjectScanner.Models.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
+    <PackageReference Include="SabreTools.Models" Version="1.1.0" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
+    <PackageReference Include="SharpZipLib" Version="1.4.1" />
   </ItemGroup>
 
 </Project>

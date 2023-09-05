@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Models", "BinaryObjectScanner.Models\BinaryObjectScanner.Models.csproj", "{44939210-BDC2-4250-BC0F-0AB8F316F09D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Builders", "BinaryObjectScanner.Builders\BinaryObjectScanner.Builders.csproj", "{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner.Wrappers", "BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj", "{35BD489F-E58D-45DD-9929-DC4B32414750}"
@@ -56,10 +54,6 @@ Global
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88735BA2-778D-4192-8EB2-FFF6843719E2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44939210-BDC2-4250-BC0F-0AB8F316F09D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7577733A-CC8D-4E7C-8B6D-FFC7EC1B3D07}.Release|Any CPU.ActiveCfg = Release|Any CPU

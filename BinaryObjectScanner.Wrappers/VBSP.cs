@@ -1,6 +1,6 @@
 using System.IO;
 using System.Text;
-using static BinaryObjectScanner.Models.VBSP.Constants;
+using static SabreTools.Models.VBSP.Constants;
 
 namespace BinaryObjectScanner.Wrappers
 {
@@ -22,7 +22,7 @@ namespace BinaryObjectScanner.Wrappers
         public int Version => _file.Header.Version;
 
         /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
-        public Models.VBSP.Lump[] Lumps => _file.Header.Lumps;
+        public SabreTools.Models.VBSP.Lump[] Lumps => _file.Header.Lumps;
 
         /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
         public int MapRevision => _file.Header.MapRevision;
@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the VBSP
         /// </summary>
-        private Models.VBSP.File _file;
+        private SabreTools.Models.VBSP.File _file;
 
         #endregion
 

@@ -1,9 +1,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using BinaryObjectScanner.Models.Compression.LZ;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.Compression.LZ.Constants;
+using SabreTools.Models.Compression.LZ;
+using static SabreTools.Models.Compression.LZ.Constants;
 
 namespace BinaryObjectScanner.Compression
 {

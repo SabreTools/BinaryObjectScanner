@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Files
 
         /// <inheritdoc cref="Models.BFPK.Archive.Files"/>
-        public Models.BFPK.FileEntry[] FileTable => _archive.Files;
+        public SabreTools.Models.BFPK.FileEntry[] FileTable => _archive.Files;
 
         #endregion
 
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the archive
         /// </summary>
-        private Models.BFPK.Archive _archive;
+        private SabreTools.Models.BFPK.Archive _archive;
 
         #endregion
 

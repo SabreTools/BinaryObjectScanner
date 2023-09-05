@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.VPK.Constants;
+using static SabreTools.Models.VPK.Constants;
 
 namespace BinaryObjectScanner.Wrappers
 {
@@ -50,14 +50,14 @@ namespace BinaryObjectScanner.Wrappers
         #region Archive Hashes
 
         /// <inheritdoc cref="Models.VPK.ArchiveHashes"/>
-        public Models.VPK.ArchiveHash[] ArchiveHashes => _file.ArchiveHashes;
+        public SabreTools.Models.VPK.ArchiveHash[] ArchiveHashes => _file.ArchiveHashes;
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.VPK.DirectoryItems"/>
-        public Models.VPK.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public SabreTools.Models.VPK.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
 
         #endregion
 
@@ -118,7 +118,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the VPK
         /// </summary>
-        private Models.VPK.File _file;
+        private SabreTools.Models.VPK.File _file;
 
         /// <summary>
         /// Array of archive filenames attached to the given VPK
@@ -295,7 +295,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Print directory entry information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintDirectoryEntry(Models.VPK.DirectoryEntry directoryEntry, StringBuilder builder)
+        private void PrintDirectoryEntry(SabreTools.Models.VPK.DirectoryEntry directoryEntry, StringBuilder builder)
         {
             if (directoryEntry == null)
             {

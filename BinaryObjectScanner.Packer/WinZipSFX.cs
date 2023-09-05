@@ -132,10 +132,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0086
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -153,7 +153,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -168,10 +168,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0086
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -189,7 +189,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -204,10 +204,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0080
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -225,7 +225,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -240,9 +240,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00CD
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -260,7 +260,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -279,10 +279,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0086
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -300,7 +300,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -315,9 +315,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00BE
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -335,7 +335,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -350,10 +350,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0080
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -371,7 +371,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -386,9 +386,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00BE
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -406,7 +406,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -425,10 +425,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0086
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x3A00
@@ -446,7 +446,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -461,9 +461,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00BE
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x3A00
@@ -481,7 +481,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -496,10 +496,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0080
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x3A00
@@ -517,7 +517,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -532,9 +532,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00BE
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x3A00
@@ -552,7 +552,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -571,10 +571,10 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x0086
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x4000
@@ -592,7 +592,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -607,9 +607,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00BE
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x2000
                 && nex.InitialStackAlloc == 0x3C00
@@ -627,7 +627,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000
@@ -642,9 +642,9 @@ namespace BinaryObjectScanner.Packer
                 && nex.EntryTableOffset == 0x00C6
                 && nex.EntryTableSize == 0x0002
                 && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (BinaryObjectScanner.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.FullScreen
-                    | BinaryObjectScanner.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && nex.AutomaticDataSegmentNumber == 0x0003
                 && nex.InitialHeapAlloc == 0x43DC
                 && nex.InitialStackAlloc == 0x2708
@@ -662,7 +662,7 @@ namespace BinaryObjectScanner.Packer
                 && nex.MovableEntriesCount == 0x0000
                 && nex.SegmentAlignmentShiftCount == 0x0001
                 && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == BinaryObjectScanner.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
                 && nex.AdditionalFlags == 0x00
                 && nex.ReturnThunkOffset == 0x0000
                 && nex.SegmentReferenceThunkOffset == 0x0000

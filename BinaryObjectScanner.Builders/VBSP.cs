@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.VBSP;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.VBSP.Constants;
+using SabreTools.Models.VBSP;
+using static SabreTools.Models.VBSP.Constants;
 
 namespace BinaryObjectScanner.Builders
 {
@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled Half-Life 2 Level on success, null on error</returns>
-        public static Models.VBSP.File ParseFile(byte[] data, int offset)
+        public static SabreTools.Models.VBSP.File ParseFile(byte[] data, int offset)
         {
             // If the data is invalid
             if (data == null)
@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled Half-Life 2 Level on success, null on error</returns>
-        public static Models.VBSP.File ParseFile(Stream data)
+        public static SabreTools.Models.VBSP.File ParseFile(Stream data)
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Builders
             long initialOffset = data.Position;
 
             // Create a new Half-Life 2 Level to fill
-            var file = new Models.VBSP.File();
+            var file = new SabreTools.Models.VBSP.File();
 
             #region Header
 

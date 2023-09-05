@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.MoPaQ;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.MoPaQ.Constants;
+using SabreTools.Models.MoPaQ;
+using static SabreTools.Models.MoPaQ.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

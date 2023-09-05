@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.SGA;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.SGA.Constants;
+using SabreTools.Models.SGA;
+using static SabreTools.Models.SGA.Constants;
 
 namespace BinaryObjectScanner.Builders
 {
@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Byte array to parse</param>
         /// <param name="offset">Offset into the byte array</param>
         /// <returns>Filled SGA on success, null on error</returns>
-        public static Models.SGA.File ParseFile(byte[] data, int offset)
+        public static SabreTools.Models.SGA.File ParseFile(byte[] data, int offset)
         {
             // If the data is invalid
             if (data == null)
@@ -41,7 +41,7 @@ namespace BinaryObjectScanner.Builders
         /// </summary>
         /// <param name="data">Stream to parse</param>
         /// <returns>Filled SGA on success, null on error</returns>
-        public static Models.SGA.File ParseFile(Stream data)
+        public static SabreTools.Models.SGA.File ParseFile(Stream data)
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -55,7 +55,7 @@ namespace BinaryObjectScanner.Builders
             long initialOffset = data.Position;
 
             // Create a new SGA to fill
-            var file = new Models.SGA.File();
+            var file = new SabreTools.Models.SGA.File();
 
             #region Header
 
@@ -149,12 +149,12 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Stream to parse</param>
         /// <param name="majorVersion">SGA major version</param>
         /// <returns>Filled SGA directory on success, null on error</returns>
-        private static Models.SGA.Directory ParseDirectory(Stream data, ushort majorVersion)
+        private static SabreTools.Models.SGA.Directory ParseDirectory(Stream data, ushort majorVersion)
         {
             #region Directory
 
             // Create the appropriate type of directory
-            Models.SGA.Directory directory;
+            SabreTools.Models.SGA.Directory directory;
             switch (majorVersion)
             {
                 case 4: directory = new Directory4(); break;

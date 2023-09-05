@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using BinaryObjectScanner.Models.NewExecutable;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.NewExecutable.Constants;
+using SabreTools.Models.NewExecutable;
+using static SabreTools.Models.NewExecutable.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

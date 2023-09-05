@@ -49,28 +49,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.XZP.DirectoryEntries"/>
-        public Models.XZP.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryEntries"/>
-        public Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _file.PreloadDirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _file.PreloadDirectoryEntries;
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryMappings"/>
-        public Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _file.PreloadDirectoryMappings;
+        public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _file.PreloadDirectoryMappings;
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.XZP.DirectoryItems"/>
-        public Models.XZP.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
 
         #endregion
 
@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the XZP
         /// </summary>
-        private Models.XZP.File _file;
+        private SabreTools.Models.XZP.File _file;
 
         #endregion
 

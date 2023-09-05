@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.Nitro;
 using BinaryObjectScanner.Utilities;
+using SabreTools.Models.Nitro;
 
 namespace BinaryObjectScanner.Builders
 {

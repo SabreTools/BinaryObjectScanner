@@ -21,15 +21,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SharpCompress" Version="0.32.2" />
-    <PackageReference Include="SharpZipLib" Version="1.4.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BinaryObjectScanner.ASN1\BinaryObjectScanner.ASN1.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Builders\BinaryObjectScanner.Builders.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Models\BinaryObjectScanner.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SabreTools.Models" Version="1.1.0" />
+    <PackageReference Include="SharpCompress" Version="0.32.2" />
+    <PackageReference Include="SharpZipLib" Version="1.4.1" />
   </ItemGroup>
 
 </Project>

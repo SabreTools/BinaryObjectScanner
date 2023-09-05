@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.LinearExecutable;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.LinearExecutable.Constants;
+using SabreTools.Models.LinearExecutable;
+using static SabreTools.Models.LinearExecutable.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

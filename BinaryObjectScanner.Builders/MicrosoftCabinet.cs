@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.MicrosoftCabinet;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.MicrosoftCabinet.Constants;
+using SabreTools.Models.MicrosoftCabinet;
+using static SabreTools.Models.MicrosoftCabinet.Constants;
 
 namespace BinaryObjectScanner.Builders
 {
@@ -243,9 +243,9 @@ namespace BinaryObjectScanner.Builders
             file.FolderIndex = (FolderIndex)data.ReadUInt16();
             file.Date = data.ReadUInt16();
             file.Time = data.ReadUInt16();
-            file.Attributes = (Models.MicrosoftCabinet.FileAttributes)data.ReadUInt16();
+            file.Attributes = (SabreTools.Models.MicrosoftCabinet.FileAttributes)data.ReadUInt16();
 
-            if (file.Attributes.HasFlag(Models.MicrosoftCabinet.FileAttributes.NAME_IS_UTF))
+            if (file.Attributes.HasFlag(SabreTools.Models.MicrosoftCabinet.FileAttributes.NAME_IS_UTF))
                 file.Name = data.ReadString(Encoding.Unicode);
             else
                 file.Name = data.ReadString(Encoding.ASCII);

@@ -1,7 +1,7 @@
 using System;
 using BinaryObjectScanner.Compression.LZX;
-using static BinaryObjectScanner.Models.Compression.LZX.Constants;
-using static BinaryObjectScanner.Models.MicrosoftCabinet.Constants;
+using static SabreTools.Models.Compression.LZX.Constants;
+using static SabreTools.Models.MicrosoftCabinet.Constants;
 
 namespace BinaryObjectScanner.Compression.LZX
 {

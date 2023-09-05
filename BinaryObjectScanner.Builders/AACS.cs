@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.AACS;
 using BinaryObjectScanner.Utilities;
+using SabreTools.Models.AACS;
 
 namespace BinaryObjectScanner.Builders
 {

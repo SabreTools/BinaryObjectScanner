@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using BinaryObjectScanner.Models.Compression.Quantum;
-using BinaryObjectScanner.Models.MicrosoftCabinet;
+using SabreTools.Models.Compression.Quantum;
+using SabreTools.Models.MicrosoftCabinet;
 
 namespace BinaryObjectScanner.Compression.Quantum
 {

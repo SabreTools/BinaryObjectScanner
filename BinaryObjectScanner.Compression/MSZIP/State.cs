@@ -1,4 +1,4 @@
-using static BinaryObjectScanner.Models.Compression.MSZIP.Constants;
+using static SabreTools.Models.Compression.MSZIP.Constants;
 
 namespace BinaryObjectScanner.Compression.MSZIP
 {

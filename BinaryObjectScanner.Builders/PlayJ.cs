@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.PlayJ;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.PlayJ.Constants;
+using SabreTools.Models.PlayJ;
+using static SabreTools.Models.PlayJ.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

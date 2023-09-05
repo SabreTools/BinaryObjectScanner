@@ -1,8 +1,8 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.Quantum;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.Quantum.Constants;
+using SabreTools.Models.Quantum;
+using static SabreTools.Models.Quantum.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

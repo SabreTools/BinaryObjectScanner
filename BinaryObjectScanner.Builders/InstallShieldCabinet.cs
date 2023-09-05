@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Models.InstallShieldCabinet;
 using BinaryObjectScanner.Utilities;
-using static BinaryObjectScanner.Models.InstallShieldCabinet.Constants;
+using SabreTools.Models.InstallShieldCabinet;
+using static SabreTools.Models.InstallShieldCabinet.Constants;
 
 namespace BinaryObjectScanner.Builders
 {

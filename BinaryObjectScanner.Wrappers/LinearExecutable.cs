@@ -90,25 +90,25 @@ namespace BinaryObjectScanner.Wrappers
         public string Signature => _executable.InformationBlock.Signature;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ByteOrder"/>
-        public Models.LinearExecutable.ByteOrder ByteOrder => _executable.InformationBlock.ByteOrder;
+        public SabreTools.Models.LinearExecutable.ByteOrder ByteOrder => _executable.InformationBlock.ByteOrder;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.WordOrder"/>
-        public Models.LinearExecutable.WordOrder WordOrder => _executable.InformationBlock.WordOrder;
+        public SabreTools.Models.LinearExecutable.WordOrder WordOrder => _executable.InformationBlock.WordOrder;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExecutableFormatLevel"/>
         public uint ExecutableFormatLevel => _executable.InformationBlock.ExecutableFormatLevel;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.CPUType"/>
-        public Models.LinearExecutable.CPUType CPUType => _executable.InformationBlock.CPUType;
+        public SabreTools.Models.LinearExecutable.CPUType CPUType => _executable.InformationBlock.CPUType;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleOS"/>
-        public Models.LinearExecutable.OperatingSystem ModuleOS => _executable.InformationBlock.ModuleOS;
+        public SabreTools.Models.LinearExecutable.OperatingSystem ModuleOS => _executable.InformationBlock.ModuleOS;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleVersion"/>
         public uint ModuleVersion => _executable.InformationBlock.ModuleVersion;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleTypeFlags"/>
-        public Models.LinearExecutable.ModuleFlags ModuleTypeFlags => _executable.InformationBlock.ModuleTypeFlags;
+        public SabreTools.Models.LinearExecutable.ModuleFlags ModuleTypeFlags => _executable.InformationBlock.ModuleTypeFlags;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleNumberPages"/>
         public uint ModuleNumberPages => _executable.InformationBlock.ModuleNumberPages;
@@ -229,43 +229,43 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectTable"/>
-        public Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _executable.ObjectTable;
+        public SabreTools.Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _executable.ObjectTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectPageMap"/>
-        public Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => _executable.ObjectPageMap;
+        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => _executable.ObjectPageMap;
 
         /// <inheritdoc cref="Models.LinearExecutable.ResourceTable"/>
-        public Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _executable.ResourceTable;
+        public SabreTools.Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _executable.ResourceTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ResidentNamesTable"/>
-        public Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => _executable.ResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => _executable.ResidentNamesTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.EntryTable"/>
-        public Models.LinearExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
+        public SabreTools.Models.LinearExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ModuleFormatDirectivesTable"/>
-        public Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _executable.ModuleFormatDirectivesTable;
+        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _executable.ModuleFormatDirectivesTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.VerifyRecordDirectiveTable"/>
-        public Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => _executable.VerifyRecordDirectiveTable;
+        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => _executable.VerifyRecordDirectiveTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.PerPageChecksumTable"/>
-        public Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => _executable.PerPageChecksumTable;
+        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => _executable.PerPageChecksumTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupPageTable"/>
-        public Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => _executable.FixupPageTable;
+        public SabreTools.Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => _executable.FixupPageTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupRecordTable"/>
-        public Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => _executable.FixupRecordTable;
+        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => _executable.FixupRecordTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleNameTable"/>
-        public Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => _executable.ImportModuleNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => _executable.ImportModuleNameTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleProcedureNameTable"/>
-        public Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => _executable.ImportModuleProcedureNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => _executable.ImportModuleProcedureNameTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.NonResidentNamesTable"/>
-        public Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => _executable.NonResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => _executable.NonResidentNamesTable;
 
         #endregion
 
@@ -275,7 +275,7 @@ namespace BinaryObjectScanner.Wrappers
         public string DI_Signature => _executable.DebugInformation?.Signature;
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.FormatType"/>
-        public Models.LinearExecutable.DebugFormatType? DI_FormatType => _executable.DebugInformation?.FormatType;
+        public SabreTools.Models.LinearExecutable.DebugFormatType? DI_FormatType => _executable.DebugInformation?.FormatType;
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.DebuggerData"/>
         public byte[] DebuggerData => _executable.DebugInformation?.DebuggerData;
@@ -295,7 +295,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the executable
         /// </summary>
-        private Models.LinearExecutable.Executable _executable;
+        private SabreTools.Models.LinearExecutable.Executable _executable;
 
         #endregion
 
@@ -628,32 +628,32 @@ namespace BinaryObjectScanner.Wrappers
                         {
                             var entry = bundle.TableEntries[j];
                             builder.AppendLine($"    Entry Table Entry {j}");
-                            switch (bundle.BundleType & ~Models.LinearExecutable.BundleType.ParameterTypingInformationPresent)
+                            switch (bundle.BundleType & ~SabreTools.Models.LinearExecutable.BundleType.ParameterTypingInformationPresent)
                             {
-                                case Models.LinearExecutable.BundleType.UnusedEntry:
+                                case SabreTools.Models.LinearExecutable.BundleType.UnusedEntry:
                                     builder.AppendLine($"      Unused, empty entry");
                                     break;
 
-                                case Models.LinearExecutable.BundleType.SixteenBitEntry:
+                                case SabreTools.Models.LinearExecutable.BundleType.SixteenBitEntry:
                                     builder.AppendLine($"      Object number: {entry.SixteenBitObjectNumber} (0x{entry.SixteenBitObjectNumber:X})");
                                     builder.AppendLine($"      Entry flags: {entry.SixteenBitEntryFlags} (0x{entry.SixteenBitEntryFlags:X})");
                                     builder.AppendLine($"      Offset: {entry.SixteenBitOffset} (0x{entry.SixteenBitOffset:X})");
                                     break;
 
-                                case Models.LinearExecutable.BundleType.TwoEightySixCallGateEntry:
+                                case SabreTools.Models.LinearExecutable.BundleType.TwoEightySixCallGateEntry:
                                     builder.AppendLine($"      Object number: {entry.TwoEightySixObjectNumber} (0x{entry.TwoEightySixObjectNumber:X})");
                                     builder.AppendLine($"      Entry flags: {entry.TwoEightySixEntryFlags} (0x{entry.TwoEightySixEntryFlags:X})");
                                     builder.AppendLine($"      Offset: {entry.TwoEightySixOffset} (0x{entry.TwoEightySixOffset:X})");
                                     builder.AppendLine($"      Callgate: {entry.TwoEightySixCallgate} (0x{entry.TwoEightySixCallgate:X})");
                                     break;
 
-                                case Models.LinearExecutable.BundleType.ThirtyTwoBitEntry:
+                                case SabreTools.Models.LinearExecutable.BundleType.ThirtyTwoBitEntry:
                                     builder.AppendLine($"      Object number: {entry.ThirtyTwoBitObjectNumber} (0x{entry.ThirtyTwoBitObjectNumber:X})");
                                     builder.AppendLine($"      Entry flags: {entry.ThirtyTwoBitEntryFlags} (0x{entry.ThirtyTwoBitEntryFlags:X})");
                                     builder.AppendLine($"      Offset: {entry.ThirtyTwoBitOffset} (0x{entry.ThirtyTwoBitOffset:X})");
                                     break;
 
-                                case Models.LinearExecutable.BundleType.ForwarderEntry:
+                                case SabreTools.Models.LinearExecutable.BundleType.ForwarderEntry:
                                     builder.AppendLine($"      Reserved: {entry.ForwarderReserved} (0x{entry.ForwarderReserved:X})");
                                     builder.AppendLine($"      Forwarder flags: {entry.ForwarderFlags} (0x{entry.ForwarderFlags:X})");
                                     builder.AppendLine($"      Module ordinal number: {entry.ForwarderModuleOrdinalNumber} (0x{entry.ForwarderModuleOrdinalNumber:X})");
@@ -775,25 +775,25 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Target flags: {entry.TargetFlags} (0x{entry.TargetFlags:X})");
 
                     // Source list flag
-                    if (entry.SourceType.HasFlag(Models.LinearExecutable.FixupRecordSourceType.SourceListFlag))
+                    if (entry.SourceType.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordSourceType.SourceListFlag))
                         builder.AppendLine($"    Source offset list count: {entry.SourceOffsetListCount} (0x{entry.SourceOffsetListCount:X})");
                     else
                         builder.AppendLine($"    Source offset: {entry.SourceOffset} (0x{entry.SourceOffset:X})");
 
                     // OBJECT / TRGOFF
-                    if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.InternalReference))
+                    if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.InternalReference))
                     {
                         // 16-bit Object Number/Module Ordinal Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
                             builder.AppendLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
                         else
                             builder.AppendLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
 
                         // 16-bit Selector fixup
-                        if (!entry.SourceType.HasFlag(Models.LinearExecutable.FixupRecordSourceType.SixteenBitSelectorFixup))
+                        if (!entry.SourceType.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordSourceType.SixteenBitSelectorFixup))
                         {
                             // 32-bit Target Offset Flag
-                            if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
+                            if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
                                 builder.AppendLine($"    Target offset: {entry.TargetOffsetDWORD} (0x{entry.TargetOffsetDWORD:X})");
                             else
                                 builder.AppendLine($"    Target offset: {entry.TargetOffsetWORD} (0x{entry.TargetOffsetWORD:X})");
@@ -801,27 +801,27 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     // MOD ORD# / IMPORT ORD / ADDITIVE
-                    else if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ImportedReferenceByOrdinal))
+                    else if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ImportedReferenceByOrdinal))
                     {
                         // 16-bit Object Number/Module Ordinal Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
                             builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
                         else
                             builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
 
                         // 8-bit Ordinal Flag & 32-bit Target Offset Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.EightBitOrdinalFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.EightBitOrdinalFlag))
                             builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberByte} (0x{entry.ImportedOrdinalNumberByte:X})");
-                        else if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
+                        else if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
                             builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberDWORD} (0x{entry.ImportedOrdinalNumberDWORD:X})");
                         else
                             builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberWORD} (0x{entry.ImportedOrdinalNumberWORD:X})");
 
                         // Additive Fixup Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
-                            if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
+                            if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
                                 builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
                                 builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
@@ -829,25 +829,25 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     // MOD ORD# / PROCEDURE NAME OFFSET / ADDITIVE
-                    else if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ImportedReferenceByName))
+                    else if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ImportedReferenceByName))
                     {
                         // 16-bit Object Number/Module Ordinal Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
                             builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
                         else
                             builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
 
                         // 32-bit Target Offset Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
                             builder.AppendLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableDWORD} (0x{entry.OffsetImportProcedureNameTableDWORD:X})");
                         else
                             builder.AppendLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableWORD} (0x{entry.OffsetImportProcedureNameTableWORD:X})");
 
                         // Additive Fixup Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
-                            if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
+                            if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
                                 builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
                                 builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
@@ -855,19 +855,19 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     // ORD # / ADDITIVE
-                    else if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.InternalReferenceViaEntryTable))
+                    else if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.InternalReferenceViaEntryTable))
                     {
                         // 16-bit Object Number/Module Ordinal Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
                             builder.AppendLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
                         else
                             builder.AppendLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
 
                         // Additive Fixup Flag
-                        if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
+                        if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
-                            if (entry.TargetFlags.HasFlag(Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
+                            if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
                                 builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
                                 builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");

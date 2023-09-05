@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Records
 
         /// <inheritdoc cref="Models.AACS.MediaKeyBlock.Records"/>
-        public Models.AACS.Record[] Records => _mediaKeyBlock.Records;
+        public SabreTools.Models.AACS.Record[] Records => _mediaKeyBlock.Records;
 
         #endregion
 
@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Internal representation of the AACS media key block
         /// </summary>
-        private Models.AACS.MediaKeyBlock _mediaKeyBlock;
+        private SabreTools.Models.AACS.MediaKeyBlock _mediaKeyBlock;
 
         #endregion
 
@@ -126,13 +126,13 @@ namespace BinaryObjectScanner.Wrappers
 
                     switch (record.RecordType)
                     {
-                        case Models.AACS.RecordType.EndOfMediaKeyBlock:
-                            var eomkb = record as Models.AACS.EndOfMediaKeyBlockRecord;
+                        case SabreTools.Models.AACS.RecordType.EndOfMediaKeyBlock:
+                            var eomkb = record as SabreTools.Models.AACS.EndOfMediaKeyBlockRecord;
                             builder.AppendLine($"    Signature data: {BitConverter.ToString(eomkb.SignatureData ?? new byte[0]).Replace('-', ' ')}");
                             break;
 
-                        case Models.AACS.RecordType.ExplicitSubsetDifference:
-                            var esd = record as Models.AACS.ExplicitSubsetDifferenceRecord;
+                        case SabreTools.Models.AACS.RecordType.ExplicitSubsetDifference:
+                            var esd = record as SabreTools.Models.AACS.ExplicitSubsetDifferenceRecord;
                             builder.AppendLine($"    Subset Differences:");
                             builder.AppendLine("    -------------------------");
                             if (esd.SubsetDifferences == null || esd.SubsetDifferences.Length == 0)
@@ -151,8 +151,8 @@ namespace BinaryObjectScanner.Wrappers
                             }
                             break;
 
-                        case Models.AACS.RecordType.MediaKeyData:
-                            var mkd = record as Models.AACS.MediaKeyDataRecord;
+                        case SabreTools.Models.AACS.RecordType.MediaKeyData:
+                            var mkd = record as SabreTools.Models.AACS.MediaKeyDataRecord;
                             builder.AppendLine($"    Media Keys:");
                             builder.AppendLine("    -------------------------");
                             if (mkd.MediaKeyData == null || mkd.MediaKeyData.Length == 0)
@@ -169,8 +169,8 @@ namespace BinaryObjectScanner.Wrappers
                             }
                             break;
 
-                        case Models.AACS.RecordType.SubsetDifferenceIndex:
-                            var sdi = record as Models.AACS.SubsetDifferenceIndexRecord;
+                        case SabreTools.Models.AACS.RecordType.SubsetDifferenceIndex:
+                            var sdi = record as SabreTools.Models.AACS.SubsetDifferenceIndexRecord;
                             builder.AppendLine($"    Span: {sdi.Span} (0x{sdi.Span:X})");
                             builder.AppendLine($"    Offsets:");
                             builder.AppendLine("    -------------------------");
@@ -188,14 +188,14 @@ namespace BinaryObjectScanner.Wrappers
                             }
                             break;
 
-                        case Models.AACS.RecordType.TypeAndVersion:
-                            var tav = record as Models.AACS.TypeAndVersionRecord;
+                        case SabreTools.Models.AACS.RecordType.TypeAndVersion:
+                            var tav = record as SabreTools.Models.AACS.TypeAndVersionRecord;
                             builder.AppendLine($"    Media key block type: {tav.MediaKeyBlockType} (0x{tav.MediaKeyBlockType:X})");
                             builder.AppendLine($"    Version number: {tav.VersionNumber} (0x{tav.VersionNumber:X})");
                             break;
 
-                        case Models.AACS.RecordType.DriveRevocationList:
-                            var drl = record as Models.AACS.DriveRevocationListRecord;
+                        case SabreTools.Models.AACS.RecordType.DriveRevocationList:
+                            var drl = record as SabreTools.Models.AACS.DriveRevocationListRecord;
                             builder.AppendLine($"    Total number of entries: {drl.TotalNumberOfEntries} (0x{drl.TotalNumberOfEntries:X})");
                             builder.AppendLine($"    Signature Blocks:");
                             builder.AppendLine("    -------------------------");
@@ -230,8 +230,8 @@ namespace BinaryObjectScanner.Wrappers
                             }
                             break;
 
-                        case Models.AACS.RecordType.HostRevocationList:
-                            var hrl = record as Models.AACS.HostRevocationListRecord;
+                        case SabreTools.Models.AACS.RecordType.HostRevocationList:
+                            var hrl = record as SabreTools.Models.AACS.HostRevocationListRecord;
                             builder.AppendLine($"    Total number of entries: {hrl.TotalNumberOfEntries} (0x{hrl.TotalNumberOfEntries:X})");
                             builder.AppendLine($"    Signature Blocks:");
                             builder.AppendLine("    -------------------------");
@@ -266,13 +266,13 @@ namespace BinaryObjectScanner.Wrappers
                             }
                             break;
 
-                        case Models.AACS.RecordType.VerifyMediaKey:
-                            var vmk = record as Models.AACS.VerifyMediaKeyRecord;
+                        case SabreTools.Models.AACS.RecordType.VerifyMediaKey:
+                            var vmk = record as SabreTools.Models.AACS.VerifyMediaKeyRecord;
                             builder.AppendLine($"    Ciphertext value: {BitConverter.ToString(vmk.CiphertextValue ?? new byte[0]).Replace('-', ' ')}");
                             break;
 
-                        case Models.AACS.RecordType.Copyright:
-                            var c = record as Models.AACS.CopyrightRecord;
+                        case SabreTools.Models.AACS.RecordType.Copyright:
+                            var c = record as SabreTools.Models.AACS.CopyrightRecord;
                             builder.AppendLine($"    Copyright: {c.Copyright ?? "[NULL]"}");
                             break;
                     }
