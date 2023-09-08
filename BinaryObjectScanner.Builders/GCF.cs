@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using SabreTools.Models.GCF;
 
 namespace BinaryObjectScanner.Builders

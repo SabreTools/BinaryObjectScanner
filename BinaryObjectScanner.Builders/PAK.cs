@@ -1,6 +1,6 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using SabreTools.Models.PAK;
 using static SabreTools.Models.PAK.Constants;
 

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using SabreTools.Models.BSP;
 using static SabreTools.Models.BSP.Constants;
 

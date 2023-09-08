@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using SabreTools.Models.MicrosoftCabinet;
 using static SabreTools.Models.MicrosoftCabinet.Constants;
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
+using SabreTools.IO;
 
 namespace Test
 {

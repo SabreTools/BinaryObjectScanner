@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 
 namespace BinaryObjectScanner.ASN1
 {

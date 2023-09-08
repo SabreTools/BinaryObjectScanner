@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using BinaryObjectScanner.ASN1;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using static BinaryObjectScanner.Builders.Extensions;
 
 namespace BinaryObjectScanner.Wrappers

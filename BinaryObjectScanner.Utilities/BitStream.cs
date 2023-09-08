@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using SabreTools.IO;
 
 namespace BinaryObjectScanner.Utilities
 {

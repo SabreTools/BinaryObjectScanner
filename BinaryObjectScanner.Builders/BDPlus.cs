@@ -1,6 +1,6 @@
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using SabreTools.Models.BDPlus;
 using static SabreTools.Models.BDPlus.Constants;
 
@@ -73,7 +73,7 @@ namespace BinaryObjectScanner.Builders
                 return null;
 
             svm.Unknown1 = data.ReadBytes(5);
-            svm.Year = data.ReadUInt16BE();
+            svm.Year = data.ReadUInt16BigEndian();
             svm.Month = data.ReadByteValue();
             if (svm.Month < 1 || svm.Month > 12)
                 return null;

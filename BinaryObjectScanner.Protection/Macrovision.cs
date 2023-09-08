@@ -7,6 +7,7 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
+using SabreTools.IO;
 
 namespace BinaryObjectScanner.Protection
 {

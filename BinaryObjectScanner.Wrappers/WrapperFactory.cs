@@ -2,6 +2,7 @@
 using System.IO;
 using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 
 namespace BinaryObjectScanner.Wrappers
 {

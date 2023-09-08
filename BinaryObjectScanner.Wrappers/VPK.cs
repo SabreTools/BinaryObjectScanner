@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using static SabreTools.Models.VPK.Constants;
 
 namespace BinaryObjectScanner.Wrappers

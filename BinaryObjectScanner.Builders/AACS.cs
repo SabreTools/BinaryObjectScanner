@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO;
 using SabreTools.Models.AACS;
 
 namespace BinaryObjectScanner.Builders
@@ -186,7 +186,7 @@ namespace BinaryObjectScanner.Builders
                 var subsetDifference = new SubsetDifference();
 
                 subsetDifference.Mask = data.ReadByteValue();
-                subsetDifference.Number = data.ReadUInt32BE();
+                subsetDifference.Number = data.ReadUInt32BigEndian();
 
                 subsetDifferences.Add(subsetDifference);
             }
@@ -257,7 +257,7 @@ namespace BinaryObjectScanner.Builders
             // Cache the current offset
             long initialOffset = data.Position - 4;
 
-            record.Span = data.ReadUInt32BE();
+            record.Span = data.ReadUInt32BigEndian();
 
             // Create the offset list
             var offsets = new List<uint>();
@@ -265,7 +265,7 @@ namespace BinaryObjectScanner.Builders
             // Try to parse the offsets
             while (data.Position < initialOffset + length)
             {
-                uint offset = data.ReadUInt32BE();
+                uint offset = data.ReadUInt32BigEndian();
                 offsets.Add(offset);
             }
 
@@ -291,8 +291,8 @@ namespace BinaryObjectScanner.Builders
 
             record.RecordType = type;
             record.RecordLength = length;
-            record.MediaKeyBlockType = (MediaKeyBlockType)data.ReadUInt32BE();
-            record.VersionNumber = data.ReadUInt32BE();
+            record.MediaKeyBlockType = (MediaKeyBlockType)data.ReadUInt32BigEndian();
+            record.VersionNumber = data.ReadUInt32BigEndian();
 
             return record;
         }
@@ -317,7 +317,7 @@ namespace BinaryObjectScanner.Builders
             // Cache the current offset
             long initialOffset = data.Position - 4;
 
-            record.TotalNumberOfEntries = data.ReadUInt32BE();
+            record.TotalNumberOfEntries = data.ReadUInt32BigEndian();
 
             // Create the signature blocks list
             var blocks = new List<DriveRevocationSignatureBlock>();
@@ -328,13 +328,13 @@ namespace BinaryObjectScanner.Builders
             {
                 var block = new DriveRevocationSignatureBlock();
 
-                block.NumberOfEntries = data.ReadUInt32BE();
+                block.NumberOfEntries = data.ReadUInt32BigEndian();
                 block.EntryFields = new DriveRevocationListEntry[block.NumberOfEntries];
                 for (int i = 0; i < block.EntryFields.Length; i++)
                 {
                     var entry = new DriveRevocationListEntry();
 
-                    entry.Range = data.ReadUInt16BE();
+                    entry.Range = data.ReadUInt16BigEndian();
                     entry.DriveID = data.ReadBytes(6);
 
                     block.EntryFields[i] = entry;
@@ -378,7 +378,7 @@ namespace BinaryObjectScanner.Builders
             // Cache the current offset
             long initialOffset = data.Position - 4;
 
-            record.TotalNumberOfEntries = data.ReadUInt32BE();
+            record.TotalNumberOfEntries = data.ReadUInt32BigEndian();
 
             // Create the signature blocks list
             var blocks = new List<HostRevocationSignatureBlock>();
@@ -389,13 +389,13 @@ namespace BinaryObjectScanner.Builders
             {
                 var block = new HostRevocationSignatureBlock();
 
-                block.NumberOfEntries = data.ReadUInt32BE();
+                block.NumberOfEntries = data.ReadUInt32BigEndian();
                 block.EntryFields = new HostRevocationListEntry[block.NumberOfEntries];
                 for (int i = 0; i < block.EntryFields.Length; i++)
                 {
                     var entry = new HostRevocationListEntry();
 
-                    entry.Range = data.ReadUInt16BE();
+                    entry.Range = data.ReadUInt16BigEndian();
                     entry.HostID = data.ReadBytes(6);
 
                     block.EntryFields[i] = entry;
