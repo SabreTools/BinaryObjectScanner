@@ -26,4 +26,8 @@
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="SabreTools.IO" Version="1.1.0" />
+  </ItemGroup>
+
 </Project>
