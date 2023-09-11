@@ -1317,7 +1317,9 @@ namespace BinaryObjectScanner.Builders
             // If we have not used up the full size, parse the remaining chunk as a single resource
             if (data.Position - initialOffset < size)
             {
-                Array.Resize(ref resourceDirectoryTable.Entries, totalEntryCount + 1);
+                var localEntries = resourceDirectoryTable.Entries;
+                Array.Resize(ref localEntries, totalEntryCount + 1);
+                resourceDirectoryTable.Entries = localEntries;
                 int length = (int)(size - (data.Position - initialOffset));
 
                 resourceDirectoryTable.Entries[totalEntryCount] = new ResourceDirectoryEntry

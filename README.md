@@ -112,7 +112,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 | XCP | True | True | |
 | Zzxzz | False | True | |
 
-**Notes**
+### Notes
 
 ¹ - This means that I have not obtained one or more samples to ensure that either the original check from BurnOut or information found online is correct.
 

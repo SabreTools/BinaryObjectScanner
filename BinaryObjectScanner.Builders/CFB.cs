@@ -73,13 +73,21 @@ namespace BinaryObjectScanner.Builders
             #region DIFAT Sector Numbers
 
             // Create a DIFAT sector table
+#if NET48
             var difatSectors = new List<SectorNumber>();
+#else
+            var difatSectors = new List<SectorNumber?>();
+#endif
 
             // Add the sectors from the header
             difatSectors.AddRange(fileHeader.DIFAT);
 
             // Loop through and add the DIFAT sectors
-            SectorNumber currentSector = (SectorNumber)fileHeader.FirstDIFATSectorLocation;
+#if NET48
+            var currentSector = (SectorNumber)fileHeader.FirstDIFATSectorLocation;
+#else
+            var currentSector = (SectorNumber?)fileHeader.FirstDIFATSectorLocation;
+#endif
             for (int i = 0; i < fileHeader.NumberOfDIFATSectors; i++)
             {
                 // If we have a readable sector
@@ -114,7 +122,11 @@ namespace BinaryObjectScanner.Builders
             #region FAT Sector Numbers
 
             // Create a FAT sector table
+#if NET48
             var fatSectors = new List<SectorNumber>();
+#else
+            var fatSectors = new List<SectorNumber?>();
+#endif
 
             // Loop through and add the FAT sectors
             currentSector = binary.DIFATSectorNumbers[0];
@@ -152,7 +164,11 @@ namespace BinaryObjectScanner.Builders
             #region Mini FAT Sector Numbers
 
             // Create a mini FAT sector table
+#if NET48
             var miniFatSectors = new List<SectorNumber>();
+#else
+            var miniFatSectors = new List<SectorNumber?>();
+#endif
 
             // Loop through and add the mini FAT sectors
             currentSector = (SectorNumber)fileHeader.FirstMiniFATSectorLocation;
@@ -296,7 +312,11 @@ namespace BinaryObjectScanner.Builders
             header.NumberOfMiniFATSectors = data.ReadUInt32();
             header.FirstDIFATSectorLocation = data.ReadUInt32();
             header.NumberOfDIFATSectors = data.ReadUInt32();
+#if NET48
             header.DIFAT = new SectorNumber[109];
+#else
+            header.DIFAT = new SectorNumber?[109];
+#endif
             for (int i = 0; i < header.DIFAT.Length; i++)
             {
                 header.DIFAT[i] = (SectorNumber)data.ReadUInt32();
@@ -315,11 +335,19 @@ namespace BinaryObjectScanner.Builders
         /// <param name="data">Stream to parse</param>
         /// <param name="sectorShift">Sector shift from the header</param>
         /// <returns>Filled sector full of sector numbers on success, null on error</returns>
+#if NET48
         private static SectorNumber[] ParseSectorNumbers(Stream data, ushort sectorShift)
+#else
+        private static SectorNumber?[] ParseSectorNumbers(Stream data, ushort sectorShift)
+#endif
         {
             // TODO: Use marshalling here instead of building
             int sectorCount = (int)(Math.Pow(2, sectorShift) / sizeof(uint));
-            SectorNumber[] sectorNumbers = new SectorNumber[sectorCount];
+#if NET48
+            var sectorNumbers = new SectorNumber[sectorCount];
+#else
+            var sectorNumbers = new SectorNumber?[sectorCount];
+#endif
 
             for (int i = 0; i < sectorNumbers.Length; i++)
             {
