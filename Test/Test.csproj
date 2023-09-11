@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
     <PackageReference Include="SabreTools.IO" Version="1.1.1" />
-    <PackageReference Include="SabreTools.Models" Version="1.1.0" />
+    <PackageReference Include="SabreTools.Models" Version="1.1.1" />
     <PackageReference Include="UnshieldSharp" Version="1.6.9" />
   </ItemGroup>
 
