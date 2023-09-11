@@ -93,6 +93,11 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.sys", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
 
+                // Found installed in "AppData\Roaming\EasyAntiCheat".
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac.metadata", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("EasyAntiCheatAnimation.png", useEndsWith: true), "Easy Anti-Cheat"),
+
                 // Found in "Intruder" (Version 2287, Steam).
                 new PathMatchSet(new PathMatch("eac_server.dll", useEndsWith: true), "Easy Anti-Cheat"),
                 new PathMatchSet(new PathMatch("easyanticheat", useEndsWith: true), "Easy Anti-Cheat"),
@@ -134,6 +139,11 @@ namespace BinaryObjectScanner.Protection
                 // Found installed in "Program Files (x86)\EasyAntiCheat_EOS".
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.sys", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
+
+                // Found installed in "AppData\Roaming\EasyAntiCheat".
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac.metadata", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("EasyAntiCheatAnimation.png", useEndsWith: true), "Easy Anti-Cheat"),
 
                 // Found in "Intruder" (Version 2287, Steam).
                 new PathMatchSet(new PathMatch("eac_server.dll", useEndsWith: true), "Easy Anti-Cheat"),
