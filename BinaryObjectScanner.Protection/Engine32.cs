@@ -11,8 +11,7 @@ namespace BinaryObjectScanner.Protection
     /// <summary>
     /// Engine32 is the presumed name of a specific disc check DRM. This disc check merely checks for the presence of a specifically named file on the disc. 
     /// The file "engine32.dll" is always present (hence the name), and is where the disc checking logic is present.
-    /// Engine32 appears to have been initially used in games localized by Nival and then later by Atomy.
-    /// There is mention of the file "engine32.dll" being present in Fritz 15 as well (https://steamcommunity.com/app/427480/discussions/0/358416640404165471), though that's likely an unrelated file with the same name.
+    /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/engine32/engine32.md"/>
     /// </summary>
     public class Engine32 : IPathCheck, IPortableExecutableCheck
     {
