@@ -93,6 +93,11 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.sys", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
 
+                // Found installed in "AppData\Roaming\EasyAntiCheat".
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac.metadata", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("EasyAntiCheatAnimation.png", useEndsWith: true), "Easy Anti-Cheat"),
+
                 // Found in "Intruder" (Version 2287, Steam).
                 new PathMatchSet(new PathMatch("eac_server.dll", useEndsWith: true), "Easy Anti-Cheat"),
                 new PathMatchSet(new PathMatch("easyanticheat", useEndsWith: true), "Easy Anti-Cheat"),
@@ -112,6 +117,10 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in "VRChat" (Version 2022.2.2p2, Oculus).
                 new PathMatchSet(new PathMatch("start_protected_game.exe", useEndsWith: true), "Easy Anti-Cheat"),
+
+                // Found in "Apex Legends" (Build ID 12029216, Steam)
+                new PathMatchSet(new PathMatch("EasyAntiCheat_launcher.exe", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("easyanticheat_x64.so", useEndsWith: true), "Easy Anti-Cheat"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -131,6 +140,11 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
                 new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.sys", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
 
+                // Found installed in "AppData\Roaming\EasyAntiCheat".
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac.metadata", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("EasyAntiCheatAnimation.png", useEndsWith: true), "Easy Anti-Cheat"),
+
                 // Found in "Intruder" (Version 2287, Steam).
                 new PathMatchSet(new PathMatch("eac_server.dll", useEndsWith: true), "Easy Anti-Cheat"),
                 new PathMatchSet(new PathMatch("easyanticheat", useEndsWith: true), "Easy Anti-Cheat"),
@@ -150,6 +164,10 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in "VRChat" (Version 2022.2.2p2, Oculus).
                 new PathMatchSet(new PathMatch("start_protected_game.exe", useEndsWith: true), "Easy Anti-Cheat"),
+
+                // Found in "Apex Legends" (Build ID 12029216, Steam)
+                new PathMatchSet(new PathMatch("EasyAntiCheat_launcher.exe", useEndsWith: true), "Easy Anti-Cheat"),
+                new PathMatchSet(new PathMatch("easyanticheat_x64.so", useEndsWith: true), "Easy Anti-Cheat"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
