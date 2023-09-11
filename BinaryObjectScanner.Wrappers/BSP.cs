@@ -98,7 +98,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var file = Builders.BSP.ParseFile(data);
+            var file = new SabreTools.Serialization.Streams.BSP().Deserialize(data);
             if (file == null)
                 return null;
 

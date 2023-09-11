@@ -459,7 +459,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var file = Builders.GCF.ParseFile(data);
+            var file = new SabreTools.Serialization.Streams.GCF().Deserialize(data);
             if (file == null)
                 return null;
 

@@ -286,7 +286,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var cabinet = Builders.InstallShieldCabinet.ParseCabinet(data);
+            var cabinet = new SabreTools.Serialization.Streams.InstallShieldCabinet().Deserialize(data);
             if (cabinet == null)
                 return null;
 

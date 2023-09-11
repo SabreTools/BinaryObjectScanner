@@ -364,7 +364,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var archive = Builders.Nitro.ParseCart(data);
+            var archive = new SabreTools.Serialization.Streams.Nitro().Deserialize(data);
             if (archive == null)
                 return null;
 

@@ -269,7 +269,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var archive = Builders.N3DS.ParseCart(data);
+            var archive = new SabreTools.Serialization.Streams.N3DS().Deserialize(data);
             if (archive == null)
                 return null;
 

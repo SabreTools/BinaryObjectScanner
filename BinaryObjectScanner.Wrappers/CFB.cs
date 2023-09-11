@@ -186,7 +186,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var binary = Builders.CFB.ParseBinary(data);
+            var binary = new SabreTools.Serialization.Streams.CFB().Deserialize(data);
             if (binary == null)
                 return null;
 

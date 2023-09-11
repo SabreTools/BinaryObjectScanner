@@ -89,7 +89,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var svm = Builders.BDPlus.ParseSVM(data);
+            var svm = new SabreTools.Serialization.Streams.BDPlus().Deserialize(data);
             if (svm == null)
                 return null;
 

@@ -140,7 +140,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var file = Builders.XZP.ParseFile(data);
+            var file = new SabreTools.Serialization.Streams.XZP().Deserialize(data);
             if (file == null)
                 return null;
 

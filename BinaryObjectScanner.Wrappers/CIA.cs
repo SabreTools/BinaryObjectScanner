@@ -308,7 +308,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var archive = Builders.N3DS.ParseCIA(data);
+            var archive = new SabreTools.Serialization.Streams.CIA().Deserialize(data);
             if (archive == null)
                 return null;
 

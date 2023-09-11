@@ -136,7 +136,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builders.MSDOS.ParseExecutable(data);
+            var executable = new SabreTools.Serialization.Streams.MSDOS().Deserialize(data);
             if (executable == null)
                 return null;
 

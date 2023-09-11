@@ -270,7 +270,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var audioFile = Builders.PlayJ.ParseAudioFile(data);
+            var audioFile = new SabreTools.Serialization.Streams.PlayJAudio().Deserialize(data);
             if (audioFile == null)
                 return null;
 

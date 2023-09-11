@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using static BinaryObjectScanner.Builders.Extensions;
+using static SabreTools.Serialization.Extensions;
 
 namespace BinaryObjectScanner.Wrappers
 {
@@ -264,7 +264,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builders.NewExecutable.ParseExecutable(data);
+            var executable = new SabreTools.Serialization.Streams.NewExecutable().Deserialize(data);
             if (executable == null)
                 return null;
 

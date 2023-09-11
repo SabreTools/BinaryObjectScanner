@@ -338,7 +338,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var executable = Builders.LinearExecutable.ParseExecutable(data);
+            var executable = new SabreTools.Serialization.Streams.LinearExecutable().Deserialize(data);
             if (executable == null)
                 return null;
 

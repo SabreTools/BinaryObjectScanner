@@ -72,7 +72,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var mediaKeyBlock = Builders.AACS.ParseMediaKeyBlock(data);
+            var mediaKeyBlock = new SabreTools.Serialization.Streams.AACS().Deserialize(data);
             if (mediaKeyBlock == null)
                 return null;
 

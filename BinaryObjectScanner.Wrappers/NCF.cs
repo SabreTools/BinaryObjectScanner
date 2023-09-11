@@ -246,7 +246,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
                 return null;
 
-            var file = Builders.NCF.ParseFile(data);
+            var file = new SabreTools.Serialization.Streams.NCF().Deserialize(data);
             if (file == null)
                 return null;
 
