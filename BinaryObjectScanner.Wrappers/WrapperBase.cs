@@ -27,11 +27,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Internal model
         /// </summary>
         /// <remarks>TODO: Should this have a public getter?</remarks>
-#if NET48
         protected T _model = default;
-#else
-        protected T? _model = default;
-#endif
 
         /// <summary>
         /// Source of the original data
