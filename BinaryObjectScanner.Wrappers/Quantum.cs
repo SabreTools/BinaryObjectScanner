@@ -39,7 +39,11 @@ namespace BinaryObjectScanner.Wrappers
         #region File List
 
         /// <inheritdoc cref="Models.Quantum.Archive.FileList"/>
+#if NET48
         public SabreTools.Models.Quantum.FileDescriptor[] FileList => _model.FileList;
+#else
+        public SabreTools.Models.Quantum.FileDescriptor?[]? FileList => _model.FileList;
+#endif
 
         #endregion
 

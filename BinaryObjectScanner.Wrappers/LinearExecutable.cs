@@ -229,43 +229,95 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _model.ObjectTable;
+#else
+        public SabreTools.Models.LinearExecutable.ObjectTableEntry?[]? ObjectTable => _model.ObjectTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectPageMap"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => _model.ObjectPageMap;
+#else
+        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry?[]? ObjectPageMap => _model.ObjectPageMap;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ResourceTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _model.ResourceTable;
+#else
+        public SabreTools.Models.LinearExecutable.ResourceTableEntry?[]? ResourceTable => _model.ResourceTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ResidentNamesTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => _model.ResidentNamesTable;
+#else
+        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry?[]? ResidentNamesTable => _model.ResidentNamesTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.EntryTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.EntryTableBundle[] EntryTable => _model.EntryTable;
+#else
+        public SabreTools.Models.LinearExecutable.EntryTableBundle?[]? EntryTable => _model.EntryTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ModuleFormatDirectivesTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _model.ModuleFormatDirectivesTable;
+#else
+        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry?[]? ModuleFormatDirectivesTable => _model.ModuleFormatDirectivesTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.VerifyRecordDirectiveTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => _model.VerifyRecordDirectiveTable;
+#else
+        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry?[]? VerifyRecordDirectiveTable => _model.VerifyRecordDirectiveTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.PerPageChecksumTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => _model.PerPageChecksumTable;
+#else
+        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry?[]? PerPageChecksumTable => _model.PerPageChecksumTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupPageTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => _model.FixupPageTable;
+#else
+        public SabreTools.Models.LinearExecutable.FixupPageTableEntry?[]? FixupPageTable => _model.FixupPageTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupRecordTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => _model.FixupRecordTable;
+#else
+        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry?[]? FixupRecordTable => _model.FixupRecordTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleNameTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => _model.ImportModuleNameTable;
+#else
+        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry?[]? ImportModuleNameTable => _model.ImportModuleNameTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleProcedureNameTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => _model.ImportModuleProcedureNameTable;
+#else
+        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry?[]? ImportModuleProcedureNameTable => _model.ImportModuleProcedureNameTable;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.NonResidentNamesTable"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => _model.NonResidentNamesTable;
+#else
+        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry?[]? NonResidentNamesTable => _model.NonResidentNamesTable;
+#endif
 
         #endregion
 

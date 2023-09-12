@@ -177,35 +177,55 @@ namespace BinaryObjectScanner.Wrappers
         #region File Descriptors
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptors"/>
+#if NET48
         public SabreTools.Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => _model.FileDescriptors;
+#else
+        public SabreTools.Models.InstallShieldCabinet.FileDescriptor?[]? FileDescriptors => _model.FileDescriptors;
+#endif
 
         #endregion
 
         #region File Group Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroupOffsets"/>
+#if NET48
         public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => _model.FileGroupOffsets;
+#else
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList?>? FileGroupOffsets => _model.FileGroupOffsets;
+#endif
 
         #endregion
 
         #region File Groups
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroups"/>
+#if NET48
         public SabreTools.Models.InstallShieldCabinet.FileGroup[] FileGroups => _model.FileGroups;
+#else
+        public SabreTools.Models.InstallShieldCabinet.FileGroup?[]? FileGroups => _model.FileGroups;
+#endif
 
         #endregion
 
         #region Component Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.ComponentOffsets"/>
+#if NET48
         public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> ComponentOffsets => _model.ComponentOffsets;
+#else
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList?>? ComponentOffsets => _model.ComponentOffsets;
+#endif
 
         #endregion
 
         #region Components
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.Components"/>
+#if NET48
         public SabreTools.Models.InstallShieldCabinet.Component[] Components => _model.Components;
+#else
+        public SabreTools.Models.InstallShieldCabinet.Component?[]? Components => _model.Components;
+#endif
 
         #endregion
 

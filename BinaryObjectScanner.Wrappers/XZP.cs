@@ -49,28 +49,44 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.XZP.DirectoryEntries"/>
+#if NET48
         public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
+#else
+        public SabreTools.Models.XZP.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
+#endif
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryEntries"/>
+#if NET48
         public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _model.PreloadDirectoryEntries;
+#else
+        public SabreTools.Models.XZP.DirectoryEntry?[]? PreloadDirectoryEntries => _model.PreloadDirectoryEntries;
+#endif
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryMappings"/>
+#if NET48
         public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _model.PreloadDirectoryMappings;
+#else
+        public SabreTools.Models.XZP.DirectoryMapping?[]? PreloadDirectoryMappings => _model.PreloadDirectoryMappings;
+#endif
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.XZP.DirectoryItems"/>
+#if NET48
         public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
+#else
+        public SabreTools.Models.XZP.DirectoryItem?[]? DirectoryItems => _model.DirectoryItems;
+#endif
 
         #endregion
 

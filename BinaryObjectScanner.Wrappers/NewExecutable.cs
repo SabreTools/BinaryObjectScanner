@@ -186,25 +186,53 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.NewExecutable.SegmentTable"/>
+#if NET48
         public SabreTools.Models.NewExecutable.SegmentTableEntry[] SegmentTable => _model.SegmentTable;
+#else
+        public SabreTools.Models.NewExecutable.SegmentTableEntry?[]? SegmentTable => _model.SegmentTable;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ResourceTable"/>
+#if NET48
         public SabreTools.Models.NewExecutable.ResourceTable ResourceTable => _model.ResourceTable;
+#else
+        public SabreTools.Models.NewExecutable.ResourceTable? ResourceTable => _model.ResourceTable;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ResidentNameTable"/>
+#if NET48
         public SabreTools.Models.NewExecutable.ResidentNameTableEntry[] ResidentNameTable => _model.ResidentNameTable;
+#else
+        public SabreTools.Models.NewExecutable.ResidentNameTableEntry?[]? ResidentNameTable => _model.ResidentNameTable;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ModuleReferenceTable"/>
+#if NET48
         public SabreTools.Models.NewExecutable.ModuleReferenceTableEntry[] ModuleReferenceTable => _model.ModuleReferenceTable;
+#else
+        public SabreTools.Models.NewExecutable.ModuleReferenceTableEntry?[]? ModuleReferenceTable => _model.ModuleReferenceTable;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ImportedNameTable"/>
+#if NET48
         public Dictionary<ushort, SabreTools.Models.NewExecutable.ImportedNameTableEntry> ImportedNameTable => _model.ImportedNameTable;
+#else
+        public Dictionary<ushort, SabreTools.Models.NewExecutable.ImportedNameTableEntry?>? ImportedNameTable => _model.ImportedNameTable;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.EntryTable"/>
+#if NET48
         public SabreTools.Models.NewExecutable.EntryTableBundle[] EntryTable => _model.EntryTable;
+#else
+        public SabreTools.Models.NewExecutable.EntryTableBundle?[]? EntryTable => _model.EntryTable;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.NonResidentNameTable"/>
+#if NET48
         public SabreTools.Models.NewExecutable.NonResidentNameTableEntry[] NonResidentNameTable => _model.NonResidentNameTable;
+#else
+        public SabreTools.Models.NewExecutable.NonResidentNameTableEntry?[]? NonResidentNameTable => _model.NonResidentNameTable;
+#endif
 
         #endregion
 

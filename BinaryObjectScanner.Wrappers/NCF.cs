@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -100,42 +101,66 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryEntries"/>
+#if NET48
         public SabreTools.Models.NCF.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
+#else
+        public SabreTools.Models.NCF.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
+#endif
 
         #endregion
 
         #region Directory Names
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryNames"/>
-        public System.Collections.Generic.Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
+#if NET48
+        public Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
+#else
+        public Dictionary<long, string?>? DirectoryNames => _model.DirectoryNames;
+#endif
 
         #endregion
 
         #region Directory Info 1 Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo1Entries"/>
+#if NET48
         public SabreTools.Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
+#else
+        public SabreTools.Models.NCF.DirectoryInfo1Entry?[]? DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
+#endif
 
         #endregion
 
         #region Directory Info 2 Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo2Entries"/>
+#if NET48
         public SabreTools.Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
+#else
+        public SabreTools.Models.NCF.DirectoryInfo2Entry?[]? DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
+#endif
 
         #endregion
 
         #region Directory Copy Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryCopyEntries"/>
+#if NET48
         public SabreTools.Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => _model.DirectoryCopyEntries;
+#else
+        public SabreTools.Models.NCF.DirectoryCopyEntry?[]? DirectoryCopyEntries => _model.DirectoryCopyEntries;
+#endif
 
         #endregion
 
         #region Directory Local Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryLocalEntries"/>
+#if NET48
         public SabreTools.Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => _model.DirectoryLocalEntries;
+#else
+        public SabreTools.Models.NCF.DirectoryLocalEntry?[]? DirectoryLocalEntries => _model.DirectoryLocalEntries;
+#endif
 
         #endregion
 
@@ -152,7 +177,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Entries
 
         /// <inheritdoc cref="Models.NCF.File.UnknownEntries"/>
+#if NET48
         public SabreTools.Models.NCF.UnknownEntry[] UnknownEntries => _model.UnknownEntries;
+#else
+        public SabreTools.Models.NCF.UnknownEntry?[]? UnknownEntries => _model.UnknownEntries;
+#endif
 
         #endregion
 
@@ -185,14 +214,22 @@ namespace BinaryObjectScanner.Wrappers
         #region Checksum Map Entries
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumMapEntries"/>
+#if NET48
         public SabreTools.Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => _model.ChecksumMapEntries;
+#else
+        public SabreTools.Models.NCF.ChecksumMapEntry?[]? ChecksumMapEntries => _model.ChecksumMapEntries;
+#endif
 
         #endregion
 
         #region Checksum Entries
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumEntries"/>
+#if NET48
         public SabreTools.Models.NCF.ChecksumEntry[] ChecksumEntries => _model.ChecksumEntries;
+#else
+        public SabreTools.Models.NCF.ChecksumEntry?[]? ChecksumEntries => _model.ChecksumEntries;
+#endif
 
         #endregion
 

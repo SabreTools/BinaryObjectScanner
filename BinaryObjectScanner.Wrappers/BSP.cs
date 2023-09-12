@@ -27,7 +27,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Lumps
 
         /// <inheritdoc cref="Models.BSP.File.Lumps"/>
+#if NET48
         public SabreTools.Models.BSP.Lump[] Lumps => _model.Lumps;
+#else
+        public SabreTools.Models.BSP.Lump?[] Lumps => _model.Lumps;
+#endif
 
         #endregion
 
@@ -44,7 +48,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Textures
 
         /// <inheritdoc cref="Models.BSP.File.Textures"/>
+#if NET48
         public SabreTools.Models.BSP.Texture[] Textures => _model.Textures;
+#else
+        public SabreTools.Models.BSP.Texture?[] Textures => _model.Textures;
+#endif
 
         #endregion
 
@@ -128,7 +136,7 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            
+
             builder.AppendLine("BSP Information:");
             builder.AppendLine("-------------------------");
             builder.AppendLine();

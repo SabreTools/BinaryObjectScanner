@@ -30,7 +30,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Items
 
         /// <inheritdoc cref="Models.PAK.DirectoryItems"/>
+#if NET48
         public SabreTools.Models.PAK.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
+#else
+        public SabreTools.Models.PAK.DirectoryItem?[]? DirectoryItems => _model.DirectoryItems;
+#endif
 
         #endregion
 

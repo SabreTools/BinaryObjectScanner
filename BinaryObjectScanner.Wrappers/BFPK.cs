@@ -32,7 +32,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Files
 
         /// <inheritdoc cref="Models.BFPK.Archive.Files"/>
+#if NET48
         public SabreTools.Models.BFPK.FileEntry[] FileTable => _model.Files;
+#else
+        public SabreTools.Models.BFPK.FileEntry?[] FileTable => _model.Files;
+#endif
 
         #endregion
 

@@ -84,7 +84,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Block Entries
 
         /// <inheritdoc cref="Models.GCF.File.BlockEntries"/>
+#if NET48
         public SabreTools.Models.GCF.BlockEntry[] BlockEntries => _model.BlockEntries;
+#else
+        public SabreTools.Models.GCF.BlockEntry?[]? BlockEntries => _model.BlockEntries;
+#endif
 
         #endregion
 
@@ -107,7 +111,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Fragmentation Maps
 
         /// <inheritdoc cref="Models.GCF.File.FragmentationMaps"/>
+#if NET48
         public SabreTools.Models.GCF.FragmentationMap[] FragmentationMaps => _model.FragmentationMaps;
+#else
+        public SabreTools.Models.GCF.FragmentationMap?[]? FragmentationMaps => _model.FragmentationMaps;
+#endif
 
         #endregion
 
@@ -133,7 +141,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Block Entry Maps
 
         /// <inheritdoc cref="Models.GCF.File.BlockEntryMaps"/>
+#if NET48
         public SabreTools.Models.GCF.BlockEntryMap[] BlockEntryMaps => _model.BlockEntryMaps;
+#else
+        public SabreTools.Models.GCF.BlockEntryMap?[]? BlockEntryMaps => _model.BlockEntryMaps;
+#endif
 
         #endregion
 
@@ -186,42 +198,66 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryEntries"/>
+#if NET48
         public SabreTools.Models.GCF.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
+#else
+        public SabreTools.Models.GCF.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
+#endif
 
         #endregion
 
         #region Directory Names
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryNames"/>
-        public System.Collections.Generic.Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
+#if NET48
+        public Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
+#else
+        public Dictionary<long, string?>? DirectoryNames => _model.DirectoryNames;
+#endif
 
         #endregion
 
         #region Directory Info 1 Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryInfo1Entries"/>
+#if NET48
         public SabreTools.Models.GCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
+#else
+        public SabreTools.Models.GCF.DirectoryInfo1Entry?[]? DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
+#endif
 
         #endregion
 
         #region Directory Info 2 Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryInfo2Entries"/>
+#if NET48
         public SabreTools.Models.GCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
+#else
+        public SabreTools.Models.GCF.DirectoryInfo2Entry?[]? DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
+#endif
 
         #endregion
 
         #region Directory Copy Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryCopyEntries"/>
+#if NET48
         public SabreTools.Models.GCF.DirectoryCopyEntry[] DirectoryCopyEntries => _model.DirectoryCopyEntries;
+#else
+        public SabreTools.Models.GCF.DirectoryCopyEntry?[]? DirectoryCopyEntries => _model.DirectoryCopyEntries;
+#endif
 
         #endregion
 
         #region Directory Local Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryLocalEntries"/>
+#if NET48
         public SabreTools.Models.GCF.DirectoryLocalEntry[] DirectoryLocalEntries => _model.DirectoryLocalEntries;
+#else
+        public SabreTools.Models.GCF.DirectoryLocalEntry?[]? DirectoryLocalEntries => _model.DirectoryLocalEntries;
+#endif
 
         #endregion
 
@@ -238,7 +274,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Map Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryMapEntries"/>
+#if NET48
         public SabreTools.Models.GCF.DirectoryMapEntry[] DirectoryMapEntries => _model.DirectoryMapEntries;
+#else
+        public SabreTools.Models.GCF.DirectoryMapEntry?[]? DirectoryMapEntries => _model.DirectoryMapEntries;
+#endif
 
         #endregion
 
@@ -271,14 +311,22 @@ namespace BinaryObjectScanner.Wrappers
         #region Checksum Map Entries
 
         /// <inheritdoc cref="Models.GCF.File.ChecksumMapEntries"/>
+#if NET48
         public SabreTools.Models.GCF.ChecksumMapEntry[] ChecksumMapEntries => _model.ChecksumMapEntries;
+#else
+        public SabreTools.Models.GCF.ChecksumMapEntry?[]? ChecksumMapEntries => _model.ChecksumMapEntries;
+#endif
 
         #endregion
 
         #region Checksum Entries
 
         /// <inheritdoc cref="Models.GCF.File.ChecksumEntries"/>
+#if NET48
         public SabreTools.Models.GCF.ChecksumEntry[] ChecksumEntries => _model.ChecksumEntries;
+#else
+        public SabreTools.Models.GCF.ChecksumEntry?[]? ChecksumEntries => _model.ChecksumEntries;
+#endif
 
         #endregion
 

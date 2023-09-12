@@ -30,14 +30,22 @@ namespace BinaryObjectScanner.Wrappers
         #region Lumps
 
         /// <inheritdoc cref="Models.WAD.File.Lumps"/>
+#if NET48
         public SabreTools.Models.WAD.Lump[] Lumps => _model.Lumps;
+#else
+        public SabreTools.Models.WAD.Lump?[]? Lumps => _model.Lumps;
+#endif
 
         #endregion
 
         #region Lump Infos
 
         /// <inheritdoc cref="Models.WAD.File.LumpInfos"/>
+#if NET48
         public SabreTools.Models.WAD.LumpInfo[] LumpInfos => _model.LumpInfos;
+#else
+        public SabreTools.Models.WAD.LumpInfo?[]? LumpInfos => _model.LumpInfos;
+#endif
 
         #endregion
 

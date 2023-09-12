@@ -86,14 +86,22 @@ namespace BinaryObjectScanner.Wrappers
         #region Folders
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Folders"/>
+#if NET48
         public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => _model.Folders;
+#else
+        public SabreTools.Models.MicrosoftCabinet.CFFOLDER?[]? Folders => _model.Folders;
+#endif
 
         #endregion
 
         #region Files
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Files"/>
+#if NET48
         public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => _model.Files;
+#else
+        public SabreTools.Models.MicrosoftCabinet.CFFILE?[]? Files => _model.Files;
+#endif
 
         #endregion
 

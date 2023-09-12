@@ -50,14 +50,22 @@ namespace BinaryObjectScanner.Wrappers
         #region Archive Hashes
 
         /// <inheritdoc cref="Models.VPK.ArchiveHashes"/>
+#if NET48
         public SabreTools.Models.VPK.ArchiveHash[] ArchiveHashes => _model.ArchiveHashes;
+#else
+        public SabreTools.Models.VPK.ArchiveHash?[]? ArchiveHashes => _model.ArchiveHashes;
+#endif
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.VPK.DirectoryItems"/>
+#if NET48
         public SabreTools.Models.VPK.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
+#else
+        public SabreTools.Models.VPK.DirectoryItem?[]? DirectoryItems => _model.DirectoryItems;
+#endif
 
         #endregion
 

@@ -214,7 +214,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Block 3
 
         /// <inheritdoc cref="Models.PlayJ.AudioFile.DataFiles"/>
+#if NET48
         public SabreTools.Models.PlayJ.DataFile[] DataFiles => _model.DataFiles;
+#else
+        public SabreTools.Models.PlayJ.DataFile?[]? DataFiles => _model.DataFiles;
+#endif
 
         #endregion
 

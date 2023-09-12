@@ -300,17 +300,29 @@ namespace BinaryObjectScanner.Wrappers
         #region Name Table
 
         /// <inheritdoc cref="Models.Nitro.NameTable.FolderAllocationTable"/>
+#if NET48
         public SabreTools.Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _model.NameTable.FolderAllocationTable;
+#else
+        public SabreTools.Models.Nitro.FolderAllocationTableEntry?[]? FolderAllocationTable => _model.NameTable.FolderAllocationTable;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.NameTable.NameList"/>
+#if NET48
         public SabreTools.Models.Nitro.NameListEntry[] NameList => _model.NameTable.NameList;
+#else
+        public SabreTools.Models.Nitro.NameListEntry?[]? NameList => _model.NameTable.NameList;
+#endif
 
         #endregion
 
         #region File Allocation Table
 
         /// <inheritdoc cref="Models.Nitro.Cart.FileAllocationTable"/>
+#if NET48
         public SabreTools.Models.Nitro.FileAllocationTableEntry[] FileAllocationTable => _model.FileAllocationTable;
+#else
+        public SabreTools.Models.Nitro.FileAllocationTableEntry?[]? FileAllocationTable => _model.FileAllocationTable;
+#endif
 
         #endregion
 

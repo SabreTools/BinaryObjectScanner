@@ -36,7 +36,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Segments
 
         /// <inheritdoc cref="Models.PFF.Archive.Segments"/>
+#if NET48
         public SabreTools.Models.PFF.Segment[] Segments => _model.Segments;
+#else
+        public SabreTools.Models.PFF.Segment?[]? Segments => _model.Segments;
+#endif
 
         #endregion
 

@@ -22,7 +22,11 @@ namespace BinaryObjectScanner.Wrappers
         public int Version => _model.Header.Version;
 
         /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
+#if NET48
         public SabreTools.Models.VBSP.Lump[] Lumps => _model.Header.Lumps;
+#else
+        public SabreTools.Models.VBSP.Lump?[]? Lumps => _model.Header.Lumps;
+#endif
 
         /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
         public int MapRevision => _model.Header.MapRevision;

@@ -38,7 +38,11 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] PartitionsCryptType => _model.Header.PartitionsCryptType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsTable"/>
+#if NET48
         public SabreTools.Models.N3DS.PartitionTableEntry[] PartitionsTable => _model.Header.PartitionsTable;
+#else
+        public SabreTools.Models.N3DS.PartitionTableEntry?[]? PartitionsTable => _model.Header.PartitionsTable;
+#endif
 
         #endregion
 
@@ -194,28 +198,44 @@ namespace BinaryObjectScanner.Wrappers
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.Cart.Partitions"/>
+#if NET48
         public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _model.Partitions;
+#else
+        public SabreTools.Models.N3DS.NCCHHeader?[]? Partitions => _model.Partitions;
+#endif
 
         #endregion
 
         #region Extended Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExtendedHeaders"/>
+#if NET48
         public SabreTools.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _model.ExtendedHeaders;
+#else
+        public SabreTools.Models.N3DS.NCCHExtendedHeader?[]? ExtendedHeaders => _model.ExtendedHeaders;
+#endif
 
         #endregion
 
         #region ExeFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExeFSHeaders"/>
+#if NET48
         public SabreTools.Models.N3DS.ExeFSHeader[] ExeFSHeaders => _model.ExeFSHeaders;
+#else
+        public SabreTools.Models.N3DS.ExeFSHeader?[]? ExeFSHeaders => _model.ExeFSHeaders;
+#endif
 
         #endregion
 
         #region RomFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.RomFSHeaders"/>
+#if NET48
         public SabreTools.Models.N3DS.RomFSHeader[] RomFSHeaders => _model.RomFSHeaders;
+#else
+        public SabreTools.Models.N3DS.RomFSHeader?[]? RomFSHeaders => _model.RomFSHeaders;
+#endif
 
         #endregion
 

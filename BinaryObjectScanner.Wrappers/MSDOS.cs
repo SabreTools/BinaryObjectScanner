@@ -82,7 +82,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Relocation Table
 
         /// <inheritdoc cref="Models.MSDOS.Executable.RelocationTable"/>
+#if NET48
         public SabreTools.Models.MSDOS.RelocationEntry[] RelocationTable => _model.RelocationTable;
+#else
+        public SabreTools.Models.MSDOS.RelocationEntry?[]? RelocationTable => _model.RelocationTable;
+#endif
 
         #endregion
 

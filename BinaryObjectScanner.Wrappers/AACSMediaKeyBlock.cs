@@ -18,7 +18,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Records
 
         /// <inheritdoc cref="Models.AACS.MediaKeyBlock.Records"/>
+#if NET48
         public SabreTools.Models.AACS.Record[] Records => _model.Records;
+#else
+        public SabreTools.Models.AACS.Record?[] Records => _model.Records;
+#endif
 
         #endregion
 

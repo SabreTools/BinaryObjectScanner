@@ -30,7 +30,11 @@ namespace BinaryObjectScanner.Wrappers
         public ushort MinorVersion => _model.Header.MinorVersion;
 
         /// <inheritdoc cref="Models.SGA.Header4.FileMD5"/>
+#if NET48
         public byte[] FileMD5
+#else
+        public byte[]? FileMD5
+#endif
         {
             get
             {
@@ -44,7 +48,11 @@ namespace BinaryObjectScanner.Wrappers
         }
 
         /// <inheritdoc cref="Models.SGA.Header4.Name"/>
+#if NET48
         public string Name
+#else
+        public string? Name
+#endif
         {
             get
             {
@@ -60,7 +68,11 @@ namespace BinaryObjectScanner.Wrappers
         }
 
         /// <inheritdoc cref="Models.SGA.Header4.HeaderMD5"/>
+#if NET48
         public byte[] HeaderMD5
+#else
+        public byte[]? HeaderMD5
+#endif
         {
             get
             {
@@ -286,7 +298,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Sections
 
         /// <inheritdoc cref="Models.SGA.SpecializedDirectory{THeader, TDirectoryHeader, TSection, TFolder, TFile, U}.Sections"/>
+#if NET48
         public object[] Sections
+#else
+        public object?[]? Sections
+#endif
         {
             get
             {
@@ -306,7 +322,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Folders
 
         /// <inheritdoc cref="Models.SGA.SpecializedDirectory{THeader, TDirectoryHeader, TSection, TFolder, TFile, U}.Folders"/>
+#if NET48
         public object[] Folders
+#else
+        public object?[]? Folders
+#endif
         {
             get
             {
@@ -326,7 +346,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Files
 
         /// <inheritdoc cref="Models.SGA.SpecializedDirectory{THeader, TDirectoryHeader, TSection, TFolder, TFile, U}.Files"/>
+#if NET48
         public object[] Files
+#else
+        public object?[]? Files
+#endif
         {
             get
             {

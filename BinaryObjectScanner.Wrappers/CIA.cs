@@ -49,7 +49,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Certificate Chain
 
         /// <inheritdoc cref="Models.N3DS.CIA.CertificateChain"/>
+#if NET48
         public SabreTools.Models.N3DS.Certificate[] CertificateChain => _model.CertificateChain;
+#else
+        public SabreTools.Models.N3DS.Certificate?[]? CertificateChain => _model.CertificateChain;
+#endif
 
         #endregion
 
@@ -140,7 +144,11 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] T_ContentIndex => _model.Ticket.ContentIndex;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CertificateChain"/>
+#if NET48
         public SabreTools.Models.N3DS.Certificate[] T_CertificateChain => _model.Ticket.CertificateChain;
+#else
+        public SabreTools.Models.N3DS.Certificate?[]? T_CertificateChain => _model.Ticket.CertificateChain;
+#endif
 
         #endregion
 
@@ -222,20 +230,36 @@ namespace BinaryObjectScanner.Wrappers
         public byte[] TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentInfoRecords"/>
+#if NET48
         public SabreTools.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _model.TMDFileData.ContentInfoRecords;
+#else
+        public SabreTools.Models.N3DS.ContentInfoRecord?[]? TMD_ContentInfoRecords => _model.TMDFileData.ContentInfoRecords;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentChunkRecords"/>
+#if NET48
         public SabreTools.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _model.TMDFileData.ContentChunkRecords;
+#else
+        public SabreTools.Models.N3DS.ContentChunkRecord?[]? TMD_ContentChunkRecords => _model.TMDFileData.ContentChunkRecords;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CertificateChain"/>
+#if NET48
         public SabreTools.Models.N3DS.Certificate[] TMD_CertificateChain => _model.TMDFileData.CertificateChain;
+#else
+        public SabreTools.Models.N3DS.Certificate?[]? TMD_CertificateChain => _model.TMDFileData.CertificateChain;
+#endif
 
         #endregion
 
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.CIA.Partitions"/>
+#if NET48
         public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _model.Partitions;
+#else
+        public SabreTools.Models.N3DS.NCCHHeader?[]? Partitions => _model.Partitions;
+#endif
 
         #endregion
 

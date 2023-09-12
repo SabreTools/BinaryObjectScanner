@@ -287,16 +287,28 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.PortableExecutable.SectionTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.SectionHeader[] SectionTable => _model.SectionTable;
+#else
+        public SabreTools.Models.PortableExecutable.SectionHeader?[]? SectionTable => _model.SectionTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFSymbolTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _model.COFFSymbolTable;
+#else
+        public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry?[]? COFFSymbolTable => _model.COFFSymbolTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFStringTable"/>
         public SabreTools.Models.PortableExecutable.COFFStringTable COFFStringTable => _model.COFFStringTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.AttributeCertificateTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _model.AttributeCertificateTable;
+#else
+        public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry?[]? AttributeCertificateTable => _model.AttributeCertificateTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.DelayLoadDirectoryTable"/>
         public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _model.DelayLoadDirectoryTable;
@@ -306,7 +318,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Sections
 
         /// <inheritdoc cref="Models.PortableExecutable.BaseRelocationTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _model.BaseRelocationTable;
+#else
+        public SabreTools.Models.PortableExecutable.BaseRelocationBlock?[]? BaseRelocationTable => _model.BaseRelocationTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
         public SabreTools.Models.PortableExecutable.DebugTable DebugTable => _model.DebugTable;
@@ -321,7 +337,11 @@ namespace BinaryObjectScanner.Wrappers
         public SabreTools.Models.PortableExecutable.ImportTable ImportTable => _model.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
+#if NET48
         public string[] ImportHintNameTable => _model.ImportTable?.HintNameTable != null
+#else
+        public string?[]? ImportHintNameTable => _model.ImportTable?.HintNameTable != null
+#endif
             ? _model.ImportTable.HintNameTable.Select(entry => entry.Name).ToArray()
             : null;
 
@@ -476,7 +496,7 @@ namespace BinaryObjectScanner.Wrappers
                     // If we didn't find the end of section data
                     if (endOfSectionData <= 0)
                         endOfSectionData = -1;
-                        
+
                     // Cache and return the position
                     _overlayAddress = endOfSectionData;
                     return _overlayAddress.Value;
@@ -2423,7 +2443,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             Dictionary<int, string> stringTable = null;
+#else
+            Dictionary<int, string?>? stringTable = null;
+#endif
             try { stringTable = entry.AsStringTable(); } catch { }
             if (stringTable == null)
             {
@@ -3021,11 +3045,19 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="path">Partial path to check for</param>
         /// <returns>Enumerable of matching debug data</returns>
+#if NET48
         public IEnumerable<object> FindCodeViewDebugTableByPath(string path)
+#else
+        public IEnumerable<object?> FindCodeViewDebugTableByPath(string path)
+#endif
         {
             // Ensure that we have the debug data cached
             if (DebugData == null)
+#if NET48
                 return Enumerable.Empty<object>();
+#else
+                return Enumerable.Empty<object?>();
+#endif
 
             var nb10Found = DebugData.Select(r => r.Value)
                 .Select(r => r as SabreTools.Models.PortableExecutable.NB10ProgramDatabase)
@@ -3047,11 +3079,19 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="value">String value to check for</param>
         /// <returns>Enumerable of matching debug data</returns>
+#if NET48
         public IEnumerable<byte[]> FindGenericDebugTableByValue(string value)
+#else
+        public IEnumerable<byte[]?> FindGenericDebugTableByValue(string value)
+#endif
         {
             // Ensure that we have the resource data cached
             if (DebugData == null)
+#if NET48
                 return Enumerable.Empty<byte[]>();
+#else
+                return Enumerable.Empty<byte[]>();
+#endif
 
             return DebugData.Select(r => r.Value)
                 .Select(b => b as byte[])
@@ -3155,11 +3195,19 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="title">Dialog box title to check for</param>
         /// <returns>Enumerable of matching resources</returns>
+#if NET48
         public IEnumerable<SabreTools.Models.PortableExecutable.DialogBoxResource> FindDialogByTitle(string title)
+#else
+        public IEnumerable<SabreTools.Models.PortableExecutable.DialogBoxResource?> FindDialogByTitle(string title)
+#endif
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
+#if NET48
                 return Enumerable.Empty<SabreTools.Models.PortableExecutable.DialogBoxResource>();
+#else
+                return Enumerable.Empty<SabreTools.Models.PortableExecutable.DialogBoxResource?>();
+#endif
 
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as SabreTools.Models.PortableExecutable.DialogBoxResource)
@@ -3176,11 +3224,19 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="title">Dialog box item title to check for</param>
         /// <returns>Enumerable of matching resources</returns>
+#if NET48
         public IEnumerable<SabreTools.Models.PortableExecutable.DialogBoxResource> FindDialogBoxByItemTitle(string title)
+#else
+        public IEnumerable<SabreTools.Models.PortableExecutable.DialogBoxResource?> FindDialogBoxByItemTitle(string title)
+#endif
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
+#if NET48
                 return Enumerable.Empty<SabreTools.Models.PortableExecutable.DialogBoxResource>();
+#else
+                return Enumerable.Empty<SabreTools.Models.PortableExecutable.DialogBoxResource?>();
+#endif
 
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as SabreTools.Models.PortableExecutable.DialogBoxResource)
@@ -3209,14 +3265,26 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="entry">String entry to check for</param>
         /// <returns>Enumerable of matching resources</returns>
+#if NET48
         public IEnumerable<Dictionary<int, string>> FindStringTableByEntry(string entry)
+#else
+        public IEnumerable<Dictionary<int, string?>?> FindStringTableByEntry(string entry)
+#endif
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
+#if NET48
                 return Enumerable.Empty<Dictionary<int, string>>();
+#else
+                return Enumerable.Empty<Dictionary<int, string?>?>();
+#endif
 
             return ResourceData.Select(r => r.Value)
+#if NET48
                 .Select(r => r as Dictionary<int, string>)
+#else
+                .Select(r => r as Dictionary<int, string?>)
+#endif
                 .Where(st => st != null)
                 .Where(st => st.Select(kvp => kvp.Value)
                     .Any(s => s.Contains(entry)));
@@ -3227,11 +3295,19 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="typeName">Type name to check for</param>
         /// <returns>Enumerable of matching resources</returns>
+#if NET48
         public IEnumerable<byte[]> FindResourceByNamedType(string typeName)
+#else
+        public IEnumerable<byte[]?> FindResourceByNamedType(string typeName)
+#endif
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
+#if NET48
                 return Enumerable.Empty<byte[]>();
+#else
+                return Enumerable.Empty<byte[]?>();
+#endif
 
             return ResourceData.Where(kvp => kvp.Key.Contains(typeName))
                 .Select(kvp => kvp.Value as byte[])
@@ -3243,11 +3319,19 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="value">String value to check for</param>
         /// <returns>Enumerable of matching resources</returns>
+#if NET48
         public IEnumerable<byte[]> FindGenericResource(string value)
+#else
+        public IEnumerable<byte[]?> FindGenericResource(string value)
+#endif
         {
             // Ensure that we have the resource data cached
             if (ResourceData == null)
+#if NET48
                 return Enumerable.Empty<byte[]>();
+#else
+                return Enumerable.Empty<byte[]?>();
+#endif
 
             return ResourceData.Select(r => r.Value)
                 .Select(r => r as byte[])
