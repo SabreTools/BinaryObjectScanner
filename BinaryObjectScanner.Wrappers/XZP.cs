@@ -4,12 +4,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class XZP : WrapperBase
+    public class XZP : WrapperBase<SabreTools.Models.XZP.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Xbox Package File (XZP)";
+        public override string DescriptionString => "Xbox Package File (XZP)";
 
         #endregion
 
@@ -18,69 +18,69 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.XZP.Header.Signature"/>
-        public string Signature => _file.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.XZP.Header.Version"/>
-        public uint Version => _file.Header.Version;
+        public uint Version => _model.Header.Version;
 
         /// <inheritdoc cref="Models.XZP.Header.PreloadDirectoryEntryCount"/>
-        public uint PreloadDirectoryEntryCount => _file.Header.PreloadDirectoryEntryCount;
+        public uint PreloadDirectoryEntryCount => _model.Header.PreloadDirectoryEntryCount;
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryEntryCount"/>
-        public uint DirectoryEntryCount => _file.Header.DirectoryEntryCount;
+        public uint DirectoryEntryCount => _model.Header.DirectoryEntryCount;
 
         /// <inheritdoc cref="Models.XZP.Header.PreloadBytes"/>
-        public uint PreloadBytes => _file.Header.PreloadBytes;
+        public uint PreloadBytes => _model.Header.PreloadBytes;
 
         /// <inheritdoc cref="Models.XZP.Header.HeaderLength"/>
-        public uint HeaderLength => _file.Header.HeaderLength;
+        public uint HeaderLength => _model.Header.HeaderLength;
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemCount"/>
-        public uint DirectoryItemCount => _file.Header.DirectoryItemCount;
+        public uint DirectoryItemCount => _model.Header.DirectoryItemCount;
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemOffset"/>
-        public uint DirectoryItemOffset => _file.Header.DirectoryItemOffset;
+        public uint DirectoryItemOffset => _model.Header.DirectoryItemOffset;
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemLength"/>
-        public uint DirectoryItemLength => _file.Header.DirectoryItemLength;
+        public uint DirectoryItemLength => _model.Header.DirectoryItemLength;
 
         #endregion
 
         #region Directory Entries
 
         /// <inheritdoc cref="Models.XZP.DirectoryEntries"/>
-        public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryEntries"/>
-        public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _file.PreloadDirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _model.PreloadDirectoryEntries;
 
         #endregion
 
         #region Preload Directory Entries
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryMappings"/>
-        public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _file.PreloadDirectoryMappings;
+        public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _model.PreloadDirectoryMappings;
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.XZP.DirectoryItems"/>
-        public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
 
         #endregion
 
         #region Footer
 
         /// <inheritdoc cref="Models.XZP.Footer.FileLength"/>
-        public uint F_FileLength => _file.Footer.FileLength;
+        public uint F_FileLength => _model.Footer.FileLength;
 
         /// <inheritdoc cref="Models.XZP.Footer.Signature"/>
-        public string F_Signature => _file.Footer.Signature;
+        public string F_Signature => _model.Footer.Signature;
 
         #endregion
 
@@ -89,24 +89,32 @@ namespace BinaryObjectScanner.Wrappers
         #region Extension Properties
 
         // TODO: Figure out what extensions are needed
-        
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the XZP
-        /// </summary>
-        private SabreTools.Models.XZP.File _file;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private XZP() { }
+        /// <inheritdoc/>
+#if NET48
+        public XZP(SabreTools.Models.XZP.File model, byte[] data, int offset)
+#else
+        public XZP(SabreTools.Models.XZP.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public XZP(SabreTools.Models.XZP.File model, Stream data)
+#else
+        public XZP(SabreTools.Models.XZP.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a XZP from a byte array and offset
@@ -144,13 +152,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new XZP
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new XZP(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -315,7 +324,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

@@ -3,12 +3,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class NCF : WrapperBase
+    public class NCF : WrapperBase<SabreTools.Models.NCF.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Half-Life No Cache File (NCF)";
+        public override string DescriptionString => "Half-Life No Cache File (NCF)";
 
         #endregion
 
@@ -17,202 +17,210 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy0"/>
-        public uint Dummy0 => _file.Header.Dummy0;
+        public uint Dummy0 => _model.Header.Dummy0;
 
         /// <inheritdoc cref="Models.NCF.Header.MajorVersion"/>
-        public uint MajorVersion => _file.Header.MajorVersion;
+        public uint MajorVersion => _model.Header.MajorVersion;
 
         /// <inheritdoc cref="Models.NCF.Header.MinorVersion"/>
-        public uint MinorVersion => _file.Header.MinorVersion;
+        public uint MinorVersion => _model.Header.MinorVersion;
 
         /// <inheritdoc cref="Models.NCF.Header.CacheID"/>
-        public uint CacheID => _file.Header.CacheID;
+        public uint CacheID => _model.Header.CacheID;
 
         /// <inheritdoc cref="Models.NCF.Header.LastVersionPlayed"/>
-        public uint LastVersionPlayed => _file.Header.LastVersionPlayed;
+        public uint LastVersionPlayed => _model.Header.LastVersionPlayed;
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy1"/>
-        public uint Dummy1 => _file.Header.Dummy1;
+        public uint Dummy1 => _model.Header.Dummy1;
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy2"/>
-        public uint Dummy2 => _file.Header.Dummy2;
+        public uint Dummy2 => _model.Header.Dummy2;
 
         /// <inheritdoc cref="Models.NCF.Header.FileSize"/>
-        public uint FileSize => _file.Header.FileSize;
+        public uint FileSize => _model.Header.FileSize;
 
         /// <inheritdoc cref="Models.NCF.Header.BlockSize"/>
-        public uint BlockSize => _file.Header.BlockSize;
+        public uint BlockSize => _model.Header.BlockSize;
 
         /// <inheritdoc cref="Models.NCF.Header.BlockCount"/>
-        public uint BlockCount => _file.Header.BlockCount;
+        public uint BlockCount => _model.Header.BlockCount;
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy3"/>
-        public uint Dummy3 => _file.Header.Dummy3;
+        public uint Dummy3 => _model.Header.Dummy3;
 
         #endregion
 
         #region Directory Header
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy0"/>
-        public uint DH_Dummy0 => _file.DirectoryHeader.Dummy0;
+        public uint DH_Dummy0 => _model.DirectoryHeader.Dummy0;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.CacheID"/>
-        public uint DH_CacheID => _file.DirectoryHeader.CacheID;
+        public uint DH_CacheID => _model.DirectoryHeader.CacheID;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.LastVersionPlayed"/>
-        public uint DH_LastVersionPlayed => _file.DirectoryHeader.LastVersionPlayed;
+        public uint DH_LastVersionPlayed => _model.DirectoryHeader.LastVersionPlayed;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.ItemCount"/>
-        public uint DH_ItemCount => _file.DirectoryHeader.ItemCount;
+        public uint DH_ItemCount => _model.DirectoryHeader.ItemCount;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.FileCount"/>
-        public uint DH_FileCount => _file.DirectoryHeader.FileCount;
+        public uint DH_FileCount => _model.DirectoryHeader.FileCount;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.ChecksumDataLength"/>
-        public uint DH_ChecksumDataLength => _file.DirectoryHeader.ChecksumDataLength;
+        public uint DH_ChecksumDataLength => _model.DirectoryHeader.ChecksumDataLength;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.DirectorySize"/>
-        public uint DH_DirectorySize => _file.DirectoryHeader.DirectorySize;
+        public uint DH_DirectorySize => _model.DirectoryHeader.DirectorySize;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.NameSize"/>
-        public uint DH_NameSize => _file.DirectoryHeader.NameSize;
+        public uint DH_NameSize => _model.DirectoryHeader.NameSize;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Info1Count"/>
-        public uint DH_Info1Count => _file.DirectoryHeader.Info1Count;
+        public uint DH_Info1Count => _model.DirectoryHeader.Info1Count;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.CopyCount"/>
-        public uint DH_CopyCount => _file.DirectoryHeader.CopyCount;
+        public uint DH_CopyCount => _model.DirectoryHeader.CopyCount;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.LocalCount"/>
-        public uint DH_LocalCount => _file.DirectoryHeader.LocalCount;
+        public uint DH_LocalCount => _model.DirectoryHeader.LocalCount;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy1"/>
-        public uint DH_Dummy1 => _file.DirectoryHeader.Dummy1;
+        public uint DH_Dummy1 => _model.DirectoryHeader.Dummy1;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy2"/>
-        public uint DH_Dummy2 => _file.DirectoryHeader.Dummy2;
+        public uint DH_Dummy2 => _model.DirectoryHeader.Dummy2;
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Checksum"/>
-        public uint DH_Checksum => _file.DirectoryHeader.Checksum;
+        public uint DH_Checksum => _model.DirectoryHeader.Checksum;
 
         #endregion
 
         #region Directory Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryEntries"/>
-        public SabreTools.Models.NCF.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public SabreTools.Models.NCF.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
 
         #endregion
 
         #region Directory Names
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryNames"/>
-        public System.Collections.Generic.Dictionary<long, string> DirectoryNames => _file.DirectoryNames;
+        public System.Collections.Generic.Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
 
         #endregion
 
         #region Directory Info 1 Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo1Entries"/>
-        public SabreTools.Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _file.DirectoryInfo1Entries;
+        public SabreTools.Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
 
         #endregion
 
         #region Directory Info 2 Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo2Entries"/>
-        public SabreTools.Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _file.DirectoryInfo2Entries;
+        public SabreTools.Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
 
         #endregion
 
         #region Directory Copy Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryCopyEntries"/>
-        public SabreTools.Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => _file.DirectoryCopyEntries;
+        public SabreTools.Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => _model.DirectoryCopyEntries;
 
         #endregion
 
         #region Directory Local Entries
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryLocalEntries"/>
-        public SabreTools.Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => _file.DirectoryLocalEntries;
+        public SabreTools.Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => _model.DirectoryLocalEntries;
 
         #endregion
 
         #region Unknown Header
 
         /// <inheritdoc cref="Models.NCF.UnknownHeader.Dummy0"/>
-        public uint UH_Dummy0 => _file.UnknownHeader.Dummy0;
+        public uint UH_Dummy0 => _model.UnknownHeader.Dummy0;
 
         /// <inheritdoc cref="Models.NCF.UnknownHeader.Dummy1"/>
-        public uint UH_Dummy1 => _file.UnknownHeader.Dummy1;
+        public uint UH_Dummy1 => _model.UnknownHeader.Dummy1;
 
         #endregion
 
         #region Unknown Entries
 
         /// <inheritdoc cref="Models.NCF.File.UnknownEntries"/>
-        public SabreTools.Models.NCF.UnknownEntry[] UnknownEntries => _file.UnknownEntries;
+        public SabreTools.Models.NCF.UnknownEntry[] UnknownEntries => _model.UnknownEntries;
 
         #endregion
 
         #region Checksum Header
 
         /// <inheritdoc cref="Models.NCF.ChecksumHeader.Dummy0"/>
-        public uint CH_Dummy0 => _file.ChecksumHeader.Dummy0;
+        public uint CH_Dummy0 => _model.ChecksumHeader.Dummy0;
 
         /// <inheritdoc cref="Models.NCF.ChecksumHeader.ChecksumSize"/>
-        public uint CH_ChecksumSize => _file.ChecksumHeader.ChecksumSize;
+        public uint CH_ChecksumSize => _model.ChecksumHeader.ChecksumSize;
 
         #endregion
 
         #region Checksum Map Header
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.Dummy0"/>
-        public uint CMH_Dummy0 => _file.ChecksumMapHeader.Dummy0;
+        public uint CMH_Dummy0 => _model.ChecksumMapHeader.Dummy0;
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.Dummy1"/>
-        public uint CMH_Dummy1 => _file.ChecksumMapHeader.Dummy1;
+        public uint CMH_Dummy1 => _model.ChecksumMapHeader.Dummy1;
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.ItemCount"/>
-        public uint CMH_ItemCount => _file.ChecksumMapHeader.ItemCount;
+        public uint CMH_ItemCount => _model.ChecksumMapHeader.ItemCount;
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.ChecksumCount"/>
-        public uint CMH_ChecksumCount => _file.ChecksumMapHeader.ChecksumCount;
+        public uint CMH_ChecksumCount => _model.ChecksumMapHeader.ChecksumCount;
 
         #endregion
 
         #region Checksum Map Entries
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumMapEntries"/>
-        public SabreTools.Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => _file.ChecksumMapEntries;
+        public SabreTools.Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => _model.ChecksumMapEntries;
 
         #endregion
 
         #region Checksum Entries
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumEntries"/>
-        public SabreTools.Models.NCF.ChecksumEntry[] ChecksumEntries => _file.ChecksumEntries;
+        public SabreTools.Models.NCF.ChecksumEntry[] ChecksumEntries => _model.ChecksumEntries;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the NCF
-        /// </summary>
-        private SabreTools.Models.NCF.File _file;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private NCF() { }
+        /// <inheritdoc/>
+#if NET48
+        public NCF(SabreTools.Models.NCF.File model, byte[] data, int offset)
+#else
+        public NCF(SabreTools.Models.NCF.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public NCF(SabreTools.Models.NCF.File model, Stream data)
+#else
+        public NCF(SabreTools.Models.NCF.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create an NCF from a byte array and offset
@@ -250,13 +258,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new NCF
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new NCF(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -586,7 +595,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

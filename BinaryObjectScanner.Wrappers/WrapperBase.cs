@@ -7,18 +7,31 @@ using SabreTools.IO;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public abstract class WrapperBase
+    public abstract class WrapperBase<T> : IWrapper
     {
         #region Descriptive Properties
+
+        /// <inheritdoc/>
+        public string Description() => DescriptionString;
 
         /// <summary>
         /// Description of the object
         /// </summary>
-        public abstract string Description { get; }
+        public abstract string DescriptionString { get; }
 
         #endregion
 
         #region Instance Variables
+
+        /// <summary>
+        /// Internal model
+        /// </summary>
+        /// <remarks>TODO: Should this have a public getter?</remarks>
+#if NET48
+        protected T _model = default;
+#else
+        protected T? _model = default;
+#endif
 
         /// <summary>
         /// Source of the original data
@@ -29,7 +42,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Source byte array data
         /// </summary>
         /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.ByteArray"/></remarks>
+#if NET48
         protected byte[] _byteArrayData = null;
+#else
+        protected byte[]? _byteArrayData = null;
+#endif
 
         /// <summary>
         /// Source byte array data offset
@@ -41,7 +58,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Source Stream data
         /// </summary>
         /// <remarks>This is only populated if <see cref="_dataSource"/> is <see cref="DataSource.Stream"/></remarks>
+#if NET48
         protected Stream _streamData = null;
+#else
+        protected Stream? _streamData = null;
+#endif
 
 #if NET6_0_OR_GREATER
 
@@ -61,6 +82,53 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #endif
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Construct a new instance of the wrapper from a byte array
+        /// </summary>
+#if NET48
+        protected WrapperBase(T model, byte[] data, int offset)
+#else
+        protected WrapperBase(T? model, byte[]? data, int offset)
+#endif
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            if (offset < 0 || offset >= data.Length)
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            _model = model;
+            _dataSource = DataSource.ByteArray;
+            _byteArrayData = data;
+            _byteArrayOffset = offset;
+        }
+
+        /// <summary>
+        /// Construct a new instance of the wrapper from a Stream
+        /// </summary>
+#if NET48
+        protected WrapperBase(T model, Stream data)
+#else
+        protected WrapperBase(T? model, Stream? data)
+#endif
+        {
+            if (model == null)
+                throw new ArgumentNullException(nameof(model));
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+            if (data.Length == 0 || !data.CanSeek || !data.CanRead)
+                throw new ArgumentOutOfRangeException(nameof(data));
+
+            _model = model;
+            _dataSource = DataSource.Stream;
+            _streamData = data;
+        }
 
         #endregion
 

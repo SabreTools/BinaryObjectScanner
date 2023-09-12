@@ -4,28 +4,28 @@ using static SabreTools.Models.VBSP.Constants;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class VBSP : WrapperBase
+    public class VBSP : WrapperBase<SabreTools.Models.VBSP.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Half-Life 2 Level (VBSP)";
+        public override string DescriptionString => "Half-Life 2 Level (VBSP)";
 
         #endregion
 
         #region Pass-Through Properties
 
         /// <inheritdoc cref="Models.VBSP.Header.Signature"/>
-        public string Signature => _file.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.VBSP.Header.Version"/>
-        public int Version => _file.Header.Version;
+        public int Version => _model.Header.Version;
 
         /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
-        public SabreTools.Models.VBSP.Lump[] Lumps => _file.Header.Lumps;
+        public SabreTools.Models.VBSP.Lump[] Lumps => _model.Header.Lumps;
 
         /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
-        public int MapRevision => _file.Header.MapRevision;
+        public int MapRevision => _model.Header.MapRevision;
 
         #endregion
 
@@ -35,21 +35,29 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the VBSP
-        /// </summary>
-        private SabreTools.Models.VBSP.File _file;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private VBSP() { }
+        /// <inheritdoc/>
+#if NET48
+        public VBSP(SabreTools.Models.VBSP.File model, byte[] data, int offset)
+#else
+        public VBSP(SabreTools.Models.VBSP.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public VBSP(SabreTools.Models.VBSP.File model, Stream data)
+#else
+        public VBSP(SabreTools.Models.VBSP.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a VBSP from a byte array and offset
@@ -87,13 +95,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new VBSP
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new VBSP(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -172,7 +181,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

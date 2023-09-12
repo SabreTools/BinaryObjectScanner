@@ -7,12 +7,12 @@ using static SabreTools.Models.VPK.Constants;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class VPK : WrapperBase
+    public class VPK : WrapperBase<SabreTools.Models.VPK.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Valve Package File (VPK)";
+        public override string DescriptionString => "Valve Package File (VPK)";
 
         #endregion
 
@@ -21,43 +21,43 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.VPK.Header.Signature"/>
-        public uint Signature => _file.Header.Signature;
+        public uint Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.VPK.Header.Version"/>
-        public uint Version => _file.Header.Version;
+        public uint Version => _model.Header.Version;
 
         /// <inheritdoc cref="Models.VPK.Header.DirectoryLength"/>
-        public uint DirectoryLength => _file.Header.DirectoryLength;
+        public uint DirectoryLength => _model.Header.DirectoryLength;
 
         #endregion
 
         #region Extended Header
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.Dummy0"/>
-        public uint? Dummy0 => _file.ExtendedHeader?.Dummy0;
+        public uint? Dummy0 => _model.ExtendedHeader?.Dummy0;
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.ArchiveHashLength"/>
-        public uint? ArchiveHashLength => _file.ExtendedHeader?.ArchiveHashLength;
+        public uint? ArchiveHashLength => _model.ExtendedHeader?.ArchiveHashLength;
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.ExtraLength"/>
-        public uint? ExtraLength => _file.ExtendedHeader?.ExtraLength;
+        public uint? ExtraLength => _model.ExtendedHeader?.ExtraLength;
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.Dummy1"/>
-        public uint? Dummy1 => _file.ExtendedHeader?.Dummy1;
+        public uint? Dummy1 => _model.ExtendedHeader?.Dummy1;
 
         #endregion
 
         #region Archive Hashes
 
         /// <inheritdoc cref="Models.VPK.ArchiveHashes"/>
-        public SabreTools.Models.VPK.ArchiveHash[] ArchiveHashes => _file.ArchiveHashes;
+        public SabreTools.Models.VPK.ArchiveHash[] ArchiveHashes => _model.ArchiveHashes;
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.VPK.DirectoryItems"/>
-        public SabreTools.Models.VPK.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public SabreTools.Models.VPK.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
 
         #endregion
 
@@ -116,11 +116,6 @@ namespace BinaryObjectScanner.Wrappers
         #region Instance Variables
 
         /// <summary>
-        /// Internal representation of the VPK
-        /// </summary>
-        private SabreTools.Models.VPK.File _file;
-
-        /// <summary>
         /// Array of archive filenames attached to the given VPK
         /// </summary>
         private string[] _archiveFilenames = null;
@@ -129,10 +124,27 @@ namespace BinaryObjectScanner.Wrappers
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private VPK() { }
+        /// <inheritdoc/>
+#if NET48
+        public VPK(SabreTools.Models.VPK.File model, byte[] data, int offset)
+#else
+        public VPK(SabreTools.Models.VPK.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public VPK(SabreTools.Models.VPK.File model, Stream data)
+#else
+        public VPK(SabreTools.Models.VPK.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a VPK from a byte array and offset
@@ -170,13 +182,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new VPK
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new VPK(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -222,7 +235,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Extended Header Information:");
             builder.AppendLine("  -------------------------");
-            if (_file.ExtendedHeader == null)
+            if (_model.ExtendedHeader == null)
             {
                 builder.AppendLine("  No extended header");
             }
@@ -315,7 +328,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

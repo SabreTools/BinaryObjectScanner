@@ -3,12 +3,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class WAD : WrapperBase
+    public class WAD : WrapperBase<SabreTools.Models.WAD.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Half-Life Texture Package File (WAD)";
+        public override string DescriptionString => "Half-Life Texture Package File (WAD)";
 
         #endregion
 
@@ -17,27 +17,27 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.WAD.Header.Signature"/>
-        public string Signature => _file.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.WAD.Header.LumpCount"/>
-        public uint LumpCount => _file.Header.LumpCount;
+        public uint LumpCount => _model.Header.LumpCount;
 
         /// <inheritdoc cref="Models.WAD.Header.LumpOffset"/>
-        public uint LumpOffset => _file.Header.LumpOffset;
+        public uint LumpOffset => _model.Header.LumpOffset;
 
         #endregion
 
         #region Lumps
 
         /// <inheritdoc cref="Models.WAD.File.Lumps"/>
-        public SabreTools.Models.WAD.Lump[] Lumps => _file.Lumps;
+        public SabreTools.Models.WAD.Lump[] Lumps => _model.Lumps;
 
         #endregion
 
         #region Lump Infos
 
         /// <inheritdoc cref="Models.WAD.File.LumpInfos"/>
-        public SabreTools.Models.WAD.LumpInfo[] LumpInfos => _file.LumpInfos;
+        public SabreTools.Models.WAD.LumpInfo[] LumpInfos => _model.LumpInfos;
 
         #endregion
 
@@ -49,21 +49,29 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the WAD
-        /// </summary>
-        private SabreTools.Models.WAD.File _file;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private WAD() { }
+        /// <inheritdoc/>
+#if NET48
+        public WAD(SabreTools.Models.WAD.File model, byte[] data, int offset)
+#else
+        public WAD(SabreTools.Models.WAD.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public WAD(SabreTools.Models.WAD.File model, Stream data)
+#else
+        public WAD(SabreTools.Models.WAD.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a WAD from a byte array and offset
@@ -101,13 +109,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new WAD
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new WAD(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -216,7 +225,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

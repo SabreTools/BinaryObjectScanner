@@ -5,12 +5,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public partial class InstallShieldCabinet : WrapperBase
+    public partial class InstallShieldCabinet : WrapperBase<SabreTools.Models.InstallShieldCabinet.Cabinet>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "InstallShield Cabinet";
+        public override string DescriptionString => "InstallShield Cabinet";
 
         #endregion
 
@@ -19,193 +19,193 @@ namespace BinaryObjectScanner.Wrappers
         #region Common Header
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.Signature"/>
-        public string Signature => _cabinet.CommonHeader.Signature;
+        public string Signature => _model.CommonHeader.Signature;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.Version"/>
-        public uint Version => _cabinet.CommonHeader.Version;
+        public uint Version => _model.CommonHeader.Version;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.VolumeInfo"/>
-        public uint VolumeInfo => _cabinet.CommonHeader.VolumeInfo;
+        public uint VolumeInfo => _model.CommonHeader.VolumeInfo;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.DescriptorOffset"/>
-        public uint DescriptorOffset => _cabinet.CommonHeader.DescriptorOffset;
+        public uint DescriptorOffset => _model.CommonHeader.DescriptorOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.DescriptorSize"/>
-        public uint DescriptorSize => _cabinet.CommonHeader.DescriptorSize;
+        public uint DescriptorSize => _model.CommonHeader.DescriptorSize;
 
         #endregion
 
         #region Volume Header
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.DataOffset"/>
-        public uint DataOffset => _cabinet.VolumeHeader.DataOffset;
+        public uint DataOffset => _model.VolumeHeader.DataOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.DataOffsetHigh"/>
-        public uint DataOffsetHigh => _cabinet.VolumeHeader.DataOffsetHigh;
+        public uint DataOffsetHigh => _model.VolumeHeader.DataOffsetHigh;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileIndex"/>
-        public uint FirstFileIndex => _cabinet.VolumeHeader.FirstFileIndex;
+        public uint FirstFileIndex => _model.VolumeHeader.FirstFileIndex;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileIndex"/>
-        public uint LastFileIndex => _cabinet.VolumeHeader.LastFileIndex;
+        public uint LastFileIndex => _model.VolumeHeader.LastFileIndex;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileOffset"/>
-        public uint FirstFileOffset => _cabinet.VolumeHeader.FirstFileOffset;
+        public uint FirstFileOffset => _model.VolumeHeader.FirstFileOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileOffsetHigh"/>
-        public uint FirstFileOffsetHigh => _cabinet.VolumeHeader.FirstFileOffsetHigh;
+        public uint FirstFileOffsetHigh => _model.VolumeHeader.FirstFileOffsetHigh;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeExpanded"/>
-        public uint FirstFileSizeExpanded => _cabinet.VolumeHeader.FirstFileSizeExpanded;
+        public uint FirstFileSizeExpanded => _model.VolumeHeader.FirstFileSizeExpanded;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeExpandedHigh"/>
-        public uint FirstFileSizeExpandedHigh => _cabinet.VolumeHeader.FirstFileSizeExpandedHigh;
+        public uint FirstFileSizeExpandedHigh => _model.VolumeHeader.FirstFileSizeExpandedHigh;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeCompressed"/>
-        public uint FirstFileSizeCompressed => _cabinet.VolumeHeader.FirstFileSizeCompressed;
+        public uint FirstFileSizeCompressed => _model.VolumeHeader.FirstFileSizeCompressed;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeCompressedHigh"/>
-        public uint FirstFileSizeCompressedHigh => _cabinet.VolumeHeader.FirstFileSizeCompressedHigh;
+        public uint FirstFileSizeCompressedHigh => _model.VolumeHeader.FirstFileSizeCompressedHigh;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileOffset"/>
-        public uint LastFileOffset => _cabinet.VolumeHeader.LastFileOffset;
+        public uint LastFileOffset => _model.VolumeHeader.LastFileOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileOffsetHigh"/>
-        public uint LastFileOffsetHigh => _cabinet.VolumeHeader.LastFileOffsetHigh;
+        public uint LastFileOffsetHigh => _model.VolumeHeader.LastFileOffsetHigh;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeExpanded"/>
-        public uint LastFileSizeExpanded => _cabinet.VolumeHeader.LastFileSizeExpanded;
+        public uint LastFileSizeExpanded => _model.VolumeHeader.LastFileSizeExpanded;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeExpandedHigh"/>
-        public uint LastFileSizeExpandedHigh => _cabinet.VolumeHeader.LastFileSizeExpandedHigh;
+        public uint LastFileSizeExpandedHigh => _model.VolumeHeader.LastFileSizeExpandedHigh;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeCompressed"/>
-        public uint LastFileSizeCompressed => _cabinet.VolumeHeader.LastFileSizeCompressed;
+        public uint LastFileSizeCompressed => _model.VolumeHeader.LastFileSizeCompressed;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeCompressedHigh"/>
-        public uint LastFileSizeCompressedHigh => _cabinet.VolumeHeader.LastFileSizeCompressedHigh;
+        public uint LastFileSizeCompressedHigh => _model.VolumeHeader.LastFileSizeCompressedHigh;
 
         #endregion
 
         #region Descriptor
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.StringsOffset"/>
-        public uint StringsOffset => _cabinet.Descriptor.StringsOffset;
+        public uint StringsOffset => _model.Descriptor.StringsOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved0"/>
-        public byte[] Reserved0 => _cabinet.Descriptor.Reserved0;
+        public byte[] Reserved0 => _model.Descriptor.Reserved0;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentListOffset"/>
-        public uint ComponentListOffset => _cabinet.Descriptor.ComponentListOffset;
+        public uint ComponentListOffset => _model.Descriptor.ComponentListOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableOffset"/>
-        public uint FileTableOffset => _cabinet.Descriptor.FileTableOffset;
+        public uint FileTableOffset => _model.Descriptor.FileTableOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved1"/>
-        public byte[] Reserved1 => _cabinet.Descriptor.Reserved1;
+        public byte[] Reserved1 => _model.Descriptor.Reserved1;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableSize"/>
-        public uint FileTableSize => _cabinet.Descriptor.FileTableSize;
+        public uint FileTableSize => _model.Descriptor.FileTableSize;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableSize2"/>
-        public uint FileTableSize2 => _cabinet.Descriptor.FileTableSize2;
+        public uint FileTableSize2 => _model.Descriptor.FileTableSize2;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.DirectoryCount"/>
-        public ushort DirectoryCount => _cabinet.Descriptor.DirectoryCount;
+        public ushort DirectoryCount => _model.Descriptor.DirectoryCount;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved2"/>
-        public byte[] Reserved2 => _cabinet.Descriptor.Reserved2;
+        public byte[] Reserved2 => _model.Descriptor.Reserved2;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved3"/>
-        public byte[] Reserved3 => _cabinet.Descriptor.Reserved3;
+        public byte[] Reserved3 => _model.Descriptor.Reserved3;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved4"/>
-        public byte[] Reserved4 => _cabinet.Descriptor.Reserved4;
+        public byte[] Reserved4 => _model.Descriptor.Reserved4;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileCount"/>
-        public uint FileCount => _cabinet.Descriptor.FileCount;
+        public uint FileCount => _model.Descriptor.FileCount;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableOffset2"/>
-        public uint FileTableOffset2 => _cabinet.Descriptor.FileTableOffset2;
+        public uint FileTableOffset2 => _model.Descriptor.FileTableOffset2;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentTableInfoCount"/>
-        public ushort ComponentTableInfoCount => _cabinet.Descriptor.ComponentTableInfoCount;
+        public ushort ComponentTableInfoCount => _model.Descriptor.ComponentTableInfoCount;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentTableOffset"/>
-        public uint ComponentTableOffset => _cabinet.Descriptor.ComponentTableOffset;
+        public uint ComponentTableOffset => _model.Descriptor.ComponentTableOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved5"/>
-        public byte[] Reserved5 => _cabinet.Descriptor.Reserved5;
+        public byte[] Reserved5 => _model.Descriptor.Reserved5;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved6"/>
-        public byte[] Reserved6 => _cabinet.Descriptor.Reserved6;
+        public byte[] Reserved6 => _model.Descriptor.Reserved6;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileGroupOffsets"/>
-        public uint[] D_FileGroupOffsets => _cabinet.Descriptor.FileGroupOffsets;
+        public uint[] D_FileGroupOffsets => _model.Descriptor.FileGroupOffsets;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentOffsets"/>
-        public uint[] D_ComponentOffsets => _cabinet.Descriptor.ComponentOffsets;
+        public uint[] D_ComponentOffsets => _model.Descriptor.ComponentOffsets;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.SetupTypesOffset"/>
-        public uint SetupTypesOffset => _cabinet.Descriptor.SetupTypesOffset;
+        public uint SetupTypesOffset => _model.Descriptor.SetupTypesOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.SetupTableOffset"/>
-        public uint SetupTableOffset => _cabinet.Descriptor.SetupTableOffset;
+        public uint SetupTableOffset => _model.Descriptor.SetupTableOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved7"/>
-        public byte[] Reserved7 => _cabinet.Descriptor.Reserved7;
+        public byte[] Reserved7 => _model.Descriptor.Reserved7;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved8"/>
-        public byte[] Reserved8 => _cabinet.Descriptor.Reserved8;
+        public byte[] Reserved8 => _model.Descriptor.Reserved8;
 
         #endregion
 
         #region File Descriptor Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptorOffsets"/>
-        public uint[] FileDescriptorOffsets => _cabinet.FileDescriptorOffsets;
+        public uint[] FileDescriptorOffsets => _model.FileDescriptorOffsets;
 
         #endregion
 
         #region Directory Descriptors
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.DirectoryNames"/>
-        public string[] DirectoryNames => _cabinet.DirectoryNames;
+        public string[] DirectoryNames => _model.DirectoryNames;
 
         #endregion
 
         #region File Descriptors
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptors"/>
-        public SabreTools.Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => _cabinet.FileDescriptors;
+        public SabreTools.Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => _model.FileDescriptors;
 
         #endregion
 
         #region File Group Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroupOffsets"/>
-        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => _cabinet.FileGroupOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => _model.FileGroupOffsets;
 
         #endregion
 
         #region File Groups
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroups"/>
-        public SabreTools.Models.InstallShieldCabinet.FileGroup[] FileGroups => _cabinet.FileGroups;
+        public SabreTools.Models.InstallShieldCabinet.FileGroup[] FileGroups => _model.FileGroups;
 
         #endregion
 
         #region Component Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.ComponentOffsets"/>
-        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> ComponentOffsets => _cabinet.ComponentOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> ComponentOffsets => _model.ComponentOffsets;
 
         #endregion
 
         #region Components
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.Components"/>
-        public SabreTools.Models.InstallShieldCabinet.Component[] Components => _cabinet.Components;
+        public SabreTools.Models.InstallShieldCabinet.Component[] Components => _model.Components;
 
         #endregion
 
@@ -238,21 +238,29 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the cabinet
-        /// </summary>
-        private SabreTools.Models.InstallShieldCabinet.Cabinet _cabinet;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private InstallShieldCabinet() { }
+        /// <inheritdoc/>
+#if NET48
+        public InstallShieldCabinet(SabreTools.Models.InstallShieldCabinet.Cabinet model, byte[] data, int offset)
+#else
+        public InstallShieldCabinet(SabreTools.Models.InstallShieldCabinet.Cabinet? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public InstallShieldCabinet(SabreTools.Models.InstallShieldCabinet.Cabinet model, Stream data)
+#else
+        public InstallShieldCabinet(SabreTools.Models.InstallShieldCabinet.Cabinet? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create an InstallShield Cabinet from a byte array and offset
@@ -290,13 +298,14 @@ namespace BinaryObjectScanner.Wrappers
             if (cabinet == null)
                 return null;
 
-            var wrapper = new InstallShieldCabinet
+            try
             {
-                _cabinet = cabinet,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new InstallShieldCabinet(cabinet, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -743,7 +752,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_cabinet, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

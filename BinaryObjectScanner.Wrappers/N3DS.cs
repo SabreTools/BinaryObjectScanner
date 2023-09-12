@@ -4,12 +4,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class N3DS : WrapperBase
+    public class N3DS : WrapperBase<SabreTools.Models.N3DS.Cart>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Nintendo 3DS Cart Image";
+        public override string DescriptionString => "Nintendo 3DS Cart Image";
 
         #endregion
 
@@ -20,66 +20,66 @@ namespace BinaryObjectScanner.Wrappers
         #region Common to all NCSD files
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.RSA2048Signature"/>
-        public byte[] RSA2048Signature => _cart.Header.RSA2048Signature;
+        public byte[] RSA2048Signature => _model.Header.RSA2048Signature;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.MagicNumber"/>
-        public string MagicNumber => _cart.Header.MagicNumber;
+        public string MagicNumber => _model.Header.MagicNumber;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.ImageSizeInMediaUnits"/>
-        public uint ImageSizeInMediaUnits => _cart.Header.ImageSizeInMediaUnits;
+        public uint ImageSizeInMediaUnits => _model.Header.ImageSizeInMediaUnits;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.MediaId"/>
-        public byte[] MediaId => _cart.Header.MediaId;
+        public byte[] MediaId => _model.Header.MediaId;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsFSType"/>
-        public SabreTools.Models.N3DS.FilesystemType PartitionsFSType => _cart.Header.PartitionsFSType;
+        public SabreTools.Models.N3DS.FilesystemType PartitionsFSType => _model.Header.PartitionsFSType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsCryptType"/>
-        public byte[] PartitionsCryptType => _cart.Header.PartitionsCryptType;
+        public byte[] PartitionsCryptType => _model.Header.PartitionsCryptType;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsTable"/>
-        public SabreTools.Models.N3DS.PartitionTableEntry[] PartitionsTable => _cart.Header.PartitionsTable;
+        public SabreTools.Models.N3DS.PartitionTableEntry[] PartitionsTable => _model.Header.PartitionsTable;
 
         #endregion
 
         #region CTR Cart Image (CCI) Specific
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.ExheaderHash"/>
-        public byte[] ExheaderHash => _cart.Header.ExheaderHash;
+        public byte[] ExheaderHash => _model.Header.ExheaderHash;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.AdditionalHeaderSize"/>
-        public uint AdditionalHeaderSize => _cart.Header.AdditionalHeaderSize;
+        public uint AdditionalHeaderSize => _model.Header.AdditionalHeaderSize;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.SectorZeroOffset"/>
-        public uint SectorZeroOffset => _cart.Header.SectorZeroOffset;
+        public uint SectorZeroOffset => _model.Header.SectorZeroOffset;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionFlags"/>
-        public byte[] PartitionFlags => _cart.Header.PartitionFlags;
+        public byte[] PartitionFlags => _model.Header.PartitionFlags;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionIdTable"/>
-        public ulong[] PartitionIdTable => _cart.Header.PartitionIdTable;
+        public ulong[] PartitionIdTable => _model.Header.PartitionIdTable;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.Reserved1"/>
-        public byte[] Reserved1 => _cart.Header.Reserved1;
+        public byte[] Reserved1 => _model.Header.Reserved1;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.Reserved2"/>
-        public byte[] Reserved2 => _cart.Header.Reserved2;
+        public byte[] Reserved2 => _model.Header.Reserved2;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.FirmUpdateByte1"/>
-        public byte FirmUpdateByte1 => _cart.Header.FirmUpdateByte1;
+        public byte FirmUpdateByte1 => _model.Header.FirmUpdateByte1;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.FirmUpdateByte2"/>
-        public byte FirmUpdateByte2 => _cart.Header.FirmUpdateByte2;
+        public byte FirmUpdateByte2 => _model.Header.FirmUpdateByte2;
 
         #endregion
 
         #region Raw NAND Format Specific
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.Unknown"/>
-        public byte[] Unknown => _cart.Header.Unknown;
+        public byte[] Unknown => _model.Header.Unknown;
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.EncryptedMBR"/>
-        public byte[] EncryptedMBR => _cart.Header.EncryptedMBR;
+        public byte[] EncryptedMBR => _model.Header.EncryptedMBR;
 
         #endregion
 
@@ -88,37 +88,37 @@ namespace BinaryObjectScanner.Wrappers
         #region Card Info Header
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.WritableAddressMediaUnits"/>
-        public uint CIH_WritableAddressMediaUnits => _cart.CardInfoHeader.WritableAddressMediaUnits;
+        public uint CIH_WritableAddressMediaUnits => _model.CardInfoHeader.WritableAddressMediaUnits;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CardInfoBitmask"/>
-        public uint CIH_CardInfoBitmask => _cart.CardInfoHeader.CardInfoBitmask;
+        public uint CIH_CardInfoBitmask => _model.CardInfoHeader.CardInfoBitmask;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved1"/>
-        public byte[] CIH_Reserved1 => _cart.CardInfoHeader.Reserved1;
+        public byte[] CIH_Reserved1 => _model.CardInfoHeader.Reserved1;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.FilledSize"/>
-        public uint CIH_FilledSize => _cart.CardInfoHeader.FilledSize;
+        public uint CIH_FilledSize => _model.CardInfoHeader.FilledSize;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved2"/>
-        public byte[] CIH_Reserved2 => _cart.CardInfoHeader.Reserved2;
+        public byte[] CIH_Reserved2 => _model.CardInfoHeader.Reserved2;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.TitleVersion"/>
-        public ushort CIH_TitleVersion => _cart.CardInfoHeader.TitleVersion;
+        public ushort CIH_TitleVersion => _model.CardInfoHeader.TitleVersion;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CardRevision"/>
-        public ushort CIH_CardRevision => _cart.CardInfoHeader.CardRevision;
+        public ushort CIH_CardRevision => _model.CardInfoHeader.CardRevision;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved3"/>
-        public byte[] CIH_Reserved3 => _cart.CardInfoHeader.Reserved3;
+        public byte[] CIH_Reserved3 => _model.CardInfoHeader.Reserved3;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CVerTitleID"/>
-        public byte[] CIH_CVerTitleID => _cart.CardInfoHeader.CVerTitleID;
+        public byte[] CIH_CVerTitleID => _model.CardInfoHeader.CVerTitleID;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CVerVersionNumber"/>
-        public ushort CIH_CVerVersionNumber => _cart.CardInfoHeader.CVerVersionNumber;
+        public ushort CIH_CVerVersionNumber => _model.CardInfoHeader.CVerVersionNumber;
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved4"/>
-        public byte[] CIH_Reserved4 => _cart.CardInfoHeader.Reserved4;
+        public byte[] CIH_Reserved4 => _model.CardInfoHeader.Reserved4;
 
         #endregion
 
@@ -127,65 +127,65 @@ namespace BinaryObjectScanner.Wrappers
         #region Initial Data
 
         /// <inheritdoc cref="Models.N3DS.InitialData.CardSeedKeyY"/>
-        public byte[] DCIH_ID_CardSeedKeyY => _cart.DevelopmentCardInfoHeader?.InitialData?.CardSeedKeyY;
+        public byte[] DCIH_ID_CardSeedKeyY => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedKeyY;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.EncryptedCardSeed"/>
-        public byte[] DCIH_ID_EncryptedCardSeed => _cart.DevelopmentCardInfoHeader?.InitialData?.EncryptedCardSeed;
+        public byte[] DCIH_ID_EncryptedCardSeed => _model.DevelopmentCardInfoHeader?.InitialData?.EncryptedCardSeed;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.CardSeedAESMAC"/>
-        public byte[] DCIH_ID_CardSeedAESMAC => _cart.DevelopmentCardInfoHeader?.InitialData?.CardSeedAESMAC;
+        public byte[] DCIH_ID_CardSeedAESMAC => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedAESMAC;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.CardSeedNonce"/>
-        public byte[] DCIH_ID_CardSeedNonce => _cart.DevelopmentCardInfoHeader?.InitialData?.CardSeedNonce;
+        public byte[] DCIH_ID_CardSeedNonce => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedNonce;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.Reserved3"/>
-        public byte[] DCIH_ID_Reserved => _cart.DevelopmentCardInfoHeader?.InitialData?.Reserved;
+        public byte[] DCIH_ID_Reserved => _model.DevelopmentCardInfoHeader?.InitialData?.Reserved;
 
         /// <inheritdoc cref="Models.N3DS.InitialData.BackupHeader"/>
-        public SabreTools.Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _cart.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
+        public SabreTools.Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _model.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
 
         #endregion
 
         /// <inheritdoc cref="Models.N3DS.DevelopmentCardInfoHeader.CardDeviceReserved1"/>
-        public byte[] DCIH_CardDeviceReserved1 => _cart.DevelopmentCardInfoHeader?.CardDeviceReserved1;
+        public byte[] DCIH_CardDeviceReserved1 => _model.DevelopmentCardInfoHeader?.CardDeviceReserved1;
 
         /// <inheritdoc cref="Models.N3DS.DevelopmentCardInfoHeader.TitleKey"/>
-        public byte[] DCIH_TitleKey => _cart.DevelopmentCardInfoHeader?.TitleKey;
+        public byte[] DCIH_TitleKey => _model.DevelopmentCardInfoHeader?.TitleKey;
 
         /// <inheritdoc cref="Models.N3DS.DevelopmentCardInfoHeader.CardDeviceReserved2"/>
-        public byte[] DCIH_CardDeviceReserved2 => _cart.DevelopmentCardInfoHeader?.CardDeviceReserved2;
+        public byte[] DCIH_CardDeviceReserved2 => _model.DevelopmentCardInfoHeader?.CardDeviceReserved2;
 
         #region Test Data
 
         /// <inheritdoc cref="Models.N3DS.TestData.Signature"/>
-        public byte[] DCIH_TD_Signature => _cart.DevelopmentCardInfoHeader?.TestData?.Signature;
+        public byte[] DCIH_TD_Signature => _model.DevelopmentCardInfoHeader?.TestData?.Signature;
 
         /// <inheritdoc cref="Models.N3DS.TestData.AscendingByteSequence"/>
-        public byte[] DCIH_TD_AscendingByteSequence => _cart.DevelopmentCardInfoHeader?.TestData?.AscendingByteSequence;
+        public byte[] DCIH_TD_AscendingByteSequence => _model.DevelopmentCardInfoHeader?.TestData?.AscendingByteSequence;
 
         /// <inheritdoc cref="Models.N3DS.TestData.DescendingByteSequence"/>
-        public byte[] DCIH_TD_DescendingByteSequence => _cart.DevelopmentCardInfoHeader?.TestData?.DescendingByteSequence;
+        public byte[] DCIH_TD_DescendingByteSequence => _model.DevelopmentCardInfoHeader?.TestData?.DescendingByteSequence;
 
         /// <inheritdoc cref="Models.N3DS.TestData.Filled00"/>
-        public byte[] DCIH_TD_Filled00 => _cart.DevelopmentCardInfoHeader?.TestData?.Filled00;
+        public byte[] DCIH_TD_Filled00 => _model.DevelopmentCardInfoHeader?.TestData?.Filled00;
 
         /// <inheritdoc cref="Models.N3DS.TestData.FilledFF"/>
-        public byte[] DCIH_TD_FilledFF => _cart.DevelopmentCardInfoHeader?.TestData?.FilledFF;
+        public byte[] DCIH_TD_FilledFF => _model.DevelopmentCardInfoHeader?.TestData?.FilledFF;
 
         /// <inheritdoc cref="Models.N3DS.TestData.Filled0F"/>
-        public byte[] DCIH_TD_Filled0F => _cart.DevelopmentCardInfoHeader?.TestData?.Filled0F;
+        public byte[] DCIH_TD_Filled0F => _model.DevelopmentCardInfoHeader?.TestData?.Filled0F;
 
         /// <inheritdoc cref="Models.N3DS.TestData.FilledF0"/>
-        public byte[] DCIH_TD_FilledF0 => _cart.DevelopmentCardInfoHeader?.TestData?.FilledF0;
+        public byte[] DCIH_TD_FilledF0 => _model.DevelopmentCardInfoHeader?.TestData?.FilledF0;
 
         /// <inheritdoc cref="Models.N3DS.TestData.Filled55"/>
-        public byte[] DCIH_TD_Filled55 => _cart.DevelopmentCardInfoHeader?.TestData?.Filled55;
+        public byte[] DCIH_TD_Filled55 => _model.DevelopmentCardInfoHeader?.TestData?.Filled55;
 
         /// <inheritdoc cref="Models.N3DS.TestData.FilledAA"/>
-        public byte[] DCIH_TD_FilledAA => _cart.DevelopmentCardInfoHeader?.TestData?.FilledAA;
+        public byte[] DCIH_TD_FilledAA => _model.DevelopmentCardInfoHeader?.TestData?.FilledAA;
 
         /// <inheritdoc cref="Models.N3DS.TestData.FinalByte"/>
-        public byte? DCIH_TD_FinalByte => _cart.DevelopmentCardInfoHeader?.TestData?.FinalByte;
+        public byte? DCIH_TD_FinalByte => _model.DevelopmentCardInfoHeader?.TestData?.FinalByte;
 
         #endregion
 
@@ -194,48 +194,56 @@ namespace BinaryObjectScanner.Wrappers
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.Cart.Partitions"/>
-        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _cart.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _model.Partitions;
 
         #endregion
 
         #region Extended Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExtendedHeaders"/>
-        public SabreTools.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _cart.ExtendedHeaders;
+        public SabreTools.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _model.ExtendedHeaders;
 
         #endregion
 
         #region ExeFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExeFSHeaders"/>
-        public SabreTools.Models.N3DS.ExeFSHeader[] ExeFSHeaders => _cart.ExeFSHeaders;
+        public SabreTools.Models.N3DS.ExeFSHeader[] ExeFSHeaders => _model.ExeFSHeaders;
 
         #endregion
 
         #region RomFS Headers
 
         /// <inheritdoc cref="Models.N3DS.Cart.RomFSHeaders"/>
-        public SabreTools.Models.N3DS.RomFSHeader[] RomFSHeaders => _cart.RomFSHeaders;
+        public SabreTools.Models.N3DS.RomFSHeader[] RomFSHeaders => _model.RomFSHeaders;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the cart
-        /// </summary>
-        private SabreTools.Models.N3DS.Cart _cart;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private N3DS() { }
+        /// <inheritdoc/>
+#if NET48
+        public N3DS(SabreTools.Models.N3DS.Cart model, byte[] data, int offset)
+#else
+        public N3DS(SabreTools.Models.N3DS.Cart? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public N3DS(SabreTools.Models.N3DS.Cart model, Stream data)
+#else
+        public N3DS(SabreTools.Models.N3DS.Cart? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a 3DS cart image from a byte array and offset
@@ -273,13 +281,14 @@ namespace BinaryObjectScanner.Wrappers
             if (archive == null)
                 return null;
 
-            var wrapper = new N3DS
+            try
             {
-                _cart = archive,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new N3DS(archive, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -396,7 +405,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Development Card Info Header Information:");
             builder.AppendLine("  -------------------------");
-            if (_cart.DevelopmentCardInfoHeader == null)
+            if (_model.DevelopmentCardInfoHeader == null)
             {
                 builder.AppendLine("  No development card info header");
             }
@@ -762,7 +771,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_cart, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

@@ -3,12 +3,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class PFF : WrapperBase
+    public class PFF : WrapperBase<SabreTools.Models.PFF.Archive>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "NovaLogic Game Archive Format (PFF)";
+        public override string DescriptionString => "NovaLogic Game Archive Format (PFF)";
 
         #endregion
 
@@ -17,61 +17,67 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.PFF.Header.HeaderSize"/>
-        public uint HeaderSize => _archive.Header.HeaderSize;
+        public uint HeaderSize => _model.Header.HeaderSize;
 
         /// <inheritdoc cref="Models.PFF.Header.Signature"/>
-        public string Signature => _archive.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.PFF.Header.NumberOfFiles"/>
-        public uint NumberOfFiles => _archive.Header.NumberOfFiles;
+        public uint NumberOfFiles => _model.Header.NumberOfFiles;
 
         /// <inheritdoc cref="Models.PFF.Header.FileSegmentSize"/>
-        public uint FileSegmentSize => _archive.Header.FileSegmentSize;
+        public uint FileSegmentSize => _model.Header.FileSegmentSize;
 
         /// <inheritdoc cref="Models.PFF.Header.FileListOffset"/>
-        public uint FileListOffset => _archive.Header.FileListOffset;
+        public uint FileListOffset => _model.Header.FileListOffset;
 
         #endregion
 
         #region Segments
 
         /// <inheritdoc cref="Models.PFF.Archive.Segments"/>
-        public SabreTools.Models.PFF.Segment[] Segments => _archive.Segments;
+        public SabreTools.Models.PFF.Segment[] Segments => _model.Segments;
 
         #endregion
 
         #region Footer
 
         /// <inheritdoc cref="Models.PFF.Footer.SystemIP"/>
-        public uint SystemIP => _archive.Footer.SystemIP;
+        public uint SystemIP => _model.Footer.SystemIP;
 
         /// <inheritdoc cref="Models.PFF.Footer.Reserved"/>
-        public uint Reserved => _archive.Footer.Reserved;
+        public uint Reserved => _model.Footer.Reserved;
 
         /// <inheritdoc cref="Models.PFF.Footer.KingTag"/>
-        public string KingTag => _archive.Footer.KingTag;
+        public string KingTag => _model.Footer.KingTag;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the archive
-        /// </summary>
-        private SabreTools.Models.PFF.Archive _archive;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private PFF() { }
+        /// <inheritdoc/>
+#if NET48
+        public PFF(SabreTools.Models.PFF.Archive model, byte[] data, int offset)
+#else
+        public PFF(SabreTools.Models.PFF.Archive? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
 
-        /// <summary>
+        /// <inheritdoc/>
+#if NET48
+        public PFF(SabreTools.Models.PFF.Archive model, Stream data)
+#else
+        public PFF(SabreTools.Models.PFF.Archive? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }/// <summary>
         /// Create a PFF archive from a byte array and offset
         /// </summary>
         /// <param name="data">Byte array representing the archive</param>
@@ -107,13 +113,14 @@ namespace BinaryObjectScanner.Wrappers
             if (archive == null)
                 return null;
 
-            var wrapper = new PFF
+            try
             {
-                _archive = archive,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new PFF(archive, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -271,7 +278,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_archive, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

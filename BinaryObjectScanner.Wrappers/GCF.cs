@@ -5,12 +5,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class GCF : WrapperBase
+    public class GCF : WrapperBase<SabreTools.Models.GCF.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Half-Life Game Cache File (GCF)";
+        public override string DescriptionString => "Half-Life Game Cache File (GCF)";
 
         #endregion
 
@@ -19,288 +19,288 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy0"/>
-        public uint Dummy0 => _file.Header.Dummy0;
+        public uint Dummy0 => _model.Header.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.Header.MajorVersion"/>
-        public uint MajorVersion => _file.Header.MajorVersion;
+        public uint MajorVersion => _model.Header.MajorVersion;
 
         /// <inheritdoc cref="Models.GCF.Header.MinorVersion"/>
-        public uint MinorVersion => _file.Header.MinorVersion;
+        public uint MinorVersion => _model.Header.MinorVersion;
 
         /// <inheritdoc cref="Models.GCF.Header.CacheID"/>
-        public uint CacheID => _file.Header.CacheID;
+        public uint CacheID => _model.Header.CacheID;
 
         /// <inheritdoc cref="Models.GCF.Header.LastVersionPlayed"/>
-        public uint LastVersionPlayed => _file.Header.LastVersionPlayed;
+        public uint LastVersionPlayed => _model.Header.LastVersionPlayed;
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy1"/>
-        public uint Dummy1 => _file.Header.Dummy1;
+        public uint Dummy1 => _model.Header.Dummy1;
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy2"/>
-        public uint Dummy2 => _file.Header.Dummy2;
+        public uint Dummy2 => _model.Header.Dummy2;
 
         /// <inheritdoc cref="Models.GCF.Header.FileSize"/>
-        public uint FileSize => _file.Header.FileSize;
+        public uint FileSize => _model.Header.FileSize;
 
         /// <inheritdoc cref="Models.GCF.Header.BlockSize"/>
-        public uint BlockSize => _file.Header.BlockSize;
+        public uint BlockSize => _model.Header.BlockSize;
 
         /// <inheritdoc cref="Models.GCF.Header.BlockCount"/>
-        public uint BlockCount => _file.Header.BlockCount;
+        public uint BlockCount => _model.Header.BlockCount;
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy3"/>
-        public uint Dummy3 => _file.Header.Dummy3;
+        public uint Dummy3 => _model.Header.Dummy3;
 
         #endregion
 
         #region Block Entry Header
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.BlockCount"/>
-        public uint BEH_BlockCount => _file.BlockEntryHeader.BlockCount;
+        public uint BEH_BlockCount => _model.BlockEntryHeader.BlockCount;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.BlocksUsed"/>
-        public uint BEH_BlocksUsed => _file.BlockEntryHeader.BlocksUsed;
+        public uint BEH_BlocksUsed => _model.BlockEntryHeader.BlocksUsed;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy0"/>
-        public uint BEH_Dummy0 => _file.BlockEntryHeader.Dummy0;
+        public uint BEH_Dummy0 => _model.BlockEntryHeader.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy1"/>
-        public uint BEH_Dummy1 => _file.BlockEntryHeader.Dummy1;
+        public uint BEH_Dummy1 => _model.BlockEntryHeader.Dummy1;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy2"/>
-        public uint BEH_Dummy2 => _file.BlockEntryHeader.Dummy2;
+        public uint BEH_Dummy2 => _model.BlockEntryHeader.Dummy2;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy3"/>
-        public uint BEH_Dummy3 => _file.BlockEntryHeader.Dummy3;
+        public uint BEH_Dummy3 => _model.BlockEntryHeader.Dummy3;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy4"/>
-        public uint BEH_Dummy4 => _file.BlockEntryHeader.Dummy4;
+        public uint BEH_Dummy4 => _model.BlockEntryHeader.Dummy4;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Checksum"/>
-        public uint BEH_Checksum => _file.BlockEntryHeader.Checksum;
+        public uint BEH_Checksum => _model.BlockEntryHeader.Checksum;
 
         #endregion
 
         #region Block Entries
 
         /// <inheritdoc cref="Models.GCF.File.BlockEntries"/>
-        public SabreTools.Models.GCF.BlockEntry[] BlockEntries => _file.BlockEntries;
+        public SabreTools.Models.GCF.BlockEntry[] BlockEntries => _model.BlockEntries;
 
         #endregion
 
         #region Fragmentation Map Header
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.BlockCount"/>
-        public uint FMH_BlockCount => _file.FragmentationMapHeader.BlockCount;
+        public uint FMH_BlockCount => _model.FragmentationMapHeader.BlockCount;
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.FirstUnusedEntry"/>
-        public uint FMH_FirstUnusedEntry => _file.FragmentationMapHeader.FirstUnusedEntry;
+        public uint FMH_FirstUnusedEntry => _model.FragmentationMapHeader.FirstUnusedEntry;
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.Terminator"/>
-        public uint FMH_Terminator => _file.FragmentationMapHeader.Terminator;
+        public uint FMH_Terminator => _model.FragmentationMapHeader.Terminator;
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.Checksum"/>
-        public uint FMH_Checksum => _file.FragmentationMapHeader.Checksum;
+        public uint FMH_Checksum => _model.FragmentationMapHeader.Checksum;
 
         #endregion
 
         #region Fragmentation Maps
 
         /// <inheritdoc cref="Models.GCF.File.FragmentationMaps"/>
-        public SabreTools.Models.GCF.FragmentationMap[] FragmentationMaps => _file.FragmentationMaps;
+        public SabreTools.Models.GCF.FragmentationMap[] FragmentationMaps => _model.FragmentationMaps;
 
         #endregion
 
         #region Block Entry Map Header
 
         /// <inheritdoc cref="Models.GCF.BlockEntryMapHeader.BlockCount"/>
-        public uint? BEMH_BlockCount => _file.BlockEntryMapHeader?.BlockCount;
+        public uint? BEMH_BlockCount => _model.BlockEntryMapHeader?.BlockCount;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryMapHeader.FirstBlockEntryIndex"/>
-        public uint? BEMH_FirstBlockEntryIndex => _file.BlockEntryMapHeader?.FirstBlockEntryIndex;
+        public uint? BEMH_FirstBlockEntryIndex => _model.BlockEntryMapHeader?.FirstBlockEntryIndex;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryMapHeader.LastBlockEntryIndex"/>
-        public uint? BEMH_LastBlockEntryIndex => _file.BlockEntryMapHeader?.LastBlockEntryIndex;
+        public uint? BEMH_LastBlockEntryIndex => _model.BlockEntryMapHeader?.LastBlockEntryIndex;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryMapHeader.Dummy0"/>
-        public uint? BEMH_Dummy0 => _file.BlockEntryMapHeader?.Dummy0;
+        public uint? BEMH_Dummy0 => _model.BlockEntryMapHeader?.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.BlockEntryMapHeader.Checksum"/>
-        public uint? BEMH_Checksum => _file.BlockEntryMapHeader?.Checksum;
+        public uint? BEMH_Checksum => _model.BlockEntryMapHeader?.Checksum;
 
         #endregion
 
         #region Block Entry Maps
 
         /// <inheritdoc cref="Models.GCF.File.BlockEntryMaps"/>
-        public SabreTools.Models.GCF.BlockEntryMap[] BlockEntryMaps => _file.BlockEntryMaps;
+        public SabreTools.Models.GCF.BlockEntryMap[] BlockEntryMaps => _model.BlockEntryMaps;
 
         #endregion
 
         #region Directory Header
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy0"/>
-        public uint DH_Dummy0 => _file.DirectoryHeader.Dummy0;
+        public uint DH_Dummy0 => _model.DirectoryHeader.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.CacheID"/>
-        public uint DH_CacheID => _file.DirectoryHeader.CacheID;
+        public uint DH_CacheID => _model.DirectoryHeader.CacheID;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.LastVersionPlayed"/>
-        public uint DH_LastVersionPlayed => _file.DirectoryHeader.LastVersionPlayed;
+        public uint DH_LastVersionPlayed => _model.DirectoryHeader.LastVersionPlayed;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.ItemCount"/>
-        public uint DH_ItemCount => _file.DirectoryHeader.ItemCount;
+        public uint DH_ItemCount => _model.DirectoryHeader.ItemCount;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.FileCount"/>
-        public uint DH_FileCount => _file.DirectoryHeader.FileCount;
+        public uint DH_FileCount => _model.DirectoryHeader.FileCount;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy1"/>
-        public uint DH_Dummy1 => _file.DirectoryHeader.Dummy1;
+        public uint DH_Dummy1 => _model.DirectoryHeader.Dummy1;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.DirectorySize"/>
-        public uint DH_DirectorySize => _file.DirectoryHeader.DirectorySize;
+        public uint DH_DirectorySize => _model.DirectoryHeader.DirectorySize;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.NameSize"/>
-        public uint DH_NameSize => _file.DirectoryHeader.NameSize;
+        public uint DH_NameSize => _model.DirectoryHeader.NameSize;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Info1Count"/>
-        public uint DH_Info1Count => _file.DirectoryHeader.Info1Count;
+        public uint DH_Info1Count => _model.DirectoryHeader.Info1Count;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.CopyCount"/>
-        public uint DH_CopyCount => _file.DirectoryHeader.CopyCount;
+        public uint DH_CopyCount => _model.DirectoryHeader.CopyCount;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.LocalCount"/>
-        public uint DH_LocalCount => _file.DirectoryHeader.LocalCount;
+        public uint DH_LocalCount => _model.DirectoryHeader.LocalCount;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy2"/>
-        public uint DH_Dummy2 => _file.DirectoryHeader.Dummy2;
+        public uint DH_Dummy2 => _model.DirectoryHeader.Dummy2;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy3"/>
-        public uint DH_Dummy3 => _file.DirectoryHeader.Dummy3;
+        public uint DH_Dummy3 => _model.DirectoryHeader.Dummy3;
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Checksum"/>
-        public uint DH_Checksum => _file.DirectoryHeader.Checksum;
+        public uint DH_Checksum => _model.DirectoryHeader.Checksum;
 
         #endregion
 
         #region Directory Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryEntries"/>
-        public SabreTools.Models.GCF.DirectoryEntry[] DirectoryEntries => _file.DirectoryEntries;
+        public SabreTools.Models.GCF.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
 
         #endregion
 
         #region Directory Names
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryNames"/>
-        public System.Collections.Generic.Dictionary<long, string> DirectoryNames => _file.DirectoryNames;
+        public System.Collections.Generic.Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
 
         #endregion
 
         #region Directory Info 1 Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryInfo1Entries"/>
-        public SabreTools.Models.GCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _file.DirectoryInfo1Entries;
+        public SabreTools.Models.GCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
 
         #endregion
 
         #region Directory Info 2 Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryInfo2Entries"/>
-        public SabreTools.Models.GCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _file.DirectoryInfo2Entries;
+        public SabreTools.Models.GCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
 
         #endregion
 
         #region Directory Copy Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryCopyEntries"/>
-        public SabreTools.Models.GCF.DirectoryCopyEntry[] DirectoryCopyEntries => _file.DirectoryCopyEntries;
+        public SabreTools.Models.GCF.DirectoryCopyEntry[] DirectoryCopyEntries => _model.DirectoryCopyEntries;
 
         #endregion
 
         #region Directory Local Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryLocalEntries"/>
-        public SabreTools.Models.GCF.DirectoryLocalEntry[] DirectoryLocalEntries => _file.DirectoryLocalEntries;
+        public SabreTools.Models.GCF.DirectoryLocalEntry[] DirectoryLocalEntries => _model.DirectoryLocalEntries;
 
         #endregion
 
         #region Directory Map Header
 
         /// <inheritdoc cref="Models.GCF.DirectoryMapHeader.Dummy0"/>
-        public uint? DMH_Dummy0 => _file.DirectoryMapHeader?.Dummy0;
+        public uint? DMH_Dummy0 => _model.DirectoryMapHeader?.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.DirectoryMapHeader.Dummy1"/>
-        public uint? DMH_Dummy1 => _file.DirectoryMapHeader?.Dummy1;
+        public uint? DMH_Dummy1 => _model.DirectoryMapHeader?.Dummy1;
 
         #endregion
 
         #region Directory Map Entries
 
         /// <inheritdoc cref="Models.GCF.File.DirectoryMapEntries"/>
-        public SabreTools.Models.GCF.DirectoryMapEntry[] DirectoryMapEntries => _file.DirectoryMapEntries;
+        public SabreTools.Models.GCF.DirectoryMapEntry[] DirectoryMapEntries => _model.DirectoryMapEntries;
 
         #endregion
 
         #region Checksum Header
 
         /// <inheritdoc cref="Models.GCF.ChecksumHeader.Dummy0"/>
-        public uint CH_Dummy0 => _file.ChecksumHeader.Dummy0;
+        public uint CH_Dummy0 => _model.ChecksumHeader.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.ChecksumHeader.ChecksumSize"/>
-        public uint CH_ChecksumSize => _file.ChecksumHeader.ChecksumSize;
+        public uint CH_ChecksumSize => _model.ChecksumHeader.ChecksumSize;
 
         #endregion
 
         #region Checksum Map Header
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.Dummy0"/>
-        public uint CMH_Dummy0 => _file.ChecksumMapHeader.Dummy0;
+        public uint CMH_Dummy0 => _model.ChecksumMapHeader.Dummy0;
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.Dummy1"/>
-        public uint CMH_Dummy1 => _file.ChecksumMapHeader.Dummy1;
+        public uint CMH_Dummy1 => _model.ChecksumMapHeader.Dummy1;
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.ItemCount"/>
-        public uint CMH_ItemCount => _file.ChecksumMapHeader.ItemCount;
+        public uint CMH_ItemCount => _model.ChecksumMapHeader.ItemCount;
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.ChecksumCount"/>
-        public uint CMH_ChecksumCount => _file.ChecksumMapHeader.ChecksumCount;
+        public uint CMH_ChecksumCount => _model.ChecksumMapHeader.ChecksumCount;
 
         #endregion
 
         #region Checksum Map Entries
 
         /// <inheritdoc cref="Models.GCF.File.ChecksumMapEntries"/>
-        public SabreTools.Models.GCF.ChecksumMapEntry[] ChecksumMapEntries => _file.ChecksumMapEntries;
+        public SabreTools.Models.GCF.ChecksumMapEntry[] ChecksumMapEntries => _model.ChecksumMapEntries;
 
         #endregion
 
         #region Checksum Entries
 
         /// <inheritdoc cref="Models.GCF.File.ChecksumEntries"/>
-        public SabreTools.Models.GCF.ChecksumEntry[] ChecksumEntries => _file.ChecksumEntries;
+        public SabreTools.Models.GCF.ChecksumEntry[] ChecksumEntries => _model.ChecksumEntries;
 
         #endregion
 
         #region Data Block Header
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.LastVersionPlayed"/>
-        public uint DBH_LastVersionPlayed => _file.DataBlockHeader.LastVersionPlayed;
+        public uint DBH_LastVersionPlayed => _model.DataBlockHeader.LastVersionPlayed;
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.BlockCount"/>
-        public uint DBH_BlockCount => _file.DataBlockHeader.BlockCount;
+        public uint DBH_BlockCount => _model.DataBlockHeader.BlockCount;
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.BlockSize"/>
-        public uint DBH_BlockSize => _file.DataBlockHeader.BlockSize;
+        public uint DBH_BlockSize => _model.DataBlockHeader.BlockSize;
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.FirstBlockOffset"/>
-        public uint DBH_FirstBlockOffset => _file.DataBlockHeader.FirstBlockOffset;
+        public uint DBH_FirstBlockOffset => _model.DataBlockHeader.FirstBlockOffset;
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.BlocksUsed"/>
-        public uint DBH_BlocksUsed => _file.DataBlockHeader.BlocksUsed;
+        public uint DBH_BlocksUsed => _model.DataBlockHeader.BlocksUsed;
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.Checksum"/>
-        public uint DBH_Checksum => _file.DataBlockHeader.Checksum;
+        public uint DBH_Checksum => _model.DataBlockHeader.Checksum;
 
         #endregion
 
@@ -404,11 +404,6 @@ namespace BinaryObjectScanner.Wrappers
         #region Instance Variables
 
         /// <summary>
-        /// Internal representation of the GCF
-        /// </summary>
-        private SabreTools.Models.GCF.File _file;
-
-        /// <summary>
         /// Set of all files and their information
         /// </summary>
         private FileInfo[] _files = null;
@@ -422,10 +417,27 @@ namespace BinaryObjectScanner.Wrappers
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private GCF() { }
+        /// <inheritdoc/>
+#if NET48
+        public GCF(SabreTools.Models.GCF.File model, byte[] data, int offset)
+#else
+        public GCF(SabreTools.Models.GCF.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public GCF(SabreTools.Models.GCF.File model, Stream data)
+#else
+        public GCF(SabreTools.Models.GCF.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create an GCF from a byte array and offset
@@ -463,13 +475,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new GCF
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new GCF(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -641,7 +654,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Block Entry Map Header Information:");
             builder.AppendLine("  -------------------------");
-            if (_file.BlockEntryMapHeader == null)
+            if (_model.BlockEntryMapHeader == null)
             {
                 builder.AppendLine($"  No block entry map header");
             }
@@ -841,7 +854,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Directory Map Header Information:");
             builder.AppendLine("  -------------------------");
-            if (_file.DirectoryMapHeader == null)
+            if (_model.DirectoryMapHeader == null)
             {
                 builder.AppendLine($"  No directory map header");
             }
@@ -974,7 +987,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

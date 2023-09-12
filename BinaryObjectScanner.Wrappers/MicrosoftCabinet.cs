@@ -5,12 +5,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public partial class MicrosoftCabinet : WrapperBase
+    public partial class MicrosoftCabinet : WrapperBase<SabreTools.Models.MicrosoftCabinet.Cabinet>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Microsoft Cabinet";
+        public override string DescriptionString => "Microsoft Cabinet";
 
         #endregion
 
@@ -19,103 +19,109 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Signature"/>
-        public string Signature => _cabinet.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved1"/>
-        public uint Reserved1 => _cabinet.Header.Reserved1;
+        public uint Reserved1 => _model.Header.Reserved1;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetSize"/>
-        public uint CabinetSize => _cabinet.Header.CabinetSize;
+        public uint CabinetSize => _model.Header.CabinetSize;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved2"/>
-        public uint Reserved2 => _cabinet.Header.Reserved2;
+        public uint Reserved2 => _model.Header.Reserved2;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FilesOffset"/>
-        public uint FilesOffset => _cabinet.Header.FilesOffset;
+        public uint FilesOffset => _model.Header.FilesOffset;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved3"/>
-        public uint Reserved3 => _cabinet.Header.Reserved3;
+        public uint Reserved3 => _model.Header.Reserved3;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.VersionMinor"/>
-        public byte VersionMinor => _cabinet.Header.VersionMinor;
+        public byte VersionMinor => _model.Header.VersionMinor;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.VersionMajor"/>
-        public byte VersionMajor => _cabinet.Header.VersionMajor;
+        public byte VersionMajor => _model.Header.VersionMajor;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FolderCount"/>
-        public ushort FolderCount => _cabinet.Header.FolderCount;
+        public ushort FolderCount => _model.Header.FolderCount;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
-        public ushort FileCount => _cabinet.Header.FileCount;
+        public ushort FileCount => _model.Header.FileCount;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
-        public SabreTools.Models.MicrosoftCabinet.HeaderFlags Flags => _cabinet.Header.Flags;
+        public SabreTools.Models.MicrosoftCabinet.HeaderFlags Flags => _model.Header.Flags;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.SetID"/>
-        public ushort SetID => _cabinet.Header.SetID;
+        public ushort SetID => _model.Header.SetID;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetIndex"/>
-        public ushort CabinetIndex => _cabinet.Header.CabinetIndex;
+        public ushort CabinetIndex => _model.Header.CabinetIndex;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.HeaderReservedSize"/>
-        public ushort HeaderReservedSize => _cabinet.Header.HeaderReservedSize;
+        public ushort HeaderReservedSize => _model.Header.HeaderReservedSize;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FolderReservedSize"/>
-        public byte FolderReservedSize => _cabinet.Header.FolderReservedSize;
+        public byte FolderReservedSize => _model.Header.FolderReservedSize;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DataReservedSize"/>
-        public byte DataReservedSize => _cabinet.Header.DataReservedSize;
+        public byte DataReservedSize => _model.Header.DataReservedSize;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.ReservedData"/>
-        public byte[] ReservedData => _cabinet.Header.ReservedData;
+        public byte[] ReservedData => _model.Header.ReservedData;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetPrev"/>
-        public string CabinetPrev => _cabinet.Header.CabinetPrev;
+        public string CabinetPrev => _model.Header.CabinetPrev;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskPrev"/>
-        public string DiskPrev => _cabinet.Header.DiskPrev;
+        public string DiskPrev => _model.Header.DiskPrev;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetNext"/>
-        public string CabinetNext => _cabinet.Header.CabinetNext;
+        public string CabinetNext => _model.Header.CabinetNext;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskNext"/>
-        public string DiskNext => _cabinet.Header.DiskNext;
+        public string DiskNext => _model.Header.DiskNext;
 
         #endregion
 
         #region Folders
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Folders"/>
-        public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => _cabinet.Folders;
+        public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => _model.Folders;
 
         #endregion
 
         #region Files
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Files"/>
-        public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => _cabinet.Files;
+        public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => _model.Files;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the cabinet
-        /// </summary>
-        private SabreTools.Models.MicrosoftCabinet.Cabinet _cabinet;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private MicrosoftCabinet() { }
+        /// <inheritdoc/>
+#if NET48
+        public MicrosoftCabinet(SabreTools.Models.MicrosoftCabinet.Cabinet model, byte[] data, int offset)
+#else
+        public MicrosoftCabinet(SabreTools.Models.MicrosoftCabinet.Cabinet? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
 
-        /// <summary>
+        /// <inheritdoc/>
+#if NET48
+        public MicrosoftCabinet(SabreTools.Models.MicrosoftCabinet.Cabinet model, Stream data)
+#else
+        public MicrosoftCabinet(SabreTools.Models.MicrosoftCabinet.Cabinet? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }/// <summary>
         /// Create a Microsoft Cabinet from a byte array and offset
         /// </summary>
         /// <param name="data">Byte array representing the cabinet</param>
@@ -151,13 +157,14 @@ namespace BinaryObjectScanner.Wrappers
             if (cabinet == null)
                 return null;
 
-            var wrapper = new MicrosoftCabinet
+            try
             {
-                _cabinet = cabinet,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new MicrosoftCabinet(cabinet, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -557,7 +564,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_cabinet, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

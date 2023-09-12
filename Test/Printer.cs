@@ -73,7 +73,7 @@ namespace Test
                 }
 
                 // Print the wrapper name
-                Console.WriteLine($"{wrapper.Description} wrapper created successfully!");
+                Console.WriteLine($"{wrapper.Description()} wrapper created successfully!");
 
                 // Get the base info output name
                 string filenameBase = $"info-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}";

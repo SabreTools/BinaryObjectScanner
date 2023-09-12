@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Create an instance of a wrapper based on file type
         /// </summary>
-        public static WrapperBase CreateWrapper(SupportedFileType fileType, Stream data)
+        public static IWrapper CreateWrapper(SupportedFileType fileType, Stream data)
         {
             switch (fileType)
             {
@@ -60,10 +60,10 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="stream">Stream data to parse</param>
         /// <returns>WrapperBase representing the executable, null on error</returns>
-        public static WrapperBase CreateExecutableWrapper(Stream stream)
+        public static IWrapper CreateExecutableWrapper(Stream stream)
         {
             // Try to get an MS-DOS wrapper first
-            WrapperBase wrapper = MSDOS.Create(stream);
+            IWrapper wrapper = MSDOS.Create(stream);
             if (wrapper == null)
                 return null;
 

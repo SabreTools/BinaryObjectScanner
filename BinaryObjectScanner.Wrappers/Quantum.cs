@@ -3,12 +3,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class Quantum : WrapperBase
+    public class Quantum : WrapperBase<SabreTools.Models.Quantum.Archive>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Quantum Archive";
+        public override string DescriptionString => "Quantum Archive";
 
         #endregion
 
@@ -17,52 +17,60 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.Quantum.Header.Signature"/>
-        public string Signature => _archive.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.Quantum.Header.MajorVersion"/>
-        public byte MajorVersion => _archive.Header.MajorVersion;
+        public byte MajorVersion => _model.Header.MajorVersion;
 
         /// <inheritdoc cref="Models.Quantum.Header.MinorVersion"/>
-        public byte MinorVersion => _archive.Header.MinorVersion;
+        public byte MinorVersion => _model.Header.MinorVersion;
 
         /// <inheritdoc cref="Models.Quantum.Header.FileCount"/>
-        public ushort FileCount => _archive.Header.FileCount;
+        public ushort FileCount => _model.Header.FileCount;
 
         /// <inheritdoc cref="Models.Quantum.Header.TableSize"/>
-        public byte TableSize => _archive.Header.TableSize;
+        public byte TableSize => _model.Header.TableSize;
 
         /// <inheritdoc cref="Models.Quantum.Header.CompressionFlags"/>
-        public byte CompressionFlags => _archive.Header.CompressionFlags;
+        public byte CompressionFlags => _model.Header.CompressionFlags;
 
         #endregion
 
         #region File List
 
         /// <inheritdoc cref="Models.Quantum.Archive.FileList"/>
-        public SabreTools.Models.Quantum.FileDescriptor[] FileList => _archive.FileList;
+        public SabreTools.Models.Quantum.FileDescriptor[] FileList => _model.FileList;
 
         #endregion
 
         /// <inheritdoc cref="Models.Quantum.Archive.CompressedDataOffset"/>
-        public long CompressedDataOffset => _archive.CompressedDataOffset;
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the archive
-        /// </summary>
-        private SabreTools.Models.Quantum.Archive _archive;
+        public long CompressedDataOffset => _model.CompressedDataOffset;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private Quantum() { }
+        /// <inheritdoc/>
+#if NET48
+        public Quantum(SabreTools.Models.Quantum.Archive model, byte[] data, int offset)
+#else
+        public Quantum(SabreTools.Models.Quantum.Archive? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public Quantum(SabreTools.Models.Quantum.Archive model, Stream data)
+#else
+        public Quantum(SabreTools.Models.Quantum.Archive? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a Quantum archive from a byte array and offset
@@ -100,13 +108,14 @@ namespace BinaryObjectScanner.Wrappers
             if (archive == null)
                 return null;
 
-            var wrapper = new Quantum
+            try
             {
-                _archive = archive,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new Quantum(archive, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -294,7 +303,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_archive, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

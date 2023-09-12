@@ -4,58 +4,66 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class BDPlusSVM : WrapperBase
+    public class BDPlusSVM : WrapperBase<SabreTools.Models.BDPlus.SVM>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "BD+ SVM";
+        public override string DescriptionString => "BD+ SVM";
 
         #endregion
 
         #region Pass-Through Properties
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Signature"/>
-        public string Signature => _svm.Signature;
+        public string Signature => _model.Signature;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Unknown1"/>
-        public byte[] Unknown1 => _svm.Unknown1;
+        public byte[] Unknown1 => _model.Unknown1;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Year"/>
-        public ushort Year => _svm.Year;
+        public ushort Year => _model.Year;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Month"/>
-        public byte Month => _svm.Month;
+        public byte Month => _model.Month;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Day"/>
-        public byte Day => _svm.Day;
+        public byte Day => _model.Day;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Unknown2"/>
-        public byte[] Unknown2 => _svm.Unknown2;
+        public byte[] Unknown2 => _model.Unknown2;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Length"/>
-        public uint Length => _svm.Length;
+        public uint Length => _model.Length;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Data"/>
-        public byte[] Data => _svm.Data;
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the SVM
-        /// </summary>
-        private SabreTools.Models.BDPlus.SVM _svm;
+        public byte[] Data => _model.Data;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private BDPlusSVM() { }
+        /// <inheritdoc/>
+#if NET48
+        public BDPlusSVM(SabreTools.Models.BDPlus.SVM model, byte[] data, int offset)
+#else
+        public BDPlusSVM(SabreTools.Models.BDPlus.SVM? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public BDPlusSVM(SabreTools.Models.BDPlus.SVM model, Stream data)
+#else
+        public BDPlusSVM(SabreTools.Models.BDPlus.SVM? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a BD+ SVM from a byte array and offset
@@ -93,13 +101,14 @@ namespace BinaryObjectScanner.Wrappers
             if (svm == null)
                 return null;
 
-            var wrapper = new BDPlusSVM
+                try
             {
-                _svm = svm,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new BDPlusSVM(svm, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -142,7 +151,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_svm, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

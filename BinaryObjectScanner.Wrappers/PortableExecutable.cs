@@ -10,12 +10,12 @@ using static SabreTools.Serialization.Extensions;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class PortableExecutable : WrapperBase
+    public class PortableExecutable : WrapperBase<SabreTools.Models.PortableExecutable.Executable>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Portable Executable (PE)";
+        public override string DescriptionString => "Portable Executable (PE)";
 
         #endregion
 
@@ -26,95 +26,95 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
-        public string Stub_Magic => _executable.Stub.Header.Magic;
+        public string Stub_Magic => _model.Stub.Header.Magic;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
-        public ushort Stub_LastPageBytes => _executable.Stub.Header.LastPageBytes;
+        public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
-        public ushort Stub_Pages => _executable.Stub.Header.Pages;
+        public ushort Stub_Pages => _model.Stub.Header.Pages;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
-        public ushort Stub_RelocationItems => _executable.Stub.Header.RelocationItems;
+        public ushort Stub_RelocationItems => _model.Stub.Header.RelocationItems;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
-        public ushort Stub_HeaderParagraphSize => _executable.Stub.Header.HeaderParagraphSize;
+        public ushort Stub_HeaderParagraphSize => _model.Stub.Header.HeaderParagraphSize;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
-        public ushort Stub_MinimumExtraParagraphs => _executable.Stub.Header.MinimumExtraParagraphs;
+        public ushort Stub_MinimumExtraParagraphs => _model.Stub.Header.MinimumExtraParagraphs;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
-        public ushort Stub_MaximumExtraParagraphs => _executable.Stub.Header.MaximumExtraParagraphs;
+        public ushort Stub_MaximumExtraParagraphs => _model.Stub.Header.MaximumExtraParagraphs;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
-        public ushort Stub_InitialSSValue => _executable.Stub.Header.InitialSSValue;
+        public ushort Stub_InitialSSValue => _model.Stub.Header.InitialSSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-        public ushort Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
+        public ushort Stub_InitialSPValue => _model.Stub.Header.InitialSPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
-        public ushort Stub_Checksum => _executable.Stub.Header.Checksum;
+        public ushort Stub_Checksum => _model.Stub.Header.Checksum;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
-        public ushort Stub_InitialIPValue => _executable.Stub.Header.InitialIPValue;
+        public ushort Stub_InitialIPValue => _model.Stub.Header.InitialIPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
-        public ushort Stub_InitialCSValue => _executable.Stub.Header.InitialCSValue;
+        public ushort Stub_InitialCSValue => _model.Stub.Header.InitialCSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
-        public ushort Stub_RelocationTableAddr => _executable.Stub.Header.RelocationTableAddr;
+        public ushort Stub_RelocationTableAddr => _model.Stub.Header.RelocationTableAddr;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
-        public ushort Stub_OverlayNumber => _executable.Stub.Header.OverlayNumber;
+        public ushort Stub_OverlayNumber => _model.Stub.Header.OverlayNumber;
 
         #endregion
 
         #region PE Extensions
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
-        public ushort[] Stub_Reserved1 => _executable.Stub.Header.Reserved1;
+        public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
-        public ushort Stub_OEMIdentifier => _executable.Stub.Header.OEMIdentifier;
+        public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
-        public ushort Stub_OEMInformation => _executable.Stub.Header.OEMInformation;
+        public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
-        public ushort[] Stub_Reserved2 => _executable.Stub.Header.Reserved2;
+        public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
-        public uint Stub_NewExeHeaderAddr => _executable.Stub.Header.NewExeHeaderAddr;
+        public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
 
         #endregion
 
         #endregion
 
         /// <inheritdoc cref="Models.PortableExecutable.Executable.Signature"/>
-        public string Signature => _executable.Signature;
+        public string Signature => _model.Signature;
 
         #region COFF File Header
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Machine"/>
-        public SabreTools.Models.PortableExecutable.MachineType Machine => _executable.COFFFileHeader.Machine;
+        public SabreTools.Models.PortableExecutable.MachineType Machine => _model.COFFFileHeader.Machine;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSections"/>
-        public ushort NumberOfSections => _executable.COFFFileHeader.NumberOfSections;
+        public ushort NumberOfSections => _model.COFFFileHeader.NumberOfSections;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.TimeDateStamp"/>
-        public uint TimeDateStamp => _executable.COFFFileHeader.TimeDateStamp;
+        public uint TimeDateStamp => _model.COFFFileHeader.TimeDateStamp;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.PointerToSymbolTable"/>
-        public uint PointerToSymbolTable => _executable.COFFFileHeader.PointerToSymbolTable;
+        public uint PointerToSymbolTable => _model.COFFFileHeader.PointerToSymbolTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSymbols"/>
-        public uint NumberOfSymbols => _executable.COFFFileHeader.NumberOfSymbols;
+        public uint NumberOfSymbols => _model.COFFFileHeader.NumberOfSymbols;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.SizeOfOptionalHeader"/>
-        public uint SizeOfOptionalHeader => _executable.COFFFileHeader.SizeOfOptionalHeader;
+        public uint SizeOfOptionalHeader => _model.COFFFileHeader.SizeOfOptionalHeader;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Characteristics"/>
-        public SabreTools.Models.PortableExecutable.Characteristics Characteristics => _executable.COFFFileHeader.Characteristics;
+        public SabreTools.Models.PortableExecutable.Characteristics Characteristics => _model.COFFFileHeader.Characteristics;
 
         #endregion
 
@@ -123,32 +123,32 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Machine"/>
-        public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _executable.OptionalHeader.Magic;
+        public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _model.OptionalHeader.Magic;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorLinkerVersion"/>
-        public byte OH_MajorLinkerVersion => _executable.OptionalHeader.MajorLinkerVersion;
+        public byte OH_MajorLinkerVersion => _model.OptionalHeader.MajorLinkerVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorLinkerVersion"/>
-        public byte OH_MinorLinkerVersion => _executable.OptionalHeader.MinorLinkerVersion;
+        public byte OH_MinorLinkerVersion => _model.OptionalHeader.MinorLinkerVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfCode"/>
-        public uint OH_SizeOfCode => _executable.OptionalHeader.SizeOfCode;
+        public uint OH_SizeOfCode => _model.OptionalHeader.SizeOfCode;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfInitializedData"/>
-        public uint OH_SizeOfInitializedData => _executable.OptionalHeader.SizeOfInitializedData;
+        public uint OH_SizeOfInitializedData => _model.OptionalHeader.SizeOfInitializedData;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfUninitializedData"/>
-        public uint OH_SizeOfUninitializedData => _executable.OptionalHeader.SizeOfUninitializedData;
+        public uint OH_SizeOfUninitializedData => _model.OptionalHeader.SizeOfUninitializedData;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.AddressOfEntryPoint"/>
-        public uint OH_AddressOfEntryPoint => _executable.OptionalHeader.AddressOfEntryPoint;
+        public uint OH_AddressOfEntryPoint => _model.OptionalHeader.AddressOfEntryPoint;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfCode"/>
-        public uint OH_BaseOfCode => _executable.OptionalHeader.BaseOfCode;
+        public uint OH_BaseOfCode => _model.OptionalHeader.BaseOfCode;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfData"/>
-        public uint? OH_BaseOfData => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? (uint?)_executable.OptionalHeader.BaseOfData
+        public uint? OH_BaseOfData => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+            ? (uint?)_model.OptionalHeader.BaseOfData
             : null;
 
         #endregion
@@ -156,129 +156,129 @@ namespace BinaryObjectScanner.Wrappers
         #region Windows-Specific Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImageBase_PE32"/>
-        public ulong OH_ImageBase => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? _executable.OptionalHeader.ImageBase_PE32
-            : _executable.OptionalHeader.ImageBase_PE32Plus;
+        public ulong OH_ImageBase => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+            ? _model.OptionalHeader.ImageBase_PE32
+            : _model.OptionalHeader.ImageBase_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SectionAlignment"/>
-        public uint OH_SectionAlignment => _executable.OptionalHeader.SectionAlignment;
+        public uint OH_SectionAlignment => _model.OptionalHeader.SectionAlignment;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.FileAlignment"/>
-        public uint OH_FileAlignment => _executable.OptionalHeader.FileAlignment;
+        public uint OH_FileAlignment => _model.OptionalHeader.FileAlignment;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorOperatingSystemVersion"/>
-        public ushort OH_MajorOperatingSystemVersion => _executable.OptionalHeader.MajorOperatingSystemVersion;
+        public ushort OH_MajorOperatingSystemVersion => _model.OptionalHeader.MajorOperatingSystemVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorOperatingSystemVersion"/>
-        public ushort OH_MinorOperatingSystemVersion => _executable.OptionalHeader.MinorOperatingSystemVersion;
+        public ushort OH_MinorOperatingSystemVersion => _model.OptionalHeader.MinorOperatingSystemVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorImageVersion"/>
-        public ushort OH_MajorImageVersion => _executable.OptionalHeader.MajorImageVersion;
+        public ushort OH_MajorImageVersion => _model.OptionalHeader.MajorImageVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorImageVersion"/>
-        public ushort OH_MinorImageVersion => _executable.OptionalHeader.MinorImageVersion;
+        public ushort OH_MinorImageVersion => _model.OptionalHeader.MinorImageVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorSubsystemVersion"/>
-        public ushort OH_MajorSubsystemVersion => _executable.OptionalHeader.MajorSubsystemVersion;
+        public ushort OH_MajorSubsystemVersion => _model.OptionalHeader.MajorSubsystemVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorSubsystemVersion"/>
-        public ushort OH_MinorSubsystemVersion => _executable.OptionalHeader.MinorSubsystemVersion;
+        public ushort OH_MinorSubsystemVersion => _model.OptionalHeader.MinorSubsystemVersion;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Win32VersionValue"/>
-        public uint OH_Win32VersionValue => _executable.OptionalHeader.Win32VersionValue;
+        public uint OH_Win32VersionValue => _model.OptionalHeader.Win32VersionValue;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfImage"/>
-        public uint OH_SizeOfImage => _executable.OptionalHeader.SizeOfImage;
+        public uint OH_SizeOfImage => _model.OptionalHeader.SizeOfImage;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeaders"/>
-        public uint OH_SizeOfHeaders => _executable.OptionalHeader.SizeOfHeaders;
+        public uint OH_SizeOfHeaders => _model.OptionalHeader.SizeOfHeaders;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CheckSum"/>
-        public uint OH_CheckSum => _executable.OptionalHeader.CheckSum;
+        public uint OH_CheckSum => _model.OptionalHeader.CheckSum;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Subsystem"/>
-        public SabreTools.Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _executable.OptionalHeader.Subsystem;
+        public SabreTools.Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _model.OptionalHeader.Subsystem;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DllCharacteristics"/>
-        public SabreTools.Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _executable.OptionalHeader.DllCharacteristics;
+        public SabreTools.Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _model.OptionalHeader.DllCharacteristics;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackReserve_PE32"/>
-        public ulong OH_SizeOfStackReserve => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? _executable.OptionalHeader.SizeOfStackReserve_PE32
-            : _executable.OptionalHeader.SizeOfStackReserve_PE32Plus;
+        public ulong OH_SizeOfStackReserve => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+            ? _model.OptionalHeader.SizeOfStackReserve_PE32
+            : _model.OptionalHeader.SizeOfStackReserve_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackCommit_PE32"/>
-        public ulong OH_SizeOfStackCommit => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? _executable.OptionalHeader.SizeOfStackCommit_PE32
-            : _executable.OptionalHeader.SizeOfStackCommit_PE32Plus;
+        public ulong OH_SizeOfStackCommit => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+            ? _model.OptionalHeader.SizeOfStackCommit_PE32
+            : _model.OptionalHeader.SizeOfStackCommit_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapReserve_PE32"/>
-        public ulong OH_SizeOfHeapReserve => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? _executable.OptionalHeader.SizeOfHeapReserve_PE32
-            : _executable.OptionalHeader.SizeOfHeapReserve_PE32Plus;
+        public ulong OH_SizeOfHeapReserve => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+            ? _model.OptionalHeader.SizeOfHeapReserve_PE32
+            : _model.OptionalHeader.SizeOfHeapReserve_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapCommit_PE32"/>
-        public ulong OH_SizeOfHeapCommit => _executable.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? _executable.OptionalHeader.SizeOfHeapCommit_PE32
-            : _executable.OptionalHeader.SizeOfHeapCommit_PE32Plus;
+        public ulong OH_SizeOfHeapCommit => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+            ? _model.OptionalHeader.SizeOfHeapCommit_PE32
+            : _model.OptionalHeader.SizeOfHeapCommit_PE32Plus;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoaderFlags"/>
-        public uint OH_LoaderFlags => _executable.OptionalHeader.LoaderFlags;
+        public uint OH_LoaderFlags => _model.OptionalHeader.LoaderFlags;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.NumberOfRvaAndSizes"/>
-        public uint OH_NumberOfRvaAndSizes => _executable.OptionalHeader.NumberOfRvaAndSizes;
+        public uint OH_NumberOfRvaAndSizes => _model.OptionalHeader.NumberOfRvaAndSizes;
 
         #endregion
 
         #region Data Directories
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExportTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExportTable => _executable.OptionalHeader.ExportTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExportTable => _model.OptionalHeader.ExportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportTable => _executable.OptionalHeader.ImportTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportTable => _model.OptionalHeader.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ResourceTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ResourceTable => _executable.OptionalHeader.ResourceTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ResourceTable => _model.OptionalHeader.ResourceTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExceptionTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExceptionTable => _executable.OptionalHeader.ExceptionTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExceptionTable => _model.OptionalHeader.ExceptionTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CertificateTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_CertificateTable => _executable.OptionalHeader.CertificateTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_CertificateTable => _model.OptionalHeader.CertificateTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseRelocationTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _executable.OptionalHeader.BaseRelocationTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _model.OptionalHeader.BaseRelocationTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Debug"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_Debug => _executable.OptionalHeader.Debug;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_Debug => _model.OptionalHeader.Debug;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Architecture"/>
-        public ulong OH_Architecture => _executable.OptionalHeader.Architecture;
+        public ulong OH_Architecture => _model.OptionalHeader.Architecture;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.GlobalPtr"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_GlobalPtr => _executable.OptionalHeader.GlobalPtr;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_GlobalPtr => _model.OptionalHeader.GlobalPtr;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ThreadLocalStorageTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _executable.OptionalHeader.ThreadLocalStorageTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _model.OptionalHeader.ThreadLocalStorageTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoadConfigTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _executable.OptionalHeader.LoadConfigTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _model.OptionalHeader.LoadConfigTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BoundImport"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_BoundImport => _executable.OptionalHeader.BoundImport;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_BoundImport => _model.OptionalHeader.BoundImport;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportAddressTable"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _executable.OptionalHeader.ImportAddressTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _model.OptionalHeader.ImportAddressTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DelayImportDescriptor"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _executable.OptionalHeader.DelayImportDescriptor;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _model.OptionalHeader.DelayImportDescriptor;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CLRRuntimeHeader"/>
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _executable.OptionalHeader.CLRRuntimeHeader;
+        public SabreTools.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _model.OptionalHeader.CLRRuntimeHeader;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Reserved"/>
-        public ulong OH_Reserved => _executable.OptionalHeader.Reserved;
+        public ulong OH_Reserved => _model.OptionalHeader.Reserved;
 
         #endregion
 
@@ -287,46 +287,46 @@ namespace BinaryObjectScanner.Wrappers
         #region Tables
 
         /// <inheritdoc cref="Models.PortableExecutable.SectionTable"/>
-        public SabreTools.Models.PortableExecutable.SectionHeader[] SectionTable => _executable.SectionTable;
+        public SabreTools.Models.PortableExecutable.SectionHeader[] SectionTable => _model.SectionTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFSymbolTable"/>
-        public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _executable.COFFSymbolTable;
+        public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => _model.COFFSymbolTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFStringTable"/>
-        public SabreTools.Models.PortableExecutable.COFFStringTable COFFStringTable => _executable.COFFStringTable;
+        public SabreTools.Models.PortableExecutable.COFFStringTable COFFStringTable => _model.COFFStringTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.AttributeCertificateTable"/>
-        public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _executable.AttributeCertificateTable;
+        public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => _model.AttributeCertificateTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.DelayLoadDirectoryTable"/>
-        public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _executable.DelayLoadDirectoryTable;
+        public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _model.DelayLoadDirectoryTable;
 
         #endregion
 
         #region Sections
 
         /// <inheritdoc cref="Models.PortableExecutable.BaseRelocationTable"/>
-        public SabreTools.Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _executable.BaseRelocationTable;
+        public SabreTools.Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => _model.BaseRelocationTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
-        public SabreTools.Models.PortableExecutable.DebugTable DebugTable => _executable.DebugTable;
+        public SabreTools.Models.PortableExecutable.DebugTable DebugTable => _model.DebugTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable"/>
-        public SabreTools.Models.PortableExecutable.ExportTable ExportTable => _executable.ExportTable;
+        public SabreTools.Models.PortableExecutable.ExportTable ExportTable => _model.ExportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable.ExportNameTable"/>
-        public string[] ExportNameTable => _executable.ExportTable?.ExportNameTable?.Strings;
+        public string[] ExportNameTable => _model.ExportTable?.ExportNameTable?.Strings;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable"/>
-        public SabreTools.Models.PortableExecutable.ImportTable ImportTable => _executable.ImportTable;
+        public SabreTools.Models.PortableExecutable.ImportTable ImportTable => _model.ImportTable;
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
-        public string[] ImportHintNameTable => _executable.ImportTable?.HintNameTable != null
-            ? _executable.ImportTable.HintNameTable.Select(entry => entry.Name).ToArray()
+        public string[] ImportHintNameTable => _model.ImportTable?.HintNameTable != null
+            ? _model.ImportTable.HintNameTable.Select(entry => entry.Name).ToArray()
             : null;
 
         /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
-        public SabreTools.Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _executable.ResourceDirectoryTable;
+        public SabreTools.Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _model.ResourceDirectoryTable;
 
         #endregion
 
@@ -442,18 +442,18 @@ namespace BinaryObjectScanner.Wrappers
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
-                        var certificateTable = _executable.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        var certificateTable = _model.OptionalHeader.CertificateTable;
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in _executable.SectionTable)
+                    foreach (var section in _model.SectionTable)
                     {
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -506,18 +506,18 @@ namespace BinaryObjectScanner.Wrappers
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
-                        var certificateTable = _executable.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        var certificateTable = _model.OptionalHeader.CertificateTable;
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in _executable.SectionTable)
+                    foreach (var section in _model.SectionTable)
                     {
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -577,18 +577,18 @@ namespace BinaryObjectScanner.Wrappers
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
-                        var certificateTable = _executable.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        var certificateTable = _model.OptionalHeader.CertificateTable;
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in _executable.SectionTable)
+                    foreach (var section in _model.SectionTable)
                     {
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_executable.SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -641,10 +641,10 @@ namespace BinaryObjectScanner.Wrappers
                         return _sectionNames;
 
                     // Otherwise, build and return the cached array
-                    _sectionNames = new string[_executable.SectionTable.Length];
+                    _sectionNames = new string[_model.SectionTable.Length];
                     for (int i = 0; i < _sectionNames.Length; i++)
                     {
-                        var section = _executable.SectionTable[i];
+                        var section = _model.SectionTable[i];
 
                         // TODO: Handle long section names with leading `/`
                         byte[] sectionNameBytes = section.Name;
@@ -672,7 +672,7 @@ namespace BinaryObjectScanner.Wrappers
 
                     // Populate the raw stub executable data based on the source
                     int endOfStubHeader = 0x40;
-                    int lengthOfStubExecutableData = (int)_executable.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
+                    int lengthOfStubExecutableData = (int)_model.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
                     _stubExecutableData = ReadFromDataSource(endOfStubHeader, lengthOfStubExecutableData);
 
                     // Cache and return the stub executable data, even if null
@@ -904,11 +904,6 @@ namespace BinaryObjectScanner.Wrappers
         #region Instance Variables
 
         /// <summary>
-        /// Internal representation of the executable
-        /// </summary>
-        private SabreTools.Models.PortableExecutable.Executable _executable;
-
-        /// <summary>
         /// Header padding data, if it exists
         /// </summary>
         private byte[] _headerPaddingData = null;
@@ -997,10 +992,27 @@ namespace BinaryObjectScanner.Wrappers
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private PortableExecutable() { }
+        /// <inheritdoc/>
+#if NET48
+        public PortableExecutable(SabreTools.Models.PortableExecutable.Executable model, byte[] data, int offset)
+#else
+        public PortableExecutable(SabreTools.Models.PortableExecutable.Executable? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public PortableExecutable(SabreTools.Models.PortableExecutable.Executable model, Stream data)
+#else
+        public PortableExecutable(SabreTools.Models.PortableExecutable.Executable? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a PE executable from a byte array and offset
@@ -1038,13 +1050,14 @@ namespace BinaryObjectScanner.Wrappers
             if (executable == null)
                 return null;
 
-            var wrapper = new PortableExecutable
+            try
             {
-                _executable = executable,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new PortableExecutable(executable, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -2995,7 +3008,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_executable, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

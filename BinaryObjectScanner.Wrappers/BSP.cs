@@ -6,12 +6,12 @@ using static SabreTools.Models.BSP.Constants;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class BSP : WrapperBase
+    public class BSP : WrapperBase<SabreTools.Models.BSP.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Half-Life Level (BSP)";
+        public override string DescriptionString => "Half-Life Level (BSP)";
 
         #endregion
 
@@ -20,51 +20,59 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.BSP.Header.Version"/>
-        public uint Version => _file.Header.Version;
+        public uint Version => _model.Header.Version;
 
         #endregion
 
         #region Lumps
 
         /// <inheritdoc cref="Models.BSP.File.Lumps"/>
-        public SabreTools.Models.BSP.Lump[] Lumps => _file.Lumps;
+        public SabreTools.Models.BSP.Lump[] Lumps => _model.Lumps;
 
         #endregion
 
         #region Texture Header
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.TextureCount"/>
-        public uint TextureCount => _file.TextureHeader.TextureCount;
+        public uint TextureCount => _model.TextureHeader.TextureCount;
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.Offsets"/>
-        public uint[] Offsets => _file.TextureHeader.Offsets;
+        public uint[] Offsets => _model.TextureHeader.Offsets;
 
         #endregion
 
         #region Textures
 
         /// <inheritdoc cref="Models.BSP.File.Textures"/>
-        public SabreTools.Models.BSP.Texture[] Textures => _file.Textures;
+        public SabreTools.Models.BSP.Texture[] Textures => _model.Textures;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the BSP
-        /// </summary>
-        private SabreTools.Models.BSP.File _file;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private BSP() { }
+        /// <inheritdoc/>
+#if NET48
+        public BSP(SabreTools.Models.BSP.File model, byte[] data, int offset)
+#else
+        public BSP(SabreTools.Models.BSP.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public BSP(SabreTools.Models.BSP.File model, Stream data)
+#else
+        public BSP(SabreTools.Models.BSP.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a BSP from a byte array and offset
@@ -102,13 +110,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new BSP
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new BSP(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -234,7 +243,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

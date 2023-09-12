@@ -4,12 +4,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class LinearExecutable : WrapperBase
+    public class LinearExecutable : WrapperBase<SabreTools.Models.LinearExecutable.Executable>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Linear Executable (LE/LX)";
+        public override string DescriptionString => "Linear Executable (LE/LX)";
 
         #endregion
 
@@ -20,65 +20,65 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
-        public string Stub_Magic => _executable.Stub.Header.Magic;
+        public string Stub_Magic => _model.Stub.Header.Magic;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
-        public ushort Stub_LastPageBytes => _executable.Stub.Header.LastPageBytes;
+        public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
-        public ushort Stub_Pages => _executable.Stub.Header.Pages;
+        public ushort Stub_Pages => _model.Stub.Header.Pages;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
-        public ushort Stub_RelocationItems => _executable.Stub.Header.RelocationItems;
+        public ushort Stub_RelocationItems => _model.Stub.Header.RelocationItems;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
-        public ushort Stub_HeaderParagraphSize => _executable.Stub.Header.HeaderParagraphSize;
+        public ushort Stub_HeaderParagraphSize => _model.Stub.Header.HeaderParagraphSize;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
-        public ushort Stub_MinimumExtraParagraphs => _executable.Stub.Header.MinimumExtraParagraphs;
+        public ushort Stub_MinimumExtraParagraphs => _model.Stub.Header.MinimumExtraParagraphs;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
-        public ushort Stub_MaximumExtraParagraphs => _executable.Stub.Header.MaximumExtraParagraphs;
+        public ushort Stub_MaximumExtraParagraphs => _model.Stub.Header.MaximumExtraParagraphs;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
-        public ushort Stub_InitialSSValue => _executable.Stub.Header.InitialSSValue;
+        public ushort Stub_InitialSSValue => _model.Stub.Header.InitialSSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-        public ushort Stub_InitialSPValue => _executable.Stub.Header.InitialSPValue;
+        public ushort Stub_InitialSPValue => _model.Stub.Header.InitialSPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
-        public ushort Stub_Checksum => _executable.Stub.Header.Checksum;
+        public ushort Stub_Checksum => _model.Stub.Header.Checksum;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
-        public ushort Stub_InitialIPValue => _executable.Stub.Header.InitialIPValue;
+        public ushort Stub_InitialIPValue => _model.Stub.Header.InitialIPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
-        public ushort Stub_InitialCSValue => _executable.Stub.Header.InitialCSValue;
+        public ushort Stub_InitialCSValue => _model.Stub.Header.InitialCSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
-        public ushort Stub_RelocationTableAddr => _executable.Stub.Header.RelocationTableAddr;
+        public ushort Stub_RelocationTableAddr => _model.Stub.Header.RelocationTableAddr;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
-        public ushort Stub_OverlayNumber => _executable.Stub.Header.OverlayNumber;
+        public ushort Stub_OverlayNumber => _model.Stub.Header.OverlayNumber;
 
         #endregion
 
         #region PE Extensions
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
-        public ushort[] Stub_Reserved1 => _executable.Stub.Header.Reserved1;
+        public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
-        public ushort Stub_OEMIdentifier => _executable.Stub.Header.OEMIdentifier;
+        public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
-        public ushort Stub_OEMInformation => _executable.Stub.Header.OEMInformation;
+        public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
-        public ushort[] Stub_Reserved2 => _executable.Stub.Header.Reserved2;
+        public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
-        public uint Stub_NewExeHeaderAddr => _executable.Stub.Header.NewExeHeaderAddr;
+        public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
 
         #endregion
 
@@ -87,198 +87,198 @@ namespace BinaryObjectScanner.Wrappers
         #region Information Block
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.Signature"/>
-        public string Signature => _executable.InformationBlock.Signature;
+        public string Signature => _model.InformationBlock.Signature;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ByteOrder"/>
-        public SabreTools.Models.LinearExecutable.ByteOrder ByteOrder => _executable.InformationBlock.ByteOrder;
+        public SabreTools.Models.LinearExecutable.ByteOrder ByteOrder => _model.InformationBlock.ByteOrder;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.WordOrder"/>
-        public SabreTools.Models.LinearExecutable.WordOrder WordOrder => _executable.InformationBlock.WordOrder;
+        public SabreTools.Models.LinearExecutable.WordOrder WordOrder => _model.InformationBlock.WordOrder;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExecutableFormatLevel"/>
-        public uint ExecutableFormatLevel => _executable.InformationBlock.ExecutableFormatLevel;
+        public uint ExecutableFormatLevel => _model.InformationBlock.ExecutableFormatLevel;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.CPUType"/>
-        public SabreTools.Models.LinearExecutable.CPUType CPUType => _executable.InformationBlock.CPUType;
+        public SabreTools.Models.LinearExecutable.CPUType CPUType => _model.InformationBlock.CPUType;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleOS"/>
-        public SabreTools.Models.LinearExecutable.OperatingSystem ModuleOS => _executable.InformationBlock.ModuleOS;
+        public SabreTools.Models.LinearExecutable.OperatingSystem ModuleOS => _model.InformationBlock.ModuleOS;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleVersion"/>
-        public uint ModuleVersion => _executable.InformationBlock.ModuleVersion;
+        public uint ModuleVersion => _model.InformationBlock.ModuleVersion;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleTypeFlags"/>
-        public SabreTools.Models.LinearExecutable.ModuleFlags ModuleTypeFlags => _executable.InformationBlock.ModuleTypeFlags;
+        public SabreTools.Models.LinearExecutable.ModuleFlags ModuleTypeFlags => _model.InformationBlock.ModuleTypeFlags;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleNumberPages"/>
-        public uint ModuleNumberPages => _executable.InformationBlock.ModuleNumberPages;
+        public uint ModuleNumberPages => _model.InformationBlock.ModuleNumberPages;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialObjectCS"/>
-        public uint InitialObjectCS => _executable.InformationBlock.InitialObjectCS;
+        public uint InitialObjectCS => _model.InformationBlock.InitialObjectCS;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialEIP"/>
-        public uint InitialEIP => _executable.InformationBlock.InitialEIP;
+        public uint InitialEIP => _model.InformationBlock.InitialEIP;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialObjectSS"/>
-        public uint InitialObjectSS => _executable.InformationBlock.InitialObjectSS;
+        public uint InitialObjectSS => _model.InformationBlock.InitialObjectSS;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialESP"/>
-        public uint InitialESP => _executable.InformationBlock.InitialESP;
+        public uint InitialESP => _model.InformationBlock.InitialESP;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.MemoryPageSize"/>
-        public uint MemoryPageSize => _executable.InformationBlock.MemoryPageSize;
+        public uint MemoryPageSize => _model.InformationBlock.MemoryPageSize;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.BytesOnLastPage"/>
-        public uint BytesOnLastPage => _executable.InformationBlock.BytesOnLastPage;
+        public uint BytesOnLastPage => _model.InformationBlock.BytesOnLastPage;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupSectionSize"/>
-        public uint FixupSectionSize => _executable.InformationBlock.FixupSectionSize;
+        public uint FixupSectionSize => _model.InformationBlock.FixupSectionSize;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupSectionChecksum"/>
-        public uint FixupSectionChecksum => _executable.InformationBlock.FixupSectionChecksum;
+        public uint FixupSectionChecksum => _model.InformationBlock.FixupSectionChecksum;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.LoaderSectionSize"/>
-        public uint LoaderSectionSize => _executable.InformationBlock.LoaderSectionSize;
+        public uint LoaderSectionSize => _model.InformationBlock.LoaderSectionSize;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.LoaderSectionChecksum"/>
-        public uint LoaderSectionChecksum => _executable.InformationBlock.LoaderSectionChecksum;
+        public uint LoaderSectionChecksum => _model.InformationBlock.LoaderSectionChecksum;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectTableOffset"/>
-        public uint ObjectTableOffset => _executable.InformationBlock.ObjectTableOffset;
+        public uint ObjectTableOffset => _model.InformationBlock.ObjectTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectTableCount"/>
-        public uint ObjectTableCount => _executable.InformationBlock.ObjectTableCount;
+        public uint ObjectTableCount => _model.InformationBlock.ObjectTableCount;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectPageMapOffset"/>
-        public uint ObjectPageMapOffset => _executable.InformationBlock.ObjectPageMapOffset;
+        public uint ObjectPageMapOffset => _model.InformationBlock.ObjectPageMapOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectIterateDataMapOffset"/>
-        public uint ObjectIterateDataMapOffset => _executable.InformationBlock.ObjectIterateDataMapOffset;
+        public uint ObjectIterateDataMapOffset => _model.InformationBlock.ObjectIterateDataMapOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResourceTableOffset"/>
-        public uint ResourceTableOffset => _executable.InformationBlock.ResourceTableOffset;
+        public uint ResourceTableOffset => _model.InformationBlock.ResourceTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResourceTableCount"/>
-        public uint ResourceTableCount => _executable.InformationBlock.ResourceTableCount;
+        public uint ResourceTableCount => _model.InformationBlock.ResourceTableCount;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResidentNamesTableOffset"/>
-        public uint ResidentNamesTableOffset => _executable.InformationBlock.ResidentNamesTableOffset;
+        public uint ResidentNamesTableOffset => _model.InformationBlock.ResidentNamesTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.EntryTableOffset"/>
-        public uint EntryTableOffset => _executable.InformationBlock.EntryTableOffset;
+        public uint EntryTableOffset => _model.InformationBlock.EntryTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleDirectivesTableOffset"/>
-        public uint ModuleDirectivesTableOffset => _executable.InformationBlock.ModuleDirectivesTableOffset;
+        public uint ModuleDirectivesTableOffset => _model.InformationBlock.ModuleDirectivesTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleDirectivesCount"/>
-        public uint ModuleDirectivesCount => _executable.InformationBlock.ModuleDirectivesCount;
+        public uint ModuleDirectivesCount => _model.InformationBlock.ModuleDirectivesCount;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupPageTableOffset"/>
-        public uint FixupPageTableOffset => _executable.InformationBlock.FixupPageTableOffset;
+        public uint FixupPageTableOffset => _model.InformationBlock.FixupPageTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupRecordTableOffset"/>
-        public uint FixupRecordTableOffset => _executable.InformationBlock.FixupRecordTableOffset;
+        public uint FixupRecordTableOffset => _model.InformationBlock.FixupRecordTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportedModulesNameTableOffset"/>
-        public uint ImportedModulesNameTableOffset => _executable.InformationBlock.ImportedModulesNameTableOffset;
+        public uint ImportedModulesNameTableOffset => _model.InformationBlock.ImportedModulesNameTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportedModulesCount"/>
-        public uint ImportedModulesCount => _executable.InformationBlock.ImportedModulesCount;
+        public uint ImportedModulesCount => _model.InformationBlock.ImportedModulesCount;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportProcedureNameTableOffset"/>
-        public uint ImportProcedureNameTableOffset => _executable.InformationBlock.ImportProcedureNameTableOffset;
+        public uint ImportProcedureNameTableOffset => _model.InformationBlock.ImportProcedureNameTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PerPageChecksumTableOffset"/>
-        public uint PerPageChecksumTableOffset => _executable.InformationBlock.PerPageChecksumTableOffset;
+        public uint PerPageChecksumTableOffset => _model.InformationBlock.PerPageChecksumTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DataPagesOffset"/>
-        public uint DataPagesOffset => _executable.InformationBlock.DataPagesOffset;
+        public uint DataPagesOffset => _model.InformationBlock.DataPagesOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PreloadPageCount"/>
-        public uint PreloadPageCount => _executable.InformationBlock.PreloadPageCount;
+        public uint PreloadPageCount => _model.InformationBlock.PreloadPageCount;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableOffset"/>
-        public uint NonResidentNamesTableOffset => _executable.InformationBlock.NonResidentNamesTableOffset;
+        public uint NonResidentNamesTableOffset => _model.InformationBlock.NonResidentNamesTableOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableLength"/>
-        public uint NonResidentNamesTableLength => _executable.InformationBlock.NonResidentNamesTableLength;
+        public uint NonResidentNamesTableLength => _model.InformationBlock.NonResidentNamesTableLength;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableChecksum"/>
-        public uint NonResidentNamesTableChecksum => _executable.InformationBlock.NonResidentNamesTableChecksum;
+        public uint NonResidentNamesTableChecksum => _model.InformationBlock.NonResidentNamesTableChecksum;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.AutomaticDataObject"/>
-        public uint AutomaticDataObject => _executable.InformationBlock.AutomaticDataObject;
+        public uint AutomaticDataObject => _model.InformationBlock.AutomaticDataObject;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DebugInformationOffset"/>
-        public uint DebugInformationOffset => _executable.InformationBlock.DebugInformationOffset;
+        public uint DebugInformationOffset => _model.InformationBlock.DebugInformationOffset;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DebugInformationLength"/>
-        public uint DebugInformationLength => _executable.InformationBlock.DebugInformationLength;
+        public uint DebugInformationLength => _model.InformationBlock.DebugInformationLength;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PreloadInstancePagesNumber"/>
-        public uint PreloadInstancePagesNumber => _executable.InformationBlock.PreloadInstancePagesNumber;
+        public uint PreloadInstancePagesNumber => _model.InformationBlock.PreloadInstancePagesNumber;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DemandInstancePagesNumber"/>
-        public uint DemandInstancePagesNumber => _executable.InformationBlock.DemandInstancePagesNumber;
+        public uint DemandInstancePagesNumber => _model.InformationBlock.DemandInstancePagesNumber;
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExtraHeapAllocation"/>
-        public uint ExtraHeapAllocation => _executable.InformationBlock.ExtraHeapAllocation;
+        public uint ExtraHeapAllocation => _model.InformationBlock.ExtraHeapAllocation;
 
         #endregion
 
         #region Tables
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectTable"/>
-        public SabreTools.Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _executable.ObjectTable;
+        public SabreTools.Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _model.ObjectTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectPageMap"/>
-        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => _executable.ObjectPageMap;
+        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => _model.ObjectPageMap;
 
         /// <inheritdoc cref="Models.LinearExecutable.ResourceTable"/>
-        public SabreTools.Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _executable.ResourceTable;
+        public SabreTools.Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _model.ResourceTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ResidentNamesTable"/>
-        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => _executable.ResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => _model.ResidentNamesTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.EntryTable"/>
-        public SabreTools.Models.LinearExecutable.EntryTableBundle[] EntryTable => _executable.EntryTable;
+        public SabreTools.Models.LinearExecutable.EntryTableBundle[] EntryTable => _model.EntryTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ModuleFormatDirectivesTable"/>
-        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _executable.ModuleFormatDirectivesTable;
+        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _model.ModuleFormatDirectivesTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.VerifyRecordDirectiveTable"/>
-        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => _executable.VerifyRecordDirectiveTable;
+        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => _model.VerifyRecordDirectiveTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.PerPageChecksumTable"/>
-        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => _executable.PerPageChecksumTable;
+        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => _model.PerPageChecksumTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupPageTable"/>
-        public SabreTools.Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => _executable.FixupPageTable;
+        public SabreTools.Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => _model.FixupPageTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupRecordTable"/>
-        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => _executable.FixupRecordTable;
+        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => _model.FixupRecordTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleNameTable"/>
-        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => _executable.ImportModuleNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => _model.ImportModuleNameTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleProcedureNameTable"/>
-        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => _executable.ImportModuleProcedureNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => _model.ImportModuleProcedureNameTable;
 
         /// <inheritdoc cref="Models.LinearExecutable.NonResidentNamesTable"/>
-        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => _executable.NonResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => _model.NonResidentNamesTable;
 
         #endregion
 
         #region Debug Information
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.Signature"/>
-        public string DI_Signature => _executable.DebugInformation?.Signature;
+        public string DI_Signature => _model.DebugInformation?.Signature;
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.FormatType"/>
-        public SabreTools.Models.LinearExecutable.DebugFormatType? DI_FormatType => _executable.DebugInformation?.FormatType;
+        public SabreTools.Models.LinearExecutable.DebugFormatType? DI_FormatType => _model.DebugInformation?.FormatType;
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.DebuggerData"/>
-        public byte[] DebuggerData => _executable.DebugInformation?.DebuggerData;
+        public byte[] DebuggerData => _model.DebugInformation?.DebuggerData;
 
         #endregion
 
@@ -290,23 +290,29 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the executable
-        /// </summary>
-        private SabreTools.Models.LinearExecutable.Executable _executable;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private LinearExecutable() { }
+        /// <inheritdoc/>
+#if NET48
+        public LinearExecutable(SabreTools.Models.LinearExecutable.Executable model, byte[] data, int offset)
+#else
+        public LinearExecutable(SabreTools.Models.LinearExecutable.Executable? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
 
-        /// <summary>
+        /// <inheritdoc/>
+#if NET48
+        public LinearExecutable(SabreTools.Models.LinearExecutable.Executable model, Stream data)
+#else
+        public LinearExecutable(SabreTools.Models.LinearExecutable.Executable? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }/// <summary>
         /// Create an LE/LX executable from a byte array and offset
         /// </summary>
         /// <param name="data">Byte array representing the executable</param>
@@ -342,13 +348,14 @@ namespace BinaryObjectScanner.Wrappers
             if (executable == null)
                 return null;
 
-            var wrapper = new LinearExecutable
+            try
             {
-                _executable = executable,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new LinearExecutable(executable, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -1007,7 +1014,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Debug Information:");
             builder.AppendLine("  -------------------------");
-            if (_executable.DebugInformation == null)
+            if (_model.DebugInformation == null)
             {
                 builder.AppendLine("  No debug information");
             }
@@ -1023,7 +1030,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_executable, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

@@ -4,12 +4,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class CIA : WrapperBase
+    public class CIA : WrapperBase<SabreTools.Models.N3DS.CIA>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "CTR Importable Archive (CIA)";
+        public override string DescriptionString => "CTR Importable Archive (CIA)";
 
         #endregion
 
@@ -18,263 +18,271 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.HeaderSize"/>
-        public uint HeaderSize => _cia.Header.HeaderSize;
+        public uint HeaderSize => _model.Header.HeaderSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.Type"/>
-        public ushort Type => _cia.Header.Type;
+        public ushort Type => _model.Header.Type;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.Version"/>
-        public ushort Version => _cia.Header.Version;
+        public ushort Version => _model.Header.Version;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.CertificateChainSize"/>
-        public uint CertificateChainSize => _cia.Header.CertificateChainSize;
+        public uint CertificateChainSize => _model.Header.CertificateChainSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.TicketSize"/>
-        public uint TicketSize => _cia.Header.TicketSize;
+        public uint TicketSize => _model.Header.TicketSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.TMDFileSize"/>
-        public uint TMDFileSize => _cia.Header.TMDFileSize;
+        public uint TMDFileSize => _model.Header.TMDFileSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.MetaSize"/>
-        public uint MetaSize => _cia.Header.MetaSize;
+        public uint MetaSize => _model.Header.MetaSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentSize"/>
-        public ulong ContentSize => _cia.Header.ContentSize;
+        public ulong ContentSize => _model.Header.ContentSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentIndex"/>
-        public byte[] ContentIndex => _cia.Header.ContentIndex;
+        public byte[] ContentIndex => _model.Header.ContentIndex;
 
         #endregion
 
         #region Certificate Chain
 
         /// <inheritdoc cref="Models.N3DS.CIA.CertificateChain"/>
-        public SabreTools.Models.N3DS.Certificate[] CertificateChain => _cia.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate[] CertificateChain => _model.CertificateChain;
 
         #endregion
 
         #region Ticket
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureType"/>
-        public SabreTools.Models.N3DS.SignatureType T_SignatureType => _cia.Ticket.SignatureType;
+        public SabreTools.Models.N3DS.SignatureType T_SignatureType => _model.Ticket.SignatureType;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureSize"/>
-        public ushort T_SignatureSize => _cia.Ticket.SignatureSize;
+        public ushort T_SignatureSize => _model.Ticket.SignatureSize;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.PaddingSize"/>
-        public byte T_PaddingSize => _cia.Ticket.PaddingSize;
+        public byte T_PaddingSize => _model.Ticket.PaddingSize;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Signature"/>
-        public byte[] T_Signature => _cia.Ticket.Signature;
+        public byte[] T_Signature => _model.Ticket.Signature;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Padding"/>
-        public byte[] T_Padding => _cia.Ticket.Padding;
+        public byte[] T_Padding => _model.Ticket.Padding;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Issuer"/>
-        public string T_Issuer => _cia.Ticket.Issuer;
+        public string T_Issuer => _model.Ticket.Issuer;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ECCPublicKey"/>
-        public byte[] T_ECCPublicKey => _cia.Ticket.ECCPublicKey;
+        public byte[] T_ECCPublicKey => _model.Ticket.ECCPublicKey;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Version"/>
-        public byte T_Version => _cia.Ticket.Version;
+        public byte T_Version => _model.Ticket.Version;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CaCrlVersion"/>
-        public byte T_CaCrlVersion => _cia.Ticket.CaCrlVersion;
+        public byte T_CaCrlVersion => _model.Ticket.CaCrlVersion;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignerCrlVersion"/>
-        public byte T_SignerCrlVersion => _cia.Ticket.SignerCrlVersion;
+        public byte T_SignerCrlVersion => _model.Ticket.SignerCrlVersion;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleKey"/>
-        public byte[] T_TitleKey => _cia.Ticket.TitleKey;
+        public byte[] T_TitleKey => _model.Ticket.TitleKey;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved1"/>
-        public byte T_Reserved1 => _cia.Ticket.Reserved1;
+        public byte T_Reserved1 => _model.Ticket.Reserved1;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketID"/>
-        public ulong T_TicketID => _cia.Ticket.TicketID;
+        public ulong T_TicketID => _model.Ticket.TicketID;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ConsoleID"/>
-        public uint T_ConsoleID => _cia.Ticket.ConsoleID;
+        public uint T_ConsoleID => _model.Ticket.ConsoleID;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleID"/>
-        public ulong T_TitleID => _cia.Ticket.TitleID;
+        public ulong T_TitleID => _model.Ticket.TitleID;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved2"/>
-        public byte[] T_Reserved2 => _cia.Ticket.Reserved2;
+        public byte[] T_Reserved2 => _model.Ticket.Reserved2;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketTitleVersion"/>
-        public ushort T_TicketTitleVersion => _cia.Ticket.TicketTitleVersion;
+        public ushort T_TicketTitleVersion => _model.Ticket.TicketTitleVersion;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved3"/>
-        public byte[] T_Reserved3 => _cia.Ticket.Reserved3;
+        public byte[] T_Reserved3 => _model.Ticket.Reserved3;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.LicenseType"/>
-        public byte T_LicenseType => _cia.Ticket.LicenseType;
+        public byte T_LicenseType => _model.Ticket.LicenseType;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CommonKeyYIndex"/>
-        public byte T_CommonKeyYIndex => _cia.Ticket.CommonKeyYIndex;
+        public byte T_CommonKeyYIndex => _model.Ticket.CommonKeyYIndex;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved4"/>
-        public byte[] T_Reserved4 => _cia.Ticket.Reserved4;
+        public byte[] T_Reserved4 => _model.Ticket.Reserved4;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.eShopAccountID"/>
-        public uint T_eShopAccountID => _cia.Ticket.eShopAccountID;
+        public uint T_eShopAccountID => _model.Ticket.eShopAccountID;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved5"/>
-        public byte T_Reserved5 => _cia.Ticket.Reserved5;
+        public byte T_Reserved5 => _model.Ticket.Reserved5;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Audit"/>
-        public byte T_Audit => _cia.Ticket.Audit;
+        public byte T_Audit => _model.Ticket.Audit;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved6"/>
-        public byte[] T_Reserved6 => _cia.Ticket.Reserved6;
+        public byte[] T_Reserved6 => _model.Ticket.Reserved6;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Limits"/>
-        public uint[] T_Limits => _cia.Ticket.Limits;
+        public uint[] T_Limits => _model.Ticket.Limits;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndexSize"/>
-        public uint T_ContentIndexSize => _cia.Ticket.ContentIndexSize;
+        public uint T_ContentIndexSize => _model.Ticket.ContentIndexSize;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndex"/>
-        public byte[] T_ContentIndex => _cia.Ticket.ContentIndex;
+        public byte[] T_ContentIndex => _model.Ticket.ContentIndex;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CertificateChain"/>
-        public SabreTools.Models.N3DS.Certificate[] T_CertificateChain => _cia.Ticket.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate[] T_CertificateChain => _model.Ticket.CertificateChain;
 
         #endregion
 
         #region Title Metadata
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureType"/>
-        public SabreTools.Models.N3DS.SignatureType TMD_SignatureType => _cia.TMDFileData.SignatureType;
+        public SabreTools.Models.N3DS.SignatureType TMD_SignatureType => _model.TMDFileData.SignatureType;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureSize"/>
-        public ushort TMD_SignatureSize => _cia.TMDFileData.SignatureSize;
+        public ushort TMD_SignatureSize => _model.TMDFileData.SignatureSize;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.PaddingSize"/>
-        public byte TMD_PaddingSize => _cia.TMDFileData.PaddingSize;
+        public byte TMD_PaddingSize => _model.TMDFileData.PaddingSize;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Signature"/>
-        public byte[] TMD_Signature => _cia.TMDFileData.Signature;
+        public byte[] TMD_Signature => _model.TMDFileData.Signature;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding1"/>
-        public byte[] TMD_Padding1 => _cia.TMDFileData.Padding1;
+        public byte[] TMD_Padding1 => _model.TMDFileData.Padding1;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Issuer"/>
-        public string TMD_Issuer => _cia.TMDFileData.Issuer;
+        public string TMD_Issuer => _model.TMDFileData.Issuer;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Version"/>
-        public byte TMD_Version => _cia.TMDFileData.Version;
+        public byte TMD_Version => _model.TMDFileData.Version;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CaCrlVersion"/>
-        public byte TMD_CaCrlVersion => _cia.TMDFileData.CaCrlVersion;
+        public byte TMD_CaCrlVersion => _model.TMDFileData.CaCrlVersion;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignerCrlVersion"/>
-        public byte TMD_SignerCrlVersion => _cia.TMDFileData.SignerCrlVersion;
+        public byte TMD_SignerCrlVersion => _model.TMDFileData.SignerCrlVersion;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved1"/>
-        public byte TMD_Reserved1 => _cia.TMDFileData.Reserved1;
+        public byte TMD_Reserved1 => _model.TMDFileData.Reserved1;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SystemVersion"/>
-        public ulong TMD_SystemVersion => _cia.TMDFileData.SystemVersion;
+        public ulong TMD_SystemVersion => _model.TMDFileData.SystemVersion;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleID"/>
-        public ulong TMD_TitleID => _cia.TMDFileData.TitleID;
+        public ulong TMD_TitleID => _model.TMDFileData.TitleID;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleType"/>
-        public uint TMD_TitleType => _cia.TMDFileData.TitleType;
+        public uint TMD_TitleType => _model.TMDFileData.TitleType;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.GroupID"/>
-        public ushort TMD_GroupID => _cia.TMDFileData.GroupID;
+        public ushort TMD_GroupID => _model.TMDFileData.GroupID;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SaveDataSize"/>
-        public uint TMD_SaveDataSize => _cia.TMDFileData.SaveDataSize;
+        public uint TMD_SaveDataSize => _model.TMDFileData.SaveDataSize;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLPrivateSaveDataSize"/>
-        public uint TMD_SRLPrivateSaveDataSize => _cia.TMDFileData.SRLPrivateSaveDataSize;
+        public uint TMD_SRLPrivateSaveDataSize => _model.TMDFileData.SRLPrivateSaveDataSize;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved2"/>
-        public byte[] TMD_Reserved2 => _cia.TMDFileData.Reserved2;
+        public byte[] TMD_Reserved2 => _model.TMDFileData.Reserved2;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLFlag"/>
-        public byte TMD_SRLFlag => _cia.TMDFileData.SRLFlag;
+        public byte TMD_SRLFlag => _model.TMDFileData.SRLFlag;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved3"/>
-        public byte[] TMD_Reserved3 => _cia.TMDFileData.Reserved3;
+        public byte[] TMD_Reserved3 => _model.TMDFileData.Reserved3;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.AccessRights"/>
-        public uint TMD_AccessRights => _cia.TMDFileData.AccessRights;
+        public uint TMD_AccessRights => _model.TMDFileData.AccessRights;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleVersion"/>
-        public ushort TMD_TitleVersion => _cia.TMDFileData.TitleVersion;
+        public ushort TMD_TitleVersion => _model.TMDFileData.TitleVersion;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentCount"/>
-        public ushort TMD_ContentCount => _cia.TMDFileData.ContentCount;
+        public ushort TMD_ContentCount => _model.TMDFileData.ContentCount;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.BootContent"/>
-        public ushort TMD_BootContent => _cia.TMDFileData.BootContent;
+        public ushort TMD_BootContent => _model.TMDFileData.BootContent;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding2"/>
-        public byte[] TMD_Padding2 => _cia.TMDFileData.Padding2;
+        public byte[] TMD_Padding2 => _model.TMDFileData.Padding2;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SHA256HashContentInfoRecords"/>
-        public byte[] TMD_SHA256HashContentInfoRecords => _cia.TMDFileData.SHA256HashContentInfoRecords;
+        public byte[] TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentInfoRecords"/>
-        public SabreTools.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _cia.TMDFileData.ContentInfoRecords;
+        public SabreTools.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _model.TMDFileData.ContentInfoRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentChunkRecords"/>
-        public SabreTools.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _cia.TMDFileData.ContentChunkRecords;
+        public SabreTools.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _model.TMDFileData.ContentChunkRecords;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CertificateChain"/>
-        public SabreTools.Models.N3DS.Certificate[] TMD_CertificateChain => _cia.TMDFileData.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate[] TMD_CertificateChain => _model.TMDFileData.CertificateChain;
 
         #endregion
 
         #region Partitions
 
         /// <inheritdoc cref="Models.N3DS.CIA.Partitions"/>
-        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _cia.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _model.Partitions;
 
         #endregion
 
         #region Meta Data
 
         /// <inheritdoc cref="Models.N3DS.MetaData.TitleIDDependencyList"/>
-        public byte[] MD_TitleIDDependencyList => _cia.MetaData?.TitleIDDependencyList;
+        public byte[] MD_TitleIDDependencyList => _model.MetaData?.TitleIDDependencyList;
 
         /// <inheritdoc cref="Models.N3DS.MetaData.Reserved1"/>
-        public byte[] MD_Reserved1 => _cia.MetaData?.Reserved1;
+        public byte[] MD_Reserved1 => _model.MetaData?.Reserved1;
 
         /// <inheritdoc cref="Models.N3DS.MetaData.CoreVersion"/>
-        public uint? MD_CoreVersion => _cia.MetaData?.CoreVersion;
+        public uint? MD_CoreVersion => _model.MetaData?.CoreVersion;
 
         /// <inheritdoc cref="Models.N3DS.MetaData.Reserved2"/>
-        public byte[] MD_Reserved2 => _cia.MetaData?.Reserved2;
+        public byte[] MD_Reserved2 => _model.MetaData?.Reserved2;
 
         /// <inheritdoc cref="Models.N3DS.MetaData.IconData"/>
-        public byte[] MD_IconData => _cia.MetaData?.IconData;
+        public byte[] MD_IconData => _model.MetaData?.IconData;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the cart
-        /// </summary>
-        private SabreTools.Models.N3DS.CIA _cia;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private CIA() { }
+        /// <inheritdoc/>
+#if NET48
+        public CIA(SabreTools.Models.N3DS.CIA model, byte[] data, int offset)
+#else
+        public CIA(SabreTools.Models.N3DS.CIA? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public CIA(SabreTools.Models.N3DS.CIA model, Stream data)
+#else
+        public CIA(SabreTools.Models.N3DS.CIA? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a CIA archive from a byte array and offset
@@ -312,13 +320,14 @@ namespace BinaryObjectScanner.Wrappers
             if (archive == null)
                 return null;
 
-            var wrapper = new CIA
+            try
             {
-                _cia = archive,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new CIA(archive, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -708,7 +717,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Meta Data Information:");
             builder.AppendLine("  -------------------------");
-            if (_cia.MetaData == null || MetaSize == 0)
+            if (_model.MetaData == null || MetaSize == 0)
             {
                 builder.AppendLine(value: "  No meta file data");
             }
@@ -726,7 +735,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_cia, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

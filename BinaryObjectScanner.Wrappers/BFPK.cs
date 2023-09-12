@@ -5,12 +5,12 @@ using SharpCompress.Compressors.Deflate;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class BFPK : WrapperBase
+    public class BFPK : WrapperBase<SabreTools.Models.BFPK.Archive>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "BFPK Archive";
+        public override string DescriptionString => "BFPK Archive";
 
         #endregion
 
@@ -19,40 +19,48 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.BFPK.Header.Magic"/>
-        public string Magic => _archive.Header.Magic;
+        public string Magic => _model.Header.Magic;
 
         /// <inheritdoc cref="Models.BFPK.Header.Version"/>
-        public int Version => _archive.Header.Version;
+        public int Version => _model.Header.Version;
 
         /// <inheritdoc cref="Models.BFPK.Header.Files"/>
-        public int Files => _archive.Header.Files;
+        public int Files => _model.Header.Files;
 
         #endregion
 
         #region Files
 
         /// <inheritdoc cref="Models.BFPK.Archive.Files"/>
-        public SabreTools.Models.BFPK.FileEntry[] FileTable => _archive.Files;
+        public SabreTools.Models.BFPK.FileEntry[] FileTable => _model.Files;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the archive
-        /// </summary>
-        private SabreTools.Models.BFPK.Archive _archive;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private BFPK() { }
+        /// <inheritdoc/>
+#if NET48
+        public BFPK(SabreTools.Models.BFPK.Archive model, byte[] data, int offset)
+#else
+        public BFPK(SabreTools.Models.BFPK.Archive? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public BFPK(SabreTools.Models.BFPK.Archive model, Stream data)
+#else
+        public BFPK(SabreTools.Models.BFPK.Archive? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a BFPK archive from a byte array and offset
@@ -90,13 +98,14 @@ namespace BinaryObjectScanner.Wrappers
             if (archive == null)
                 return null;
 
-            var wrapper = new BFPK
+            try
             {
-                _archive = archive,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new BFPK(archive, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -251,7 +260,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_archive, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

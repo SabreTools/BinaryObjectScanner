@@ -4,12 +4,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class AACSMediaKeyBlock : WrapperBase
+    public class AACSMediaKeyBlock : WrapperBase<SabreTools.Models.AACS.MediaKeyBlock>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "AACS Media Key Block";
+        public override string DescriptionString => "AACS Media Key Block";
 
         #endregion
 
@@ -18,27 +18,35 @@ namespace BinaryObjectScanner.Wrappers
         #region Records
 
         /// <inheritdoc cref="Models.AACS.MediaKeyBlock.Records"/>
-        public SabreTools.Models.AACS.Record[] Records => _mediaKeyBlock.Records;
+        public SabreTools.Models.AACS.Record[] Records => _model.Records;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the AACS media key block
-        /// </summary>
-        private SabreTools.Models.AACS.MediaKeyBlock _mediaKeyBlock;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private AACSMediaKeyBlock() { }
+        /// <inheritdoc/>
+#if NET48
+        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock model, byte[] data, int offset)
+#else
+        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock model, Stream data)
+#else
+        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create an AACS media key block from a byte array and offset
@@ -76,13 +84,14 @@ namespace BinaryObjectScanner.Wrappers
             if (mediaKeyBlock == null)
                 return null;
 
-            var wrapper = new AACSMediaKeyBlock
+            try
             {
-                _mediaKeyBlock = mediaKeyBlock,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new AACSMediaKeyBlock(mediaKeyBlock, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -284,7 +293,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_mediaKeyBlock, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

@@ -3,12 +3,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class PAK : WrapperBase
+    public class PAK : WrapperBase<SabreTools.Models.PAK.File>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Half-Life Package File (PAK)";
+        public override string DescriptionString => "Half-Life Package File (PAK)";
 
         #endregion
 
@@ -17,20 +17,20 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.PAK.Header.Signature"/>
-        public string Signature => _file.Header.Signature;
+        public string Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryOffset"/>
-        public uint DirectoryOffset => _file.Header.DirectoryOffset;
+        public uint DirectoryOffset => _model.Header.DirectoryOffset;
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryLength"/>
-        public uint DirectoryLength => _file.Header.DirectoryLength;
+        public uint DirectoryLength => _model.Header.DirectoryLength;
 
         #endregion
 
         #region Directory Items
 
         /// <inheritdoc cref="Models.PAK.DirectoryItems"/>
-        public SabreTools.Models.PAK.DirectoryItem[] DirectoryItems => _file.DirectoryItems;
+        public SabreTools.Models.PAK.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
 
         #endregion
 
@@ -42,21 +42,29 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the PAK
-        /// </summary>
-        private SabreTools.Models.PAK.File _file;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private PAK() { }
+        /// <inheritdoc/>
+#if NET48
+        public PAK(SabreTools.Models.PAK.File model, byte[] data, int offset)
+#else
+        public PAK(SabreTools.Models.PAK.File? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public PAK(SabreTools.Models.PAK.File model, Stream data)
+#else
+        public PAK(SabreTools.Models.PAK.File? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a PAK from a byte array and offset
@@ -94,13 +102,14 @@ namespace BinaryObjectScanner.Wrappers
             if (file == null)
                 return null;
 
-            var wrapper = new PAK
+            try
             {
-                _file = file,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new PAK(file, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -165,7 +174,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_file, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

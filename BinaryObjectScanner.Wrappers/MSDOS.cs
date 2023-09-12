@@ -3,12 +3,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class MSDOS : WrapperBase
+    public class MSDOS : WrapperBase<SabreTools.Models.MSDOS.Executable>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "MS-DOS Executable";
+        public override string DescriptionString => "MS-DOS Executable";
 
         #endregion
 
@@ -17,99 +17,105 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
-        public string Magic => _executable.Header.Magic;
+        public string Magic => _model.Header.Magic;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
-        public ushort LastPageBytes => _executable.Header.LastPageBytes;
+        public ushort LastPageBytes => _model.Header.LastPageBytes;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
-        public ushort Pages => _executable.Header.Pages;
+        public ushort Pages => _model.Header.Pages;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
-        public ushort RelocationItems => _executable.Header.RelocationItems;
+        public ushort RelocationItems => _model.Header.RelocationItems;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
-        public ushort HeaderParagraphSize => _executable.Header.HeaderParagraphSize;
+        public ushort HeaderParagraphSize => _model.Header.HeaderParagraphSize;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
-        public ushort MinimumExtraParagraphs => _executable.Header.MinimumExtraParagraphs;
+        public ushort MinimumExtraParagraphs => _model.Header.MinimumExtraParagraphs;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
-        public ushort MaximumExtraParagraphs => _executable.Header.MaximumExtraParagraphs;
+        public ushort MaximumExtraParagraphs => _model.Header.MaximumExtraParagraphs;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
-        public ushort InitialSSValue => _executable.Header.InitialSSValue;
+        public ushort InitialSSValue => _model.Header.InitialSSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-        public ushort InitialSPValue => _executable.Header.InitialSPValue;
+        public ushort InitialSPValue => _model.Header.InitialSPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
-        public ushort Checksum => _executable.Header.Checksum;
+        public ushort Checksum => _model.Header.Checksum;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
-        public ushort InitialIPValue => _executable.Header.InitialIPValue;
+        public ushort InitialIPValue => _model.Header.InitialIPValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
-        public ushort InitialCSValue => _executable.Header.InitialCSValue;
+        public ushort InitialCSValue => _model.Header.InitialCSValue;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
-        public ushort RelocationTableAddr => _executable.Header.RelocationTableAddr;
+        public ushort RelocationTableAddr => _model.Header.RelocationTableAddr;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
-        public ushort OverlayNumber => _executable.Header.OverlayNumber;
+        public ushort OverlayNumber => _model.Header.OverlayNumber;
 
         #endregion
 
         #region PE Extensions
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
-        public ushort[] Reserved1 => _executable.Header.Reserved1;
+        public ushort[] Reserved1 => _model.Header.Reserved1;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
-        public ushort OEMIdentifier => _executable.Header.OEMIdentifier;
+        public ushort OEMIdentifier => _model.Header.OEMIdentifier;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
-        public ushort OEMInformation => _executable.Header.OEMInformation;
+        public ushort OEMInformation => _model.Header.OEMInformation;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
-        public ushort[] Reserved2 => _executable.Header.Reserved2;
+        public ushort[] Reserved2 => _model.Header.Reserved2;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
-        public uint NewExeHeaderAddr => _executable.Header.NewExeHeaderAddr;
+        public uint NewExeHeaderAddr => _model.Header.NewExeHeaderAddr;
 
         #endregion
 
         #region Relocation Table
 
         /// <inheritdoc cref="Models.MSDOS.Executable.RelocationTable"/>
-        public SabreTools.Models.MSDOS.RelocationEntry[] RelocationTable => _executable.RelocationTable;
+        public SabreTools.Models.MSDOS.RelocationEntry[] RelocationTable => _model.RelocationTable;
 
         #endregion
-
-        #endregion
-
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the executable
-        /// </summary>
-        private SabreTools.Models.MSDOS.Executable _executable;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private MSDOS() { }
+        /// <inheritdoc/>
+#if NET48
+        public MSDOS(SabreTools.Models.MSDOS.Executable model, byte[] data, int offset)
+#else
+        public MSDOS(SabreTools.Models.MSDOS.Executable? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
 
-        /// <summary>
-        /// Create an MS-DOS executable from a byte array and offset
-        /// </summary>
-        /// <param name="data">Byte array representing the executable</param>
-        /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
+        /// <inheritdoc/>
+#if NET48
+        public MSDOS(SabreTools.Models.MSDOS.Executable model, Stream data)
+#else
+        public MSDOS(SabreTools.Models.MSDOS.Executable? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }/// <summary>
+         /// Create an MS-DOS executable from a byte array and offset
+         /// </summary>
+         /// <param name="data">Byte array representing the executable</param>
+         /// <param name="offset">Offset within the array to parse</param>
+         /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
         public static MSDOS Create(byte[] data, int offset)
         {
             // If the data is invalid
@@ -140,19 +146,20 @@ namespace BinaryObjectScanner.Wrappers
             if (executable == null)
                 return null;
 
-            var wrapper = new MSDOS
+            try
             {
-                _executable = executable,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new MSDOS(executable, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
-    
+
         #endregion
 
         #region Printing
-    
+
         /// <inheritdoc/>
         public override StringBuilder PrettyPrint()
         {
@@ -220,7 +227,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_executable, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 

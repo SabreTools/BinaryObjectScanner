@@ -5,12 +5,12 @@ using System.Text;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class CFB : WrapperBase
+    public class CFB : WrapperBase<SabreTools.Models.CFB.Binary>
     {
         #region Descriptive Properties
 
         /// <inheritdoc/>
-        public override string Description => "Compact File Binary";
+        public override string DescriptionString => "Compact File Binary";
 
         #endregion
 
@@ -19,61 +19,61 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Signature"/>
-        public ulong Signature => _binary.Header.Signature;
+        public ulong Signature => _model.Header.Signature;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.CLSID"/>
-        public Guid CLSID => _binary.Header.CLSID;
+        public Guid CLSID => _model.Header.CLSID;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MinorVersion"/>
-        public ushort MinorVersion => _binary.Header.MinorVersion;
+        public ushort MinorVersion => _model.Header.MinorVersion;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MajorVersion"/>
-        public ushort MajorVersion => _binary.Header.MajorVersion;
+        public ushort MajorVersion => _model.Header.MajorVersion;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.ByteOrder"/>
-        public ushort ByteOrder => _binary.Header.ByteOrder;
+        public ushort ByteOrder => _model.Header.ByteOrder;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.SectorShift"/>
-        public ushort SectorShift => _binary.Header.SectorShift;
+        public ushort SectorShift => _model.Header.SectorShift;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MiniSectorShift"/>
-        public ushort MiniSectorShift => _binary.Header.MiniSectorShift;
+        public ushort MiniSectorShift => _model.Header.MiniSectorShift;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Reserved"/>
-        public byte[] Reserved => _binary.Header.Reserved;
+        public byte[] Reserved => _model.Header.Reserved;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDirectorySectors"/>
-        public uint NumberOfDirectorySectors => _binary.Header.NumberOfDirectorySectors;
+        public uint NumberOfDirectorySectors => _model.Header.NumberOfDirectorySectors;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfFATSectors"/>
-        public uint NumberOfFATSectors => _binary.Header.NumberOfFATSectors;
+        public uint NumberOfFATSectors => _model.Header.NumberOfFATSectors;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstDirectorySectorLocation"/>
-        public uint FirstDirectorySectorLocation => _binary.Header.FirstDirectorySectorLocation;
+        public uint FirstDirectorySectorLocation => _model.Header.FirstDirectorySectorLocation;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.TransactionSignatureNumber"/>
-        public uint TransactionSignatureNumber => _binary.Header.TransactionSignatureNumber;
+        public uint TransactionSignatureNumber => _model.Header.TransactionSignatureNumber;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MiniStreamCutoffSize"/>
-        public uint MiniStreamCutoffSize => _binary.Header.MiniStreamCutoffSize;
+        public uint MiniStreamCutoffSize => _model.Header.MiniStreamCutoffSize;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstMiniFATSectorLocation"/>
-        public uint FirstMiniFATSectorLocation => _binary.Header.FirstMiniFATSectorLocation;
+        public uint FirstMiniFATSectorLocation => _model.Header.FirstMiniFATSectorLocation;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfMiniFATSectors"/>
-        public uint NumberOfMiniFATSectors => _binary.Header.NumberOfMiniFATSectors;
+        public uint NumberOfMiniFATSectors => _model.Header.NumberOfMiniFATSectors;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstDIFATSectorLocation"/>
-        public uint FirstDIFATSectorLocation => _binary.Header.FirstDIFATSectorLocation;
+        public uint FirstDIFATSectorLocation => _model.Header.FirstDIFATSectorLocation;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDIFATSectors"/>
-        public uint NumberOfDIFATSectors => _binary.Header.NumberOfDIFATSectors;
+        public uint NumberOfDIFATSectors => _model.Header.NumberOfDIFATSectors;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.DIFAT"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] DIFAT => _binary.Header.DIFAT;
+        public SabreTools.Models.CFB.SectorNumber[] DIFAT => _model.Header.DIFAT;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] DIFAT => _binary.Header.DIFAT;
+        public SabreTools.Models.CFB.SectorNumber?[] DIFAT => _model.Header.DIFAT;
 #endif
 
         #endregion
@@ -82,9 +82,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.FATSectorNumbers"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] FATSectorNumbers => _binary.FATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber[] FATSectorNumbers => _model.FATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] FATSectorNumbers => _binary.FATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[] FATSectorNumbers => _model.FATSectorNumbers;
 #endif
 
         #endregion
@@ -93,9 +93,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.MiniFATSectorNumbers"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] MiniFATSectorNumbers => _binary.MiniFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber[] MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] MiniFATSectorNumbers => _binary.MiniFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[] MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
 #endif
 
         #endregion
@@ -104,9 +104,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.DIFATSectorNumbers"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] DIFATSectorNumbers => _binary.DIFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber[] DIFATSectorNumbers => _model.DIFATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] DIFATSectorNumbers => _binary.DIFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[] DIFATSectorNumbers => _model.DIFATSectorNumbers;
 #endif
 
         #endregion
@@ -115,9 +115,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.DirectoryEntries"/>
 #if NET48
-        public SabreTools.Models.CFB.DirectoryEntry[] DirectoryEntries => _binary.DirectoryEntries;
+        public SabreTools.Models.CFB.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
 #else
-        public SabreTools.Models.CFB.DirectoryEntry?[] DirectoryEntries => _binary.DirectoryEntries;
+        public SabreTools.Models.CFB.DirectoryEntry?[] DirectoryEntries => _model.DirectoryEntries;
 #endif
 
         #endregion
@@ -138,21 +138,29 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
-
-        /// <summary>
-        /// Internal representation of the file
-        /// </summary>
-        private SabreTools.Models.CFB.Binary _binary;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>
-        /// Private constructor
-        /// </summary>
-        private CFB() { }
+        /// <inheritdoc/>
+#if NET48
+        public CFB(SabreTools.Models.CFB.Binary model, byte[] data, int offset)
+#else
+        public CFB(SabreTools.Models.CFB.Binary? model, byte[]? data, int offset)
+#endif
+            : base(model, data, offset)
+        {
+            // All logic is handled by the base class
+        }
+
+        /// <inheritdoc/>
+#if NET48
+        public CFB(SabreTools.Models.CFB.Binary model, Stream data)
+#else
+        public CFB(SabreTools.Models.CFB.Binary? model, Stream? data)
+#endif
+            : base(model, data)
+        {
+            // All logic is handled by the base class
+        }
 
         /// <summary>
         /// Create a Compound File Binary from a byte array and offset
@@ -190,13 +198,14 @@ namespace BinaryObjectScanner.Wrappers
             if (binary == null)
                 return null;
 
-            var wrapper = new CFB
+            try
             {
-                _binary = binary,
-                _dataSource = DataSource.Stream,
-                _streamData = data,
-            };
-            return wrapper;
+                return new CFB(binary, data);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -551,7 +560,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET6_0_OR_GREATER
 
         /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_binary, _jsonSerializerOptions);
+        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
 
 #endif
 
