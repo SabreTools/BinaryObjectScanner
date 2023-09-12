@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using BinaryObjectScanner.ASN1;
+using SabreTools.ASN1;
 using SabreTools.IO;
 using static SabreTools.Serialization.Extensions;
 
