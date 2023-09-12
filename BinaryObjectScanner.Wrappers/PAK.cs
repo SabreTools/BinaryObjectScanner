@@ -17,7 +17,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.PAK.Header.Signature"/>
+#if NET48
         public string Signature => _model.Header.Signature;
+#else
+        public string? Signature => _model.Header.Signature;
+#endif
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryOffset"/>
         public uint DirectoryOffset => _model.Header.DirectoryOffset;
@@ -76,7 +80,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the PAK</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A PAK wrapper on success, null on failure</returns>
+#if NET48
         public static PAK Create(byte[] data, int offset)
+#else
+        public static PAK? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -96,7 +104,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the PAK</param>
         /// <returns>A PAK wrapper on success, null on failure</returns>
+#if NET48
         public static PAK Create(Stream data)
+#else
+        public static PAK? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -229,20 +241,36 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Read the item data
+#if NET48
             byte[] data = ReadFromDataSource((int)directoryItem.ItemOffset, (int)directoryItem.ItemLength);
+#else
+            byte[] data = ReadFromDataSource((int)directoryItem.ItemOffset, (int)directoryItem.ItemLength);
+#endif
+            if (data == null)
+                return false;
 
             // Create the filename
+#if NET48
             string filename = directoryItem.ItemName;
+#else
+            string? filename = directoryItem.ItemName;
+#endif
 
             // If we have an invalid output directory
             if (string.IsNullOrWhiteSpace(outputDirectory))
                 return false;
 
             // Create the full output path
-            filename = Path.Combine(outputDirectory, filename);
+            filename = Path.Combine(outputDirectory, filename ?? $"file{index}");
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try

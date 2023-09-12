@@ -16,7 +16,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Pass-Through Properties
 
         /// <inheritdoc cref="Models.VBSP.Header.Signature"/>
+#if NET48
         public string Signature => _model.Header.Signature;
+#else
+        public string? Signature => _model.Header.Signature;
+#endif
 
         /// <inheritdoc cref="Models.VBSP.Header.Version"/>
         public int Version => _model.Header.Version;
@@ -69,7 +73,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the VBSP</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A VBSP wrapper on success, null on failure</returns>
+#if NET48
         public static VBSP Create(byte[] data, int offset)
+#else
+        public static VBSP? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -89,7 +97,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the VBSP</param>
         /// <returns>An VBSP wrapper on success, null on failure</returns>
+#if NET48
         public static VBSP Create(Stream data)
+#else
+        public static VBSP? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -176,7 +188,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
                     builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
                     builder.AppendLine($"    Version: {lump.Version} (0x{lump.Version:X})");
-                    builder.AppendLine($"    4CC: {string.Join(", ", lump.FourCC)}");
+                    builder.AppendLine($"    4CC: {(lump.FourCC == null ? "[NULL]" : string.Join(", ", lump.FourCC))}");
                 }
             }
             builder.AppendLine();
@@ -236,7 +248,11 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Read the data
+#if NET48
             byte[] data = ReadFromDataSource((int)lump.Offset, (int)lump.Length);
+#else
+            byte[]? data = ReadFromDataSource((int)lump.Offset, (int)lump.Length);
+#endif
             if (data == null)
                 return false;
 
@@ -260,7 +276,13 @@ namespace BinaryObjectScanner.Wrappers
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try

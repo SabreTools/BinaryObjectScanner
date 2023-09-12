@@ -265,7 +265,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the NCF</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>An NCF wrapper on success, null on failure</returns>
+#if NET48
         public static NCF Create(byte[] data, int offset)
+#else
+        public static NCF? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -285,7 +289,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the NCF</param>
         /// <returns>An NCF wrapper on success, null on failure</returns>
+#if NET48
         public static NCF Create(Stream data)
+#else
+        public static NCF? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)

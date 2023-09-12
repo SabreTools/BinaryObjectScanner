@@ -26,7 +26,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
+#if NET48
         public string Stub_Magic => _model.Stub.Header.Magic;
+#else
+        public string? Stub_Magic => _model.Stub.Header.Magic;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
         public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
@@ -72,7 +76,11 @@ namespace BinaryObjectScanner.Wrappers
         #region PE Extensions
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
+#if NET48
         public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
+#else
+        public ushort[]? Stub_Reserved1 => _model.Stub.Header.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
         public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
@@ -81,7 +89,11 @@ namespace BinaryObjectScanner.Wrappers
         public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
+#if NET48
         public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
+#else
+        public ushort[]? Stub_Reserved2 => _model.Stub.Header.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
         public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
@@ -91,7 +103,11 @@ namespace BinaryObjectScanner.Wrappers
         #endregion
 
         /// <inheritdoc cref="Models.PortableExecutable.Executable.Signature"/>
+#if NET48
         public string Signature => _model.Signature;
+#else
+        public string? Signature => _model.Signature;
+#endif
 
         #region COFF File Header
 
@@ -233,49 +249,105 @@ namespace BinaryObjectScanner.Wrappers
         #region Data Directories
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExportTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ExportTable => _model.OptionalHeader.ExportTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExportTable => _model.OptionalHeader.ExportTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportTable => _model.OptionalHeader.ImportTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportTable => _model.OptionalHeader.ImportTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ResourceTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ResourceTable => _model.OptionalHeader.ResourceTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ResourceTable => _model.OptionalHeader.ResourceTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExceptionTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ExceptionTable => _model.OptionalHeader.ExceptionTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExceptionTable => _model.OptionalHeader.ExceptionTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CertificateTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_CertificateTable => _model.OptionalHeader.CertificateTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CertificateTable => _model.OptionalHeader.CertificateTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseRelocationTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _model.OptionalHeader.BaseRelocationTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BaseRelocationTable => _model.OptionalHeader.BaseRelocationTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Debug"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_Debug => _model.OptionalHeader.Debug;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_Debug => _model.OptionalHeader.Debug;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Architecture"/>
         public ulong OH_Architecture => _model.OptionalHeader.Architecture;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.GlobalPtr"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_GlobalPtr => _model.OptionalHeader.GlobalPtr;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_GlobalPtr => _model.OptionalHeader.GlobalPtr;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ThreadLocalStorageTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _model.OptionalHeader.ThreadLocalStorageTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ThreadLocalStorageTable => _model.OptionalHeader.ThreadLocalStorageTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoadConfigTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _model.OptionalHeader.LoadConfigTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_LoadConfigTable => _model.OptionalHeader.LoadConfigTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BoundImport"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_BoundImport => _model.OptionalHeader.BoundImport;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BoundImport => _model.OptionalHeader.BoundImport;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportAddressTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _model.OptionalHeader.ImportAddressTable;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportAddressTable => _model.OptionalHeader.ImportAddressTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DelayImportDescriptor"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _model.OptionalHeader.DelayImportDescriptor;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_DelayImportDescriptor => _model.OptionalHeader.DelayImportDescriptor;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CLRRuntimeHeader"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _model.OptionalHeader.CLRRuntimeHeader;
+#else
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CLRRuntimeHeader => _model.OptionalHeader.CLRRuntimeHeader;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Reserved"/>
         public ulong OH_Reserved => _model.OptionalHeader.Reserved;
@@ -301,7 +373,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFStringTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.COFFStringTable COFFStringTable => _model.COFFStringTable;
+#else
+        public SabreTools.Models.PortableExecutable.COFFStringTable? COFFStringTable => _model.COFFStringTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.AttributeCertificateTable"/>
 #if NET48
@@ -311,7 +387,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.DelayLoadDirectoryTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => _model.DelayLoadDirectoryTable;
+#else
+        public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable? DelayLoadDirectoryTable => _model.DelayLoadDirectoryTable;
+#endif
 
         #endregion
 
@@ -325,16 +405,32 @@ namespace BinaryObjectScanner.Wrappers
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DebugTable DebugTable => _model.DebugTable;
+#else
+        public SabreTools.Models.PortableExecutable.DebugTable? DebugTable => _model.DebugTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.ExportTable ExportTable => _model.ExportTable;
+#else
+        public SabreTools.Models.PortableExecutable.ExportTable? ExportTable => _model.ExportTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.ExportTable.ExportNameTable"/>
+#if NET48
         public string[] ExportNameTable => _model.ExportTable?.ExportNameTable?.Strings;
+#else
+        public string[]? ExportNameTable => _model.ExportTable?.ExportNameTable?.Strings;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.ImportTable ImportTable => _model.ImportTable;
+#else
+        public SabreTools.Models.PortableExecutable.ImportTable? ImportTable => _model.ImportTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
 #if NET48
@@ -346,7 +442,11 @@ namespace BinaryObjectScanner.Wrappers
             : null;
 
         /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => _model.ResourceDirectoryTable;
+#else
+        public SabreTools.Models.PortableExecutable.ResourceDirectoryTable? ResourceDirectoryTable => _model.ResourceDirectoryTable;
+#endif
 
         #endregion
 
@@ -357,7 +457,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Header padding data, if it exists
         /// </summary>
+#if NET48
         public byte[] HeaderPaddingData
+#else
+        public byte[]? HeaderPaddingData
+#endif
         {
             get
             {
@@ -368,6 +472,10 @@ namespace BinaryObjectScanner.Wrappers
                         return _headerPaddingData;
 
                     // TODO: Don't scan the known header data as well
+
+                    // If the section table is missing
+                    if (SectionTable == null)
+                        return null;
 
                     // Populate the raw header padding data based on the source
                     uint headerStartAddress = Stub_NewExeHeaderAddr;
@@ -384,7 +492,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Header padding strings, if they exist
         /// </summary>
+#if NET48
         public List<string> HeaderPaddingStrings
+#else
+        public List<string>? HeaderPaddingStrings
+#endif
         {
             get
             {
@@ -395,6 +507,10 @@ namespace BinaryObjectScanner.Wrappers
                         return _headerPaddingStrings;
 
                     // TODO: Don't scan the known header data as well
+
+                    // If the section table is missing
+                    if (SectionTable == null)
+                        return null;
 
                     // Populate the raw header padding data based on the source
                     uint headerStartAddress = Stub_NewExeHeaderAddr;
@@ -411,12 +527,20 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Entry point data, if it exists
         /// </summary>
+#if NET48
         public byte[] EntryPointData
+#else
+        public byte[]? EntryPointData
+#endif
         {
             get
             {
                 lock (_sourceDataLock)
                 {
+                    // If the section table is missing
+                    if (SectionTable == null)
+                        return null;
+
                     // If we have no entry point
                     int entryPointAddress = (int)OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable);
                     if (entryPointAddress == 0)
@@ -459,11 +583,15 @@ namespace BinaryObjectScanner.Wrappers
                     if (endOfFile == -1)
                         return -1;
 
+                    // If the section table is missing
+                    if (SectionTable == null)
+                        return -1;
+
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
                         var certificateTable = _model.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
@@ -508,7 +636,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Overlay data, if it exists
         /// </summary>
         /// <see href="https://www.autoitscript.com/forum/topic/153277-pe-file-overlay-extraction/"/>
+#if NET48
         public byte[] OverlayData
+#else
+        public byte[]? OverlayData
+#endif
         {
             get
             {
@@ -523,11 +655,15 @@ namespace BinaryObjectScanner.Wrappers
                     if (endOfFile == -1)
                         return null;
 
+                    // If the section table is missing
+                    if (SectionTable == null)
+                        return null;
+
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
                         var certificateTable = _model.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
@@ -579,7 +715,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Overlay strings, if they exist
         /// </summary>
+#if NET48
         public List<string> OverlayStrings
+#else
+        public List<string>? OverlayStrings
+#endif
         {
             get
             {
@@ -594,11 +734,15 @@ namespace BinaryObjectScanner.Wrappers
                     if (endOfFile == -1)
                         return null;
 
+                    // If the section table is missing
+                    if (SectionTable == null)
+                        return null;
+
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
                         var certificateTable = _model.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
+                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
@@ -650,7 +794,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Sanitized section names
         /// </summary>
+#if NET48
         public string[] SectionNames
+#else
+        public string[]? SectionNames
+#endif
         {
             get
             {
@@ -667,9 +815,16 @@ namespace BinaryObjectScanner.Wrappers
                         var section = _model.SectionTable[i];
 
                         // TODO: Handle long section names with leading `/`
+#if NET48
                         byte[] sectionNameBytes = section.Name;
-                        string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
-                        _sectionNames[i] = sectionNameString;
+#else
+                        byte[]? sectionNameBytes = section.Name;
+#endif
+                        if (sectionNameBytes != null)
+                        {
+                            string sectionNameString = Encoding.UTF8.GetString(sectionNameBytes).TrimEnd('\0');
+                            _sectionNames[i] = sectionNameString;
+                        }
                     }
 
                     return _sectionNames;
@@ -680,7 +835,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Stub executable data, if it exists
         /// </summary>
+#if NET48
         public byte[] StubExecutableData
+#else
+        public byte[]? StubExecutableData
+#endif
         {
             get
             {
@@ -704,7 +863,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Dictionary of debug data
         /// </summary>
+#if NET48
         public Dictionary<int, object> DebugData
+#else
+        public Dictionary<int, object>? DebugData
+#endif
         {
             get
             {
@@ -729,7 +892,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Dictionary of resource data
         /// </summary>
+#if NET48
         public Dictionary<string, object> ResourceData
+#else
+        public Dictionary<string, object>? ResourceData
+#endif
         {
             get
             {
@@ -756,115 +923,191 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <summary>
         /// "Build GUID"
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string BuildGuid => GetVersionInfoString("BuildGuid");
+#else
+        public string? BuildGuid => GetVersionInfoString("BuildGuid");
+#endif
 
         /// <summary>
         /// "Build signature"
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string BuildSignature => GetVersionInfoString("BuildSignature");
+#else
+        public string? BuildSignature => GetVersionInfoString("BuildSignature");
+#endif
 
         /// <summary>
         /// Additional information that should be displayed for diagnostic purposes.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string Comments => GetVersionInfoString("Comments");
+#else
+        public string? Comments => GetVersionInfoString("Comments");
+#endif
 
         /// <summary>
         /// Company that produced the file—for example, "Microsoft Corporation" or
         /// "Standard Microsystems Corporation, Inc." This string is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string CompanyName => GetVersionInfoString("CompanyName");
+#else
+        public string? CompanyName => GetVersionInfoString("CompanyName");
+#endif
 
         /// <summary>
         /// "Debug version"
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string DebugVersion => GetVersionInfoString("DebugVersion");
+#else
+        public string? DebugVersion => GetVersionInfoString("DebugVersion");
+#endif
 
         /// <summary>
         /// File description to be presented to users. This string may be displayed in a
         /// list box when the user is choosing files to install—for example, "Keyboard
         /// Driver for AT-Style Keyboards". This string is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string FileDescription => GetVersionInfoString("FileDescription");
+#else
+        public string? FileDescription => GetVersionInfoString("FileDescription");
+#endif
 
         /// <summary>
         /// Version number of the file—for example, "3.10" or "5.00.RC2". This string
         /// is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string FileVersion => GetVersionInfoString("FileVersion");
+#else
+        public string? FileVersion => GetVersionInfoString("FileVersion");
+#endif
 
         /// <summary>
         /// Internal name of the file, if one exists—for example, a module name if the
         /// file is a dynamic-link library. If the file has no internal name, this
         /// string should be the original filename, without extension. This string is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string InternalName => GetVersionInfoString(key: "InternalName");
+#else
+        public string? InternalName => GetVersionInfoString(key: "InternalName");
+#endif
 
         /// <summary>
         /// Copyright notices that apply to the file. This should include the full text of
         /// all notices, legal symbols, copyright dates, and so on. This string is optional.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string LegalCopyright => GetVersionInfoString(key: "LegalCopyright");
+#else
+        public string? LegalCopyright => GetVersionInfoString(key: "LegalCopyright");
+#endif
 
         /// <summary>
         /// Trademarks and registered trademarks that apply to the file. This should include
         /// the full text of all notices, legal symbols, trademark numbers, and so on. This
         /// string is optional.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string LegalTrademarks => GetVersionInfoString(key: "LegalTrademarks");
+#else
+        public string? LegalTrademarks => GetVersionInfoString(key: "LegalTrademarks");
+#endif
 
         /// <summary>
         /// Original name of the file, not including a path. This information enables an
         /// application to determine whether a file has been renamed by a user. The format of
         /// the name depends on the file system for which the file was created. This string
         /// is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string OriginalFilename => GetVersionInfoString(key: "OriginalFilename");
+#else
+        public string? OriginalFilename => GetVersionInfoString(key: "OriginalFilename");
+#endif
 
         /// <summary>
         /// Information about a private version of the file—for example, "Built by TESTER1 on
         /// \TESTBED". This string should be present only if VS_FF_PRIVATEBUILD is specified in
         /// the fileflags parameter of the root block.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string PrivateBuild => GetVersionInfoString(key: "PrivateBuild");
+#else
+        public string? PrivateBuild => GetVersionInfoString(key: "PrivateBuild");
+#endif
 
         /// <summary>
         /// "Product GUID"
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string ProductGuid => GetVersionInfoString("ProductGuid");
+#else
+        public string? ProductGuid => GetVersionInfoString("ProductGuid");
+#endif
 
         /// <summary>
         /// Name of the product with which the file is distributed. This string is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string ProductName => GetVersionInfoString(key: "ProductName");
+#else
+        public string? ProductName => GetVersionInfoString(key: "ProductName");
+#endif
 
         /// <summary>
         /// Version of the product with which the file is distributed—for example, "3.10" or
         /// "5.00.RC2". This string is required.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string ProductVersion => GetVersionInfoString(key: "ProductVersion");
+#else
+        public string? ProductVersion => GetVersionInfoString(key: "ProductVersion");
+#endif
 
         /// <summary>
         /// Text that specifies how this version of the file differs from the standard
         /// version—for example, "Private build for TESTER1 solving mouse problems on M250 and
         /// M250E computers". This string should be present only if VS_FF_SPECIALBUILD is
         /// specified in the fileflags parameter of the root block.
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string SpecialBuild => GetVersionInfoString(key: "SpecialBuild") ?? GetVersionInfoString(key: "Special Build");
+#else
+        public string? SpecialBuild => GetVersionInfoString(key: "SpecialBuild") ?? GetVersionInfoString(key: "Special Build");
+#endif
 
         /// <summary>
         /// "Trade name"
-        /// </summary>
+        /// </summary/>
+#if NET48
         public string TradeName => GetVersionInfoString(key: "TradeName");
+#else
+        public string? TradeName => GetVersionInfoString(key: "TradeName");
+#endif
 
         /// <summary>
         /// Get the internal version as reported by the resources
         /// </summary>
         /// <returns>Version string, null on error</returns>
         /// <remarks>The internal version is either the file version, product version, or assembly version, in that order</remarks>
+#if NET48
         public string GetInternalVersion()
+#else
+        public string? GetInternalVersion()
+#endif
         {
+#if NET48
             string version = this.FileVersion;
+#else
+            string? version = this.FileVersion;
+#endif
             if (!string.IsNullOrWhiteSpace(version))
                 return version.Replace(", ", ".");
 
@@ -886,7 +1129,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Description as derived from the assembly manifest
         /// </summary>
+#if NET48
         public string AssemblyDescription
+#else
+        public string? AssemblyDescription
+#endif
         {
             get
             {
@@ -905,7 +1152,11 @@ namespace BinaryObjectScanner.Wrappers
         /// this will only retrieve the value from the first that doesn't
         /// have a null or empty version.
         /// </remarks>
+#if NET48
         public string AssemblyVersion
+#else
+        public string? AssemblyVersion
+#endif
         {
             get
             {
@@ -926,17 +1177,29 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Header padding data, if it exists
         /// </summary>
+#if NET48
         private byte[] _headerPaddingData = null;
+#else
+        private byte[]? _headerPaddingData = null;
+#endif
 
         /// <summary>
         /// Header padding strings, if they exist
         /// </summary>
+#if NET48
         private List<string> _headerPaddingStrings = null;
+#else
+        private List<string>? _headerPaddingStrings = null;
+#endif
 
         /// <summary>
         /// Entry point data, if it exists and isn't aligned to a section
         /// </summary>
+#if NET48
         private byte[] _entryPointData = null;
+#else
+        private byte[]? _entryPointData = null;
+#endif
 
         /// <summary>
         /// Address of the overlay, if it exists
@@ -946,42 +1209,74 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Overlay data, if it exists
         /// </summary>
+#if NET48
         private byte[] _overlayData = null;
+#else
+        private byte[]? _overlayData = null;
+#endif
 
         /// <summary>
         /// Overlay strings, if they exist
         /// </summary>
+#if NET48
         private List<string> _overlayStrings = null;
+#else
+        private List<string>? _overlayStrings = null;
+#endif
 
         /// <summary>
         /// Stub executable data, if it exists
         /// </summary>
+#if NET48
         private byte[] _stubExecutableData = null;
+#else
+        private byte[]? _stubExecutableData = null;
+#endif
 
         /// <summary>
         /// Sanitized section names
         /// </summary>
+#if NET48
         private string[] _sectionNames = null;
+#else
+        private string[]? _sectionNames = null;
+#endif
 
         /// <summary>
         /// Cached raw section data
         /// </summary>
+#if NET48
         private byte[][] _sectionData = null;
+#else
+        private byte[]?[]? _sectionData = null;
+#endif
 
         /// <summary>
         /// Cached found string data in sections
         /// </summary>
+#if NET48
         private List<string>[] _sectionStringData = null;
+#else
+        private List<string>?[]? _sectionStringData = null;
+#endif
 
         /// <summary>
         /// Cached raw table data
         /// </summary>
+#if NET48
         private byte[][] _tableData = null;
+#else
+        private byte[]?[]? _tableData = null;
+#endif
 
         /// <summary>
         /// Cached found string data in tables
         /// </summary>
+#if NET48
         private List<string>[] _tableStringData = null;
+#else
+        private List<string>?[]? _tableStringData = null;
+#endif
 
         /// <summary>
         /// Cached debug data
@@ -991,17 +1286,29 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Cached resource data
         /// </summary>
+#if NET48
         private readonly Dictionary<string, object> _resourceData = new Dictionary<string, object>();
+#else
+        private readonly Dictionary<string, object?> _resourceData = new Dictionary<string, object?>();
+#endif
 
         /// <summary>
         /// Cached version info data
         /// </summary>
+#if NET48
         private SabreTools.Models.PortableExecutable.VersionInfo _versionInfo = null;
+#else
+        private SabreTools.Models.PortableExecutable.VersionInfo? _versionInfo = null;
+#endif
 
         /// <summary>
         /// Cached assembly manifest data
         /// </summary>
+#if NET48
         private SabreTools.Models.PortableExecutable.AssemblyManifest _assemblyManifest = null;
+#else
+        private SabreTools.Models.PortableExecutable.AssemblyManifest? _assemblyManifest = null;
+#endif
 
         /// <summary>
         /// Lock object for reading from the source
@@ -1040,7 +1347,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the executable</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A PE executable wrapper on success, null on failure</returns>
+#if NET48
         public static PortableExecutable Create(byte[] data, int offset)
+#else
+        public static PortableExecutable? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -1060,7 +1371,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the executable</param>
         /// <returns>A PE executable wrapper on success, null on failure</returns>
+#if NET48
         public static PortableExecutable Create(Stream data)
+#else
+        public static PortableExecutable? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -1096,7 +1411,11 @@ namespace BinaryObjectScanner.Wrappers
         /// the first available value. This may not actually matter for version info,
         /// but it is worth mentioning.
         /// </remarks>
+#if NET48
         public string GetVersionInfoString(string key)
+#else
+        public string? GetVersionInfoString(string key)
+#endif
         {
             // If we have an invalid key, we can't do anything
             if (string.IsNullOrEmpty(key))
@@ -1113,8 +1432,8 @@ namespace BinaryObjectScanner.Wrappers
 
             // Try to find a key that matches
             var match = stringTable
-                .SelectMany(st => st.Children)
-                .FirstOrDefault(sd => key.Equals(sd.Key, StringComparison.OrdinalIgnoreCase));
+                .SelectMany(st => st?.Children ?? Array.Empty<SabreTools.Models.PortableExecutable.StringData>())
+                .FirstOrDefault(sd => sd != null && key.Equals(sd.Key, StringComparison.OrdinalIgnoreCase));
 
             // Return either the match or null
             return match?.Value?.TrimEnd('\0');
@@ -1124,7 +1443,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Get the assembly manifest, if possible
         /// </summary>
         /// <returns>Assembly manifest object, null on error</returns>
+#if NET48
         private SabreTools.Models.PortableExecutable.AssemblyManifest GetAssemblyManifest()
+#else
+        private SabreTools.Models.PortableExecutable.AssemblyManifest? GetAssemblyManifest()
+#endif
         {
             // Use the cached data if possible
             if (_assemblyManifest != null)
@@ -1208,10 +1531,10 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  MS-DOS Stub Extended Header Information:");
             builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            builder.AppendLine($"  Reserved words: {(Stub_Reserved1 == null ? "[NULL]" : string.Join(", ", Stub_Reserved1))}");
             builder.AppendLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
             builder.AppendLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
-            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            builder.AppendLine($"  Reserved words: {(Stub_Reserved2 == null ? "[NULL]" : string.Join(", ", Stub_Reserved2))}");
             builder.AppendLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
             builder.AppendLine();
         }
@@ -1286,49 +1609,49 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     builder.AppendLine("    Export Table (1)");
                     builder.AppendLine($"      Virtual address: {OH_ExportTable.VirtualAddress} (0x{OH_ExportTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_ExportTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_ExportTable.Size} (0x{OH_ExportTable.Size:X})");
                 }
                 if (OH_ImportTable != null)
                 {
                     builder.AppendLine("    Import Table (2)");
                     builder.AppendLine($"      Virtual address: {OH_ImportTable.VirtualAddress} (0x{OH_ImportTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_ImportTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_ImportTable.Size} (0x{OH_ImportTable.Size:X})");
                 }
                 if (OH_ResourceTable != null)
                 {
                     builder.AppendLine("    Resource Table (3)");
                     builder.AppendLine($"      Virtual address: {OH_ResourceTable.VirtualAddress} (0x{OH_ResourceTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_ResourceTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_ResourceTable.Size} (0x{OH_ResourceTable.Size:X})");
                 }
                 if (OH_ExceptionTable != null)
                 {
                     builder.AppendLine("    Exception Table (4)");
                     builder.AppendLine($"      Virtual address: {OH_ExceptionTable.VirtualAddress} (0x{OH_ExceptionTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_ExceptionTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_ExceptionTable.Size} (0x{OH_ExceptionTable.Size:X})");
                 }
                 if (OH_CertificateTable != null)
                 {
                     builder.AppendLine("    Certificate Table (5)");
                     builder.AppendLine($"      Virtual address: {OH_CertificateTable.VirtualAddress} (0x{OH_CertificateTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_CertificateTable.Size} (0x{OH_CertificateTable.Size:X})");
                 }
                 if (OH_BaseRelocationTable != null)
                 {
                     builder.AppendLine("    Base Relocation Table (6)");
                     builder.AppendLine($"      Virtual address: {OH_BaseRelocationTable.VirtualAddress} (0x{OH_BaseRelocationTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_BaseRelocationTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_BaseRelocationTable.Size} (0x{OH_BaseRelocationTable.Size:X})");
                 }
                 if (OH_Debug != null)
                 {
                     builder.AppendLine("    Debug Table (7)");
                     builder.AppendLine($"      Virtual address: {OH_Debug.VirtualAddress} (0x{OH_Debug.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_Debug.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_Debug.Size} (0x{OH_Debug.Size:X})");
                 }
                 if (OH_NumberOfRvaAndSizes >= 8)
@@ -1342,49 +1665,49 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     builder.AppendLine("    Global Pointer Register (9)");
                     builder.AppendLine($"      Virtual address: {OH_GlobalPtr.VirtualAddress} (0x{OH_GlobalPtr.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_GlobalPtr.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_GlobalPtr.Size} (0x{OH_GlobalPtr.Size:X})");
                 }
                 if (OH_ThreadLocalStorageTable != null)
                 {
                     builder.AppendLine("    Thread Local Storage (TLS) Table (10)");
                     builder.AppendLine($"      Virtual address: {OH_ThreadLocalStorageTable.VirtualAddress} (0x{OH_ThreadLocalStorageTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_ThreadLocalStorageTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_ThreadLocalStorageTable.Size} (0x{OH_ThreadLocalStorageTable.Size:X})");
                 }
                 if (OH_LoadConfigTable != null)
                 {
                     builder.AppendLine("    Load Config Table (11)");
                     builder.AppendLine($"      Virtual address: {OH_LoadConfigTable.VirtualAddress} (0x{OH_LoadConfigTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_LoadConfigTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_LoadConfigTable.Size} (0x{OH_LoadConfigTable.Size:X})");
                 }
                 if (OH_BoundImport != null)
                 {
                     builder.AppendLine("    Bound Import Table (12)");
                     builder.AppendLine($"      Virtual address: {OH_BoundImport.VirtualAddress} (0x{OH_BoundImport.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_BoundImport.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_BoundImport.Size} (0x{OH_BoundImport.Size:X})");
                 }
                 if (OH_ImportAddressTable != null)
                 {
                     builder.AppendLine("    Import Address Table (13)");
                     builder.AppendLine($"      Virtual address: {OH_ImportAddressTable.VirtualAddress} (0x{OH_ImportAddressTable.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_ImportAddressTable.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_ImportAddressTable.Size} (0x{OH_ImportAddressTable.Size:X})");
                 }
                 if (OH_DelayImportDescriptor != null)
                 {
                     builder.AppendLine("    Delay Import Descriptior (14)");
                     builder.AppendLine($"      Virtual address: {OH_DelayImportDescriptor.VirtualAddress} (0x{OH_DelayImportDescriptor.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_DelayImportDescriptor.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_DelayImportDescriptor.Size} (0x{OH_DelayImportDescriptor.Size:X})");
                 }
                 if (OH_CLRRuntimeHeader != null)
                 {
                     builder.AppendLine("    CLR Runtime Header (15)");
                     builder.AppendLine($"      Virtual address: {OH_CLRRuntimeHeader.VirtualAddress} (0x{OH_CLRRuntimeHeader.VirtualAddress:X})");
-                    builder.AppendLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"      Physical address: {OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{OH_CLRRuntimeHeader.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"      Size: {OH_CLRRuntimeHeader.Size} (0x{OH_CLRRuntimeHeader.Size:X})");
                 }
                 if (OH_NumberOfRvaAndSizes >= 16)
@@ -1416,10 +1739,10 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = SectionTable[i];
                     builder.AppendLine($"  Section Table Entry {i}");
-                    builder.AppendLine($"    Name: {Encoding.UTF8.GetString(entry.Name).TrimEnd('\0')}");
+                    builder.AppendLine($"    Name: {(entry.Name == null ? "[NULL]" : Encoding.UTF8.GetString(entry.Name).TrimEnd('\0'))}");
                     builder.AppendLine($"    Virtual size: {entry.VirtualSize} (0x{entry.VirtualSize:X})");
                     builder.AppendLine($"    Virtual address: {entry.VirtualAddress} (0x{entry.VirtualAddress:X})");
-                    builder.AppendLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable)} (0x{entry.VirtualAddress.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"    Physical address: {entry.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{entry.VirtualAddress.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"    Size of raw data: {entry.SizeOfRawData} (0x{entry.SizeOfRawData:X})");
                     builder.AppendLine($"    Pointer to raw data: {entry.PointerToRawData} (0x{entry.PointerToRawData:X})");
                     builder.AppendLine($"    Pointer to relocations: {entry.PointerToRelocations} (0x{entry.PointerToRelocations:X})");
@@ -1462,7 +1785,7 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         if (entry.ShortName != null)
                         {
-                            builder.AppendLine($"    Short name: {Encoding.UTF8.GetString(entry.ShortName).TrimEnd('\0')}");
+                            builder.AppendLine($"    Short name: {(entry.ShortName == null ? "[NULL]" : Encoding.UTF8.GetString(entry.ShortName).TrimEnd('\0'))}");
                         }
                         else
                         {
@@ -1535,12 +1858,12 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         builder.AppendLine($"    Tag index: {entry.AuxFormat3TagIndex} (0x{entry.AuxFormat3TagIndex:X})");
                         builder.AppendLine($"    Characteristics: {entry.AuxFormat3Characteristics} (0x{entry.AuxFormat3Characteristics:X})");
-                        builder.AppendLine($"    Unused: {BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty)}");
+                        builder.AppendLine($"    Unused: {(entry.AuxFormat3Unused == null ? "[NULL]" : BitConverter.ToString(entry.AuxFormat3Unused).Replace("-", string.Empty))}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 4)
                     {
-                        builder.AppendLine($"    File name: {Encoding.ASCII.GetString(entry.AuxFormat4FileName).TrimEnd('\0')}");
+                        builder.AppendLine($"    File name: {(entry.AuxFormat4FileName == null ? "[NULL]" : Encoding.ASCII.GetString(entry.AuxFormat4FileName).TrimEnd('\0'))}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 5)
@@ -1551,7 +1874,7 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Checksum: {entry.AuxFormat5CheckSum} (0x{entry.AuxFormat5CheckSum:X})");
                         builder.AppendLine($"    Number: {entry.AuxFormat5Number} (0x{entry.AuxFormat5Number:X})");
                         builder.AppendLine($"    Selection: {entry.AuxFormat5Selection} (0x{entry.AuxFormat5Selection:X})");
-                        builder.AppendLine($"    Unused: {BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty)}");
+                        builder.AppendLine($"    Unused: {(entry.AuxFormat5Unused == null ? "[NULL]" : BitConverter.ToString(entry.AuxFormat5Unused).Replace("-", string.Empty))}");
                         auxSymbolsRemaining--;
                     }
                     else if (currentSymbolType == 6)
@@ -1559,7 +1882,7 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Aux type: {entry.AuxFormat6AuxType} (0x{entry.AuxFormat6AuxType:X})");
                         builder.AppendLine($"    Reserved: {entry.AuxFormat6Reserved1} (0x{entry.AuxFormat6Reserved1:X})");
                         builder.AppendLine($"    Symbol table index: {entry.AuxFormat6SymbolTableIndex} (0x{entry.AuxFormat6SymbolTableIndex:X})");
-                        builder.AppendLine($"    Reserved: {BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty)}");
+                        builder.AppendLine($"    Reserved: {(entry.AuxFormat6Reserved2 == null ? "[NULL]" : BitConverter.ToString(entry.AuxFormat6Reserved2).Replace("-", string.Empty))}");
                         auxSymbolsRemaining--;
                     }
 
@@ -1601,6 +1924,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  -------------------------");
             if (OH_CertificateTable == null
                 || OH_CertificateTable.VirtualAddress == 0
+                || AttributeCertificateTable == null
                 || AttributeCertificateTable.Length == 0)
             {
                 builder.AppendLine("  No attribute certificate table items");
@@ -1611,6 +1935,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = AttributeCertificateTable[i];
                     builder.AppendLine($"  Attribute Certificate Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine($"    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Revision: {entry.Revision} (0x{entry.Revision:X})");
                     builder.AppendLine($"    Certificate type: {entry.CertificateType} (0x{entry.CertificateType:X})");
@@ -1619,18 +1949,25 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         builder.AppendLine("    Certificate Data [Formatted]");
                         builder.AppendLine("    -------------------------");
-                        var topLevelValues = AbstractSyntaxNotationOne.Parse(entry.Certificate, pointer: 0);
-                        if (topLevelValues == null)
+                        if (entry.Certificate == null)
                         {
                             builder.AppendLine("    INVALID DATA FOUND");
-                            builder.AppendLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
                         }
                         else
                         {
-                            foreach (TypeLengthValue tlv in topLevelValues)
+                            var topLevelValues = AbstractSyntaxNotationOne.Parse(entry.Certificate, 0);
+                            if (topLevelValues == null)
                             {
-                                string tlvString = tlv.Format(paddingLevel: 4);
-                                builder.AppendLine(tlvString);
+                                builder.AppendLine("    INVALID DATA FOUND");
+                                builder.AppendLine($"    {(entry.Certificate == null ? "[NULL]" : BitConverter.ToString(entry.Certificate).Replace("-", string.Empty))}");
+                            }
+                            else
+                            {
+                                foreach (TypeLengthValue tlv in topLevelValues)
+                                {
+                                    string tlvString = tlv.Format(paddingLevel: 4);
+                                    builder.AppendLine(tlvString);
+                                }
                             }
                         }
                     }
@@ -1640,7 +1977,7 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine("  -------------------------");
                         try
                         {
-                            builder.AppendLine($"    {BitConverter.ToString(entry.Certificate).Replace("-", string.Empty)}");
+                            builder.AppendLine($"    {(entry.Certificate == null ? "[NULL]" : BitConverter.ToString(entry.Certificate).Replace("-", string.Empty))}");
                         }
                         catch
                         {
@@ -1703,7 +2040,7 @@ namespace BinaryObjectScanner.Wrappers
                     var baseRelocationTableEntry = BaseRelocationTable[i];
                     builder.AppendLine($"  Base Relocation Table Entry {i}");
                     builder.AppendLine($"    Page RVA: {baseRelocationTableEntry.PageRVA} (0x{baseRelocationTableEntry.PageRVA:X})");
-                    builder.AppendLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable)} (0x{baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable):X})");
+                    builder.AppendLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"    Block size: {baseRelocationTableEntry.BlockSize} (0x{baseRelocationTableEntry.BlockSize:X})");
 
                     builder.AppendLine($"    Base Relocation Table {i} Type and Offset Information:");
@@ -1894,13 +2231,13 @@ namespace BinaryObjectScanner.Wrappers
                         var importDirectoryTableEntry = ImportTable.ImportDirectoryTable[i];
                         builder.AppendLine($"    Import Directory Table Entry {i}");
                         builder.AppendLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA} (0x{importDirectoryTableEntry.ImportLookupTableRVA:X})");
-                        builder.AppendLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                        builder.AppendLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                         builder.AppendLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp} (0x{importDirectoryTableEntry.TimeDateStamp:X})");
                         builder.AppendLine($"      Forwarder chain: {importDirectoryTableEntry.ForwarderChain} (0x{importDirectoryTableEntry.ForwarderChain:X})");
                         builder.AppendLine($"      Name RVA: {importDirectoryTableEntry.NameRVA} (0x{importDirectoryTableEntry.NameRVA:X})");
                         builder.AppendLine($"      Name: {importDirectoryTableEntry.Name}");
                         builder.AppendLine($"      Import address table RVA: {importDirectoryTableEntry.ImportAddressTableRVA} (0x{importDirectoryTableEntry.ImportAddressTableRVA:X})");
-                        builder.AppendLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                        builder.AppendLine($"      Import address table Physical Address: {importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{importDirectoryTableEntry.ImportAddressTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     }
                 }
                 builder.AppendLine();
@@ -1939,7 +2276,7 @@ namespace BinaryObjectScanner.Wrappers
                                 else
                                 {
                                     builder.AppendLine($"        Hint/Name table RVA: {importLookupTableEntry.HintNameTableRVA} (0x{importLookupTableEntry.HintNameTableRVA:X})");
-                                    builder.AppendLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                                    builder.AppendLine($"        Hint/Name table Physical Address: {importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{importLookupTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                                 }
                             }
                         }
@@ -1981,7 +2318,7 @@ namespace BinaryObjectScanner.Wrappers
                                 else
                                 {
                                     builder.AppendLine($"        Hint/Name table RVA: {importAddressTableEntry.HintNameTableRVA} (0x{importAddressTableEntry.HintNameTableRVA:X})");
-                                    builder.AppendLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable)} (0x{importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable):X})");
+                                    builder.AppendLine($"        Hint/Name table Physical Address: {importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{importAddressTableEntry.HintNameTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                                 }
                             }
                         }
@@ -2059,9 +2396,12 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < table.Entries.Length; i++)
                 {
                     var entry = table.Entries[i];
+                    if (entry == null)
+                        continue;
+
                     var newTypes = new List<object>(types ?? new List<object>());
-                    if (entry.Name != null)
-                        newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
+                    if (entry.Name?.UnicodeString != null)
+                        newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString));
                     else
                         newTypes.Add(entry.IntegerID);
 
@@ -2082,7 +2422,7 @@ namespace BinaryObjectScanner.Wrappers
             if (entry.NameOffset != default)
             {
                 builder.AppendLine($"{padding}Name offset: {entry.NameOffset} (0x{entry.NameOffset:X})");
-                builder.AppendLine($"{padding}Name ({entry.Name.Length}): {Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0])}");
+                builder.AppendLine($"{padding}Name ({entry.Name?.Length ?? 0}): {(entry.Name.UnicodeString == null ? "[NULL]" : Encoding.UTF8.GetString(entry.Name.UnicodeString))}");
             }
             else
             {
@@ -2104,7 +2444,7 @@ namespace BinaryObjectScanner.Wrappers
             string padding = new string(' ', (level + 1) * 2);
 
             // TODO: Use ordered list of base types to determine the shape of the data
-            builder.AppendLine($"{padding}Base types: {string.Join(", ", types)}");
+            builder.AppendLine($"{padding}Base types: {(types == null ? "[NULL]" : string.Join(", ", types))}");
 
             builder.AppendLine($"{padding}Entry level: {level}");
             builder.AppendLine($"{padding}Data RVA: {entry.DataRVA} (0x{entry.DataRVA:X})");
@@ -2231,7 +2571,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             SabreTools.Models.PortableExecutable.MenuResource menu = null;
+#else
+            SabreTools.Models.PortableExecutable.MenuResource? menu = null;
+#endif
             try { menu = entry.AsMenu(); } catch { }
             if (menu == null)
             {
@@ -2314,7 +2658,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             SabreTools.Models.PortableExecutable.DialogBoxResource dialogBox = null;
+#else
+            SabreTools.Models.PortableExecutable.DialogBoxResource? dialogBox = null;
+#endif
             try { dialogBox = entry.AsDialogBox(); } catch { }
             if (dialogBox == null)
             {
@@ -2367,7 +2715,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
                     builder.AppendLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
                     if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                        builder.AppendLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                        builder.AppendLine($"{padding}  Creation data: {(dialogItemTemplate.CreationData == null ? "[NULL]" : BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty))}");
                     else
                         builder.AppendLine($"{padding}  Creation data: [EMPTY]");
                 }
@@ -2424,7 +2772,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"{padding}  Title resource ordinal: {dialogItemTemplate.TitleResourceOrdinal} (0x{dialogItemTemplate.TitleResourceOrdinal:X})");
                     builder.AppendLine($"{padding}  Creation data size: {dialogItemTemplate.CreationDataSize} (0x{dialogItemTemplate.CreationDataSize:X})");
                     if (dialogItemTemplate.CreationData != null && dialogItemTemplate.CreationData.Length != 0)
-                        builder.AppendLine($"{padding}  Creation data: {BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty)}");
+                        builder.AppendLine($"{padding}  Creation data: {(dialogItemTemplate.CreationData == null ? "[NULL]" : BitConverter.ToString(dialogItemTemplate.CreationData).Replace("-", string.Empty))}");
                     else
                         builder.AppendLine($"{padding}  Creation data: [EMPTY]");
                 }
@@ -2491,7 +2839,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             SabreTools.Models.PortableExecutable.AcceleratorTableEntry[] acceleratorTable = null;
+#else
+            SabreTools.Models.PortableExecutable.AcceleratorTableEntry[]? acceleratorTable = null;
+#endif
             try { acceleratorTable = entry.AsAcceleratorTableResource(); } catch { }
             if (acceleratorTable == null)
             {
@@ -2539,10 +2891,10 @@ namespace BinaryObjectScanner.Wrappers
                 }
                 else
                 {
-                    builder.AppendLine($"{padding}Data: {BitConverter.ToString(magic).Replace('-', ' ')} ...");
+                    builder.AppendLine($"{padding}Data: {(magic == null ? "[NULL]" : BitConverter.ToString(magic).Replace('-', ' '))} ...");
 
                     //if (entry.Data != null)
-                    //    builder.AppendLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
+                    //    builder.AppendLine($"{padding}Value (Byte Data): {(entry.Data == null ? "[NULL]" : BitConverter.ToString(entry.Data).Replace('-', ' '))}");
                     //if (entry.Data != null)
                     //    builder.AppendLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
                     //if (entry.Data != null)
@@ -2561,7 +2913,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             SabreTools.Models.PortableExecutable.MessageResourceData messageTable = null;
+#else
+            SabreTools.Models.PortableExecutable.MessageResourceData? messageTable = null;
+#endif
             try { messageTable = entry.AsMessageResourceData(); } catch { }
             if (messageTable == null)
             {
@@ -2643,7 +2999,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             SabreTools.Models.PortableExecutable.VersionInfo versionInfo = null;
+#else
+            SabreTools.Models.PortableExecutable.VersionInfo? versionInfo = null;
+#endif
             try { versionInfo = entry.AsVersionInfo(); } catch { }
             if (versionInfo == null)
             {
@@ -2739,7 +3099,7 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength} (0x{varFileInfoChildEntry.ValueLength:X})");
                         builder.AppendLine($"{padding}  [String Table {i}] ResourceType: {varFileInfoChildEntry.ResourceType} (0x{varFileInfoChildEntry.ResourceType:X})");
                         builder.AppendLine($"{padding}  [String Table {i}] Key: {varFileInfoChildEntry.Key}");
-                        builder.AppendLine($"{padding}  [String Table {i}] Value: {string.Join(",", varFileInfoChildEntry.Value)}");
+                        builder.AppendLine($"{padding}  [String Table {i}] Value: {(varFileInfoChildEntry.Value == null ? "[NULL]" : string.Join(", ", varFileInfoChildEntry.Value))}");
                     }
                 }
             }
@@ -2820,7 +3180,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             string padding = new string(' ', (level + 1) * 2);
 
+#if NET48
             SabreTools.Models.PortableExecutable.AssemblyManifest assemblyManifest = null;
+#else
+            SabreTools.Models.PortableExecutable.AssemblyManifest? assemblyManifest = null;
+#endif
             try { assemblyManifest = entry.AsAssemblyManifest(); } catch { }
             if (assemblyManifest == null)
             {
@@ -3015,10 +3379,10 @@ namespace BinaryObjectScanner.Wrappers
                 }
                 else
                 {
-                    builder.AppendLine($"{padding}Data: {BitConverter.ToString(magic).Replace('-', ' ')} ...");
+                    builder.AppendLine($"{padding}Data: {(magic == null ? "[NULL]" : BitConverter.ToString(magic).Replace('-', ' '))} ...");
 
                     //if (entry.Data != null)
-                    //    builder.AppendLine($"{padding}Value (Byte Data): {BitConverter.ToString(entry.Data).Replace('-', ' ')}");
+                    //    builder.AppendLine($"{padding}Value (Byte Data): {(entry.Data == null ? "[NULL]" : BitConverter.ToString(entry.Data).Replace('-', ' '))}");
                     //if (entry.Data != null)
                     //    builder.AppendLine($"{padding}Value (ASCII): {Encoding.ASCII.GetString(entry.Data)}");
                     //if (entry.Data != null)
@@ -3100,7 +3464,11 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     try
                     {
+#if NET48
                         string arrayAsASCII = Encoding.ASCII.GetString(b);
+#else
+                        string? arrayAsASCII = Encoding.ASCII.GetString(b!);
+#endif
                         if (arrayAsASCII.Contains(value))
                             return true;
                     }
@@ -3108,7 +3476,11 @@ namespace BinaryObjectScanner.Wrappers
 
                     try
                     {
+#if NET48
                         string arrayAsUTF8 = Encoding.UTF8.GetString(b);
+#else
+                        string? arrayAsUTF8 = Encoding.UTF8.GetString(b!);
+#endif
                         if (arrayAsUTF8.Contains(value))
                             return true;
                     }
@@ -3116,7 +3488,11 @@ namespace BinaryObjectScanner.Wrappers
 
                     try
                     {
+#if NET48
                         string arrayAsUnicode = Encoding.Unicode.GetString(b);
+#else
+                        string? arrayAsUnicode = Encoding.Unicode.GetString(b!);
+#endif
                         if (arrayAsUnicode.Contains(value))
                             return true;
                     }
@@ -3286,8 +3662,8 @@ namespace BinaryObjectScanner.Wrappers
                 .Select(r => r as Dictionary<int, string?>)
 #endif
                 .Where(st => st != null)
-                .Where(st => st.Select(kvp => kvp.Value)
-                    .Any(s => s.Contains(entry)));
+                .Where(st => st?.Select(kvp => kvp.Value)?
+                    .Any(s => s != null && s.Contains(entry)) == true);
         }
 
         /// <summary>
@@ -3340,7 +3716,11 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     try
                     {
+#if NET48
                         string arrayAsASCII = Encoding.ASCII.GetString(b);
+#else
+                        string? arrayAsASCII = Encoding.ASCII.GetString(b!);
+#endif
                         if (arrayAsASCII.Contains(value))
                             return true;
                     }
@@ -3348,7 +3728,11 @@ namespace BinaryObjectScanner.Wrappers
 
                     try
                     {
+#if NET48
                         string arrayAsUTF8 = Encoding.UTF8.GetString(b);
+#else
+                        string? arrayAsUTF8 = Encoding.UTF8.GetString(b!);
+#endif
                         if (arrayAsUTF8.Contains(value))
                             return true;
                     }
@@ -3356,7 +3740,11 @@ namespace BinaryObjectScanner.Wrappers
 
                     try
                     {
+#if NET48
                         string arrayAsUnicode = Encoding.Unicode.GetString(b);
+#else
+                        string? arrayAsUnicode = Encoding.Unicode.GetString(b!);
+#endif
                         if (arrayAsUnicode.Contains(value))
                             return true;
                     }
@@ -3381,8 +3769,8 @@ namespace BinaryObjectScanner.Wrappers
                 var entry = table.Entries[i];
                 var newTypes = new List<object>(types ?? new List<object>());
 
-                if (entry.Name != null)
-                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString ?? new byte[0]));
+                if (entry.Name?.UnicodeString != null)
+                    newTypes.Add(Encoding.UTF8.GetString(entry.Name.UnicodeString));
                 else
                     newTypes.Add(entry.IntegerID);
 
@@ -3519,8 +3907,16 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="sectionName">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>True if the section is in the executable, false otherwise</returns>
+#if NET48
         public bool ContainsSection(string sectionName, bool exact = false)
+#else
+        public bool ContainsSection(string? sectionName, bool exact = false)
+#endif
         {
+            // If no section name is provided
+            if (sectionName == null)
+                return false;
+
             // Get all section names first
             if (SectionNames == null)
                 return false;
@@ -3540,6 +3936,10 @@ namespace BinaryObjectScanner.Wrappers
         /// <returns>Section index on success, null on error</returns>
         public int FindEntryPointSectionIndex()
         {
+            // If the section table is missing
+            if (SectionTable == null)
+                return -1;
+
             // If we don't have an entry point
             if (OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable) == 0)
                 return -1;
@@ -3554,10 +3954,14 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
+#if NET48
         public SabreTools.Models.PortableExecutable.SectionHeader GetFirstSection(string name, bool exact = false)
+#else
+        public SabreTools.Models.PortableExecutable.SectionHeader? GetFirstSection(string? name, bool exact = false)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3579,10 +3983,14 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
+#if NET48
         public SabreTools.Models.PortableExecutable.SectionHeader GetLastSection(string name, bool exact = false)
+#else
+        public SabreTools.Models.PortableExecutable.SectionHeader? GetLastSection(string? name, bool exact = false)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3603,7 +4011,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the section to check for</param>
         /// <returns>Section data on success, null on error</returns>
+#if NET48
         public SabreTools.Models.PortableExecutable.SectionHeader GetSection(int index)
+#else
+        public SabreTools.Models.PortableExecutable.SectionHeader? GetSection(int index)
+#endif
         {
             // If we have no sections
             if (SectionTable == null || !SectionTable.Any())
@@ -3623,10 +4035,14 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
+#if NET48
         public byte[] GetFirstSectionData(string name, bool exact = false)
+#else
+        public byte[]? GetFirstSectionData(string? name, bool exact = false)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3644,10 +4060,14 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section data on success, null on error</returns>
+#if NET48
         public byte[] GetLastSectionData(string name, bool exact = false)
+#else
+        public byte[]? GetLastSectionData(string? name, bool exact = false)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3664,10 +4084,14 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the section to check for</param>
         /// <returns>Section data on success, null on error</returns>
+#if NET48
         public byte[] GetSectionData(int index)
+#else
+        public byte[]? GetSectionData(int index)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3676,6 +4100,9 @@ namespace BinaryObjectScanner.Wrappers
 
             // Get the section data from the table
             var section = SectionTable[index];
+            if (section == null)
+                return null;
+
             uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0)
                 return null;
@@ -3693,7 +4120,11 @@ namespace BinaryObjectScanner.Wrappers
                     return _sectionData[index];
 
                 // Populate the raw section data based on the source
+#if NET48
                 byte[] sectionData = ReadFromDataSource((int)address, (int)size);
+#else
+                byte[]? sectionData = ReadFromDataSource((int)address, (int)size);
+#endif
 
                 // Cache and return the section data, even if null
                 _sectionData[index] = sectionData;
@@ -3707,10 +4138,14 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section strings on success, null on error</returns>
+#if NET48
         public List<string> GetFirstSectionStrings(string name, bool exact = false)
+#else
+        public List<string>? GetFirstSectionStrings(string? name, bool exact = false)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3728,10 +4163,14 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="name">Name of the section to check for</param>
         /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
         /// <returns>Section strings on success, null on error</returns>
+#if NET48
         public List<string> GetLastSectionStrings(string name, bool exact = false)
+#else
+        public List<string>? GetLastSectionStrings(string? name, bool exact = false)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3748,10 +4187,14 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the section to check for</param>
         /// <returns>Section strings on success, null on error</returns>
+#if NET48
         public List<string> GetSectionStrings(int index)
+#else
+        public List<string>? GetSectionStrings(int index)
+#endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -3777,7 +4220,11 @@ namespace BinaryObjectScanner.Wrappers
                     return _sectionStringData[index];
 
                 // Populate the section string data based on the source
+#if NET48
                 List<string> sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
+#else
+                List<string>? sectionStringData = ReadStringsFromDataSource((int)address, (int)size);
+#endif
 
                 // Cache and return the section string data, even if null
                 _sectionStringData[index] = sectionStringData;
@@ -3794,7 +4241,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the table to check for</param>
         /// <returns>Table data on success, null on error</returns>
+#if NET48
         public byte[] GetTableData(int index)
+#else
+        public byte[]? GetTableData(int index)
+#endif
         {
             // If the table doesn't exist
             if (index < 0 || index > 16)
@@ -3869,6 +4320,10 @@ namespace BinaryObjectScanner.Wrappers
                     size = 0;
                     break;
             }
+
+            // If there is  no section table
+            if (SectionTable == null)
+                return null;
 
             // Get the physical address from the virtual one
             uint address = virtualAddress.ConvertVirtualAddress(SectionTable);
@@ -3886,7 +4341,11 @@ namespace BinaryObjectScanner.Wrappers
                     return _tableData[index];
 
                 // Populate the raw table data based on the source
+#if NET48
                 byte[] tableData = ReadFromDataSource((int)address, (int)size);
+#else
+                byte[]? tableData = ReadFromDataSource((int)address, (int)size);
+#endif
 
                 // Cache and return the table data, even if null
                 _tableData[index] = tableData;
@@ -3899,7 +4358,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="index">Index of the table to check for</param>
         /// <returns>Table strings on success, null on error</returns>
+#if NET48
         public List<string> GetTableStrings(int index)
+#else
+        public List<string>? GetTableStrings(int index)
+#endif
         {
             // If the table doesn't exist
             if (index < 0 || index > 16)
@@ -3975,6 +4438,10 @@ namespace BinaryObjectScanner.Wrappers
                     break;
             }
 
+            // If there is  no section table
+            if (SectionTable == null)
+                return null;
+
             // Get the physical address from the virtual one
             uint address = virtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0 || size == 0)
@@ -3991,7 +4458,11 @@ namespace BinaryObjectScanner.Wrappers
                     return _tableStringData[index];
 
                 // Populate the table string data based on the source
+#if NET48
                 List<string> tableStringData = ReadStringsFromDataSource((int)address, (int)size);
+#else
+                List<string>? tableStringData = ReadStringsFromDataSource((int)address, (int)size);
+#endif
 
                 // Cache and return the table string data, even if null
                 _tableStringData[index] = tableStringData;

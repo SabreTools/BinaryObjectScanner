@@ -42,7 +42,11 @@ namespace BinaryObjectScanner.Wrappers
         public ulong ContentSize => _model.Header.ContentSize;
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentIndex"/>
+#if NET48
         public byte[] ContentIndex => _model.Header.ContentIndex;
+#else
+        public byte[]? ContentIndex => _model.Header.ContentIndex;
+#endif
 
         #endregion
 
@@ -69,16 +73,32 @@ namespace BinaryObjectScanner.Wrappers
         public byte T_PaddingSize => _model.Ticket.PaddingSize;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Signature"/>
+#if NET48
         public byte[] T_Signature => _model.Ticket.Signature;
+#else
+        public byte[]? T_Signature => _model.Ticket.Signature;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Padding"/>
+#if NET48
         public byte[] T_Padding => _model.Ticket.Padding;
+#else
+        public byte[]? T_Padding => _model.Ticket.Padding;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Issuer"/>
+#if NET48
         public string T_Issuer => _model.Ticket.Issuer;
+#else
+        public string? T_Issuer => _model.Ticket.Issuer;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ECCPublicKey"/>
+#if NET48
         public byte[] T_ECCPublicKey => _model.Ticket.ECCPublicKey;
+#else
+        public byte[]? T_ECCPublicKey => _model.Ticket.ECCPublicKey;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Version"/>
         public byte T_Version => _model.Ticket.Version;
@@ -90,7 +110,11 @@ namespace BinaryObjectScanner.Wrappers
         public byte T_SignerCrlVersion => _model.Ticket.SignerCrlVersion;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleKey"/>
+#if NET48
         public byte[] T_TitleKey => _model.Ticket.TitleKey;
+#else
+        public byte[]? T_TitleKey => _model.Ticket.TitleKey;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved1"/>
         public byte T_Reserved1 => _model.Ticket.Reserved1;
@@ -105,13 +129,21 @@ namespace BinaryObjectScanner.Wrappers
         public ulong T_TitleID => _model.Ticket.TitleID;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved2"/>
+#if NET48
         public byte[] T_Reserved2 => _model.Ticket.Reserved2;
+#else
+        public byte[]? T_Reserved2 => _model.Ticket.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketTitleVersion"/>
         public ushort T_TicketTitleVersion => _model.Ticket.TicketTitleVersion;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved3"/>
+#if NET48
         public byte[] T_Reserved3 => _model.Ticket.Reserved3;
+#else
+        public byte[]? T_Reserved3 => _model.Ticket.Reserved3;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.LicenseType"/>
         public byte T_LicenseType => _model.Ticket.LicenseType;
@@ -120,7 +152,11 @@ namespace BinaryObjectScanner.Wrappers
         public byte T_CommonKeyYIndex => _model.Ticket.CommonKeyYIndex;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved4"/>
+#if NET48
         public byte[] T_Reserved4 => _model.Ticket.Reserved4;
+#else
+        public byte[]? T_Reserved4 => _model.Ticket.Reserved4;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.eShopAccountID"/>
         public uint T_eShopAccountID => _model.Ticket.eShopAccountID;
@@ -132,16 +168,28 @@ namespace BinaryObjectScanner.Wrappers
         public byte T_Audit => _model.Ticket.Audit;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved6"/>
+#if NET48
         public byte[] T_Reserved6 => _model.Ticket.Reserved6;
+#else
+        public byte[]? T_Reserved6 => _model.Ticket.Reserved6;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Limits"/>
+#if NET48
         public uint[] T_Limits => _model.Ticket.Limits;
+#else
+        public uint[]? T_Limits => _model.Ticket.Limits;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndexSize"/>
         public uint T_ContentIndexSize => _model.Ticket.ContentIndexSize;
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndex"/>
+#if NET48
         public byte[] T_ContentIndex => _model.Ticket.ContentIndex;
+#else
+        public byte[]? T_ContentIndex => _model.Ticket.ContentIndex;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CertificateChain"/>
 #if NET48
@@ -164,13 +212,25 @@ namespace BinaryObjectScanner.Wrappers
         public byte TMD_PaddingSize => _model.TMDFileData.PaddingSize;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Signature"/>
+#if NET48
         public byte[] TMD_Signature => _model.TMDFileData.Signature;
+#else
+        public byte[]? TMD_Signature => _model.TMDFileData.Signature;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding1"/>
+#if NET48
         public byte[] TMD_Padding1 => _model.TMDFileData.Padding1;
+#else
+        public byte[]? TMD_Padding1 => _model.TMDFileData.Padding1;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Issuer"/>
+#if NET48
         public string TMD_Issuer => _model.TMDFileData.Issuer;
+#else
+        public string? TMD_Issuer => _model.TMDFileData.Issuer;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Version"/>
         public byte TMD_Version => _model.TMDFileData.Version;
@@ -203,13 +263,21 @@ namespace BinaryObjectScanner.Wrappers
         public uint TMD_SRLPrivateSaveDataSize => _model.TMDFileData.SRLPrivateSaveDataSize;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved2"/>
+#if NET48
         public byte[] TMD_Reserved2 => _model.TMDFileData.Reserved2;
+#else
+        public byte[]? TMD_Reserved2 => _model.TMDFileData.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLFlag"/>
         public byte TMD_SRLFlag => _model.TMDFileData.SRLFlag;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved3"/>
+#if NET48
         public byte[] TMD_Reserved3 => _model.TMDFileData.Reserved3;
+#else
+        public byte[]? TMD_Reserved3 => _model.TMDFileData.Reserved3;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.AccessRights"/>
         public uint TMD_AccessRights => _model.TMDFileData.AccessRights;
@@ -224,10 +292,18 @@ namespace BinaryObjectScanner.Wrappers
         public ushort TMD_BootContent => _model.TMDFileData.BootContent;
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding2"/>
+#if NET48
         public byte[] TMD_Padding2 => _model.TMDFileData.Padding2;
+#else
+        public byte[]? TMD_Padding2 => _model.TMDFileData.Padding2;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SHA256HashContentInfoRecords"/>
+#if NET48
         public byte[] TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
+#else
+        public byte[]? TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentInfoRecords"/>
 #if NET48
@@ -266,19 +342,35 @@ namespace BinaryObjectScanner.Wrappers
         #region Meta Data
 
         /// <inheritdoc cref="Models.N3DS.MetaData.TitleIDDependencyList"/>
+#if NET48
         public byte[] MD_TitleIDDependencyList => _model.MetaData?.TitleIDDependencyList;
+#else
+        public byte[]? MD_TitleIDDependencyList => _model.MetaData?.TitleIDDependencyList;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.MetaData.Reserved1"/>
+#if NET48
         public byte[] MD_Reserved1 => _model.MetaData?.Reserved1;
+#else
+        public byte[]? MD_Reserved1 => _model.MetaData?.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.MetaData.CoreVersion"/>
         public uint? MD_CoreVersion => _model.MetaData?.CoreVersion;
 
         /// <inheritdoc cref="Models.N3DS.MetaData.Reserved2"/>
+#if NET48
         public byte[] MD_Reserved2 => _model.MetaData?.Reserved2;
+#else
+        public byte[]? MD_Reserved2 => _model.MetaData?.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.MetaData.IconData"/>
+#if NET48
         public byte[] MD_IconData => _model.MetaData?.IconData;
+#else
+        public byte[]? MD_IconData => _model.MetaData?.IconData;
+#endif
 
         #endregion
 
@@ -314,7 +406,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A CIA archive wrapper on success, null on failure</returns>
+#if NET48
         public static CIA Create(byte[] data, int offset)
+#else
+        public static CIA? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -334,7 +430,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A CIA archive wrapper on success, null on failure</returns>
+#if NET48
         public static CIA Create(Stream data)
+#else
+        public static CIA? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -393,7 +493,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  TMD file size: {TMDFileSize} (0x{TMDFileSize:X})");
             builder.AppendLine($"  Meta size: {MetaSize} (0x{MetaSize:X})");
             builder.AppendLine($"  Content size: {ContentSize} (0x{ContentSize:X})");
-            builder.AppendLine($"  Content index: {BitConverter.ToString(ContentIndex).Replace('-', ' ')}");
+            builder.AppendLine($"  Content index: {(ContentIndex == null ? "[NULL]" : BitConverter.ToString(ContentIndex).Replace('-', ' '))}");
             builder.AppendLine();
         }
 
@@ -427,8 +527,8 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
                     builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
                     builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
-                    builder.AppendLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
-                    builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
+                    builder.AppendLine($"    Signature: {(certificate.Signature == null ? "[NULL]" : BitConverter.ToString(certificate.Signature).Replace('-', ' '))}");
+                    builder.AppendLine($"    Padding: {(certificate.Padding == null ? "[NULL]" : BitConverter.ToString(certificate.Padding).Replace('-', ' '))}");
                     builder.AppendLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
                     builder.AppendLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
                     builder.AppendLine($"    Name: {certificate.Name ?? "[NULL]"}");
@@ -437,13 +537,13 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         case SabreTools.Models.N3DS.PublicKeyType.RSA_4096:
                         case SabreTools.Models.N3DS.PublicKeyType.RSA_2048:
-                            builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
+                            builder.AppendLine($"    Modulus: {(certificate.RSAModulus == null ? "[NULL]" : BitConverter.ToString(certificate.RSAModulus).Replace('-', ' '))}");
                             builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
-                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Padding: {(certificate.RSAPadding == null ? "[NULL]" : BitConverter.ToString(certificate.RSAPadding).Replace('-', ' '))}");
                             break;
                         case SabreTools.Models.N3DS.PublicKeyType.EllipticCurve:
-                            builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
-                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public key: {(certificate.ECCPublicKey == null ? "[NULL]" : BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' '))}");
+                            builder.AppendLine($"    Padding: {(certificate.ECCPadding == null ? "[NULL]" : BitConverter.ToString(certificate.ECCPadding).Replace('-', ' '))}");
                             break;
                     }
                 }
@@ -462,35 +562,35 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Signature type: {T_SignatureType} (0x{T_SignatureType:X})");
             builder.AppendLine($"  Signature size: {T_SignatureSize} (0x{T_SignatureSize:X})");
             builder.AppendLine($"  Padding size: {T_PaddingSize} (0x{T_PaddingSize:X})");
-            builder.AppendLine($"  Signature: {BitConverter.ToString(T_Signature).Replace('-', ' ')}");
-            builder.AppendLine($"  Padding: {BitConverter.ToString(T_Padding).Replace('-', ' ')}");
+            builder.AppendLine($"  Signature: {(T_Signature == null ? "[NULL]" : BitConverter.ToString(T_Signature).Replace('-', ' '))}");
+            builder.AppendLine($"  Padding: {(T_Padding == null ? "[NULL]" : BitConverter.ToString(T_Padding).Replace('-', ' '))}");
             builder.AppendLine($"  Issuer: {T_Issuer ?? "[NULL]"}");
-            builder.AppendLine($"  ECC public key: {BitConverter.ToString(T_ECCPublicKey).Replace('-', ' ')}");
+            builder.AppendLine($"  ECC public key: {(T_ECCPublicKey == null ? "[NULL]" : BitConverter.ToString(T_ECCPublicKey).Replace('-', ' '))}");
             builder.AppendLine($"  Version: {T_Version} (0x{T_Version:X})");
             builder.AppendLine($"  CaCrlVersion: {T_CaCrlVersion} (0x{T_CaCrlVersion:X})");
             builder.AppendLine($"  SignerCrlVersion: {T_SignerCrlVersion} (0x{T_SignerCrlVersion:X})");
-            builder.AppendLine($"  Title key: {BitConverter.ToString(T_TitleKey).Replace('-', ' ')}");
+            builder.AppendLine($"  Title key: {(T_TitleKey == null ? "[NULL]" : BitConverter.ToString(T_TitleKey).Replace('-', ' '))}");
             builder.AppendLine($"  Reserved 1: {T_Reserved1} (0x{T_Reserved1:X})");
             builder.AppendLine($"  Ticket ID: {T_TicketID} (0x{T_TicketID:X})");
             builder.AppendLine($"  Console ID: {T_ConsoleID} (0x{T_ConsoleID:X})");
             builder.AppendLine($"  Title ID {T_TitleID} (0x{T_TitleID:X})");
-            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(T_Reserved2).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 2: {(T_Reserved2 == null ? "[NULL]" : BitConverter.ToString(T_Reserved2).Replace('-', ' '))}");
             builder.AppendLine($"  Ticket title version: {T_TicketTitleVersion} (0x{T_TicketTitleVersion:X})");
-            builder.AppendLine($"  Reserved 3: {BitConverter.ToString(T_Reserved3).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 3: {(T_Reserved3 == null ? "[NULL]" : BitConverter.ToString(T_Reserved3).Replace('-', ' '))}");
             builder.AppendLine($"  License type: {T_LicenseType} (0x{T_LicenseType:X})");
             builder.AppendLine($"  Common keY index: {T_CommonKeyYIndex} (0x{T_CommonKeyYIndex:X})");
-            builder.AppendLine($"  Reserved 4: {BitConverter.ToString(T_Reserved4).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 4: {(T_Reserved4 == null ? "[NULL]" : BitConverter.ToString(T_Reserved4).Replace('-', ' '))}");
             builder.AppendLine($"  eShop Account ID?: {T_eShopAccountID} (0x{T_eShopAccountID:X})");
             builder.AppendLine($"  Reserved 5: {T_Reserved5} (0x{T_Reserved5:X})");
             builder.AppendLine($"  Audit: {T_Audit} (0x{T_Audit:X})");
-            builder.AppendLine($"  Reserved 6: {BitConverter.ToString(T_Reserved6).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 6: {(T_Reserved6 == null ? "[NULL]" : BitConverter.ToString(T_Reserved6).Replace('-', ' '))}");
             builder.AppendLine($"  Limits:");
             for (int i = 0; i < T_Limits.Length; i++)
             {
                 builder.AppendLine($"    Limit {i}: {T_Limits[i]} (0x{T_Limits[i]:X})");
             }
             builder.AppendLine($"  Content index size: {T_ContentIndexSize} (0x{T_ContentIndexSize:X})");
-            builder.AppendLine($"  Content index: {BitConverter.ToString(T_ContentIndex).Replace('-', ' ')}");
+            builder.AppendLine($"  Content index: {(T_ContentIndex == null ? "[NULL]" : BitConverter.ToString(T_ContentIndex).Replace('-', ' '))}");
             builder.AppendLine();
 
             builder.AppendLine("  Ticket Certificate Chain Information:");
@@ -516,8 +616,8 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
                     builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
                     builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
-                    builder.AppendLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
-                    builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
+                    builder.AppendLine($"    Signature: {(certificate.Signature == null ? "[NULL]" : BitConverter.ToString(certificate.Signature).Replace('-', ' '))}");
+                    builder.AppendLine($"    Padding: {(certificate.Padding == null ? "[NULL]" : BitConverter.ToString(certificate.Padding).Replace('-', ' '))}");
                     builder.AppendLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
                     builder.AppendLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
                     builder.AppendLine($"    Name: {certificate.Name ?? "[NULL]"}");
@@ -526,13 +626,13 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         case SabreTools.Models.N3DS.PublicKeyType.RSA_4096:
                         case SabreTools.Models.N3DS.PublicKeyType.RSA_2048:
-                            builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
+                            builder.AppendLine($"    Modulus: {(certificate.RSAModulus == null ? "[NULL]" : BitConverter.ToString(certificate.RSAModulus).Replace('-', ' '))}");
                             builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
-                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Padding: {(certificate.RSAPadding == null ? "[NULL]" : BitConverter.ToString(certificate.RSAPadding).Replace('-', ' '))}");
                             break;
                         case SabreTools.Models.N3DS.PublicKeyType.EllipticCurve:
-                            builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
-                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public key: {(certificate.ECCPublicKey == null ? "[NULL]" : BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' '))}");
+                            builder.AppendLine($"    Padding: {(certificate.ECCPadding == null ? "[NULL]" : BitConverter.ToString(certificate.ECCPadding).Replace('-', ' '))}");
                             break;
                     }
                 }
@@ -551,8 +651,8 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Signature type: {TMD_SignatureType} (0x{TMD_SignatureType:X})");
             builder.AppendLine($"  Signature size: {TMD_SignatureSize} (0x{TMD_SignatureSize:X})");
             builder.AppendLine($"  Padding size: {TMD_PaddingSize} (0x{TMD_PaddingSize:X})");
-            builder.AppendLine($"  Signature: {BitConverter.ToString(TMD_Signature).Replace('-', ' ')}");
-            builder.AppendLine($"  Padding 1: {BitConverter.ToString(TMD_Padding1).Replace('-', ' ')}");
+            builder.AppendLine($"  Signature: {(TMD_Signature == null ? "[NULL]" : BitConverter.ToString(TMD_Signature).Replace('-', ' '))}");
+            builder.AppendLine($"  Padding 1: {(TMD_Padding1 == null ? "[NULL]" : BitConverter.ToString(TMD_Padding1).Replace('-', ' '))}");
             builder.AppendLine($"  Issuer: {TMD_Issuer ?? "[NULL]"}");
             builder.AppendLine($"  Version: {TMD_Version} (0x{TMD_Version:X})");
             builder.AppendLine($"  CaCrlVersion: {TMD_CaCrlVersion} (0x{TMD_CaCrlVersion:X})");
@@ -564,15 +664,15 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Group ID: {TMD_GroupID} (0x{TMD_GroupID:X})");
             builder.AppendLine($"  Save data size: {TMD_SaveDataSize} (0x{TMD_SaveDataSize:X})");
             builder.AppendLine($"  SRL private save data size: {TMD_SRLPrivateSaveDataSize} (0x{TMD_SRLPrivateSaveDataSize:X})");
-            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(TMD_Reserved2).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 2: {(TMD_Reserved2 == null ? "[NULL]" : BitConverter.ToString(TMD_Reserved2).Replace('-', ' '))}");
             builder.AppendLine($"  SRL flag: {TMD_SRLFlag} (0x{TMD_SRLFlag:X})");
-            builder.AppendLine($"  Reserved 3: {BitConverter.ToString(TMD_Reserved3).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 3: {(TMD_Reserved3 == null ? "[NULL]" : BitConverter.ToString(TMD_Reserved3).Replace('-', ' '))}");
             builder.AppendLine($"  Access rights: {TMD_AccessRights} (0x{TMD_AccessRights:X})");
             builder.AppendLine($"  Title version: {TMD_TitleVersion} (0x{TMD_TitleVersion:X})");
             builder.AppendLine($"  Content count: {TMD_ContentCount} (0x{TMD_ContentCount:X})");
             builder.AppendLine($"  Boot content: {TMD_BootContent} (0x{TMD_BootContent:X})");
-            builder.AppendLine($"  Padding 2: {BitConverter.ToString(TMD_Padding2).Replace('-', ' ')}");
-            builder.AppendLine($"  SHA-256 hash of the content info records: {BitConverter.ToString(TMD_SHA256HashContentInfoRecords).Replace('-', ' ')}");
+            builder.AppendLine($"  Padding 2: {(TMD_Padding2 == null ? "[NULL]" : BitConverter.ToString(TMD_Padding2).Replace('-', ' '))}");
+            builder.AppendLine($"  SHA-256 hash of the content info records: {(TMD_SHA256HashContentInfoRecords == null ? "[NULL]" : BitConverter.ToString(TMD_SHA256HashContentInfoRecords).Replace('-', ' '))}");
             builder.AppendLine();
 
             builder.AppendLine("  Ticket Content Info Records Information:");
@@ -589,7 +689,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"  Content Info Record {i}");
                     builder.AppendLine($"    Content index offset: {contentInfoRecord.ContentIndexOffset} (0x{contentInfoRecord.ContentIndexOffset:X})");
                     builder.AppendLine($"    Content command count: {contentInfoRecord.ContentCommandCount} (0x{contentInfoRecord.ContentCommandCount:X})");
-                    builder.AppendLine($"    SHA-256 hash of the next {contentInfoRecord.ContentCommandCount} records not hashed: {BitConverter.ToString(contentInfoRecord.UnhashedContentRecordsSHA256Hash).Replace('-', ' ')}");
+                    builder.AppendLine($"    SHA-256 hash of the next {contentInfoRecord.ContentCommandCount} records not hashed: {(contentInfoRecord.UnhashedContentRecordsSHA256Hash == null ? "[NULL]" : BitConverter.ToString(contentInfoRecord.UnhashedContentRecordsSHA256Hash).Replace('-', ' '))}");
                 }
             }
             builder.AppendLine();
@@ -610,7 +710,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Content index: {contentChunkRecord.ContentIndex} (0x{contentChunkRecord.ContentIndex:X})");
                     builder.AppendLine($"    Content type: {contentChunkRecord.ContentType} (0x{contentChunkRecord.ContentType:X})");
                     builder.AppendLine($"    Content size: {contentChunkRecord.ContentSize} (0x{contentChunkRecord.ContentSize:X})");
-                    builder.AppendLine($"    SHA-256 hash: {BitConverter.ToString(contentChunkRecord.SHA256Hash).Replace('-', ' ')}");
+                    builder.AppendLine($"    SHA-256 hash: {(contentChunkRecord.SHA256Hash == null ? "[NULL]" : BitConverter.ToString(contentChunkRecord.SHA256Hash).Replace('-', ' '))}");
                 }
             }
             builder.AppendLine();
@@ -638,8 +738,8 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
                     builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
                     builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
-                    builder.AppendLine($"    Signature: {BitConverter.ToString(certificate.Signature).Replace('-', ' ')}");
-                    builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.Padding).Replace('-', ' ')}");
+                    builder.AppendLine($"    Signature: {(certificate.Signature == null ? "[NULL]" : BitConverter.ToString(certificate.Signature).Replace('-', ' '))}");
+                    builder.AppendLine($"    Padding: {(certificate.Padding == null ? "[NULL]" : BitConverter.ToString(certificate.Padding).Replace('-', ' '))}");
                     builder.AppendLine($"    Issuer: {certificate.Issuer ?? "[NULL]"}");
                     builder.AppendLine($"    Key type: {certificate.KeyType} (0x{certificate.KeyType:X})");
                     builder.AppendLine($"    Name: {certificate.Name ?? "[NULL]"}");
@@ -648,13 +748,13 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         case SabreTools.Models.N3DS.PublicKeyType.RSA_4096:
                         case SabreTools.Models.N3DS.PublicKeyType.RSA_2048:
-                            builder.AppendLine($"    Modulus: {BitConverter.ToString(certificate.RSAModulus).Replace('-', ' ')}");
+                            builder.AppendLine($"    Modulus: {(certificate.RSAModulus == null ? "[NULL]" : BitConverter.ToString(certificate.RSAModulus).Replace('-', ' '))}");
                             builder.AppendLine($"    Public exponent: {certificate.RSAPublicExponent} (0x{certificate.RSAPublicExponent:X})");
-                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.RSAPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Padding: {(certificate.RSAPadding == null ? "[NULL]" : BitConverter.ToString(certificate.RSAPadding).Replace('-', ' '))}");
                             break;
                         case SabreTools.Models.N3DS.PublicKeyType.EllipticCurve:
-                            builder.AppendLine($"    Public key: {BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' ')}");
-                            builder.AppendLine($"    Padding: {BitConverter.ToString(certificate.ECCPadding).Replace('-', ' ')}");
+                            builder.AppendLine($"    Public key: {(certificate.ECCPublicKey == null ? "[NULL]" : BitConverter.ToString(certificate.ECCPublicKey).Replace('-', ' '))}");
+                            builder.AppendLine($"    Padding: {(certificate.ECCPadding == null ? "[NULL]" : BitConverter.ToString(certificate.ECCPadding).Replace('-', ' '))}");
                             break;
                     }
                 }
@@ -690,20 +790,20 @@ namespace BinaryObjectScanner.Wrappers
                     }
                     else
                     {
-                        builder.AppendLine($"    RSA-2048 SHA-256 signature: {BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' ')}");
+                        builder.AppendLine($"    RSA-2048 SHA-256 signature: {(partitionHeader.RSA2048Signature == null ? "[NULL]" : BitConverter.ToString(partitionHeader.RSA2048Signature).Replace('-', ' '))}");
                         builder.AppendLine($"    Magic ID: {partitionHeader.MagicID} (0x{partitionHeader.MagicID:X})");
                         builder.AppendLine($"    Content size in media units: {partitionHeader.ContentSizeInMediaUnits} (0x{partitionHeader.ContentSizeInMediaUnits:X})");
                         builder.AppendLine($"    Partition ID: {partitionHeader.PartitionId} (0x{partitionHeader.PartitionId:X})");
                         builder.AppendLine($"    Maker code: {partitionHeader.MakerCode} (0x{partitionHeader.MakerCode:X})");
                         builder.AppendLine($"    Version: {partitionHeader.Version} (0x{partitionHeader.Version:X})");
                         builder.AppendLine($"    Verification hash: {partitionHeader.VerificationHash} (0x{partitionHeader.VerificationHash:X})");
-                        builder.AppendLine($"    Program ID: {BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 1: {BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' ')}");
-                        builder.AppendLine($"    Logo region SHA-256 hash: {BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Program ID: {(partitionHeader.ProgramId == null ? "[NULL]" : BitConverter.ToString(partitionHeader.ProgramId).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 1: {(partitionHeader.Reserved1 == null ? "[NULL]" : BitConverter.ToString(partitionHeader.Reserved1).Replace('-', ' '))}");
+                        builder.AppendLine($"    Logo region SHA-256 hash: {(partitionHeader.LogoRegionHash == null ? "[NULL]" : BitConverter.ToString(partitionHeader.LogoRegionHash).Replace('-', ' '))}");
                         builder.AppendLine($"    Product code: {partitionHeader.ProductCode} (0x{partitionHeader.ProductCode:X})");
-                        builder.AppendLine($"    Extended header SHA-256 hash: {BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Extended header SHA-256 hash: {(partitionHeader.ExtendedHeaderHash == null ? "[NULL]" : BitConverter.ToString(partitionHeader.ExtendedHeaderHash).Replace('-', ' '))}");
                         builder.AppendLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
-                        builder.AppendLine($"    Reserved 2: {BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 2: {(partitionHeader.Reserved2 == null ? "[NULL]" : BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' '))}");
                         builder.AppendLine("    Flags:");
                         builder.AppendLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
                         builder.AppendLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
@@ -720,13 +820,13 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    ExeFS offset, in media units: {partitionHeader.ExeFSOffsetInMediaUnits} (0x{partitionHeader.ExeFSOffsetInMediaUnits:X})");
                         builder.AppendLine($"    ExeFS size, in media units: {partitionHeader.ExeFSSizeInMediaUnits} (0x{partitionHeader.ExeFSSizeInMediaUnits:X})");
                         builder.AppendLine($"    ExeFS hash region size, in media units: {partitionHeader.ExeFSHashRegionSizeInMediaUnits} (0x{partitionHeader.ExeFSHashRegionSizeInMediaUnits:X})");
-                        builder.AppendLine($"    Reserved 3: {BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 3: {(partitionHeader.Reserved3 == null ? "[NULL]" : BitConverter.ToString(partitionHeader.Reserved3).Replace('-', ' '))}");
                         builder.AppendLine($"    RomFS offset, in media units: {partitionHeader.RomFSOffsetInMediaUnits} (0x{partitionHeader.RomFSOffsetInMediaUnits:X})");
                         builder.AppendLine($"    RomFS size, in media units: {partitionHeader.RomFSSizeInMediaUnits} (0x{partitionHeader.RomFSSizeInMediaUnits:X})");
                         builder.AppendLine($"    RomFS hash region size, in media units: {partitionHeader.RomFSHashRegionSizeInMediaUnits} (0x{partitionHeader.RomFSHashRegionSizeInMediaUnits:X})");
-                        builder.AppendLine($"    Reserved 4: {BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' ')}");
-                        builder.AppendLine($"    ExeFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' ')}");
-                        builder.AppendLine($"    RomFS superblock SHA-256 hash: {BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 4: {(partitionHeader.Reserved4 == null ? "[NULL]" : BitConverter.ToString(partitionHeader.Reserved4).Replace('-', ' '))}");
+                        builder.AppendLine($"    ExeFS superblock SHA-256 hash: {(partitionHeader.ExeFSSuperblockHash == null ? "[NULL]" : BitConverter.ToString(partitionHeader.ExeFSSuperblockHash).Replace('-', ' '))}");
+                        builder.AppendLine($"    RomFS superblock SHA-256 hash: {(partitionHeader.RomFSSuperblockHash == null ? "[NULL]" : BitConverter.ToString(partitionHeader.RomFSSuperblockHash).Replace('-', ' '))}");
                     }
                 }
             }
@@ -747,11 +847,11 @@ namespace BinaryObjectScanner.Wrappers
             }
             else
             {
-                builder.AppendLine(value: $"  Title ID dependency list: {BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' ')}");
-                builder.AppendLine($"  Reserved 1: {BitConverter.ToString(MD_Reserved1).Replace('-', ' ')}");
+                builder.AppendLine(value: $"  Title ID dependency list: {(MD_TitleIDDependencyList == null ? "[NULL]" : BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' '))}");
+                builder.AppendLine($"  Reserved 1: {(MD_Reserved1 == null ? "[NULL]" : BitConverter.ToString(MD_Reserved1).Replace('-', ' '))}");
                 builder.AppendLine($"  Core version: {MD_CoreVersion} (0x{MD_CoreVersion:X})");
-                builder.AppendLine($"  Reserved 2: {BitConverter.ToString(MD_Reserved2).Replace('-', ' ')}");
-                builder.AppendLine($"  Icon data: {BitConverter.ToString(MD_IconData).Replace('-', ' ')}");
+                builder.AppendLine($"  Reserved 2: {(MD_Reserved2 == null ? "[NULL]" : BitConverter.ToString(MD_Reserved2).Replace('-', ' '))}");
+                builder.AppendLine($"  Icon data: {(MD_IconData == null ? "[NULL]" : BitConverter.ToString(MD_IconData).Replace('-', ' '))}");
             }
             builder.AppendLine();
         }

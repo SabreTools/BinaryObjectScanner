@@ -22,7 +22,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
+#if NET48
         public string Stub_Magic => _model.Stub.Header.Magic;
+#else
+        public string? Stub_Magic => _model.Stub.Header.Magic;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
         public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
@@ -68,7 +72,11 @@ namespace BinaryObjectScanner.Wrappers
         #region PE Extensions
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
+#if NET48
         public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
+#else
+        public ushort[]? Stub_Reserved1 => _model.Stub.Header.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
         public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
@@ -77,7 +85,11 @@ namespace BinaryObjectScanner.Wrappers
         public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
+#if NET48
         public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
+#else
+        public ushort[]? Stub_Reserved2 => _model.Stub.Header.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
         public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
@@ -89,7 +101,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.Magic"/>
+#if NET48
         public string Magic => _model.Header.Magic;
+#else
+        public string? Magic => _model.Header.Magic;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.LinkerVersion"/>
         public byte LinkerVersion => _model.Header.LinkerVersion;
@@ -274,7 +290,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the executable</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>An NE executable wrapper on success, null on failure</returns>
+#if NET48
         public static NewExecutable Create(byte[] data, int offset)
+#else
+        public static NewExecutable? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -294,7 +314,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the executable</param>
         /// <returns>An NE executable wrapper on success, null on failure</returns>
+#if NET48
         public static NewExecutable Create(Stream data)
+#else
+        public static NewExecutable? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -379,10 +403,10 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  MS-DOS Stub Extended Header Information:");
             builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved1)}");
+            builder.AppendLine($"  Reserved words: {(Stub_Reserved1 == null ? "[NULL]" : string.Join(", ", Stub_Reserved1))}");
             builder.AppendLine($"  OEM identifier: {Stub_OEMIdentifier} (0x{Stub_OEMIdentifier:X})");
             builder.AppendLine($"  OEM information: {Stub_OEMInformation} (0x{Stub_OEMInformation:X})");
-            builder.AppendLine($"  Reserved words: {string.Join(", ", Stub_Reserved2)}");
+            builder.AppendLine($"  Reserved words: {(Stub_Reserved2 == null ? "[NULL]" : string.Join(", ", Stub_Reserved2))}");
             builder.AppendLine($"  New EXE header address: {Stub_NewExeHeaderAddr} (0x{Stub_NewExeHeaderAddr:X})");
             builder.AppendLine();
         }
@@ -674,7 +698,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="length">How many bytes to read, -1 means read until end</param>
         /// <returns>Byte array representing the range, null on error</returns>
         [Obsolete]
+#if NET48
         public byte[] ReadArbitraryRange(int rangeStart = -1, int length = -1)
+#else
+        public byte[]? ReadArbitraryRange(int rangeStart = -1, int length = -1)
+#endif
         {
             // If we have an unset range start, read from the start of the source
             if (rangeStart == -1)

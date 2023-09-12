@@ -18,13 +18,21 @@ namespace BinaryObjectScanner.Wrappers
         #region Common Header
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.GameTitle"/>
+#if NET48
         public string GameTitle => _model.CommonHeader.GameTitle;
+#else
+        public string? GameTitle => _model.CommonHeader.GameTitle;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.GameCode"/>
         public uint GameCode => _model.CommonHeader.GameCode;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.MakerCode"/>
+#if NET48
         public string MakerCode => _model.CommonHeader.MakerCode;
+#else
+        public string? MakerCode => _model.CommonHeader.MakerCode;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.UnitCode"/>
         public SabreTools.Models.Nitro.Unitcode UnitCode => _model.CommonHeader.UnitCode;
@@ -36,7 +44,11 @@ namespace BinaryObjectScanner.Wrappers
         public byte DeviceCapacity => _model.CommonHeader.DeviceCapacity;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.Reserved1"/>
+#if NET48
         public byte[] Reserved1 => _model.CommonHeader.Reserved1;
+#else
+        public byte[]? Reserved1 => _model.CommonHeader.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.GameRevision"/>
         public ushort GameRevision => _model.CommonHeader.GameRevision;
@@ -117,7 +129,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint ARM7Autoload => _model.CommonHeader.ARM7Autoload;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureDisable"/>
+#if NET48
         public byte[] SecureDisable => _model.CommonHeader.SecureDisable;
+#else
+        public byte[]? SecureDisable => _model.CommonHeader.SecureDisable;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NTRRegionRomSize"/>
         public uint NTRRegionRomSize => _model.CommonHeader.NTRRegionRomSize;
@@ -126,10 +142,18 @@ namespace BinaryObjectScanner.Wrappers
         public uint HeaderSize => _model.CommonHeader.HeaderSize;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.Reserved2"/>
+#if NET48
         public byte[] Reserved2 => _model.CommonHeader.Reserved2;
+#else
+        public byte[]? Reserved2 => _model.CommonHeader.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NintendoLogo"/>
+#if NET48
         public byte[] NintendoLogo => _model.CommonHeader.NintendoLogo;
+#else
+        public byte[]? NintendoLogo => _model.CommonHeader.NintendoLogo;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NintendoLogoCRC"/>
         public ushort NintendoLogoCRC => _model.CommonHeader.NintendoLogoCRC;
@@ -138,20 +162,36 @@ namespace BinaryObjectScanner.Wrappers
         public ushort HeaderCRC => _model.CommonHeader.HeaderCRC;
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.DebuggerReserved"/>
+#if NET48
         public byte[] DebuggerReserved => _model.CommonHeader.DebuggerReserved;
+#else
+        public byte[]? DebuggerReserved => _model.CommonHeader.DebuggerReserved;
+#endif
 
         #endregion
 
         #region Extended DSi Header
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.GlobalMBK15Settings"/>
+#if NET48
         public uint[] GlobalMBK15Settings => _model.ExtendedDSiHeader?.GlobalMBK15Settings;
+#else
+        public uint[]? GlobalMBK15Settings => _model.ExtendedDSiHeader?.GlobalMBK15Settings;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.LocalMBK68SettingsARM9"/>
+#if NET48
         public uint[] LocalMBK68SettingsARM9 => _model.ExtendedDSiHeader?.LocalMBK68SettingsARM9;
+#else
+        public uint[]? LocalMBK68SettingsARM9 => _model.ExtendedDSiHeader?.LocalMBK68SettingsARM9;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.LocalMBK68SettingsARM7"/>
+#if NET48
         public uint[] LocalMBK68SettingsARM7 => _model.ExtendedDSiHeader?.LocalMBK68SettingsARM7;
+#else
+        public uint[]? LocalMBK68SettingsARM7 => _model.ExtendedDSiHeader?.LocalMBK68SettingsARM7;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.GlobalMBK9Setting"/>
         public uint? GlobalMBK9Setting => _model.ExtendedDSiHeader?.GlobalMBK9Setting;
@@ -241,7 +281,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint? ModcryptArea2Size => _model.ExtendedDSiHeader?.ModcryptArea2Size;
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.TitleID"/>
+#if NET48
         public byte[] TitleID => _model.ExtendedDSiHeader?.TitleID;
+#else
+        public byte[]? TitleID => _model.ExtendedDSiHeader?.TitleID;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DSiWarePublicSavSize"/>
         public uint? DSiWarePublicSavSize => _model.ExtendedDSiHeader?.DSiWarePublicSavSize;
@@ -250,50 +294,106 @@ namespace BinaryObjectScanner.Wrappers
         public uint? DSiWarePrivateSavSize => _model.ExtendedDSiHeader?.DSiWarePrivateSavSize;
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ReservedZero"/>
+#if NET48
         public byte[] ReservedZero => _model.ExtendedDSiHeader?.ReservedZero;
+#else
+        public byte[]? ReservedZero => _model.ExtendedDSiHeader?.ReservedZero;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Unknown2"/>
+#if NET48
         public byte[] Unknown2 => _model.ExtendedDSiHeader?.Unknown2;
+#else
+        public byte[]? Unknown2 => _model.ExtendedDSiHeader?.Unknown2;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9WithSecureAreaSHA1HMACHash"/>
+#if NET48
         public byte[] ARM9WithSecureAreaSHA1HMACHash => _model.ExtendedDSiHeader?.ARM9WithSecureAreaSHA1HMACHash;
+#else
+        public byte[]? ARM9WithSecureAreaSHA1HMACHash => _model.ExtendedDSiHeader?.ARM9WithSecureAreaSHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7SHA1HMACHash"/>
+#if NET48
         public byte[] ARM7SHA1HMACHash => _model.ExtendedDSiHeader?.ARM7SHA1HMACHash;
+#else
+        public byte[]? ARM7SHA1HMACHash => _model.ExtendedDSiHeader?.ARM7SHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.DigestMasterSHA1HMACHash"/>
+#if NET48
         public byte[] DigestMasterSHA1HMACHash => _model.ExtendedDSiHeader?.DigestMasterSHA1HMACHash;
+#else
+        public byte[]? DigestMasterSHA1HMACHash => _model.ExtendedDSiHeader?.DigestMasterSHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.BannerSHA1HMACHash"/>
+#if NET48
         public byte[] BannerSHA1HMACHash => _model.ExtendedDSiHeader?.BannerSHA1HMACHash;
+#else
+        public byte[]? BannerSHA1HMACHash => _model.ExtendedDSiHeader?.BannerSHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9iDecryptedSHA1HMACHash"/>
+#if NET48
         public byte[] ARM9iDecryptedSHA1HMACHash => _model.ExtendedDSiHeader?.ARM9iDecryptedSHA1HMACHash;
+#else
+        public byte[]? ARM9iDecryptedSHA1HMACHash => _model.ExtendedDSiHeader?.ARM9iDecryptedSHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM7iDecryptedSHA1HMACHash"/>
+#if NET48
         public byte[] ARM7iDecryptedSHA1HMACHash => _model.ExtendedDSiHeader?.ARM7iDecryptedSHA1HMACHash;
+#else
+        public byte[]? ARM7iDecryptedSHA1HMACHash => _model.ExtendedDSiHeader?.ARM7iDecryptedSHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Reserved5"/>
+#if NET48
         public byte[] Reserved5 => _model.ExtendedDSiHeader?.Reserved5;
+#else
+        public byte[]? Reserved5 => _model.ExtendedDSiHeader?.Reserved5;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ARM9NoSecureAreaSHA1HMACHash"/>
+#if NET48
         public byte[] ARM9NoSecureAreaSHA1HMACHash => _model.ExtendedDSiHeader?.ARM9NoSecureAreaSHA1HMACHash;
+#else
+        public byte[]? ARM9NoSecureAreaSHA1HMACHash => _model.ExtendedDSiHeader?.ARM9NoSecureAreaSHA1HMACHash;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.Reserved6"/>
+#if NET48
         public byte[] Reserved6 => _model.ExtendedDSiHeader?.Reserved6;
+#else
+        public byte[]? Reserved6 => _model.ExtendedDSiHeader?.Reserved6;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.ReservedAndUnchecked"/>
+#if NET48
         public byte[] ReservedAndUnchecked => _model.ExtendedDSiHeader?.ReservedAndUnchecked;
+#else
+        public byte[]? ReservedAndUnchecked => _model.ExtendedDSiHeader?.ReservedAndUnchecked;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.ExtendedDSiHeader.RSASignature"/>
+#if NET48
         public byte[] RSASignature => _model.ExtendedDSiHeader?.RSASignature;
+#else
+        public byte[]? RSASignature => _model.ExtendedDSiHeader?.RSASignature;
+#endif
 
         #endregion
 
         #region Secure Area
 
         /// <inheritdoc cref="Models.Nitro.Cart.SecureArea"/>
+#if NET48
         public byte[] SecureArea => _model.SecureArea;
+#else
+        public byte[]? SecureArea => _model.SecureArea;
+#endif
 
         #endregion
 
@@ -358,7 +458,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A NDS cart image wrapper on success, null on failure</returns>
+#if NET48
         public static Nitro Create(byte[] data, int offset)
+#else
+        public static Nitro? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -378,7 +482,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A NDS cart image wrapper on success, null on failure</returns>
+#if NET48
         public static Nitro Create(Stream data)
+#else
+        public static Nitro? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -434,7 +542,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Unit code: {UnitCode} (0x{UnitCode:X})");
             builder.AppendLine($"  Encryption seed select: {EncryptionSeedSelect} (0x{EncryptionSeedSelect:X})");
             builder.AppendLine($"  Device capacity: {DeviceCapacity} (0x{DeviceCapacity:X})");
-            builder.AppendLine($"  Reserved 1: {BitConverter.ToString(Reserved1).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 1: {(Reserved1 == null ? "[NULL]" : BitConverter.ToString(Reserved1).Replace('-', ' '))}");
             builder.AppendLine($"  Game revision: {GameRevision} (0x{GameRevision:X})");
             builder.AppendLine($"  Rom version: {RomVersion} (0x{RomVersion:X})");
             builder.AppendLine($"  ARM9 rom offset: {ARM9RomOffset} (0x{ARM9RomOffset:X})");
@@ -463,11 +571,11 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Secure disable: {SecureDisable} (0x{SecureDisable:X})");
             builder.AppendLine($"  NTR region rom size: {NTRRegionRomSize} (0x{NTRRegionRomSize:X})");
             builder.AppendLine($"  Header size: {HeaderSize} (0x{HeaderSize:X})");
-            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(Reserved2).Replace('-', ' ')}");
-            builder.AppendLine($"  Nintendo logo: {BitConverter.ToString(NintendoLogo).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 2: {(Reserved2 == null ? "[NULL]" : BitConverter.ToString(Reserved2).Replace('-', ' '))}");
+            builder.AppendLine($"  Nintendo logo: {(NintendoLogo == null ? "[NULL]" : BitConverter.ToString(NintendoLogo).Replace('-', ' '))}");
             builder.AppendLine($"  Nintendo logo CRC: {NintendoLogoCRC} (0x{NintendoLogoCRC:X})");
             builder.AppendLine($"  Header CRC: {HeaderCRC} (0x{HeaderCRC:X})");
-            builder.AppendLine($"  Debugger reserved: {BitConverter.ToString(DebuggerReserved).Replace('-', ' ')}");
+            builder.AppendLine($"  Debugger reserved: {(DebuggerReserved == null ? "[NULL]" : BitConverter.ToString(DebuggerReserved).Replace('-', ' '))}");
             builder.AppendLine();
         }
 
@@ -485,9 +593,9 @@ namespace BinaryObjectScanner.Wrappers
             }
             else
             {
-                builder.AppendLine($"  Global MBK1..MBK5 settings: {string.Join(", ", GlobalMBK15Settings)}");
-                builder.AppendLine($"  Local MBK6..MBK8 settings for ARM9: {string.Join(", ", LocalMBK68SettingsARM9)}");
-                builder.AppendLine($"  Local MBK6..MBK8 settings for ARM7: {string.Join(", ", LocalMBK68SettingsARM7)}");
+                builder.AppendLine($"  Global MBK1..MBK5 settings: {(GlobalMBK15Settings == null ? "[NULL]" : string.Join(", ", GlobalMBK15Settings))}");
+                builder.AppendLine($"  Local MBK6..MBK8 settings for ARM9: {(LocalMBK68SettingsARM9 == null ? "[NULL]" : string.Join(", ", LocalMBK68SettingsARM9))}");
+                builder.AppendLine($"  Local MBK6..MBK8 settings for ARM7: {(LocalMBK68SettingsARM7 == null ? "[NULL]" : string.Join(", ", LocalMBK68SettingsARM7))}");
                 builder.AppendLine($"  Global MBK9 setting: {GlobalMBK9Setting} (0x{GlobalMBK9Setting:X})");
                 builder.AppendLine($"  Region flags: {RegionFlags} (0x{RegionFlags:X})");
                 builder.AppendLine($"  Access control: {AccessControl} (0x{AccessControl:X})");
@@ -517,22 +625,22 @@ namespace BinaryObjectScanner.Wrappers
                 builder.AppendLine($"  Modcrypt area 1 size: {ModcryptArea1Size} (0x{ModcryptArea1Size:X})");
                 builder.AppendLine($"  Modcrypt area 2 offset: {ModcryptArea2Offset} (0x{ModcryptArea2Offset:X})");
                 builder.AppendLine($"  Modcrypt area 2 size: {ModcryptArea2Size} (0x{ModcryptArea2Size:X})");
-                builder.AppendLine($"  Title ID: {BitConverter.ToString(TitleID).Replace('-', ' ')}");
+                builder.AppendLine($"  Title ID: {(TitleID == null ? "[NULL]" : BitConverter.ToString(TitleID).Replace('-', ' '))}");
                 builder.AppendLine($"  DSiWare 'public.sav' size: {DSiWarePublicSavSize} (0x{DSiWarePublicSavSize:X})");
                 builder.AppendLine($"  DSiWare 'private.sav' size: {DSiWarePrivateSavSize} (0x{DSiWarePrivateSavSize:X})");
-                builder.AppendLine($"  Reserved (zero): {BitConverter.ToString(ReservedZero).Replace('-', ' ')}");
-                builder.AppendLine($"  Unknown 2: {BitConverter.ToString(Unknown2).Replace('-', ' ')}");
-                builder.AppendLine($"  ARM9 (with encrypted secure area) SHA1 HMAC hash: {BitConverter.ToString(ARM9WithSecureAreaSHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  ARM7 SHA1 HMAC hash: {BitConverter.ToString(ARM7SHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  Digest master SHA1 HMAC hash: {BitConverter.ToString(DigestMasterSHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  Banner SHA1 HMAC hash: {BitConverter.ToString(BannerSHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  ARM9i (decrypted) SHA1 HMAC hash: {BitConverter.ToString(ARM9iDecryptedSHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  ARM7i (decrypted) SHA1 HMAC hash: {BitConverter.ToString(ARM7iDecryptedSHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  Reserved 5: {BitConverter.ToString(Reserved5).Replace('-', ' ')}");
-                builder.AppendLine($"  ARM9 (without secure area) SHA1 HMAC hash: {BitConverter.ToString(ARM9NoSecureAreaSHA1HMACHash).Replace('-', ' ')}");
-                builder.AppendLine($"  Reserved 6: {BitConverter.ToString(Reserved6).Replace('-', ' ')}");
-                builder.AppendLine($"  Reserved and unchecked region: {BitConverter.ToString(ReservedAndUnchecked).Replace('-', ' ')}");
-                builder.AppendLine($"  RSA signature: {BitConverter.ToString(RSASignature).Replace('-', ' ')}");
+                builder.AppendLine($"  Reserved (zero): {(ReservedZero == null ? "[NULL]" : BitConverter.ToString(ReservedZero).Replace('-', ' '))}");
+                builder.AppendLine($"  Unknown 2: {(Unknown2 == null ? "[NULL]" : BitConverter.ToString(Unknown2).Replace('-', ' '))}");
+                builder.AppendLine($"  ARM9 (with encrypted secure area) SHA1 HMAC hash: {(ARM9WithSecureAreaSHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(ARM9WithSecureAreaSHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  ARM7 SHA1 HMAC hash: {(ARM7SHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(ARM7SHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  Digest master SHA1 HMAC hash: {(DigestMasterSHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(DigestMasterSHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  Banner SHA1 HMAC hash: {(BannerSHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(BannerSHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  ARM9i (decrypted) SHA1 HMAC hash: {(ARM9iDecryptedSHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(ARM9iDecryptedSHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  ARM7i (decrypted) SHA1 HMAC hash: {(ARM7iDecryptedSHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(ARM7iDecryptedSHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  Reserved 5: {(Reserved5 == null ? "[NULL]" : BitConverter.ToString(Reserved5).Replace('-', ' '))}");
+                builder.AppendLine($"  ARM9 (without secure area) SHA1 HMAC hash: {(ARM9NoSecureAreaSHA1HMACHash == null ? "[NULL]" : BitConverter.ToString(ARM9NoSecureAreaSHA1HMACHash).Replace('-', ' '))}");
+                builder.AppendLine($"  Reserved 6: {(Reserved6 == null ? "[NULL]" : BitConverter.ToString(Reserved6).Replace('-', ' '))}");
+                builder.AppendLine($"  Reserved and unchecked region: {(ReservedAndUnchecked == null ? "[NULL]" : BitConverter.ToString(ReservedAndUnchecked).Replace('-', ' '))}");
+                builder.AppendLine($"  RSA signature: {(RSASignature == null ? "[NULL]" : BitConverter.ToString(RSASignature).Replace('-', ' '))}");
             }
             builder.AppendLine();
         }
@@ -545,7 +653,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Secure Area Information:");
             builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  {BitConverter.ToString(SecureArea).Replace('-', ' ')}");
+            builder.AppendLine($"  {(SecureArea == null ? "[NULL]" : BitConverter.ToString(SecureArea).Replace('-', ' '))}");
             builder.AppendLine();
         }
 

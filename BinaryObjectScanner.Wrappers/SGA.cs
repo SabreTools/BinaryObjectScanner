@@ -21,7 +21,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.SGA.Header4.Signature"/>
+#if NET48
         public string Signature => _model.Header.Signature;
+#else
+        public string? Signature => _model.Header.Signature;
+#endif
 
         /// <inheritdoc cref="Models.SGA.Header4.MajorVersion"/>
         public ushort MajorVersion => _model.Header.MajorVersion;
@@ -410,7 +414,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the SGA</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>An SGA wrapper on success, null on failure</returns>
+#if NET48
         public static SGA Create(byte[] data, int offset)
+#else
+        public static SGA? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -430,7 +438,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the SGA</param>
         /// <returns>An SGA wrapper on success, null on failure</returns>
+#if NET48
         public static SGA Create(Stream data)
+#else
+        public static SGA? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -737,7 +749,11 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Create the filename
+#if NET48
             string filename;
+#else
+            string? filename;
+#endif
             switch (MajorVersion)
             {
                 case 4:
@@ -748,16 +764,24 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // Loop through and get all parent directories
+#if NET48
             var parentNames = new List<string> { filename };
+#else
+            var parentNames = new List<string?> { filename };
+#endif
 
             // Get the parent directory
+#if NET48
             object folder;
+#else
+            object? folder;
+#endif
             switch (MajorVersion)
             {
-                case 4: folder = (Folders as SabreTools.Models.SGA.Folder4[]).FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 4: folder = (Folders as SabreTools.Models.SGA.Folder4[])?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
                 case 5:
                 case 6:
-                case 7: folder = (Folders as SabreTools.Models.SGA.Folder5[]).FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 7: folder = (Folders as SabreTools.Models.SGA.Folder5[])?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
                 default: return false;
             }
 
@@ -815,7 +839,11 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // Read the compressed data directly
+#if NET48
             byte[] compressedData = ReadFromDataSource((int)fileOffset, (int)fileSize);
+#else
+            byte[]? compressedData = ReadFromDataSource((int)fileOffset, (int)fileSize);
+#endif
             if (compressedData == null)
                 return false;
 
@@ -842,7 +870,13 @@ namespace BinaryObjectScanner.Wrappers
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try

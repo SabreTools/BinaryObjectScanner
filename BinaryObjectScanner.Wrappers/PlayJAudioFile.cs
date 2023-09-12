@@ -134,43 +134,71 @@ namespace BinaryObjectScanner.Wrappers
         public ushort TrackLength => _model.Header.TrackLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Track"/>
+#if NET48
         public string Track => _model.Header.Track;
+#else
+        public string? Track => _model.Header.Track;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.ArtistLength"/>
         public ushort ArtistLength => _model.Header.ArtistLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Artist"/>
+#if NET48
         public string Artist => _model.Header.Artist;
+#else
+        public string? Artist => _model.Header.Artist;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.AlbumLength"/>
         public ushort AlbumLength => _model.Header.AlbumLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Album"/>
+#if NET48
         public string Album => _model.Header.Album;
+#else
+        public string? Album => _model.Header.Album;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.WriterLength"/>
         public ushort WriterLength => _model.Header.WriterLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Writer"/>
+#if NET48
         public string Writer => _model.Header.Writer;
+#else
+        public string? Writer => _model.Header.Writer;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.PublisherLength"/>
         public ushort PublisherLength => _model.Header.PublisherLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Publisher"/>
+#if NET48
         public string Publisher => _model.Header.Publisher;
+#else
+        public string? Publisher => _model.Header.Publisher;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.LabelLength"/>
         public ushort LabelLength => _model.Header.LabelLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Label"/>
+#if NET48
         public string Label => _model.Header.Label;
+#else
+        public string? Label => _model.Header.Label;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.CommentsLength"/>
         public ushort CommentsLength => _model.Header.CommentsLength;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Comments"/>
+#if NET48
         public string Comments => _model.Header.Comments;
+#else
+        public string? Comments => _model.Header.Comments;
+#endif
 
         #endregion
 
@@ -180,7 +208,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint UB1_Length => _model.UnknownBlock1.Length;
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Data"/>
+#if NET48
         public byte[] UB1_Data => _model.UnknownBlock1.Data;
+#else
+        public byte[]? UB1_Data => _model.UnknownBlock1.Data;
+#endif
 
         #endregion
 
@@ -196,7 +228,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Block 3
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock3.Data"/>
+#if NET48
         public byte[] UB3_Data => _model.UnknownBlock3.Data;
+#else
+        public byte[]? UB3_Data => _model.UnknownBlock3.Data;
+#endif
 
         #endregion
 
@@ -256,7 +292,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A PlayJ audio file wrapper on success, null on failure</returns>
+#if NET48
         public static PlayJAudioFile Create(byte[] data, int offset)
+#else
+        public static PlayJAudioFile? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -276,7 +316,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A PlayJ audio file wrapper on success, null on failure</returns>
+#if NET48
         public static PlayJAudioFile Create(Stream data)
+#else
+        public static PlayJAudioFile? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -404,7 +448,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  Unknown Block 1 Information:");
             builder.AppendLine("  -------------------------");
             builder.AppendLine($"  Length: {UB1_Length} (0x{UB1_Length:X})");
-            builder.AppendLine($"  Data: {BitConverter.ToString(UB1_Data ?? new byte[0]).Replace('-', ' ')}");
+            builder.AppendLine($"  Data: {(UB1_Data == null ? "[NULL]" : BitConverter.ToString(UB1_Data).Replace('-', ' '))}");
             builder.AppendLine();
         }
 
@@ -428,7 +472,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Unknown Block 3 Information:");
             builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Data: {BitConverter.ToString(UB3_Data ?? new byte[0]).Replace('-', ' ')}");
+            builder.AppendLine($"  Data: {(UB3_Data == null ? "[NULL]" : BitConverter.ToString(UB3_Data).Replace('-', ' '))}");
             builder.AppendLine();
         }
 
@@ -450,7 +494,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    File name length: {dataFile.FileNameLength} (0x{dataFile.FileNameLength:X})");
                     builder.AppendLine($"    File name: {dataFile.FileName ?? "[NULL]"}");
                     builder.AppendLine($"    Data length: {dataFile.DataLength} (0x{dataFile.DataLength:X})");
-                    builder.AppendLine($"    Data: {BitConverter.ToString(dataFile.Data ?? new byte[0]).Replace('-', ' ')}");
+                    builder.AppendLine($"    Data: {(dataFile.Data == null ? "[NULL]" : BitConverter.ToString(dataFile.Data).Replace('-', ' '))}");
                 }
             }
             builder.AppendLine();

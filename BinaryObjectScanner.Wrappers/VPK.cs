@@ -76,7 +76,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Array of archive filenames attached to the given VPK
         /// </summary>
+#if NET48
         public string[] ArchiveFilenames
+#else
+        public string[]? ArchiveFilenames
+#endif
         {
             get
             {
@@ -90,18 +94,28 @@ namespace BinaryObjectScanner.Wrappers
 
                 // If the filename is not the right format
                 string extension = Path.GetExtension(fs.Name).TrimStart('.');
-                string fileName = Path.Combine(Path.GetDirectoryName(fs.Name), Path.GetFileNameWithoutExtension(fs.Name));
+#if NET48
+                string directoryName = Path.GetDirectoryName(fs.Name);
+#else
+                string? directoryName = Path.GetDirectoryName(fs.Name);
+#endif
+                string fileName = directoryName == null
+                    ? Path.GetFileNameWithoutExtension(fs.Name)
+                    : Path.Combine(directoryName, Path.GetFileNameWithoutExtension(fs.Name));
+
                 if (fileName.Length < 3)
                     return null;
                 else if (fileName.Substring(fileName.Length - 3) != "dir")
                     return null;
 
                 // Get the archive count
-                int archiveCount = DirectoryItems
-                    .Select(di => di.DirectoryEntry)
-                    .Select(de => de.ArchiveIndex)
-                    .Where(ai => ai != HL_VPK_NO_ARCHIVE)
-                    .Max();
+                int archiveCount = DirectoryItems == null
+                    ? 0
+                    : DirectoryItems
+                        .Select(di => di.DirectoryEntry)
+                        .Select(de => de.ArchiveIndex)
+                        .Where(ai => ai != HL_VPK_NO_ARCHIVE)
+                        .Max();
 
                 // Build the list of archive filenames to populate
                 _archiveFilenames = new string[archiveCount];
@@ -160,7 +174,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the VPK</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A VPK wrapper on success, null on failure</returns>
+#if NET48
         public static VPK Create(byte[] data, int offset)
+#else
+        public static VPK? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -180,7 +198,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the VPK</param>
         /// <returns>A VPK wrapper on success, null on failure</returns>
+#if NET48
         public static VPK Create(Stream data)
+#else
+        public static VPK? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -278,7 +300,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Archive index: {archiveHash.ArchiveIndex} (0x{archiveHash.ArchiveIndex:X})");
                     builder.AppendLine($"    Archive offset: {archiveHash.ArchiveOffset} (0x{archiveHash.ArchiveOffset:X})");
                     builder.AppendLine($"    Length: {archiveHash.Length} (0x{archiveHash.Length:X})");
-                    builder.AppendLine($"    Hash: {BitConverter.ToString(archiveHash.Hash).Replace("-", string.Empty)}");
+                    builder.AppendLine($"    Hash: {(archiveHash.Hash == null ? "[NULL]" : BitConverter.ToString(archiveHash.Hash).Replace("-", string.Empty))}");
                 }
             }
             builder.AppendLine();
@@ -302,11 +324,18 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryItem = DirectoryItems[i];
                     builder.AppendLine($"  Directory Item {i}");
-                    builder.AppendLine($"    Extension: {directoryItem.Extension}");
-                    builder.AppendLine($"    Path: {directoryItem.Path}");
-                    builder.AppendLine($"    Name: {directoryItem.Name}");
-                    PrintDirectoryEntry(directoryItem.DirectoryEntry, builder);
-                    // TODO: Print out preload data?
+                    if (directoryItem == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                    }
+                    else
+                    {
+                        builder.AppendLine($"    Extension: {directoryItem.Extension}");
+                        builder.AppendLine($"    Path: {directoryItem.Path}");
+                        builder.AppendLine($"    Name: {directoryItem.Name}");
+                        PrintDirectoryEntry(directoryItem.DirectoryEntry, builder);
+                        // TODO: Print out preload data?
+                    }
                 }
             }
             builder.AppendLine();
@@ -316,7 +345,11 @@ namespace BinaryObjectScanner.Wrappers
         /// Print directory entry information
         /// </summary>
         /// <param name="builder">StringBuilder to append information to</param>
+#if NET48
         private void PrintDirectoryEntry(SabreTools.Models.VPK.DirectoryEntry directoryEntry, StringBuilder builder)
+#else
+        private void PrintDirectoryEntry(SabreTools.Models.VPK.DirectoryEntry? directoryEntry, StringBuilder builder)
+#endif
         {
             if (directoryEntry == null)
             {
@@ -387,7 +420,11 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // If we have an item with no archive
+#if NET48
             byte[] data;
+#else
+            byte[]? data;
+#endif
             if (directoryItem.DirectoryEntry.ArchiveIndex == HL_VPK_NO_ARCHIVE)
             {
                 if (directoryItem.PreloadData == null)
@@ -415,7 +452,11 @@ namespace BinaryObjectScanner.Wrappers
                     return false;
 
                 // Try to open the archive
+#if NET48
                 Stream archiveStream = null;
+#else
+                Stream? archiveStream = null;
+#endif
                 try
                 {
                     // Open the archive
@@ -437,9 +478,13 @@ namespace BinaryObjectScanner.Wrappers
                 }
 
                 // If we have preload data, prepend it
-                if (directoryItem.PreloadData != null)
+                if (data != null && directoryItem.PreloadData != null)
                     data = directoryItem.PreloadData.Concat(data).ToArray();
             }
+
+            // If there is nothing to write out
+            if (data == null)
+                return false;
 
             // Create the filename
             string filename = $"{directoryItem.Name}.{directoryItem.Extension}";
@@ -454,7 +499,13 @@ namespace BinaryObjectScanner.Wrappers
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try

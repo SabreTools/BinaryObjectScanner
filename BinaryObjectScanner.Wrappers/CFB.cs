@@ -40,7 +40,11 @@ namespace BinaryObjectScanner.Wrappers
         public ushort MiniSectorShift => _model.Header.MiniSectorShift;
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Reserved"/>
+#if NET48
         public byte[] Reserved => _model.Header.Reserved;
+#else
+        public byte[]? Reserved => _model.Header.Reserved;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDirectorySectors"/>
         public uint NumberOfDirectorySectors => _model.Header.NumberOfDirectorySectors;
@@ -73,7 +77,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.CFB.SectorNumber[] DIFAT => _model.Header.DIFAT;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] DIFAT => _model.Header.DIFAT;
+        public SabreTools.Models.CFB.SectorNumber?[]? DIFAT => _model.Header.DIFAT;
 #endif
 
         #endregion
@@ -84,7 +88,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.CFB.SectorNumber[] FATSectorNumbers => _model.FATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] FATSectorNumbers => _model.FATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[]? FATSectorNumbers => _model.FATSectorNumbers;
 #endif
 
         #endregion
@@ -95,7 +99,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.CFB.SectorNumber[] MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[]? MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
 #endif
 
         #endregion
@@ -106,7 +110,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.CFB.SectorNumber[] DIFATSectorNumbers => _model.DIFATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[] DIFATSectorNumbers => _model.DIFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[]? DIFATSectorNumbers => _model.DIFATSectorNumbers;
 #endif
 
         #endregion
@@ -117,7 +121,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.CFB.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
 #else
-        public SabreTools.Models.CFB.DirectoryEntry?[] DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.CFB.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
 #endif
 
         #endregion
@@ -168,7 +172,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A Compound File Binary wrapper on success, null on failure</returns>
+#if NET48
         public static CFB Create(byte[] data, int offset)
+#else
+        public static CFB? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -188,7 +196,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A Compound File Binary wrapper on success, null on failure</returns>
+#if NET48
         public static CFB Create(Stream data)
+#else
+        public static CFB? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -220,7 +232,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public List<SabreTools.Models.CFB.SectorNumber> GetFATSectorChain(SabreTools.Models.CFB.SectorNumber startingSector)
 #else
-        public List<SabreTools.Models.CFB.SectorNumber?> GetFATSectorChain(SabreTools.Models.CFB.SectorNumber? startingSector)
+        public List<SabreTools.Models.CFB.SectorNumber?>? GetFATSectorChain(SabreTools.Models.CFB.SectorNumber? startingSector)
 #endif
         {
             // If we have an invalid sector
@@ -257,7 +269,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="startingSector">Initial FAT sector</param>
         /// <returns>Ordered list of sector numbers, null on error</returns>
+#if NET48
         public byte[] GetFATSectorChainData(SabreTools.Models.CFB.SectorNumber startingSector)
+#else
+        public byte[]? GetFATSectorChainData(SabreTools.Models.CFB.SectorNumber startingSector)
+#endif
         {
             // Get the sector chain first
             var sectorChain = GetFATSectorChain(startingSector);
@@ -297,7 +313,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid sector number
+#if NET48
+            if (sector > SabreTools.Models.CFB.SectorNumber.MAXREGSECT)
+#else
             if (sector == null || sector > SabreTools.Models.CFB.SectorNumber.MAXREGSECT)
+#endif
                 return -1;
 
             // Convert based on the sector shift value
@@ -316,7 +336,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public List<SabreTools.Models.CFB.SectorNumber> GetMiniFATSectorChain(SabreTools.Models.CFB.SectorNumber startingSector)
 #else
-        public List<SabreTools.Models.CFB.SectorNumber?> GetMiniFATSectorChain(SabreTools.Models.CFB.SectorNumber? startingSector)
+        public List<SabreTools.Models.CFB.SectorNumber?>? GetMiniFATSectorChain(SabreTools.Models.CFB.SectorNumber? startingSector)
 #endif
         {
             // If we have an invalid sector
@@ -353,7 +373,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="startingSector">Initial Mini FAT sector</param>
         /// <returns>Ordered list of sector numbers, null on error</returns>
+#if NET48
         public byte[] GetMiniFATSectorChainData(SabreTools.Models.CFB.SectorNumber startingSector)
+#else
+        public byte[]? GetMiniFATSectorChainData(SabreTools.Models.CFB.SectorNumber startingSector)
+#endif
         {
             // Get the sector chain first
             var sectorChain = GetMiniFATSectorChain(startingSector);
@@ -393,7 +417,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid sector number
+#if NET48
+            if (sector > SabreTools.Models.CFB.SectorNumber.MAXREGSECT)
+#else
             if (sector == null || sector > SabreTools.Models.CFB.SectorNumber.MAXREGSECT)
+#endif
                 return -1;
 
             // Convert based on the sector shift value
@@ -437,7 +465,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Byte order: {ByteOrder} (0x{ByteOrder:X})");
             builder.AppendLine($"  Sector shift: {SectorShift} (0x{SectorShift:X}) => {SectorSize}");
             builder.AppendLine($"  Mini sector shift: {MiniSectorShift} (0x{MiniSectorShift:X}) => {MiniSectorSize}");
-            builder.AppendLine($"  Reserved: {BitConverter.ToString(Reserved).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved: {(Reserved == null ? "[NULL]" : BitConverter.ToString(Reserved).Replace('-', ' '))}");
             builder.AppendLine($"  Number of directory sectors: {NumberOfDirectorySectors} (0x{NumberOfDirectorySectors:X})");
             builder.AppendLine($"  Number of FAT sectors: {NumberOfFATSectors} (0x{NumberOfFATSectors:X})");
             builder.AppendLine($"  First directory sector location: {FirstDirectorySectorLocation} (0x{FirstDirectorySectorLocation:X})");

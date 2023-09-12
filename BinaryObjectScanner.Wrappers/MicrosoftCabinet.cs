@@ -19,7 +19,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Signature"/>
+#if NET48
         public string Signature => _model.Header.Signature;
+#else
+        public string? Signature => _model.Header.Signature;
+#endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved1"/>
         public uint Reserved1 => _model.Header.Reserved1;
@@ -67,19 +71,39 @@ namespace BinaryObjectScanner.Wrappers
         public byte DataReservedSize => _model.Header.DataReservedSize;
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.ReservedData"/>
+#if NET48
         public byte[] ReservedData => _model.Header.ReservedData;
+#else
+        public byte[]? ReservedData => _model.Header.ReservedData;
+#endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetPrev"/>
+#if NET48
         public string CabinetPrev => _model.Header.CabinetPrev;
+#else
+        public string? CabinetPrev => _model.Header.CabinetPrev;
+#endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskPrev"/>
+#if NET48
         public string DiskPrev => _model.Header.DiskPrev;
+#else
+        public string? DiskPrev => _model.Header.DiskPrev;
+#endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetNext"/>
+#if NET48
         public string CabinetNext => _model.Header.CabinetNext;
+#else
+        public string? CabinetNext => _model.Header.CabinetNext;
+#endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskNext"/>
+#if NET48
         public string DiskNext => _model.Header.DiskNext;
+#else
+        public string? DiskNext => _model.Header.DiskNext;
+#endif
 
         #endregion
 
@@ -130,12 +154,16 @@ namespace BinaryObjectScanner.Wrappers
         {
             // All logic is handled by the base class
         }/// <summary>
-        /// Create a Microsoft Cabinet from a byte array and offset
-        /// </summary>
-        /// <param name="data">Byte array representing the cabinet</param>
-        /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>A cabinet wrapper on success, null on failure</returns>
+         /// Create a Microsoft Cabinet from a byte array and offset
+         /// </summary>
+         /// <param name="data">Byte array representing the cabinet</param>
+         /// <param name="offset">Offset within the array to parse</param>
+         /// <returns>A cabinet wrapper on success, null on failure</returns>
+#if NET48
         public static MicrosoftCabinet Create(byte[] data, int offset)
+#else
+        public static MicrosoftCabinet? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -155,7 +183,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the cabinet</param>
         /// <returns>A cabinet wrapper on success, null on failure</returns>
+#if NET48
         public static MicrosoftCabinet Create(Stream data)
+#else
+        public static MicrosoftCabinet? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -223,7 +255,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="folderIndex">Folder index to check</param>
         /// <returns>Byte array representing the data, null on error</returns>
         /// <remarks>All but uncompressed are unimplemented</remarks>
+#if NET48
         public byte[] GetUncompressedData(int folderIndex)
+#else
+        public byte[]? GetUncompressedData(int folderIndex)
+#endif
         {
             // If we have an invalid folder index
             if (folderIndex < 0 || folderIndex >= Folders.Length)
@@ -273,7 +309,8 @@ namespace BinaryObjectScanner.Wrappers
                         return null;
                 }
 
-                data.AddRange(decompressed ?? new byte[0]);
+                if (decompressed != null)
+                    data.AddRange(decompressed);
             }
 
             return data.ToArray();
@@ -329,7 +366,7 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Create the output filename
-            string fileName = Path.Combine(outputDirectory, file.Name);
+            string fileName = Path.Combine(outputDirectory, file.Name ?? $"file{index}");
 
             // Get the file data, if possible
             byte[] fileData = GetFileData(index);
@@ -390,7 +427,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="fileIndex">File index to check</param>
         /// <returns>Byte array representing the data, null on error</returns>
+#if NET48
         public byte[] GetFileData(int fileIndex)
+#else
+        public byte[]? GetFileData(int fileIndex)
+#endif
         {
             // If we have an invalid file index
             if (fileIndex < 0 || fileIndex >= Files.Length)

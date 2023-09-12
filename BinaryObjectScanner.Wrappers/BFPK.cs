@@ -19,7 +19,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.BFPK.Header.Magic"/>
+#if NET48
         public string Magic => _model.Header.Magic;
+#else
+        public string? Magic => _model.Header.Magic;
+#endif
 
         /// <inheritdoc cref="Models.BFPK.Header.Version"/>
         public int Version => _model.Header.Version;
@@ -35,7 +39,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.BFPK.FileEntry[] FileTable => _model.Files;
 #else
-        public SabreTools.Models.BFPK.FileEntry?[] FileTable => _model.Files;
+        public SabreTools.Models.BFPK.FileEntry?[]? FileTable => _model.Files;
 #endif
 
         #endregion
@@ -72,7 +76,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A BFPK archive wrapper on success, null on failure</returns>
+#if NET48
         public static BFPK Create(byte[] data, int offset)
+#else
+        public static BFPK? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -92,7 +100,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A BFPK archive wrapper on success, null on failure</returns>
+#if NET48
         public static BFPK Create(Stream data)
+#else
+        public static BFPK? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -155,6 +167,8 @@ namespace BinaryObjectScanner.Wrappers
 
             // Get the file information
             var file = FileTable[index];
+            if (file == null)
+                return false;
 
             // Get the read index and length
             int offset = file.Offset + 4;
@@ -173,11 +187,17 @@ namespace BinaryObjectScanner.Wrappers
                 Directory.CreateDirectory(outputDirectory);
 
                 // Create the output path
-                string filePath = Path.Combine(outputDirectory, file.Name);
+                string filePath = Path.Combine(outputDirectory, file.Name ?? $"file{index}");
                 using (FileStream fs = File.OpenWrite(filePath))
                 {
                     // Read the data block
+#if NET48
                     byte[] data = ReadFromDataSource(offset, compressedSize);
+#else
+                    byte[]? data = ReadFromDataSource(offset, compressedSize);
+#endif
+                    if (data == null)
+                        return false;
 
                     // If we have uncompressed data
                     if (compressedSize == file.UncompressedSize)

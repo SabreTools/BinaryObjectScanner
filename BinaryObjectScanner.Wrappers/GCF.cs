@@ -385,15 +385,19 @@ namespace BinaryObjectScanner.Wrappers
                         Size = directoryEntry.ItemSize,
                         Encrypted = directoryEntry.DirectoryFlags.HasFlag(SabreTools.Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_ENCRYPTED),
                     };
-                    var pathParts = new List<string> { directoryEntry.Name };
+                    var pathParts = new List<string> { directoryEntry.Name ?? string.Empty };
+#if NET48
                     var blockEntries = new List<SabreTools.Models.GCF.BlockEntry>();
+#else
+                    var blockEntries = new List<SabreTools.Models.GCF.BlockEntry?>();
+#endif
 
                     // Traverse the parent tree
                     uint index = directoryEntry.ParentIndex;
                     while (index != 0xFFFFFFFF)
                     {
                         var parentDirectoryEntry = DirectoryEntries[index];
-                        pathParts.Add(parentDirectoryEntry.Name);
+                        pathParts.Add(parentDirectoryEntry.Name ?? string.Empty);
                         index = parentDirectoryEntry.ParentIndex;
                     }
 
@@ -493,7 +497,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the GCF</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>An GCF wrapper on success, null on failure</returns>
+#if NET48
         public static GCF Create(byte[] data, int offset)
+#else
+        public static GCF? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -513,7 +521,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the GCF</param>
         /// <returns>An GCF wrapper on success, null on failure</returns>
+#if NET48
         public static GCF Create(Stream data)
+#else
+        public static GCF? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -1113,10 +1125,16 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Create the full output path
-            filename = Path.Combine(outputDirectory, filename);
+            filename = Path.Combine(outputDirectory, filename ?? $"file{index}");
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try
@@ -1130,7 +1148,14 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         int readSize = (int)Math.Min(DBH_BlockSize, fileSize);
 
+#if NET48
                         byte[] data = ReadFromDataSource((int)dataBlockOffsets[i], readSize);
+#else
+                        byte[]? data = ReadFromDataSource((int)dataBlockOffsets[i], readSize);
+#endif
+                        if (data == null)
+                            return false;
+
                         fs.Write(data, 0, data.Length);
                     }
                 }
@@ -1155,7 +1180,11 @@ namespace BinaryObjectScanner.Wrappers
             /// <summary>
             /// Full item path
             /// </summary>
+#if NET48
             public string Path;
+#else
+            public string? Path;
+#endif
 
             /// <summary>
             /// File size
@@ -1170,7 +1199,11 @@ namespace BinaryObjectScanner.Wrappers
             /// <summary>
             /// Array of block entries
             /// </summary>
+#if NET48
             public SabreTools.Models.GCF.BlockEntry[] BlockEntries;
+#else
+            public SabreTools.Models.GCF.BlockEntry?[]? BlockEntries;
+#endif
         }
 
         #endregion

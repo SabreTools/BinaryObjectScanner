@@ -19,7 +19,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Common Header
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.Signature"/>
+#if NET48
         public string Signature => _model.CommonHeader.Signature;
+#else
+        public string? Signature => _model.CommonHeader.Signature;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.Version"/>
         public uint Version => _model.CommonHeader.Version;
@@ -93,7 +97,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint StringsOffset => _model.Descriptor.StringsOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved0"/>
+#if NET48
         public byte[] Reserved0 => _model.Descriptor.Reserved0;
+#else
+        public byte[]? Reserved0 => _model.Descriptor.Reserved0;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentListOffset"/>
         public uint ComponentListOffset => _model.Descriptor.ComponentListOffset;
@@ -102,7 +110,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint FileTableOffset => _model.Descriptor.FileTableOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved1"/>
+#if NET48
         public byte[] Reserved1 => _model.Descriptor.Reserved1;
+#else
+        public byte[]? Reserved1 => _model.Descriptor.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableSize"/>
         public uint FileTableSize => _model.Descriptor.FileTableSize;
@@ -114,13 +126,25 @@ namespace BinaryObjectScanner.Wrappers
         public ushort DirectoryCount => _model.Descriptor.DirectoryCount;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved2"/>
+#if NET48
         public byte[] Reserved2 => _model.Descriptor.Reserved2;
+#else
+        public byte[]? Reserved2 => _model.Descriptor.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved3"/>
+#if NET48
         public byte[] Reserved3 => _model.Descriptor.Reserved3;
+#else
+        public byte[]? Reserved3 => _model.Descriptor.Reserved3;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved4"/>
+#if NET48
         public byte[] Reserved4 => _model.Descriptor.Reserved4;
+#else
+        public byte[]? Reserved4 => _model.Descriptor.Reserved4;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileCount"/>
         public uint FileCount => _model.Descriptor.FileCount;
@@ -135,16 +159,32 @@ namespace BinaryObjectScanner.Wrappers
         public uint ComponentTableOffset => _model.Descriptor.ComponentTableOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved5"/>
+#if NET48
         public byte[] Reserved5 => _model.Descriptor.Reserved5;
+#else
+        public byte[]? Reserved5 => _model.Descriptor.Reserved5;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved6"/>
+#if NET48
         public byte[] Reserved6 => _model.Descriptor.Reserved6;
+#else
+        public byte[]? Reserved6 => _model.Descriptor.Reserved6;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileGroupOffsets"/>
+#if NET48
         public uint[] D_FileGroupOffsets => _model.Descriptor.FileGroupOffsets;
+#else
+        public uint[]? D_FileGroupOffsets => _model.Descriptor.FileGroupOffsets;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentOffsets"/>
+#if NET48
         public uint[] D_ComponentOffsets => _model.Descriptor.ComponentOffsets;
+#else
+        public uint[]? D_ComponentOffsets => _model.Descriptor.ComponentOffsets;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.SetupTypesOffset"/>
         public uint SetupTypesOffset => _model.Descriptor.SetupTypesOffset;
@@ -153,24 +193,40 @@ namespace BinaryObjectScanner.Wrappers
         public uint SetupTableOffset => _model.Descriptor.SetupTableOffset;
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved7"/>
+#if NET48
         public byte[] Reserved7 => _model.Descriptor.Reserved7;
+#else
+        public byte[]? Reserved7 => _model.Descriptor.Reserved7;
+#endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved8"/>
+#if NET48
         public byte[] Reserved8 => _model.Descriptor.Reserved8;
+#else
+        public byte[]? Reserved8 => _model.Descriptor.Reserved8;
+#endif
 
         #endregion
 
         #region File Descriptor Offsets
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptorOffsets"/>
+#if NET48
         public uint[] FileDescriptorOffsets => _model.FileDescriptorOffsets;
+#else
+        public uint[]? FileDescriptorOffsets => _model.FileDescriptorOffsets;
+#endif
 
         #endregion
 
         #region Directory Descriptors
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.DirectoryNames"/>
+#if NET48
         public string[] DirectoryNames => _model.DirectoryNames;
+#else
+        public string[]? DirectoryNames => _model.DirectoryNames;
+#endif
 
         #endregion
 
@@ -288,7 +344,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the cabinet</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A cabinet wrapper on success, null on failure</returns>
+#if NET48
         public static InstallShieldCabinet Create(byte[] data, int offset)
+#else
+        public static InstallShieldCabinet? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -308,7 +368,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the cabinet</param>
         /// <returns>A cabinet wrapper on success, null on failure</returns>
+#if NET48
         public static InstallShieldCabinet Create(Stream data)
+#else
+        public static InstallShieldCabinet? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -430,22 +494,22 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  Descriptor Information:");
             builder.AppendLine("  -------------------------");
             builder.AppendLine($"  Strings offset: {StringsOffset} (0x{StringsOffset:X})");
-            builder.AppendLine($"  Reserved 0: {BitConverter.ToString(Reserved0).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 0: {(Reserved0 == null ? "[NULL]" : BitConverter.ToString(Reserved0).Replace('-', ' '))}");
             builder.AppendLine($"  Component list offset: {ComponentListOffset} (0x{ComponentListOffset:X})");
             builder.AppendLine($"  File table offset: {FileTableOffset} (0x{FileTableOffset:X})");
-            builder.AppendLine($"  Reserved 1: {BitConverter.ToString(Reserved1).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 1: {(Reserved1 == null ? "[NULL]" : BitConverter.ToString(Reserved1).Replace('-', ' '))}");
             builder.AppendLine($"  File table size: {FileTableSize} (0x{FileTableSize:X})");
             builder.AppendLine($"  File table size 2: {FileTableSize2} (0x{FileTableSize2:X})");
             builder.AppendLine($"  Directory count: {DirectoryCount} (0x{DirectoryCount:X})");
-            builder.AppendLine($"  Reserved 2: {BitConverter.ToString(Reserved2).Replace('-', ' ')}");
-            builder.AppendLine($"  Reserved 3: {BitConverter.ToString(Reserved3).Replace('-', ' ')}");
-            builder.AppendLine($"  Reserved 4: {BitConverter.ToString(Reserved4).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 2: {(Reserved2 == null ? "[NULL]" : BitConverter.ToString(Reserved2).Replace('-', ' '))}");
+            builder.AppendLine($"  Reserved 3: {(Reserved3 == null ? "[NULL]" : BitConverter.ToString(Reserved3).Replace('-', ' '))}");
+            builder.AppendLine($"  Reserved 4: {(Reserved4 == null ? "[NULL]" : BitConverter.ToString(Reserved4).Replace('-', ' '))}");
             builder.AppendLine($"  File count: {FileCount} (0x{FileCount:X})");
             builder.AppendLine($"  File table offset 2: {FileTableOffset2} (0x{FileTableOffset2:X})");
             builder.AppendLine($"  Component table info count: {ComponentTableInfoCount} (0x{ComponentTableInfoCount:X})");
             builder.AppendLine($"  Component table offset: {ComponentTableOffset} (0x{ComponentTableOffset:X})");
-            builder.AppendLine($"  Reserved 5: {BitConverter.ToString(Reserved5).Replace('-', ' ')}");
-            builder.AppendLine($"  Reserved 6: {BitConverter.ToString(Reserved6).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 5: {(Reserved5 == null ? "[NULL]" : BitConverter.ToString(Reserved5).Replace('-', ' '))}");
+            builder.AppendLine($"  Reserved 6: {(Reserved6 == null ? "[NULL]" : BitConverter.ToString(Reserved6).Replace('-', ' '))}");
             builder.AppendLine();
 
             builder.AppendLine($"  File group offsets:");
@@ -480,8 +544,8 @@ namespace BinaryObjectScanner.Wrappers
 
             builder.AppendLine($"  Setup types offset: {SetupTypesOffset} (0x{SetupTypesOffset:X})");
             builder.AppendLine($"  Setup table offset: {SetupTableOffset} (0x{SetupTableOffset:X})");
-            builder.AppendLine($"  Reserved 7: {BitConverter.ToString(Reserved7).Replace('-', ' ')}");
-            builder.AppendLine($"  Reserved 8: {BitConverter.ToString(Reserved8).Replace('-', ' ')}");
+            builder.AppendLine($"  Reserved 7: {(Reserved7 == null ? "[NULL]" : BitConverter.ToString(Reserved7).Replace('-', ' '))}");
+            builder.AppendLine($"  Reserved 8: {(Reserved8 == null ? "[NULL]" : BitConverter.ToString(Reserved8).Replace('-', ' '))}");
             builder.AppendLine();
         }
 
@@ -554,7 +618,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"    Expanded size: {fileDescriptor.ExpandedSize} (0x{fileDescriptor.ExpandedSize:X})");
                     builder.AppendLine($"    Compressed size: {fileDescriptor.CompressedSize} (0x{fileDescriptor.CompressedSize:X})");
                     builder.AppendLine($"    Data offset: {fileDescriptor.DataOffset} (0x{fileDescriptor.DataOffset:X})");
-                    builder.AppendLine($"    MD5: {BitConverter.ToString(fileDescriptor.MD5 ?? new byte[0]).Replace('-', ' ')}");
+                    builder.AppendLine($"    MD5: {(fileDescriptor.MD5 == null ? "[NULL]" : BitConverter.ToString(fileDescriptor.MD5).Replace('-', ' '))}");
                     builder.AppendLine($"    Volume: {fileDescriptor.Volume} (0x{fileDescriptor.Volume:X})");
                     builder.AppendLine($"    Link previous: {fileDescriptor.LinkPrevious} (0x{fileDescriptor.LinkPrevious:X})");
                     builder.AppendLine($"    Link next: {fileDescriptor.LinkNext} (0x{fileDescriptor.LinkNext:X})");
@@ -627,10 +691,10 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Name offset: {fileGroup.NameOffset} (0x{fileGroup.NameOffset:X})");
                         builder.AppendLine($"    Name: {fileGroup.Name ?? "[NULL]"}");
                         builder.AppendLine($"    Expanded size: {fileGroup.ExpandedSize} (0x{fileGroup.ExpandedSize:X})");
-                        builder.AppendLine($"    Reserved 0: {BitConverter.ToString(fileGroup.Reserved0).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 0: {(fileGroup.Reserved0 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved0).Replace('-', ' '))}");
                         builder.AppendLine($"    Compressed size: {fileGroup.CompressedSize} (0x{fileGroup.CompressedSize:X})");
-                        builder.AppendLine($"    Reserved 1: {BitConverter.ToString(fileGroup.Reserved1).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 2: {BitConverter.ToString(fileGroup.Reserved2).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 1: {(fileGroup.Reserved1 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved1).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 2: {(fileGroup.Reserved2 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved2).Replace('-', ' '))}");
                         builder.AppendLine($"    Attribute 1: {fileGroup.Attribute1} (0x{fileGroup.Attribute1:X})");
                         builder.AppendLine($"    Attribute 2: {fileGroup.Attribute2} (0x{fileGroup.Attribute2:X})");
                         builder.AppendLine($"    First file: {fileGroup.FirstFile} (0x{fileGroup.FirstFile:X})");
@@ -643,11 +707,11 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Misc. offset: {fileGroup.MiscOffset} (0x{fileGroup.MiscOffset:X})");
                         builder.AppendLine($"    Var 2 offset: {fileGroup.Var2Offset} (0x{fileGroup.Var2Offset:X})");
                         builder.AppendLine($"    Target directory offset: {fileGroup.TargetDirectoryOffset} (0x{fileGroup.TargetDirectoryOffset:X})");
-                        builder.AppendLine($"    Reserved 3: {BitConverter.ToString(fileGroup.Reserved3).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 4: {BitConverter.ToString(fileGroup.Reserved4).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 5: {BitConverter.ToString(fileGroup.Reserved5).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 6: {BitConverter.ToString(fileGroup.Reserved6).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 7: {BitConverter.ToString(fileGroup.Reserved7).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 3: {(fileGroup.Reserved3 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved3).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 4: {(fileGroup.Reserved4 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved4).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 5: {(fileGroup.Reserved5 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved5).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 6: {(fileGroup.Reserved6 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved6).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 7: {(fileGroup.Reserved7 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved7).Replace('-', ' '))}");
                     }
                     builder.AppendLine();
                 }
@@ -719,7 +783,7 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Descriptor offset: {component.DescriptorOffset} (0x{component.DescriptorOffset:X})");
                         builder.AppendLine($"    Display name offset: {component.DisplayNameOffset} (0x{component.DisplayNameOffset:X})");
                         builder.AppendLine($"    Display name: {component.DisplayName ?? "[NULL]"}");
-                        builder.AppendLine($"    Reserved 0: {BitConverter.ToString(component.Reserved0).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 0: {(component.Reserved0 == null ? "[NULL]" : BitConverter.ToString(component.Reserved0).Replace('-', ' '))}");
                         builder.AppendLine($"    Reserved offset 0: {component.ReservedOffset0} (0x{component.ReservedOffset0:X})");
                         builder.AppendLine($"    Reserved offset 1: {component.ReservedOffset1} (0x{component.ReservedOffset1:X})");
                         builder.AppendLine($"    Component index: {component.ComponentIndex} (0x{component.ComponentIndex:X})");
@@ -728,11 +792,11 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Reserved offset 2: {component.ReservedOffset2} (0x{component.ReservedOffset2:X})");
                         builder.AppendLine($"    Reserved offset 3: {component.ReservedOffset3} (0x{component.ReservedOffset3:X})");
                         builder.AppendLine($"    Reserved offset 4: {component.ReservedOffset4} (0x{component.ReservedOffset4:X})");
-                        builder.AppendLine($"    Reserved 1: {BitConverter.ToString(component.Reserved1).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 1: {(component.Reserved1 == null ? "[NULL]" : BitConverter.ToString(component.Reserved1).Replace('-', ' '))}");
                         builder.AppendLine($"    CLSID offset: {component.CLSIDOffset} (0x{component.CLSIDOffset:X})");
                         builder.AppendLine($"    CLSID: {component.CLSID}");
-                        builder.AppendLine($"    Reserved 2: {BitConverter.ToString(component.Reserved2).Replace('-', ' ')}");
-                        builder.AppendLine($"    Reserved 3: {BitConverter.ToString(component.Reserved3).Replace('-', ' ')}");
+                        builder.AppendLine($"    Reserved 2: {(component.Reserved2 == null ? "[NULL]" : BitConverter.ToString(component.Reserved2).Replace('-', ' '))}");
+                        builder.AppendLine($"    Reserved 3: {(component.Reserved3 == null ? "[NULL]" : BitConverter.ToString(component.Reserved3).Replace('-', ' '))}");
                         builder.AppendLine($"    Depends count: {component.DependsCount} (0x{component.DependsCount:X})");
                         builder.AppendLine($"    Depends offset: {component.DependsOffset} (0x{component.DependsOffset:X})");
                         builder.AppendLine($"    File group count: {component.FileGroupCount} (0x{component.FileGroupCount:X})");

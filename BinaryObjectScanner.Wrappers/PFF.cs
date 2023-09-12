@@ -20,7 +20,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint HeaderSize => _model.Header.HeaderSize;
 
         /// <inheritdoc cref="Models.PFF.Header.Signature"/>
+#if NET48
         public string Signature => _model.Header.Signature;
+#else
+        public string? Signature => _model.Header.Signature;
+#endif
 
         /// <inheritdoc cref="Models.PFF.Header.NumberOfFiles"/>
         public uint NumberOfFiles => _model.Header.NumberOfFiles;
@@ -53,7 +57,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint Reserved => _model.Footer.Reserved;
 
         /// <inheritdoc cref="Models.PFF.Footer.KingTag"/>
+#if NET48
         public string KingTag => _model.Footer.KingTag;
+#else
+        public string? KingTag => _model.Footer.KingTag;
+#endif
 
         #endregion
 
@@ -82,12 +90,16 @@ namespace BinaryObjectScanner.Wrappers
         {
             // All logic is handled by the base class
         }/// <summary>
-        /// Create a PFF archive from a byte array and offset
-        /// </summary>
-        /// <param name="data">Byte array representing the archive</param>
-        /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>A PFF archive wrapper on success, null on failure</returns>
+         /// Create a PFF archive from a byte array and offset
+         /// </summary>
+         /// <param name="data">Byte array representing the archive</param>
+         /// <param name="offset">Offset within the array to parse</param>
+         /// <returns>A PFF archive wrapper on success, null on failure</returns>
+#if NET48
         public static PFF Create(byte[] data, int offset)
+#else
+        public static PFF? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -107,7 +119,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A PFF archive wrapper on success, null on failure</returns>
+#if NET48
         public static PFF Create(Stream data)
+#else
+        public static PFF? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -181,11 +197,17 @@ namespace BinaryObjectScanner.Wrappers
                 Directory.CreateDirectory(outputDirectory);
 
                 // Create the output path
-                string filePath = Path.Combine(outputDirectory, file.FileName);
+                string filePath = Path.Combine(outputDirectory, file.FileName ?? $"file{index}");
                 using (FileStream fs = File.OpenWrite(filePath))
                 {
                     // Read the data block
+#if NET48
                     byte[] data = ReadFromDataSource(offset, size);
+#else
+                    byte[]? data = ReadFromDataSource(offset, size);
+#endif
+                    if (data == null)
+                        return false;
 
                     // Write the data -- TODO: Compressed data?
                     fs.Write(data, 0, size);

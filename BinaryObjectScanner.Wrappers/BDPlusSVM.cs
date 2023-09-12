@@ -16,10 +16,18 @@ namespace BinaryObjectScanner.Wrappers
         #region Pass-Through Properties
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Signature"/>
+#if NET48
         public string Signature => _model.Signature;
+#else
+        public string? Signature => _model.Signature;
+#endif
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Unknown1"/>
+#if NET48
         public byte[] Unknown1 => _model.Unknown1;
+#else
+        public byte[]? Unknown1 => _model.Unknown1;
+#endif
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Year"/>
         public ushort Year => _model.Year;
@@ -31,13 +39,21 @@ namespace BinaryObjectScanner.Wrappers
         public byte Day => _model.Day;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Unknown2"/>
+#if NET48
         public byte[] Unknown2 => _model.Unknown2;
+#else
+        public byte[]? Unknown2 => _model.Unknown2;
+#endif
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Length"/>
         public uint Length => _model.Length;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Data"/>
+#if NET48
         public byte[] Data => _model.Data;
+#else
+        public byte[]? Data => _model.Data;
+#endif
 
         #endregion
 
@@ -71,7 +87,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A BD+ SVM wrapper on success, null on failure</returns>
+#if NET48
         public static BDPlusSVM Create(byte[] data, int offset)
+#else
+        public static BDPlusSVM? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -91,7 +111,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A BD+ SVM wrapper on success, null on failure</returns>
+#if NET48
         public static BDPlusSVM Create(Stream data)
+#else
+        public static BDPlusSVM? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -138,13 +162,13 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  SVM Information:");
             builder.AppendLine("  -------------------------");
             builder.AppendLine($"  Signature: {Signature}");
-            builder.AppendLine($"  Unknown 1: {BitConverter.ToString(Unknown1).Replace('-', ' ')}");
+            builder.AppendLine($"  Unknown 1: {(Unknown1 == null ? "[NULL]" : BitConverter.ToString(Unknown1).Replace('-', ' '))}");
             builder.AppendLine($"  Year: {Year} (0x{Year:X})");
             builder.AppendLine($"  Month: {Month} (0x{Month:X})");
             builder.AppendLine($"  Day: {Day} (0x{Day:X})");
-            builder.AppendLine($"  Unknown 2: {BitConverter.ToString(Unknown2).Replace('-', ' ')}");
+            builder.AppendLine($"  Unknown 2: {(Unknown2 == null ? "[NULL]" : BitConverter.ToString(Unknown2).Replace('-', ' '))}");
             builder.AppendLine($"  Length: {Length} (0x{Length:X})");
-            //builder.AppendLine($"  Data: {BitConverter.ToString(Data ?? new byte[0]).Replace('-', ' ')}");
+            //builder.AppendLine($"  Data: {(Data == null ? "[NULL]" : BitConverter.ToString(Data).Replace('-', ' '))}");
             builder.AppendLine();
         }
 

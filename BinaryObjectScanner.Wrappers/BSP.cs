@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.BSP.Lump[] Lumps => _model.Lumps;
 #else
-        public SabreTools.Models.BSP.Lump?[] Lumps => _model.Lumps;
+        public SabreTools.Models.BSP.Lump?[]? Lumps => _model.Lumps;
 #endif
 
         #endregion
@@ -41,7 +41,11 @@ namespace BinaryObjectScanner.Wrappers
         public uint TextureCount => _model.TextureHeader.TextureCount;
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.Offsets"/>
+#if NET48
         public uint[] Offsets => _model.TextureHeader.Offsets;
+#else
+        public uint[]? Offsets => _model.TextureHeader.Offsets;
+#endif
 
         #endregion
 
@@ -51,7 +55,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.BSP.Texture[] Textures => _model.Textures;
 #else
-        public SabreTools.Models.BSP.Texture?[] Textures => _model.Textures;
+        public SabreTools.Models.BSP.Texture?[]? Textures => _model.Textures;
 #endif
 
         #endregion
@@ -88,7 +92,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the BSP</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A BSP wrapper on success, null on failure</returns>
+#if NET48
         public static BSP Create(byte[] data, int offset)
+#else
+        public static BSP? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -108,7 +116,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the BSP</param>
         /// <returns>An BSP wrapper on success, null on failure</returns>
+#if NET48
         public static BSP Create(Stream data)
+#else
+        public static BSP? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -326,7 +338,13 @@ namespace BinaryObjectScanner.Wrappers
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try
@@ -403,7 +421,13 @@ namespace BinaryObjectScanner.Wrappers
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
 
             // Try to write the data
             try
@@ -427,7 +451,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="texture">Texture object to format</param>
         /// <returns>Byte array representing the texture as a bitmap</returns>
+#if NET48
         private static byte[] CreateTextureData(SabreTools.Models.BSP.Texture texture)
+#else
+        private static byte[]? CreateTextureData(SabreTools.Models.BSP.Texture texture)
+#endif
         {
             // If there's no texture data
             if (texture.TextureData == null || texture.TextureData.Length == 0)

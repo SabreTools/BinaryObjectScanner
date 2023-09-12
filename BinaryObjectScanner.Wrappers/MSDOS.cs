@@ -17,7 +17,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
+#if NET48
         public string Magic => _model.Header.Magic;
+#else
+        public string? Magic => _model.Header.Magic;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
         public ushort LastPageBytes => _model.Header.LastPageBytes;
@@ -63,7 +67,11 @@ namespace BinaryObjectScanner.Wrappers
         #region PE Extensions
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
+#if NET48
         public ushort[] Reserved1 => _model.Header.Reserved1;
+#else
+        public ushort[]? Reserved1 => _model.Header.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
         public ushort OEMIdentifier => _model.Header.OEMIdentifier;
@@ -72,7 +80,11 @@ namespace BinaryObjectScanner.Wrappers
         public ushort OEMInformation => _model.Header.OEMInformation;
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
+#if NET48
         public ushort[] Reserved2 => _model.Header.Reserved2;
+#else
+        public ushort[]? Reserved2 => _model.Header.Reserved2;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
         public uint NewExeHeaderAddr => _model.Header.NewExeHeaderAddr;
@@ -120,7 +132,11 @@ namespace BinaryObjectScanner.Wrappers
          /// <param name="data">Byte array representing the executable</param>
          /// <param name="offset">Offset within the array to parse</param>
          /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
+#if NET48
         public static MSDOS Create(byte[] data, int offset)
+#else
+        public static MSDOS? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -140,7 +156,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the executable</param>
         /// <returns>An MS-DOS executable wrapper on success, null on failure</returns>
+#if NET48
         public static MSDOS Create(Stream data)
+#else
+        public static MSDOS? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)

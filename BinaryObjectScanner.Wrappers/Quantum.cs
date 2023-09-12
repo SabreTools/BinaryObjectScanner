@@ -17,7 +17,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.Quantum.Header.Signature"/>
+#if NET48
         public string Signature => _model.Header.Signature;
+#else
+        public string? Signature => _model.Header.Signature;
+#endif
 
         /// <inheritdoc cref="Models.Quantum.Header.MajorVersion"/>
         public byte MajorVersion => _model.Header.MajorVersion;
@@ -82,7 +86,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>A Quantum archive wrapper on success, null on failure</returns>
+#if NET48
         public static Quantum Create(byte[] data, int offset)
+#else
+        public static Quantum? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -102,7 +110,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>A Quantum archive wrapper on success, null on failure</returns>
+#if NET48
         public static Quantum Create(Stream data)
+#else
+        public static Quantum? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)

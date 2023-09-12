@@ -21,7 +21,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.AACS.Record[] Records => _model.Records;
 #else
-        public SabreTools.Models.AACS.Record?[] Records => _model.Records;
+        public SabreTools.Models.AACS.Record?[]? Records => _model.Records;
 #endif
 
         #endregion
@@ -58,7 +58,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="data">Byte array representing the archive</param>
         /// <param name="offset">Offset within the array to parse</param>
         /// <returns>An AACS media key block wrapper on success, null on failure</returns>
+#if NET48
         public static AACSMediaKeyBlock Create(byte[] data, int offset)
+#else
+        public static AACSMediaKeyBlock? Create(byte[]? data, int offset)
+#endif
         {
             // If the data is invalid
             if (data == null)
@@ -78,7 +82,11 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         /// <param name="data">Stream representing the archive</param>
         /// <returns>An AACS media key block wrapper on success, null on failure</returns>
+#if NET48
         public static AACSMediaKeyBlock Create(Stream data)
+#else
+        public static AACSMediaKeyBlock? Create(Stream? data)
+#endif
         {
             // If the data is invalid
             if (data == null || data.Length == 0 || !data.CanSeek || !data.CanRead)
@@ -141,7 +149,7 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         case SabreTools.Models.AACS.RecordType.EndOfMediaKeyBlock:
                             var eomkb = record as SabreTools.Models.AACS.EndOfMediaKeyBlockRecord;
-                            builder.AppendLine($"    Signature data: {BitConverter.ToString(eomkb.SignatureData ?? new byte[0]).Replace('-', ' ')}");
+                            builder.AppendLine($"    Signature data: {(eomkb.SignatureData == null ? "[NULL]" : BitConverter.ToString(eomkb.SignatureData).Replace('-', ' '))}");
                             break;
 
                         case SabreTools.Models.AACS.RecordType.ExplicitSubsetDifference:
@@ -177,7 +185,7 @@ namespace BinaryObjectScanner.Wrappers
                                 for (int j = 0; j < mkd.MediaKeyData.Length; j++)
                                 {
                                     var mk = mkd.MediaKeyData[j];
-                                    builder.AppendLine($"      Media key {j}: {BitConverter.ToString(mk ?? new byte[0]).Replace('-', ' ')}");
+                                    builder.AppendLine($"      Media key {j}: {(mk == null ? "[NULL]" : BitConverter.ToString(mk).Replace('-', ' '))}");
                                 }
                             }
                             break;
@@ -236,7 +244,7 @@ namespace BinaryObjectScanner.Wrappers
                                             var ef = block.EntryFields[k];
                                             builder.AppendLine($"      Entry {k}");
                                             builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                            builder.AppendLine($"        Drive ID: {BitConverter.ToString(ef.DriveID ?? new byte[0]).Replace('-', ' ')}");
+                                            builder.AppendLine($"        Drive ID: {(ef.DriveID == null ? "[NULL]" : BitConverter.ToString(ef.DriveID).Replace('-', ' '))}");
                                         }
                                     }
                                 }
@@ -272,7 +280,7 @@ namespace BinaryObjectScanner.Wrappers
                                             var ef = block.EntryFields[k];
                                             builder.AppendLine($"      Entry {k}");
                                             builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                            builder.AppendLine($"        Host ID: {BitConverter.ToString(ef.HostID ?? new byte[0]).Replace('-', ' ')}");
+                                            builder.AppendLine($"        Host ID: {(ef.HostID == null ? "[NULL]" : BitConverter.ToString(ef.HostID).Replace('-', ' '))}");
                                         }
                                     }
                                 }
@@ -281,7 +289,7 @@ namespace BinaryObjectScanner.Wrappers
 
                         case SabreTools.Models.AACS.RecordType.VerifyMediaKey:
                             var vmk = record as SabreTools.Models.AACS.VerifyMediaKeyRecord;
-                            builder.AppendLine($"    Ciphertext value: {BitConverter.ToString(vmk.CiphertextValue ?? new byte[0]).Replace('-', ' ')}");
+                            builder.AppendLine($"    Ciphertext value: {(vmk.CiphertextValue == null ? "[NULL]" : BitConverter.ToString(vmk.CiphertextValue).Replace('-', ' '))}");
                             break;
 
                         case SabreTools.Models.AACS.RecordType.Copyright:

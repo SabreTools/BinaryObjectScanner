@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Wrappers
         /// Internal model
         /// </summary>
         /// <remarks>TODO: Should this have a public getter?</remarks>
-        protected T _model = default;
+        protected T _model;
 
         /// <summary>
         /// Source of the original data
@@ -190,7 +190,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="position">Position in the source to read from</param>
         /// <param name="length">Length of the requested data</param>
         /// <returns>Byte array containing the requested data, null on error</returns>
+#if NET48
         protected byte[] ReadFromDataSource(int position, int length)
+#else
+        protected byte[]? ReadFromDataSource(int position, int length)
+#endif
         {
             // Validate the data source
             if (!DataSourceIsValid())
@@ -201,12 +205,20 @@ namespace BinaryObjectScanner.Wrappers
                 return null;
 
             // Read and return the data
+#if NET48
             byte[] sectionData = null;
+#else
+            byte[]? sectionData = null;
+#endif
             switch (_dataSource)
             {
                 case DataSource.ByteArray:
                     sectionData = new byte[length];
+#if NET48
                     Array.Copy(_byteArrayData, _byteArrayOffset + position, sectionData, 0, length);
+#else
+                    Array.Copy(_byteArrayData!, _byteArrayOffset + position, sectionData, 0, length);
+#endif
                     break;
 
                 case DataSource.Stream:
@@ -227,7 +239,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <param name="length">Length of the requested data</param>
         /// <param name="charLimit">Number of characters needed to be a valid string</param>
         /// <returns>String list containing the requested data, null on error</returns>
+#if NET48
         protected List<string> ReadStringsFromDataSource(int position, int length, int charLimit = 5)
+#else
+        protected List<string>? ReadStringsFromDataSource(int position, int length, int charLimit = 5)
+#endif
         {
             // Read the data as a byte array first
             byte[] sourceData = ReadFromDataSource(position, length);
