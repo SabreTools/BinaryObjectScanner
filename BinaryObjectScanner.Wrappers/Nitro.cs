@@ -21,151 +21,287 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string GameTitle => _model.CommonHeader.GameTitle;
 #else
-        public string? GameTitle => _model.CommonHeader.GameTitle;
+        public string? GameTitle => _model.CommonHeader?.GameTitle;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.GameCode"/>
+#if NET48
         public uint GameCode => _model.CommonHeader.GameCode;
+#else
+        public uint? GameCode => _model.CommonHeader?.GameCode;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.MakerCode"/>
 #if NET48
         public string MakerCode => _model.CommonHeader.MakerCode;
 #else
-        public string? MakerCode => _model.CommonHeader.MakerCode;
+        public string? MakerCode => _model.CommonHeader?.MakerCode;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.UnitCode"/>
+#if NET48
         public SabreTools.Models.Nitro.Unitcode UnitCode => _model.CommonHeader.UnitCode;
+#else
+        public SabreTools.Models.Nitro.Unitcode? UnitCode => _model.CommonHeader?.UnitCode;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.EncryptionSeedSelect"/>
+#if NET48
         public byte EncryptionSeedSelect => _model.CommonHeader.EncryptionSeedSelect;
+#else
+        public byte? EncryptionSeedSelect => _model.CommonHeader?.EncryptionSeedSelect;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.DeviceCapacity"/>
+#if NET48
         public byte DeviceCapacity => _model.CommonHeader.DeviceCapacity;
+#else
+        public byte? DeviceCapacity => _model.CommonHeader?.DeviceCapacity;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.Reserved1"/>
 #if NET48
         public byte[] Reserved1 => _model.CommonHeader.Reserved1;
 #else
-        public byte[]? Reserved1 => _model.CommonHeader.Reserved1;
+        public byte[]? Reserved1 => _model.CommonHeader?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.GameRevision"/>
+#if NET48
         public ushort GameRevision => _model.CommonHeader.GameRevision;
+#else
+        public ushort? GameRevision => _model.CommonHeader?.GameRevision;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.RomVersion"/>
+#if NET48
         public byte RomVersion => _model.CommonHeader.RomVersion;
+#else
+        public byte? RomVersion => _model.CommonHeader?.RomVersion;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.InternalFlags"/>
+#if NET48
         public byte InternalFlags => _model.CommonHeader.InternalFlags;
+#else
+        public byte? InternalFlags => _model.CommonHeader?.InternalFlags;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9RomOffset"/>
+#if NET48
         public uint ARM9RomOffset => _model.CommonHeader.ARM9RomOffset;
+#else
+        public uint? ARM9RomOffset => _model.CommonHeader?.ARM9RomOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9EntryAddress"/>
+#if NET48
         public uint ARM9EntryAddress => _model.CommonHeader.ARM9EntryAddress;
+#else
+        public uint? ARM9EntryAddress => _model.CommonHeader?.ARM9EntryAddress;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9LoadAddress"/>
+#if NET48
         public uint ARM9LoadAddress => _model.CommonHeader.ARM9LoadAddress;
+#else
+        public uint? ARM9LoadAddress => _model.CommonHeader?.ARM9LoadAddress;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9Size"/>
+#if NET48
         public uint ARM9Size => _model.CommonHeader.ARM9Size;
+#else
+        public uint? ARM9Size => _model.CommonHeader?.ARM9Size;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7RomOffset"/>
+#if NET48
         public uint ARM7RomOffset => _model.CommonHeader.ARM7RomOffset;
+#else
+        public uint? ARM7RomOffset => _model.CommonHeader?.ARM7RomOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7EntryAddress"/>
+#if NET48
         public uint ARM7EntryAddress => _model.CommonHeader.ARM7EntryAddress;
+#else
+        public uint? ARM7EntryAddress => _model.CommonHeader?.ARM7EntryAddress;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7LoadAddress"/>
+#if NET48
         public uint ARM7LoadAddress => _model.CommonHeader.ARM7LoadAddress;
+#else
+        public uint? ARM7LoadAddress => _model.CommonHeader?.ARM7LoadAddress;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7Size"/>
+#if NET48
         public uint ARM7Size => _model.CommonHeader.ARM7Size;
+#else
+        public uint? ARM7Size => _model.CommonHeader?.ARM7Size;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.FileNameTableOffset"/>
+#if NET48
         public uint FileNameTableOffset => _model.CommonHeader.FileNameTableOffset;
+#else
+        public uint? FileNameTableOffset => _model.CommonHeader?.FileNameTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.FileNameTableLength"/>
+#if NET48
         public uint FileNameTableLength => _model.CommonHeader.FileNameTableLength;
+#else
+        public uint? FileNameTableLength => _model.CommonHeader?.FileNameTableLength;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.FileAllocationTableOffset"/>
+#if NET48
         public uint FileAllocationTableOffset => _model.CommonHeader.FileAllocationTableOffset;
+#else
+        public uint? FileAllocationTableOffset => _model.CommonHeader?.FileAllocationTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.FileAllocationTableLength"/>
+#if NET48
         public uint FileAllocationTableLength => _model.CommonHeader.FileAllocationTableLength;
+#else
+        public uint? FileAllocationTableLength => _model.CommonHeader?.FileAllocationTableLength;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9OverlayOffset"/>
+#if NET48
         public uint ARM9OverlayOffset => _model.CommonHeader.ARM9OverlayOffset;
+#else
+        public uint? ARM9OverlayOffset => _model.CommonHeader?.ARM9OverlayOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9OverlayLength"/>
+#if NET48
         public uint ARM9OverlayLength => _model.CommonHeader.ARM9OverlayLength;
+#else
+        public uint? ARM9OverlayLength => _model.CommonHeader?.ARM9OverlayLength;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7OverlayOffset"/>
+#if NET48
         public uint ARM7OverlayOffset => _model.CommonHeader.ARM7OverlayOffset;
+#else
+        public uint? ARM7OverlayOffset => _model.CommonHeader?.ARM7OverlayOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7OverlayLength"/>
+#if NET48
         public uint ARM7OverlayLength => _model.CommonHeader.ARM7OverlayLength;
+#else
+        public uint? ARM7OverlayLength => _model.CommonHeader?.ARM7OverlayLength;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NormalCardControlRegisterSettings"/>
+#if NET48
         public uint NormalCardControlRegisterSettings => _model.CommonHeader.NormalCardControlRegisterSettings;
+#else
+        public uint? NormalCardControlRegisterSettings => _model.CommonHeader?.NormalCardControlRegisterSettings;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureCardControlRegisterSettings"/>
+#if NET48
         public uint SecureCardControlRegisterSettings => _model.CommonHeader.SecureCardControlRegisterSettings;
+#else
+        public uint? SecureCardControlRegisterSettings => _model.CommonHeader?.SecureCardControlRegisterSettings;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.IconBannerOffset"/>
+#if NET48
         public uint IconBannerOffset => _model.CommonHeader.IconBannerOffset;
+#else
+        public uint? IconBannerOffset => _model.CommonHeader?.IconBannerOffset;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureAreaCRC"/>
+#if NET48
         public ushort SecureAreaCRC => _model.CommonHeader.SecureAreaCRC;
+#else
+        public ushort? SecureAreaCRC => _model.CommonHeader?.SecureAreaCRC;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureTransferTimeout"/>
+#if NET48
         public ushort SecureTransferTimeout => _model.CommonHeader.SecureTransferTimeout;
+#else
+        public ushort? SecureTransferTimeout => _model.CommonHeader?.SecureTransferTimeout;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM9Autoload"/>
+#if NET48
         public uint ARM9Autoload => _model.CommonHeader.ARM9Autoload;
+#else
+        public uint? ARM9Autoload => _model.CommonHeader?.ARM9Autoload;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.ARM7Autoload"/>
+#if NET48
         public uint ARM7Autoload => _model.CommonHeader.ARM7Autoload;
+#else
+        public uint? ARM7Autoload => _model.CommonHeader?.ARM7Autoload;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.SecureDisable"/>
 #if NET48
         public byte[] SecureDisable => _model.CommonHeader.SecureDisable;
 #else
-        public byte[]? SecureDisable => _model.CommonHeader.SecureDisable;
+        public byte[]? SecureDisable => _model.CommonHeader?.SecureDisable;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NTRRegionRomSize"/>
+#if NET48
         public uint NTRRegionRomSize => _model.CommonHeader.NTRRegionRomSize;
+#else
+        public uint? NTRRegionRomSize => _model.CommonHeader?.NTRRegionRomSize;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.HeaderSize"/>
+#if NET48
         public uint HeaderSize => _model.CommonHeader.HeaderSize;
+#else
+        public uint? HeaderSize => _model.CommonHeader?.HeaderSize;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.Reserved2"/>
 #if NET48
         public byte[] Reserved2 => _model.CommonHeader.Reserved2;
 #else
-        public byte[]? Reserved2 => _model.CommonHeader.Reserved2;
+        public byte[]? Reserved2 => _model.CommonHeader?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NintendoLogo"/>
 #if NET48
         public byte[] NintendoLogo => _model.CommonHeader.NintendoLogo;
 #else
-        public byte[]? NintendoLogo => _model.CommonHeader.NintendoLogo;
+        public byte[]? NintendoLogo => _model.CommonHeader?.NintendoLogo;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.NintendoLogoCRC"/>
+#if NET48
         public ushort NintendoLogoCRC => _model.CommonHeader.NintendoLogoCRC;
+#else
+        public ushort? NintendoLogoCRC => _model.CommonHeader?.NintendoLogoCRC;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.HeaderCRC"/>
+#if NET48
         public ushort HeaderCRC => _model.CommonHeader.HeaderCRC;
+#else
+        public ushort? HeaderCRC => _model.CommonHeader?.HeaderCRC;
+#endif
 
         /// <inheritdoc cref="Models.Nitro.CommonHeader.DebuggerReserved"/>
 #if NET48
         public byte[] DebuggerReserved => _model.CommonHeader.DebuggerReserved;
 #else
-        public byte[]? DebuggerReserved => _model.CommonHeader.DebuggerReserved;
+        public byte[]? DebuggerReserved => _model.CommonHeader?.DebuggerReserved;
 #endif
 
         #endregion
@@ -403,14 +539,14 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.Nitro.FolderAllocationTableEntry[] FolderAllocationTable => _model.NameTable.FolderAllocationTable;
 #else
-        public SabreTools.Models.Nitro.FolderAllocationTableEntry?[]? FolderAllocationTable => _model.NameTable.FolderAllocationTable;
+        public SabreTools.Models.Nitro.FolderAllocationTableEntry?[]? FolderAllocationTable => _model.NameTable?.FolderAllocationTable;
 #endif
 
         /// <inheritdoc cref="Models.Nitro.NameTable.NameList"/>
 #if NET48
         public SabreTools.Models.Nitro.NameListEntry[] NameList => _model.NameTable.NameList;
 #else
-        public SabreTools.Models.Nitro.NameListEntry?[]? NameList => _model.NameTable.NameList;
+        public SabreTools.Models.Nitro.NameListEntry?[]? NameList => _model.NameTable?.NameList;
 #endif
 
         #endregion
@@ -689,6 +825,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = FolderAllocationTable[i];
                     builder.AppendLine($"  Folder Allocation Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Start offset: {entry.StartOffset} (0x{entry.StartOffset:X})");
                     builder.AppendLine($"    First file index: {entry.FirstFileIndex} (0x{entry.FirstFileIndex:X})");
                     if (entry.Unknown == 0xF0)
@@ -724,6 +866,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = NameList[i];
                     builder.AppendLine($"  Name List Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Folder: {entry.Folder} (0x{entry.Folder:X})");
                     builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                     if (entry.Folder)
@@ -751,6 +899,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = FileAllocationTable[i];
                     builder.AppendLine($"  File Allocation Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Start offset: {entry.StartOffset} (0x{entry.StartOffset:X})");
                     builder.AppendLine($"    End offset: {entry.EndOffset} (0x{entry.EndOffset:X})");
                 }

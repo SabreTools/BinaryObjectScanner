@@ -29,47 +29,99 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Stub_Magic => _model.Stub.Header.Magic;
 #else
-        public string? Stub_Magic => _model.Stub.Header.Magic;
+        public string? Stub_Magic => _model.Stub?.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
+#if NET48
         public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
+#else
+        public ushort? Stub_LastPageBytes => _model.Stub?.Header?.LastPageBytes;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
+#if NET48
         public ushort Stub_Pages => _model.Stub.Header.Pages;
+#else
+        public ushort? Stub_Pages => _model.Stub?.Header?.Pages;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
+#if NET48
         public ushort Stub_RelocationItems => _model.Stub.Header.RelocationItems;
+#else
+        public ushort? Stub_RelocationItems => _model.Stub?.Header?.RelocationItems;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
+#if NET48
         public ushort Stub_HeaderParagraphSize => _model.Stub.Header.HeaderParagraphSize;
+#else
+        public ushort? Stub_HeaderParagraphSize => _model.Stub?.Header?.HeaderParagraphSize;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
+#if NET48
         public ushort Stub_MinimumExtraParagraphs => _model.Stub.Header.MinimumExtraParagraphs;
+#else
+        public ushort? Stub_MinimumExtraParagraphs => _model.Stub?.Header?.MinimumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
+#if NET48
         public ushort Stub_MaximumExtraParagraphs => _model.Stub.Header.MaximumExtraParagraphs;
+#else
+        public ushort? Stub_MaximumExtraParagraphs => _model.Stub?.Header?.MaximumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
+#if NET48
         public ushort Stub_InitialSSValue => _model.Stub.Header.InitialSSValue;
+#else
+        public ushort? Stub_InitialSSValue => _model.Stub?.Header?.InitialSSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
+#if NET48
         public ushort Stub_InitialSPValue => _model.Stub.Header.InitialSPValue;
+#else
+        public ushort? Stub_InitialSPValue => _model.Stub?.Header?.InitialSPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
+#if NET48
         public ushort Stub_Checksum => _model.Stub.Header.Checksum;
+#else
+        public ushort? Stub_Checksum => _model.Stub?.Header?.Checksum;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
+#if NET48
         public ushort Stub_InitialIPValue => _model.Stub.Header.InitialIPValue;
+#else
+        public ushort? Stub_InitialIPValue => _model.Stub?.Header?.InitialIPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
+#if NET48
         public ushort Stub_InitialCSValue => _model.Stub.Header.InitialCSValue;
+#else
+        public ushort? Stub_InitialCSValue => _model.Stub?.Header?.InitialCSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
+#if NET48
         public ushort Stub_RelocationTableAddr => _model.Stub.Header.RelocationTableAddr;
+#else
+        public ushort? Stub_RelocationTableAddr => _model.Stub?.Header?.RelocationTableAddr;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
+#if NET48
         public ushort Stub_OverlayNumber => _model.Stub.Header.OverlayNumber;
+#else
+        public ushort? Stub_OverlayNumber => _model.Stub?.Header?.OverlayNumber;
+#endif
 
         #endregion
 
@@ -79,24 +131,36 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
 #else
-        public ushort[]? Stub_Reserved1 => _model.Stub.Header.Reserved1;
+        public ushort[]? Stub_Reserved1 => _model.Stub?.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
+#if NET48
         public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
+#else
+        public ushort? Stub_OEMIdentifier => _model.Stub?.Header?.OEMIdentifier;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
+#if NET48
         public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
+#else
+        public ushort? Stub_OEMInformation => _model.Stub?.Header?.OEMInformation;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
 #if NET48
         public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
 #else
-        public ushort[]? Stub_Reserved2 => _model.Stub.Header.Reserved2;
+        public ushort[]? Stub_Reserved2 => _model.Stub?.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
+#if NET48
         public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
+#else
+        public uint? Stub_NewExeHeaderAddr => _model.Stub?.Header?.NewExeHeaderAddr;
+#endif
 
         #endregion
 
@@ -112,25 +176,53 @@ namespace BinaryObjectScanner.Wrappers
         #region COFF File Header
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Machine"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.MachineType Machine => _model.COFFFileHeader.Machine;
+#else
+        public SabreTools.Models.PortableExecutable.MachineType? Machine => _model.COFFFileHeader?.Machine;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSections"/>
+#if NET48
         public ushort NumberOfSections => _model.COFFFileHeader.NumberOfSections;
+#else
+        public ushort? NumberOfSections => _model.COFFFileHeader?.NumberOfSections;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.TimeDateStamp"/>
+#if NET48
         public uint TimeDateStamp => _model.COFFFileHeader.TimeDateStamp;
+#else
+        public uint? TimeDateStamp => _model.COFFFileHeader?.TimeDateStamp;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.PointerToSymbolTable"/>
+#if NET48
         public uint PointerToSymbolTable => _model.COFFFileHeader.PointerToSymbolTable;
+#else
+        public uint? PointerToSymbolTable => _model.COFFFileHeader?.PointerToSymbolTable;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSymbols"/>
+#if NET48
         public uint NumberOfSymbols => _model.COFFFileHeader.NumberOfSymbols;
+#else
+        public uint? NumberOfSymbols => _model.COFFFileHeader?.NumberOfSymbols;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.SizeOfOptionalHeader"/>
+#if NET48
         public uint SizeOfOptionalHeader => _model.COFFFileHeader.SizeOfOptionalHeader;
+#else
+        public uint? SizeOfOptionalHeader => _model.COFFFileHeader?.SizeOfOptionalHeader;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Characteristics"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.Characteristics Characteristics => _model.COFFFileHeader.Characteristics;
+#else
+        public SabreTools.Models.PortableExecutable.Characteristics? Characteristics => _model.COFFFileHeader?.Characteristics;
+#endif
 
         #endregion
 
@@ -139,31 +231,63 @@ namespace BinaryObjectScanner.Wrappers
         #region Standard Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Machine"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => _model.OptionalHeader.Magic;
+#else
+        public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber? OH_Magic => _model.OptionalHeader?.Magic;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorLinkerVersion"/>
+#if NET48
         public byte OH_MajorLinkerVersion => _model.OptionalHeader.MajorLinkerVersion;
+#else
+        public byte? OH_MajorLinkerVersion => _model.OptionalHeader?.MajorLinkerVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorLinkerVersion"/>
+#if NET48
         public byte OH_MinorLinkerVersion => _model.OptionalHeader.MinorLinkerVersion;
+#else
+        public byte? OH_MinorLinkerVersion => _model.OptionalHeader?.MinorLinkerVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfCode"/>
+#if NET48
         public uint OH_SizeOfCode => _model.OptionalHeader.SizeOfCode;
+#else
+        public uint? OH_SizeOfCode => _model.OptionalHeader?.SizeOfCode;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfInitializedData"/>
+#if NET48
         public uint OH_SizeOfInitializedData => _model.OptionalHeader.SizeOfInitializedData;
+#else
+        public uint? OH_SizeOfInitializedData => _model.OptionalHeader?.SizeOfInitializedData;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfUninitializedData"/>
+#if NET48
         public uint OH_SizeOfUninitializedData => _model.OptionalHeader.SizeOfUninitializedData;
+#else
+        public uint? OH_SizeOfUninitializedData => _model.OptionalHeader?.SizeOfUninitializedData;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.AddressOfEntryPoint"/>
+#if NET48
         public uint OH_AddressOfEntryPoint => _model.OptionalHeader.AddressOfEntryPoint;
+#else
+        public uint? OH_AddressOfEntryPoint => _model.OptionalHeader?.AddressOfEntryPoint;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfCode"/>
+#if NET48
         public uint OH_BaseOfCode => _model.OptionalHeader.BaseOfCode;
+#else
+        public uint? OH_BaseOfCode => _model.OptionalHeader?.BaseOfCode;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfData"/>
-        public uint? OH_BaseOfData => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public uint? OH_BaseOfData => _model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? (uint?)_model.OptionalHeader.BaseOfData
             : null;
 
@@ -172,77 +296,141 @@ namespace BinaryObjectScanner.Wrappers
         #region Windows-Specific Fields
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImageBase_PE32"/>
-        public ulong OH_ImageBase => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_ImageBase => _model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _model.OptionalHeader.ImageBase_PE32
-            : _model.OptionalHeader.ImageBase_PE32Plus;
+            : _model.OptionalHeader?.ImageBase_PE32Plus ?? 0;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SectionAlignment"/>
+#if NET48
         public uint OH_SectionAlignment => _model.OptionalHeader.SectionAlignment;
+#else
+        public uint? OH_SectionAlignment => _model.OptionalHeader?.SectionAlignment;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.FileAlignment"/>
+#if NET48
         public uint OH_FileAlignment => _model.OptionalHeader.FileAlignment;
+#else
+        public uint? OH_FileAlignment => _model.OptionalHeader?.FileAlignment;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorOperatingSystemVersion"/>
+#if NET48
         public ushort OH_MajorOperatingSystemVersion => _model.OptionalHeader.MajorOperatingSystemVersion;
+#else
+        public ushort? OH_MajorOperatingSystemVersion => _model.OptionalHeader?.MajorOperatingSystemVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorOperatingSystemVersion"/>
+#if NET48
         public ushort OH_MinorOperatingSystemVersion => _model.OptionalHeader.MinorOperatingSystemVersion;
+#else
+        public ushort? OH_MinorOperatingSystemVersion => _model.OptionalHeader?.MinorOperatingSystemVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorImageVersion"/>
+#if NET48
         public ushort OH_MajorImageVersion => _model.OptionalHeader.MajorImageVersion;
+#else
+        public ushort? OH_MajorImageVersion => _model.OptionalHeader?.MajorImageVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorImageVersion"/>
+#if NET48
         public ushort OH_MinorImageVersion => _model.OptionalHeader.MinorImageVersion;
+#else
+        public ushort? OH_MinorImageVersion => _model.OptionalHeader?.MinorImageVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorSubsystemVersion"/>
+#if NET48
         public ushort OH_MajorSubsystemVersion => _model.OptionalHeader.MajorSubsystemVersion;
+#else
+        public ushort? OH_MajorSubsystemVersion => _model.OptionalHeader?.MajorSubsystemVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorSubsystemVersion"/>
+#if NET48
         public ushort OH_MinorSubsystemVersion => _model.OptionalHeader.MinorSubsystemVersion;
+#else
+        public ushort? OH_MinorSubsystemVersion => _model.OptionalHeader?.MinorSubsystemVersion;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Win32VersionValue"/>
+#if NET48
         public uint OH_Win32VersionValue => _model.OptionalHeader.Win32VersionValue;
+#else
+        public uint? OH_Win32VersionValue => _model.OptionalHeader?.Win32VersionValue;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfImage"/>
+#if NET48
         public uint OH_SizeOfImage => _model.OptionalHeader.SizeOfImage;
+#else
+        public uint? OH_SizeOfImage => _model.OptionalHeader?.SizeOfImage;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeaders"/>
+#if NET48
         public uint OH_SizeOfHeaders => _model.OptionalHeader.SizeOfHeaders;
+#else
+        public uint? OH_SizeOfHeaders => _model.OptionalHeader?.SizeOfHeaders;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CheckSum"/>
+#if NET48
         public uint OH_CheckSum => _model.OptionalHeader.CheckSum;
+#else
+        public uint? OH_CheckSum => _model.OptionalHeader?.CheckSum;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Subsystem"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.WindowsSubsystem OH_Subsystem => _model.OptionalHeader.Subsystem;
+#else
+        public SabreTools.Models.PortableExecutable.WindowsSubsystem? OH_Subsystem => _model.OptionalHeader?.Subsystem;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DllCharacteristics"/>
+#if NET48
         public SabreTools.Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => _model.OptionalHeader.DllCharacteristics;
+#else
+        public SabreTools.Models.PortableExecutable.DllCharacteristics? OH_DllCharacteristics => _model.OptionalHeader?.DllCharacteristics;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackReserve_PE32"/>
-        public ulong OH_SizeOfStackReserve => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfStackReserve => _model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _model.OptionalHeader.SizeOfStackReserve_PE32
-            : _model.OptionalHeader.SizeOfStackReserve_PE32Plus;
+            : _model.OptionalHeader?.SizeOfStackReserve_PE32Plus ?? 0;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackCommit_PE32"/>
-        public ulong OH_SizeOfStackCommit => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfStackCommit => _model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _model.OptionalHeader.SizeOfStackCommit_PE32
-            : _model.OptionalHeader.SizeOfStackCommit_PE32Plus;
+            : _model.OptionalHeader?.SizeOfStackCommit_PE32Plus ?? 0;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapReserve_PE32"/>
-        public ulong OH_SizeOfHeapReserve => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfHeapReserve => _model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _model.OptionalHeader.SizeOfHeapReserve_PE32
-            : _model.OptionalHeader.SizeOfHeapReserve_PE32Plus;
+            : _model.OptionalHeader?.SizeOfHeapReserve_PE32Plus ?? 0;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapCommit_PE32"/>
-        public ulong OH_SizeOfHeapCommit => _model.OptionalHeader.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
+        public ulong OH_SizeOfHeapCommit => _model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
             ? _model.OptionalHeader.SizeOfHeapCommit_PE32
-            : _model.OptionalHeader.SizeOfHeapCommit_PE32Plus;
+            : _model.OptionalHeader?.SizeOfHeapCommit_PE32Plus ?? 0;
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoaderFlags"/>
+#if NET48
         public uint OH_LoaderFlags => _model.OptionalHeader.LoaderFlags;
+#else
+        public uint? OH_LoaderFlags => _model.OptionalHeader?.LoaderFlags;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.NumberOfRvaAndSizes"/>
+#if NET48
         public uint OH_NumberOfRvaAndSizes => _model.OptionalHeader.NumberOfRvaAndSizes;
+#else
+        public uint? OH_NumberOfRvaAndSizes => _model.OptionalHeader?.NumberOfRvaAndSizes;
+#endif
 
         #endregion
 
@@ -252,105 +440,113 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ExportTable => _model.OptionalHeader.ExportTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExportTable => _model.OptionalHeader.ExportTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExportTable => _model.OptionalHeader?.ExportTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportTable => _model.OptionalHeader.ImportTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportTable => _model.OptionalHeader.ImportTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportTable => _model.OptionalHeader?.ImportTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ResourceTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ResourceTable => _model.OptionalHeader.ResourceTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ResourceTable => _model.OptionalHeader.ResourceTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ResourceTable => _model.OptionalHeader?.ResourceTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExceptionTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ExceptionTable => _model.OptionalHeader.ExceptionTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExceptionTable => _model.OptionalHeader.ExceptionTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExceptionTable => _model.OptionalHeader?.ExceptionTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CertificateTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_CertificateTable => _model.OptionalHeader.CertificateTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CertificateTable => _model.OptionalHeader.CertificateTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CertificateTable => _model.OptionalHeader?.CertificateTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseRelocationTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => _model.OptionalHeader.BaseRelocationTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BaseRelocationTable => _model.OptionalHeader.BaseRelocationTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BaseRelocationTable => _model.OptionalHeader?.BaseRelocationTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Debug"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_Debug => _model.OptionalHeader.Debug;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_Debug => _model.OptionalHeader.Debug;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_Debug => _model.OptionalHeader?.Debug;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Architecture"/>
+#if NET48
         public ulong OH_Architecture => _model.OptionalHeader.Architecture;
+#else
+        public ulong? OH_Architecture => _model.OptionalHeader?.Architecture;
+#endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.GlobalPtr"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_GlobalPtr => _model.OptionalHeader.GlobalPtr;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_GlobalPtr => _model.OptionalHeader.GlobalPtr;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_GlobalPtr => _model.OptionalHeader?.GlobalPtr;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ThreadLocalStorageTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => _model.OptionalHeader.ThreadLocalStorageTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ThreadLocalStorageTable => _model.OptionalHeader.ThreadLocalStorageTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ThreadLocalStorageTable => _model.OptionalHeader?.ThreadLocalStorageTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoadConfigTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => _model.OptionalHeader.LoadConfigTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_LoadConfigTable => _model.OptionalHeader.LoadConfigTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_LoadConfigTable => _model.OptionalHeader?.LoadConfigTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BoundImport"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_BoundImport => _model.OptionalHeader.BoundImport;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BoundImport => _model.OptionalHeader.BoundImport;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BoundImport => _model.OptionalHeader?.BoundImport;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportAddressTable"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => _model.OptionalHeader.ImportAddressTable;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportAddressTable => _model.OptionalHeader.ImportAddressTable;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportAddressTable => _model.OptionalHeader?.ImportAddressTable;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DelayImportDescriptor"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => _model.OptionalHeader.DelayImportDescriptor;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_DelayImportDescriptor => _model.OptionalHeader.DelayImportDescriptor;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_DelayImportDescriptor => _model.OptionalHeader?.DelayImportDescriptor;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CLRRuntimeHeader"/>
 #if NET48
         public SabreTools.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => _model.OptionalHeader.CLRRuntimeHeader;
 #else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CLRRuntimeHeader => _model.OptionalHeader.CLRRuntimeHeader;
+        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CLRRuntimeHeader => _model.OptionalHeader?.CLRRuntimeHeader;
 #endif
 
         /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Reserved"/>
+#if NET48
         public ulong OH_Reserved => _model.OptionalHeader.Reserved;
+#else
+        public ulong? OH_Reserved => _model.OptionalHeader?.Reserved;
+#endif
 
         #endregion
 
@@ -438,7 +634,7 @@ namespace BinaryObjectScanner.Wrappers
 #else
         public string?[]? ImportHintNameTable => _model.ImportTable?.HintNameTable != null
 #endif
-            ? _model.ImportTable.HintNameTable.Select(entry => entry.Name).ToArray()
+            ? _model.ImportTable.HintNameTable.Select(entry => entry?.Name).ToArray()
             : null;
 
         /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
@@ -478,8 +674,16 @@ namespace BinaryObjectScanner.Wrappers
                         return null;
 
                     // Populate the raw header padding data based on the source
+#if NET48
                     uint headerStartAddress = Stub_NewExeHeaderAddr;
-                    uint firstSectionAddress = SectionTable.Select(s => s.PointerToRawData).Where(s => s != 0).OrderBy(s => s).First();
+#else
+                    uint headerStartAddress = Stub_NewExeHeaderAddr ?? 0;
+#endif
+                    uint firstSectionAddress = SectionTable
+                        .Select(s => s?.PointerToRawData ?? 0)
+                        .Where(s => s != 0)
+                        .OrderBy(s => s)
+                        .First();
                     int headerLength = (int)(firstSectionAddress - headerStartAddress);
                     _headerPaddingData = ReadFromDataSource((int)headerStartAddress, headerLength);
 
@@ -513,8 +717,16 @@ namespace BinaryObjectScanner.Wrappers
                         return null;
 
                     // Populate the raw header padding data based on the source
+#if NET48
                     uint headerStartAddress = Stub_NewExeHeaderAddr;
-                    uint firstSectionAddress = SectionTable.Select(s => s.PointerToRawData).Where(s => s != 0).OrderBy(s => s).First();
+#else
+                    uint headerStartAddress = Stub_NewExeHeaderAddr ?? 0;
+#endif
+                    uint firstSectionAddress = SectionTable
+                        .Select(s => s?.PointerToRawData ?? 0)
+                        .Where(s => s != 0)
+                        .OrderBy(s => s)
+                        .First();
                     int headerLength = (int)(firstSectionAddress - headerStartAddress);
                     _headerPaddingStrings = ReadStringsFromDataSource((int)headerStartAddress, headerLength, charLimit: 3);
 
@@ -541,14 +753,24 @@ namespace BinaryObjectScanner.Wrappers
                     if (SectionTable == null)
                         return null;
 
+#if NET6_0_OR_GREATER
+                    // If the address is missing
+                    if (OH_AddressOfEntryPoint == null)
+                        return null;
+#endif
+
                     // If we have no entry point
+#if NET48
                     int entryPointAddress = (int)OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable);
+#else
+                    int entryPointAddress = (int)OH_AddressOfEntryPoint.Value.ConvertVirtualAddress(SectionTable);
+#endif
                     if (entryPointAddress == 0)
                         return null;
 
                     // If the entry point matches with the start of a section, use that
                     int entryPointSection = FindEntryPointSectionIndex();
-                    if (entryPointSection >= 0 && OH_AddressOfEntryPoint == SectionTable[entryPointSection].VirtualAddress)
+                    if (entryPointSection >= 0 && OH_AddressOfEntryPoint == SectionTable[entryPointSection]?.VirtualAddress)
                         return GetSectionData(entryPointSection);
 
                     // If we already have cached data, just use that immediately
@@ -590,18 +812,21 @@ namespace BinaryObjectScanner.Wrappers
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
-                        var certificateTable = _model.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int certificateTableAddress = (int)OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in _model.SectionTable)
+                    foreach (var section in SectionTable)
                     {
+                        // If we have an invalid section
+                        if (section == null)
+                            continue;
+
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -662,18 +887,21 @@ namespace BinaryObjectScanner.Wrappers
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
-                        var certificateTable = _model.OptionalHeader.CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int certificateTableAddress = (int)OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in _model.SectionTable)
+                    foreach (var section in SectionTable)
                     {
+                        // If we have an invalid section
+                        if (section == null)
+                            continue;
+
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -741,7 +969,7 @@ namespace BinaryObjectScanner.Wrappers
                     // If we have certificate data, use that as the end
                     if (OH_CertificateTable != null)
                     {
-                        var certificateTable = _model.OptionalHeader.CertificateTable;
+                        var certificateTable = OH_CertificateTable;
                         int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
@@ -749,10 +977,14 @@ namespace BinaryObjectScanner.Wrappers
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in _model.SectionTable)
+                    foreach (var section in SectionTable)
                     {
+                        // If we have an invalid section
+                        if (section == null)
+                            continue;
+
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(_model.SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -808,11 +1040,17 @@ namespace BinaryObjectScanner.Wrappers
                     if (_sectionNames != null)
                         return _sectionNames;
 
+                    // If there are no sections
+                    if (SectionTable == null)
+                        return null;
+
                     // Otherwise, build and return the cached array
-                    _sectionNames = new string[_model.SectionTable.Length];
+                    _sectionNames = new string[SectionTable.Length];
                     for (int i = 0; i < _sectionNames.Length; i++)
                     {
-                        var section = _model.SectionTable[i];
+                        var section = SectionTable[i];
+                        if (section == null)
+                            continue;
 
                         // TODO: Handle long section names with leading `/`
 #if NET48
@@ -851,7 +1089,7 @@ namespace BinaryObjectScanner.Wrappers
 
                     // Populate the raw stub executable data based on the source
                     int endOfStubHeader = 0x40;
-                    int lengthOfStubExecutableData = (int)_model.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
+                    int lengthOfStubExecutableData = (int)Stub_NewExeHeaderAddr - endOfStubHeader;
                     _stubExecutableData = ReadFromDataSource(endOfStubHeader, lengthOfStubExecutableData);
 
                     // Cache and return the stub executable data, even if null
@@ -1163,7 +1401,7 @@ namespace BinaryObjectScanner.Wrappers
                 var manifest = GetAssemblyManifest();
                 return manifest?
                     .AssemblyIdentities?
-                    .FirstOrDefault(ai => !string.IsNullOrWhiteSpace(ai.Version))?
+                    .FirstOrDefault(ai => !string.IsNullOrWhiteSpace(ai?.Version))?
                     .Version;
             }
         }
@@ -1729,16 +1967,26 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Section Table Information:");
             builder.AppendLine("  -------------------------");
-            if (NumberOfSections == 0 || SectionTable.Length == 0)
+            if (NumberOfSections == 0 || SectionTable == null || SectionTable.Length == 0)
             {
                 builder.AppendLine("  No section table items");
             }
             else
             {
+#if NET48
                 for (int i = 0; i < SectionTable.Length; i++)
+#else
+                for (int i = 0; i < SectionTable!.Length; i++)
+#endif
                 {
                     var entry = SectionTable[i];
                     builder.AppendLine($"  Section Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Name: {(entry.Name == null ? "[NULL]" : Encoding.UTF8.GetString(entry.Name).TrimEnd('\0'))}");
                     builder.AppendLine($"    Virtual size: {entry.VirtualSize} (0x{entry.VirtualSize:X})");
                     builder.AppendLine($"    Virtual address: {entry.VirtualAddress} (0x{entry.VirtualAddress:X})");
@@ -1781,6 +2029,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = COFFSymbolTable[i];
                     builder.AppendLine($"  COFF Symbol Table Entry {i} (Subtype {currentSymbolType})");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     if (currentSymbolType == 0)
                     {
                         if (entry.ShortName != null)
@@ -2039,6 +2293,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var baseRelocationTableEntry = BaseRelocationTable[i];
                     builder.AppendLine($"  Base Relocation Table Entry {i}");
+                    if (baseRelocationTableEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Page RVA: {baseRelocationTableEntry.PageRVA} (0x{baseRelocationTableEntry.PageRVA:X})");
                     builder.AppendLine($"    Page physical address: {baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{baseRelocationTableEntry.PageRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                     builder.AppendLine($"    Block size: {baseRelocationTableEntry.BlockSize} (0x{baseRelocationTableEntry.BlockSize:X})");
@@ -2055,6 +2315,13 @@ namespace BinaryObjectScanner.Wrappers
                         {
                             var typeOffsetFieldEntry = baseRelocationTableEntry.TypeOffsetFieldEntries[j];
                             builder.AppendLine($"    Type and Offset Entry {j}");
+#if NET6_0_OR_GREATER
+                            if (typeOffsetFieldEntry == null)
+                            {
+                                builder.AppendLine("      [NULL]");
+                                continue;
+                            }
+#endif
                             builder.AppendLine($"      Type: {typeOffsetFieldEntry.BaseRelocationType} (0x{typeOffsetFieldEntry.BaseRelocationType:X})");
                             builder.AppendLine($"      Offset: {typeOffsetFieldEntry.Offset} (0x{typeOffsetFieldEntry.Offset:X})");
                         }
@@ -2074,7 +2341,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  -------------------------");
             if (OH_Debug == null
                 || OH_Debug.VirtualAddress == 0
-                || DebugTable == null)
+                || DebugTable?.DebugDirectoryTable == null)
             {
                 builder.AppendLine("  No debug table items");
             }
@@ -2085,6 +2352,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var debugDirectoryEntry = DebugTable.DebugDirectoryTable[i];
                     builder.AppendLine($"  Debug Directory Table Entry {i}");
+                    if (debugDirectoryEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Characteristics: {debugDirectoryEntry.Characteristics} (0x{debugDirectoryEntry.Characteristics:X})");
                     builder.AppendLine($"    Time/Date stamp: {debugDirectoryEntry.TimeDateStamp} (0x{debugDirectoryEntry.TimeDateStamp:X})");
                     builder.AppendLine($"    Major version: {debugDirectoryEntry.MajorVersion} (0x{debugDirectoryEntry.MajorVersion:X})");
@@ -2108,7 +2381,7 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  -------------------------");
             if (OH_ExportTable == null
                 || OH_ExportTable.VirtualAddress == 0
-                || ExportTable == null)
+                || ExportTable?.ExportDirectoryTable == null)
             {
                 builder.AppendLine("  No export table items");
             }
@@ -2143,6 +2416,12 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         var exportAddressTableEntry = ExportTable.ExportAddressTable[i];
                         builder.AppendLine($"    Export Address Table Entry {i}");
+                        if (exportAddressTableEntry == null)
+                        {
+                            builder.AppendLine("      [NULL]");
+                            continue;
+                        }
+
                         builder.AppendLine($"      Export RVA / Forwarder RVA: {exportAddressTableEntry.ExportRVA} (0x{exportAddressTableEntry.ExportRVA:X})");
                     }
                 }
@@ -2230,6 +2509,12 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         var importDirectoryTableEntry = ImportTable.ImportDirectoryTable[i];
                         builder.AppendLine($"    Import Directory Table Entry {i}");
+                        if (importDirectoryTableEntry == null)
+                        {
+                            builder.AppendLine("      [NULL]");
+                            continue;
+                        }
+
                         builder.AppendLine($"      Import lookup table RVA: {importDirectoryTableEntry.ImportLookupTableRVA} (0x{importDirectoryTableEntry.ImportLookupTableRVA:X})");
                         builder.AppendLine($"      Import lookup table Physical Address: {importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>())} (0x{importDirectoryTableEntry.ImportLookupTableRVA.ConvertVirtualAddress(SectionTable ?? Array.Empty<SabreTools.Models.PortableExecutable.SectionHeader>()):X})");
                         builder.AppendLine($"      Time/Date stamp: {importDirectoryTableEntry.TimeDateStamp} (0x{importDirectoryTableEntry.TimeDateStamp:X})");
@@ -2268,6 +2553,12 @@ namespace BinaryObjectScanner.Wrappers
                             {
                                 var importLookupTableEntry = importLookupTable[i];
                                 builder.AppendLine($"      Import Lookup Table {index} Entry {i}");
+                                if (importLookupTableEntry == null)
+                                {
+                                    builder.AppendLine("        [NULL]");
+                                    continue;
+                                }
+
                                 builder.AppendLine($"        Ordinal/Name flag: {importLookupTableEntry.OrdinalNameFlag} (0x{importLookupTableEntry.OrdinalNameFlag:X})");
                                 if (importLookupTableEntry.OrdinalNameFlag)
                                 {
@@ -2310,6 +2601,12 @@ namespace BinaryObjectScanner.Wrappers
                             {
                                 var importAddressTableEntry = importAddressTable[i];
                                 builder.AppendLine($"      Import Address Table {index} Entry {i}");
+                                if (importAddressTableEntry == null)
+                                {
+                                    builder.AppendLine("        [NULL]");
+                                    continue;
+                                }
+
                                 builder.AppendLine($"        Ordinal/Name flag: {importAddressTableEntry.OrdinalNameFlag} (0x{importAddressTableEntry.OrdinalNameFlag:X})");
                                 if (importAddressTableEntry.OrdinalNameFlag)
                                 {
@@ -2338,6 +2635,12 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         var hintNameTableEntry = ImportTable.HintNameTable[i];
                         builder.AppendLine($"    Hint/Name Table Entry {i}");
+                        if (hintNameTableEntry == null)
+                        {
+                            builder.AppendLine("        [NULL]");
+                            continue;
+                        }
+
                         builder.AppendLine($"      Hint: {hintNameTableEntry.Hint} (0x{hintNameTableEntry.Hint:X})");
                         builder.AppendLine($"      Name: {hintNameTableEntry.Name}");
                     }
@@ -2393,6 +2696,9 @@ namespace BinaryObjectScanner.Wrappers
             }
             else
             {
+                if (table.Entries == null)
+                    return;
+
                 for (int i = 0; i < table.Entries.Length; i++)
                 {
                     var entry = table.Entries[i];
@@ -2422,7 +2728,7 @@ namespace BinaryObjectScanner.Wrappers
             if (entry.NameOffset != default)
             {
                 builder.AppendLine($"{padding}Name offset: {entry.NameOffset} (0x{entry.NameOffset:X})");
-                builder.AppendLine($"{padding}Name ({entry.Name?.Length ?? 0}): {(entry.Name.UnicodeString == null ? "[NULL]" : Encoding.UTF8.GetString(entry.Name.UnicodeString))}");
+                builder.AppendLine($"{padding}Name ({entry.Name?.Length ?? 0}): {(entry.Name?.UnicodeString == null ? "[NULL]" : Encoding.UTF8.GetString(entry.Name.UnicodeString))}");
             }
             else
             {
@@ -2599,8 +2905,13 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < menu.MenuItems.Length; i++)
                 {
                     var menuItem = menu.MenuItems[i];
-
                     builder.AppendLine($"{padding}Menu item {i}");
+                    if (menuItem == null)
+                    {
+                        builder.AppendLine($"{padding}  [NULL]");
+                        continue;
+                    }
+
                     if (menuItem.NormalMenuText != null)
                     {
                         builder.AppendLine($"{padding}  Resource info: {menuItem.NormalResInfo} (0x{menuItem.NormalResInfo:X})");
@@ -2636,7 +2947,13 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var menuItem = menu.ExtendedMenuItems[i];
 
-                    builder.AppendLine($"{padding}Dialog item template {i}");
+                    builder.AppendLine($"{padding}Menu item {i}");
+                    if (menuItem == null)
+                    {
+                        builder.AppendLine($"{padding}  [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}  Item type: {menuItem.ItemType} (0x{menuItem.ItemType:X})");
                     builder.AppendLine($"{padding}  State: {menuItem.State} (0x{menuItem.State:X})");
                     builder.AppendLine($"{padding}  ID: {menuItem.ID} (0x{menuItem.ID:X})");
@@ -2700,8 +3017,13 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < dialogBox.DialogItemTemplates.Length; i++)
                 {
                     var dialogItemTemplate = dialogBox.DialogItemTemplates[i];
-
                     builder.AppendLine($"{padding}Dialog item template {i}");
+                    if (dialogItemTemplate == null)
+                    {
+                        builder.AppendLine($"{padding}  [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
                     builder.AppendLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
                     builder.AppendLine($"{padding}  X-coordinate of upper-left corner: {dialogItemTemplate.PositionX} (0x{dialogItemTemplate.PositionX:X})");
@@ -2756,8 +3078,13 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < dialogBox.ExtendedDialogItemTemplates.Length; i++)
                 {
                     var dialogItemTemplate = dialogBox.ExtendedDialogItemTemplates[i];
-
                     builder.AppendLine($"{padding}Dialog item template {i}");
+                    if (dialogItemTemplate == null)
+                    {
+                        builder.AppendLine($"{padding}  [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}  Help ID: {dialogItemTemplate.HelpID} (0x{dialogItemTemplate.HelpID:X})");
                     builder.AppendLine($"{padding}  Extended style: {dialogItemTemplate.ExtendedStyle} (0x{dialogItemTemplate.ExtendedStyle:X})");
                     builder.AppendLine($"{padding}  Style: {dialogItemTemplate.Style} (0x{dialogItemTemplate.Style:X})");
@@ -2940,8 +3267,13 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < messageTable.Blocks.Length; i++)
                 {
                     var messageResourceBlock = messageTable.Blocks[i];
-
                     builder.AppendLine($"{padding}Message resource block {i}");
+                    if (messageResourceBlock == null)
+                    {
+                        builder.AppendLine($"{padding}  [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}  Low ID: {messageResourceBlock.LowId} (0x{messageResourceBlock.LowId:X})");
                     builder.AppendLine($"{padding}  High ID: {messageResourceBlock.HighId} (0x{messageResourceBlock.HighId:X})");
                     builder.AppendLine($"{padding}  Offset to entries: {messageResourceBlock.OffsetToEntries} (0x{messageResourceBlock.OffsetToEntries:X})");
@@ -2951,8 +3283,7 @@ namespace BinaryObjectScanner.Wrappers
 
             builder.AppendLine($"{padding}Message resource entries");
             builder.AppendLine($"{padding}-------------------------");
-            if (messageTable.Entries == null
-                || messageTable.Entries.Count == 0)
+            if (messageTable.Entries == null || messageTable.Entries.Count == 0)
             {
                 builder.AppendLine($"{padding}No message resource entries");
             }
@@ -2962,8 +3293,13 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     uint index = kvp.Key;
                     var messageResourceEntry = kvp.Value;
-
                     builder.AppendLine($"{padding}Message resource entry {index}");
+                    if (messageResourceEntry == null)
+                    {
+                        builder.AppendLine($"{padding}  [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}  Length: {messageResourceEntry.Length} (0x{messageResourceEntry.Length:X})");
                     builder.AppendLine($"{padding}  Flags: {messageResourceEntry.Flags} (0x{messageResourceEntry.Flags:X})");
                     builder.AppendLine($"{padding}  Text: {messageResourceEntry.Text}");
@@ -3049,6 +3385,11 @@ namespace BinaryObjectScanner.Wrappers
                     for (int i = 0; i < versionInfo.StringFileInfo.Children.Length; i++)
                     {
                         var stringFileInfoChildEntry = versionInfo.StringFileInfo.Children[i];
+                        if (stringFileInfoChildEntry == null)
+                        {
+                            builder.AppendLine($"{padding}  [String Table {i}] [NULL]");
+                            continue;
+                        }
 
                         builder.AppendLine($"{padding}  [String Table {i}] Length: {stringFileInfoChildEntry.Length} (0x{stringFileInfoChildEntry.Length:X})");
                         builder.AppendLine($"{padding}  [String Table {i}] Value length: {stringFileInfoChildEntry.ValueLength} (0x{stringFileInfoChildEntry.ValueLength:X})");
@@ -3065,6 +3406,11 @@ namespace BinaryObjectScanner.Wrappers
                             for (int j = 0; j < stringFileInfoChildEntry.Children.Length; j++)
                             {
                                 var stringDataEntry = stringFileInfoChildEntry.Children[j];
+                                if (stringDataEntry == null)
+                                {
+                                    builder.AppendLine($"{padding}    [String Data {j}] [NULL]");
+                                    continue;
+                                }
 
                                 builder.AppendLine($"{padding}    [String Data {j}] Length: {stringDataEntry.Length} (0x{stringDataEntry.Length:X})");
                                 builder.AppendLine($"{padding}    [String Data {j}] Value length: {stringDataEntry.ValueLength} (0x{stringDataEntry.ValueLength:X})");
@@ -3094,6 +3440,11 @@ namespace BinaryObjectScanner.Wrappers
                     for (int i = 0; i < versionInfo.VarFileInfo.Children.Length; i++)
                     {
                         var varFileInfoChildEntry = versionInfo.VarFileInfo.Children[i];
+                        if (varFileInfoChildEntry == null)
+                        {
+                            builder.AppendLine($"{padding}  [String Table {i}] [NULL]");
+                            continue;
+                        }
 
                         builder.AppendLine($"{padding}  [String Table {i}] Length: {varFileInfoChildEntry.Length} (0x{varFileInfoChildEntry.Length:X})");
                         builder.AppendLine($"{padding}  [String Table {i}] Value length: {varFileInfoChildEntry.ValueLength} (0x{varFileInfoChildEntry.ValueLength:X})");
@@ -3198,6 +3549,12 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < assemblyManifest.AssemblyIdentities.Length; i++)
                 {
                     var assemblyIdentity = assemblyManifest.AssemblyIdentities[i];
+                    if (assemblyIdentity == null)
+                    {
+                        builder.AppendLine($"{padding}  [Assembly Identity {i}] [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}[Assembly Identity {i}] Name: {assemblyIdentity.Name}");
                     builder.AppendLine($"{padding}[Assembly Identity {i}] Version: {assemblyIdentity.Version}");
                     builder.AppendLine($"{padding}[Assembly Identity {i}] Type: {assemblyIdentity.Type}");
@@ -3215,6 +3572,12 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < assemblyManifest.COMInterfaceExternalProxyStub.Length; i++)
                 {
                     var comInterfaceExternalProxyStub = assemblyManifest.COMInterfaceExternalProxyStub[i];
+                    if (comInterfaceExternalProxyStub == null)
+                    {
+                        builder.AppendLine($"{padding}  [COM Interface External Proxy Stub {i}] [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] IID: {comInterfaceExternalProxyStub.IID}");
                     builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] Name: {comInterfaceExternalProxyStub.Name}");
                     builder.AppendLine($"{padding}[COM Interface External Proxy Stub {i}] TLBID: {comInterfaceExternalProxyStub.TLBID}");
@@ -3229,7 +3592,7 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < assemblyManifest.Dependency.Length; i++)
                 {
                     var dependency = assemblyManifest.Dependency[i];
-                    if (dependency.DependentAssembly != null)
+                    if (dependency?.DependentAssembly != null)
                     {
                         if (dependency.DependentAssembly.AssemblyIdentity != null)
                         {
@@ -3245,13 +3608,20 @@ namespace BinaryObjectScanner.Wrappers
                             for (int j = 0; j < dependency.DependentAssembly.BindingRedirect.Length; j++)
                             {
                                 var bindingRedirect = dependency.DependentAssembly.BindingRedirect[j];
+                                if (bindingRedirect == null)
+                                {
+                                    builder.AppendLine($"{padding}[Dependency {i} Binding Redirect {j}] [NULL]");
+                                    continue;
+                                }
+
                                 builder.AppendLine($"{padding}[Dependency {i} Binding Redirect {j}] Old version: {bindingRedirect.OldVersion}");
                                 builder.AppendLine($"{padding}[Dependency {i} Binding Redirect {j}] New version: {bindingRedirect.NewVersion}");
                             }
                         }
                     }
 
-                    builder.AppendLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
+                    if (dependency != null)
+                        builder.AppendLine($"{padding}[Dependency {i}] Optional: {dependency.Optional}");
                 }
             }
 
@@ -3260,6 +3630,12 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < assemblyManifest.File.Length; i++)
                 {
                     var file = assemblyManifest.File[i];
+                    if (file == null)
+                    {
+                        builder.AppendLine($"{padding}[File {i}] [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"{padding}[File {i}] Name: {file.Name}");
                     builder.AppendLine($"{padding}[File {i}] Hash: {file.Hash}");
                     builder.AppendLine($"{padding}[File {i}] Hash algorithm: {file.HashAlgorithm}");
@@ -3270,6 +3646,12 @@ namespace BinaryObjectScanner.Wrappers
                         for (int j = 0; j < file.COMClass.Length; j++)
                         {
                             var comClass = file.COMClass[j];
+                            if (comClass == null)
+                            {
+                                builder.AppendLine($"{padding}[File {i} COM Class {j}] [NULL]");
+                                continue;
+                            }
+
                             builder.AppendLine($"{padding}[File {i} COM Class {j}] CLSID: {comClass.CLSID}");
                             builder.AppendLine($"{padding}[File {i} COM Class {j}] Threading model: {comClass.ThreadingModel}");
                             builder.AppendLine($"{padding}[File {i} COM Class {j}] Prog ID: {comClass.ProgID}");
@@ -3281,6 +3663,12 @@ namespace BinaryObjectScanner.Wrappers
                                 for (int k = 0; k < comClass.ProgIDs.Length; k++)
                                 {
                                     var progId = comClass.ProgIDs[k];
+                                    if (progId == null)
+                                    {
+                                        builder.AppendLine($"{padding}[File {i} COM Class {j} Prog ID {k}] [NULL]");
+                                        continue;
+                                    }
+
                                     builder.AppendLine($"{padding}[File {i} COM Class {j} Prog ID {k}] Value: {progId.Value}");
                                 }
                             }
@@ -3292,6 +3680,12 @@ namespace BinaryObjectScanner.Wrappers
                         for (int j = 0; j < file.COMInterfaceProxyStub.Length; j++)
                         {
                             var comInterfaceProxyStub = file.COMInterfaceProxyStub[j];
+                            if (comInterfaceProxyStub == null)
+                            {
+                                builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] [NULL]");
+                                continue;
+                            }
+
                             builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] IID: {comInterfaceProxyStub.IID}");
                             builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] Name: {comInterfaceProxyStub.Name}");
                             builder.AppendLine($"{padding}[File {i} COM Interface Proxy Stub {j}] TLBID: {comInterfaceProxyStub.TLBID}");
@@ -3306,6 +3700,12 @@ namespace BinaryObjectScanner.Wrappers
                         for (int j = 0; j < file.Typelib.Length; j++)
                         {
                             var typeLib = file.Typelib[j];
+                            if (typeLib == null)
+                            {
+                                builder.AppendLine($"{padding}[File {i} Type Lib {j}] [NULL]");
+                                continue;
+                            }
+
                             builder.AppendLine($"{padding}[File {i} Type Lib {j}] TLBID: {typeLib.TLBID}");
                             builder.AppendLine($"{padding}[File {i} Type Lib {j}] Version: {typeLib.Version}");
                             builder.AppendLine($"{padding}[File {i} Type Lib {j}] Help directory: {typeLib.HelpDir}");
@@ -3319,6 +3719,12 @@ namespace BinaryObjectScanner.Wrappers
                         for (int j = 0; j < file.WindowClass.Length; j++)
                         {
                             var windowClass = file.WindowClass[j];
+                            if (windowClass == null)
+                            {
+                                builder.AppendLine($"{padding}[File {i} Window Class {j}] [NULL]");
+                                continue;
+                            }
+
                             builder.AppendLine($"{padding}[File {i} Window Class {j}] Versioned: {windowClass.Versioned}");
                             builder.AppendLine($"{padding}[File {i} Window Class {j}] Value: {windowClass.Value}");
                         }
@@ -3426,14 +3832,14 @@ namespace BinaryObjectScanner.Wrappers
             var nb10Found = DebugData.Select(r => r.Value)
                 .Select(r => r as SabreTools.Models.PortableExecutable.NB10ProgramDatabase)
                 .Where(n => n != null)
-                .Where(n => n.PdbFileName.Contains(path))
-                .Select(n => (object)n);
+                .Where(n => n?.PdbFileName?.Contains(path) == true)
+                .Select(n => n as object);
 
             var rsdsFound = DebugData.Select(r => r.Value)
                 .Select(r => r as SabreTools.Models.PortableExecutable.RSDSProgramDatabase)
                 .Where(r => r != null)
-                .Where(r => r.PathAndFileName.Contains(path))
-                .Select(r => (object)r);
+                .Where(r => r?.PathAndFileName?.Contains(path) == true)
+                .Select(r => r as object);
 
             return nb10Found.Concat(rsdsFound);
         }
@@ -3511,15 +3917,25 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         private void ParseDebugTable()
         {
+            // If there is no debug table
+            if (DebugTable?.DebugDirectoryTable == null)
+                return;
+
             // Loop through all debug table entries
             for (int i = 0; i < DebugTable.DebugDirectoryTable.Length; i++)
             {
                 var entry = DebugTable.DebugDirectoryTable[i];
+                if (entry == null)
+                    continue;
 
                 uint address = entry.PointerToRawData;
                 uint size = entry.SizeOfData;
 
+#if NET48
                 byte[] entryData = ReadFromDataSource((int)address, (int)size);
+#else
+                byte[]? entryData = ReadFromDataSource((int)address, (int)size);
+#endif
                 if (entryData == null)
                     continue;
 
@@ -3590,8 +4006,8 @@ namespace BinaryObjectScanner.Wrappers
                 .Where(d => d != null)
                 .Where(d =>
                 {
-                    return (d.DialogTemplate?.TitleResource?.Contains(title) ?? false)
-                        || (d.ExtendedDialogTemplate?.TitleResource?.Contains(title) ?? false);
+                    return (d?.DialogTemplate?.TitleResource?.Contains(title) ?? false)
+                        || (d?.ExtendedDialogTemplate?.TitleResource?.Contains(title) ?? false);
                 });
         }
 
@@ -3619,17 +4035,17 @@ namespace BinaryObjectScanner.Wrappers
                 .Where(d => d != null)
                 .Where(d =>
                 {
-                    if (d.DialogItemTemplates != null)
+                    if (d?.DialogItemTemplates != null)
                     {
                         return d.DialogItemTemplates
                             .Where(dit => dit?.TitleResource != null)
-                            .Any(dit => dit.TitleResource.Contains(title));
+                            .Any(dit => dit?.TitleResource?.Contains(title) == true);
                     }
-                    else if (d.ExtendedDialogItemTemplates != null)
+                    else if (d?.ExtendedDialogItemTemplates != null)
                     {
                         return d.ExtendedDialogItemTemplates
                             .Where(edit => edit?.TitleResource != null)
-                            .Any(edit => edit.TitleResource.Contains(title));
+                            .Any(edit => edit?.TitleResource?.Contains(title) == true);
                     }
 
                     return false;
@@ -3763,10 +4179,15 @@ namespace BinaryObjectScanner.Wrappers
         /// </summary>
         private void ParseResourceDirectoryTable(SabreTools.Models.PortableExecutable.ResourceDirectoryTable table, List<object> types)
         {
-            int totalEntries = table?.Entries?.Length ?? 0;
-            for (int i = 0; i < totalEntries; i++)
+            if (table?.Entries == null)
+                return;
+
+            for (int i = 0; i < table.Entries.Length; i++)
             {
                 var entry = table.Entries[i];
+                if (entry == null)
+                    continue;
+
                 var newTypes = new List<object>(types ?? new List<object>());
 
                 if (entry.Name?.UnicodeString != null)
@@ -3801,7 +4222,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             // Create the key and value objects
             string key = types == null ? $"UNKNOWN_{Guid.NewGuid()}" : string.Join(", ", types);
+#if NET48
             object value = entry.Data;
+#else
+            object? value = entry.Data;
+#endif
 
             // If we have a known resource type
             if (types != null && types.Count > 0 && types[0] is uint resourceType)
@@ -3940,12 +4365,26 @@ namespace BinaryObjectScanner.Wrappers
             if (SectionTable == null)
                 return -1;
 
+#if NET6_0_OR_GREATER
+            // If the address is missing
+            if (OH_AddressOfEntryPoint == null)
+                return -1;
+#endif
+
             // If we don't have an entry point
+#if NET48
             if (OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable) == 0)
                 return -1;
 
             // Otherwise, find the section it exists within
             return OH_AddressOfEntryPoint.ContainingSectionIndex(SectionTable);
+#else
+            if (OH_AddressOfEntryPoint.Value.ConvertVirtualAddress(SectionTable) == 0)
+                return -1;
+
+            // Otherwise, find the section it exists within
+            return OH_AddressOfEntryPoint.Value.ContainingSectionIndex(SectionTable);
+#endif
         }
 
         /// <summary>
@@ -4203,6 +4642,9 @@ namespace BinaryObjectScanner.Wrappers
 
             // Get the section data from the table
             var section = SectionTable[index];
+            if (section == null)
+                return null;
+
             uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
             if (address == 0)
                 return null;
@@ -4256,64 +4698,64 @@ namespace BinaryObjectScanner.Wrappers
             switch (index)
             {
                 case 1:
-                    virtualAddress = OH_ExportTable.VirtualAddress;
-                    size = OH_ExportTable.Size;
+                    virtualAddress = OH_ExportTable?.VirtualAddress ?? 0;
+                    size = OH_ExportTable?.Size ?? 0;
                     break;
                 case 2:
-                    virtualAddress = OH_ImportTable.VirtualAddress;
-                    size = OH_ImportTable.Size;
+                    virtualAddress = OH_ImportTable?.VirtualAddress ?? 0;
+                    size = OH_ImportTable?.Size ?? 0;
                     break;
                 case 3:
-                    virtualAddress = OH_ResourceTable.VirtualAddress;
-                    size = OH_ResourceTable.Size;
+                    virtualAddress = OH_ResourceTable?.VirtualAddress ?? 0;
+                    size = OH_ResourceTable?.Size ?? 0;
                     break;
                 case 4:
-                    virtualAddress = OH_ExceptionTable.VirtualAddress;
-                    size = OH_ExceptionTable.Size;
+                    virtualAddress = OH_ExceptionTable?.VirtualAddress ?? 0;
+                    size = OH_ExceptionTable?.Size ?? 0;
                     break;
                 case 5:
-                    virtualAddress = OH_CertificateTable.VirtualAddress;
-                    size = OH_CertificateTable.Size;
+                    virtualAddress = OH_CertificateTable?.VirtualAddress ?? 0;
+                    size = OH_CertificateTable?.Size ?? 0;
                     break;
                 case 6:
-                    virtualAddress = OH_BaseRelocationTable.VirtualAddress;
-                    size = OH_BaseRelocationTable.Size;
+                    virtualAddress = OH_BaseRelocationTable?.VirtualAddress ?? 0;
+                    size = OH_BaseRelocationTable?.Size ?? 0;
                     break;
                 case 7:
-                    virtualAddress = OH_Debug.VirtualAddress;
-                    size = OH_Debug.Size;
+                    virtualAddress = OH_Debug?.VirtualAddress ?? 0;
+                    size = OH_Debug?.Size ?? 0;
                     break;
                 case 8: // Architecture Table
                     virtualAddress = 0;
                     size = 0;
                     break;
                 case 9:
-                    virtualAddress = OH_GlobalPtr.VirtualAddress;
-                    size = OH_GlobalPtr.Size;
+                    virtualAddress = OH_GlobalPtr?.VirtualAddress ?? 0;
+                    size = OH_GlobalPtr?.Size ?? 0;
                     break;
                 case 10:
-                    virtualAddress = OH_ThreadLocalStorageTable.VirtualAddress;
-                    size = OH_ThreadLocalStorageTable.Size;
+                    virtualAddress = OH_ThreadLocalStorageTable?.VirtualAddress ?? 0;
+                    size = OH_ThreadLocalStorageTable?.Size ?? 0;
                     break;
                 case 11:
-                    virtualAddress = OH_LoadConfigTable.VirtualAddress;
-                    size = OH_LoadConfigTable.Size;
+                    virtualAddress = OH_LoadConfigTable?.VirtualAddress ?? 0;
+                    size = OH_LoadConfigTable?.Size ?? 0;
                     break;
                 case 12:
-                    virtualAddress = OH_BoundImport.VirtualAddress;
-                    size = OH_BoundImport.Size;
+                    virtualAddress = OH_BoundImport?.VirtualAddress ?? 0;
+                    size = OH_BoundImport?.Size ?? 0;
                     break;
                 case 13:
-                    virtualAddress = OH_ImportAddressTable.VirtualAddress;
-                    size = OH_ImportAddressTable.Size;
+                    virtualAddress = OH_ImportAddressTable?.VirtualAddress ?? 0;
+                    size = OH_ImportAddressTable?.Size ?? 0;
                     break;
                 case 14:
-                    virtualAddress = OH_DelayImportDescriptor.VirtualAddress;
-                    size = OH_DelayImportDescriptor.Size;
+                    virtualAddress = OH_DelayImportDescriptor?.VirtualAddress ?? 0;
+                    size = OH_DelayImportDescriptor?.Size ?? 0;
                     break;
                 case 15:
-                    virtualAddress = OH_CLRRuntimeHeader.VirtualAddress;
-                    size = OH_CLRRuntimeHeader.Size;
+                    virtualAddress = OH_CLRRuntimeHeader?.VirtualAddress ?? 0;
+                    size = OH_CLRRuntimeHeader?.Size ?? 0;
                     break;
                 case 16: // Reserved
                     virtualAddress = 0;
@@ -4373,64 +4815,64 @@ namespace BinaryObjectScanner.Wrappers
             switch (index)
             {
                 case 1:
-                    virtualAddress = OH_ExportTable.VirtualAddress;
-                    size = OH_ExportTable.Size;
+                    virtualAddress = OH_ExportTable?.VirtualAddress ?? 0;
+                    size = OH_ExportTable?.Size ?? 0;
                     break;
                 case 2:
-                    virtualAddress = OH_ImportTable.VirtualAddress;
-                    size = OH_ImportTable.Size;
+                    virtualAddress = OH_ImportTable?.VirtualAddress ?? 0;
+                    size = OH_ImportTable?.Size ?? 0;
                     break;
                 case 3:
-                    virtualAddress = OH_ResourceTable.VirtualAddress;
-                    size = OH_ResourceTable.Size;
+                    virtualAddress = OH_ResourceTable?.VirtualAddress ?? 0;
+                    size = OH_ResourceTable?.Size ?? 0;
                     break;
                 case 4:
-                    virtualAddress = OH_ExceptionTable.VirtualAddress;
-                    size = OH_ExceptionTable.Size;
+                    virtualAddress = OH_ExceptionTable?.VirtualAddress ?? 0;
+                    size = OH_ExceptionTable?.Size ?? 0;
                     break;
                 case 5:
-                    virtualAddress = OH_CertificateTable.VirtualAddress;
-                    size = OH_CertificateTable.Size;
+                    virtualAddress = OH_CertificateTable?.VirtualAddress ?? 0;
+                    size = OH_CertificateTable?.Size ?? 0;
                     break;
                 case 6:
-                    virtualAddress = OH_BaseRelocationTable.VirtualAddress;
-                    size = OH_BaseRelocationTable.Size;
+                    virtualAddress = OH_BaseRelocationTable?.VirtualAddress ?? 0;
+                    size = OH_BaseRelocationTable?.Size ?? 0;
                     break;
                 case 7:
-                    virtualAddress = OH_Debug.VirtualAddress;
-                    size = OH_Debug.Size;
+                    virtualAddress = OH_Debug?.VirtualAddress ?? 0;
+                    size = OH_Debug?.Size ?? 0;
                     break;
                 case 8: // Architecture Table
                     virtualAddress = 0;
                     size = 0;
                     break;
                 case 9:
-                    virtualAddress = OH_GlobalPtr.VirtualAddress;
-                    size = OH_GlobalPtr.Size;
+                    virtualAddress = OH_GlobalPtr?.VirtualAddress ?? 0;
+                    size = OH_GlobalPtr?.Size ?? 0;
                     break;
                 case 10:
-                    virtualAddress = OH_ThreadLocalStorageTable.VirtualAddress;
-                    size = OH_ThreadLocalStorageTable.Size;
+                    virtualAddress = OH_ThreadLocalStorageTable?.VirtualAddress ?? 0;
+                    size = OH_ThreadLocalStorageTable?.Size ?? 0;
                     break;
                 case 11:
-                    virtualAddress = OH_LoadConfigTable.VirtualAddress;
-                    size = OH_LoadConfigTable.Size;
+                    virtualAddress = OH_LoadConfigTable?.VirtualAddress ?? 0;
+                    size = OH_LoadConfigTable?.Size ?? 0;
                     break;
                 case 12:
-                    virtualAddress = OH_BoundImport.VirtualAddress;
-                    size = OH_BoundImport.Size;
+                    virtualAddress = OH_BoundImport?.VirtualAddress ?? 0;
+                    size = OH_BoundImport?.Size ?? 0;
                     break;
                 case 13:
-                    virtualAddress = OH_ImportAddressTable.VirtualAddress;
-                    size = OH_ImportAddressTable.Size;
+                    virtualAddress = OH_ImportAddressTable?.VirtualAddress ?? 0;
+                    size = OH_ImportAddressTable?.Size ?? 0;
                     break;
                 case 14:
-                    virtualAddress = OH_DelayImportDescriptor.VirtualAddress;
-                    size = OH_DelayImportDescriptor.Size;
+                    virtualAddress = OH_DelayImportDescriptor?.VirtualAddress ?? 0;
+                    size = OH_DelayImportDescriptor?.Size ?? 0;
                     break;
                 case 15:
-                    virtualAddress = OH_CLRRuntimeHeader.VirtualAddress;
-                    size = OH_CLRRuntimeHeader.Size;
+                    virtualAddress = OH_CLRRuntimeHeader?.VirtualAddress ?? 0;
+                    size = OH_CLRRuntimeHeader?.Size ?? 0;
                     break;
                 case 16: // Reserved
                     virtualAddress = 0;

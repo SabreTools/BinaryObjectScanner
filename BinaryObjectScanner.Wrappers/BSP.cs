@@ -20,7 +20,11 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.BSP.Header.Version"/>
+#if NET48
         public uint Version => _model.Header.Version;
+#else
+        public uint? Version => _model.Header?.Version;
+#endif
 
         #endregion
 
@@ -38,13 +42,17 @@ namespace BinaryObjectScanner.Wrappers
         #region Texture Header
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.TextureCount"/>
+#if NET48
         public uint TextureCount => _model.TextureHeader.TextureCount;
+#else
+        public uint? TextureCount => _model.TextureHeader?.TextureCount;
+#endif
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.Offsets"/>
 #if NET48
         public uint[] Offsets => _model.TextureHeader.Offsets;
 #else
-        public uint[]? Offsets => _model.TextureHeader.Offsets;
+        public uint[]? Offsets => _model.TextureHeader?.Offsets;
 #endif
 
         #endregion
@@ -202,8 +210,15 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     builder.AppendLine($"  Lump {i}{specialLumpName}");
-                    builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
-                    builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    if (lump == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                    }
+                    else
+                    {
+                        builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
+                        builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                    }
                 }
             }
             builder.AppendLine();
@@ -219,9 +234,16 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  -------------------------");
             builder.AppendLine($"  Texture count: {TextureCount}");
             builder.AppendLine($"  Offsets:");
-            for (int i = 0; i < Offsets.Length; i++)
+            if (Offsets == null || Offsets.Length == 0)
             {
-                builder.AppendLine($"    Offset {i}: {Offsets[i]} (0x{Offsets[i]:X})");
+                builder.AppendLine("  No offsets");
+            }
+            else
+            {
+                for (int i = 0; i < Offsets.Length; i++)
+                {
+                    builder.AppendLine($"    Offset {i}: {Offsets[i]} (0x{Offsets[i]:X})");
+                }
             }
             builder.AppendLine();
         }
@@ -244,17 +266,31 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var texture = Textures[i];
                     builder.AppendLine($"  Texture {i}");
-                    builder.AppendLine($"    Name: {texture.Name}");
-                    builder.AppendLine($"    Width: {texture.Width} (0x{texture.Width:X})");
-                    builder.AppendLine($"    Height: {texture.Height} (0x{texture.Height:X})");
-                    builder.AppendLine($"    Offsets:");
-                    for (int j = 0; j < texture.Offsets.Length; j++)
+                    if (texture == null)
                     {
-                        builder.AppendLine($"      Offset {j}: {Offsets[i]} (0x{texture.Offsets[j]:X})");
+                        builder.AppendLine("    [NULL]");
                     }
-                    // Skip texture data
-                    builder.AppendLine($"    Palette size: {texture.PaletteSize} (0x{texture.PaletteSize:X})");
-                    // Skip palette data
+                    else
+                    {
+                        builder.AppendLine($"    Name: {texture.Name}");
+                        builder.AppendLine($"    Width: {texture.Width} (0x{texture.Width:X})");
+                        builder.AppendLine($"    Height: {texture.Height} (0x{texture.Height:X})");
+                        builder.AppendLine($"    Offsets:");
+                        if (texture.Offsets == null || texture.Offsets.Length == 0)
+                        {
+                            builder.AppendLine($"    No offsets");
+                        }
+                        else
+                        {
+                            for (int j = 0; j < texture.Offsets.Length; j++)
+                            {
+                                builder.AppendLine($"      Offset {j}: {texture.Offsets[i]} (0x{texture.Offsets[j]:X})");
+                            }
+                        }
+                        // Skip texture data
+                        builder.AppendLine($"    Palette size: {texture.PaletteSize} (0x{texture.PaletteSize:X})");
+                        // Skip palette data
+                    }
                 }
             }
             builder.AppendLine();
@@ -457,6 +493,10 @@ namespace BinaryObjectScanner.Wrappers
         private static byte[]? CreateTextureData(SabreTools.Models.BSP.Texture texture)
 #endif
         {
+            // If there's no palette data
+            if (texture.PaletteData == null || texture.PaletteData.Length == 0)
+                return null;
+
             // If there's no texture data
             if (texture.TextureData == null || texture.TextureData.Length == 0)
                 return null;

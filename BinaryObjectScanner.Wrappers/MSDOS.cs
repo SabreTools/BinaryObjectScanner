@@ -20,47 +20,99 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Magic => _model.Header.Magic;
 #else
-        public string? Magic => _model.Header.Magic;
+        public string? Magic => _model.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
+#if NET48
         public ushort LastPageBytes => _model.Header.LastPageBytes;
+#else
+        public ushort? LastPageBytes => _model.Header?.LastPageBytes;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
+#if NET48
         public ushort Pages => _model.Header.Pages;
+#else
+        public ushort? Pages => _model.Header?.Pages;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
+#if NET48
         public ushort RelocationItems => _model.Header.RelocationItems;
+#else
+        public ushort? RelocationItems => _model.Header?.RelocationItems;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
+#if NET48
         public ushort HeaderParagraphSize => _model.Header.HeaderParagraphSize;
+#else
+        public ushort? HeaderParagraphSize => _model.Header?.HeaderParagraphSize;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
+#if NET48
         public ushort MinimumExtraParagraphs => _model.Header.MinimumExtraParagraphs;
+#else
+        public ushort? MinimumExtraParagraphs => _model.Header?.MinimumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
+#if NET48
         public ushort MaximumExtraParagraphs => _model.Header.MaximumExtraParagraphs;
+#else
+        public ushort? MaximumExtraParagraphs => _model.Header?.MaximumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
+#if NET48
         public ushort InitialSSValue => _model.Header.InitialSSValue;
+#else
+        public ushort? InitialSSValue => _model.Header?.InitialSSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
+#if NET48
         public ushort InitialSPValue => _model.Header.InitialSPValue;
+#else
+        public ushort? InitialSPValue => _model.Header?.InitialSPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
+#if NET48
         public ushort Checksum => _model.Header.Checksum;
+#else
+        public ushort? Checksum => _model.Header?.Checksum;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
+#if NET48
         public ushort InitialIPValue => _model.Header.InitialIPValue;
+#else
+        public ushort? InitialIPValue => _model.Header?.InitialIPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
+#if NET48
         public ushort InitialCSValue => _model.Header.InitialCSValue;
+#else
+        public ushort? InitialCSValue => _model.Header?.InitialCSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
+#if NET48
         public ushort RelocationTableAddr => _model.Header.RelocationTableAddr;
+#else
+        public ushort? RelocationTableAddr => _model.Header?.RelocationTableAddr;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
+#if NET48
         public ushort OverlayNumber => _model.Header.OverlayNumber;
+#else
+        public ushort? OverlayNumber => _model.Header?.OverlayNumber;
+#endif
 
         #endregion
 
@@ -70,24 +122,36 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public ushort[] Reserved1 => _model.Header.Reserved1;
 #else
-        public ushort[]? Reserved1 => _model.Header.Reserved1;
+        public ushort[]? Reserved1 => _model.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
+#if NET48
         public ushort OEMIdentifier => _model.Header.OEMIdentifier;
+#else
+        public ushort? OEMIdentifier => _model.Header?.OEMIdentifier;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
+#if NET48
         public ushort OEMInformation => _model.Header.OEMInformation;
+#else
+        public ushort? OEMInformation => _model.Header?.OEMInformation;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
 #if NET48
         public ushort[] Reserved2 => _model.Header.Reserved2;
 #else
-        public ushort[]? Reserved2 => _model.Header.Reserved2;
+        public ushort[]? Reserved2 => _model.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
+#if NET48
         public uint NewExeHeaderAddr => _model.Header.NewExeHeaderAddr;
+#else
+        public uint? NewExeHeaderAddr => _model.Header?.NewExeHeaderAddr;
+#endif
 
         #endregion
 
@@ -231,7 +295,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Relocation Table Information:");
             builder.AppendLine("  -------------------------");
-            if (RelocationItems == 0 || RelocationTable.Length == 0)
+            if (RelocationItems == 0 || RelocationTable == null || RelocationTable.Length == 0)
             {
                 builder.AppendLine("  No relocation table items");
             }
@@ -241,6 +305,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = RelocationTable[i];
                     builder.AppendLine($"  Relocation Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine($"    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                     builder.AppendLine($"    Segment: {entry.Segment} (0x{entry.Segment:X})");
                 }

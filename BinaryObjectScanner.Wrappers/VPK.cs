@@ -21,13 +21,25 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.VPK.Header.Signature"/>
+#if NET48
         public uint Signature => _model.Header.Signature;
+#else
+        public uint? Signature => _model.Header?.Signature;
+#endif
 
         /// <inheritdoc cref="Models.VPK.Header.Version"/>
+#if NET48
         public uint Version => _model.Header.Version;
+#else
+        public uint? Version => _model.Header?.Version;
+#endif
 
         /// <inheritdoc cref="Models.VPK.Header.DirectoryLength"/>
+#if NET48
         public uint DirectoryLength => _model.Header.DirectoryLength;
+#else
+        public uint? DirectoryLength => _model.Header?.DirectoryLength;
+#endif
 
         #endregion
 
@@ -112,8 +124,8 @@ namespace BinaryObjectScanner.Wrappers
                 int archiveCount = DirectoryItems == null
                     ? 0
                     : DirectoryItems
-                        .Select(di => di.DirectoryEntry)
-                        .Select(de => de.ArchiveIndex)
+                        .Select(di => di?.DirectoryEntry)
+                        .Select(de => de?.ArchiveIndex ?? 0)
                         .Where(ai => ai != HL_VPK_NO_ARCHIVE)
                         .Max();
 
@@ -297,6 +309,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var archiveHash = ArchiveHashes[i];
                     builder.AppendLine($"  Archive Hash {i}");
+                    if (archiveHash == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Archive index: {archiveHash.ArchiveIndex} (0x{archiveHash.ArchiveIndex:X})");
                     builder.AppendLine($"    Archive offset: {archiveHash.ArchiveOffset} (0x{archiveHash.ArchiveOffset:X})");
                     builder.AppendLine($"    Length: {archiveHash.Length} (0x{archiveHash.Length:X})");

@@ -20,14 +20,22 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Signature => _model.Header.Signature;
 #else
-        public string? Signature => _model.Header.Signature;
+        public string? Signature => _model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.WAD.Header.LumpCount"/>
+#if NET48
         public uint LumpCount => _model.Header.LumpCount;
+#else
+        public uint? LumpCount => _model.Header?.LumpCount;
+#endif
 
         /// <inheritdoc cref="Models.WAD.Header.LumpOffset"/>
+#if NET48
         public uint LumpOffset => _model.Header.LumpOffset;
+#else
+        public uint? LumpOffset => _model.Header?.LumpOffset;
+#endif
 
         #endregion
 
@@ -191,6 +199,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var lump = Lumps[i];
                     builder.AppendLine($"  Lump {i}");
+                    if (lump == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
                     builder.AppendLine($"    Disk length: {lump.DiskLength} (0x{lump.DiskLength:X})");
                     builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");

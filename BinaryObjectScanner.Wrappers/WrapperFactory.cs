@@ -70,21 +70,44 @@ namespace BinaryObjectScanner.Wrappers
         public static IWrapper? CreateExecutableWrapper(Stream? stream)
 #endif
         {
+            // If we have no stream
+            if (stream == null)
+                return null;
+
             // Try to get an MS-DOS wrapper first
+#if NET48
             IWrapper wrapper = MSDOS.Create(stream);
-            if (wrapper == null)
+#else
+            IWrapper? wrapper = MSDOS.Create(stream);
+#endif
+            if (wrapper == null || !(wrapper is MSDOS msdos))
                 return null;
 
             // Check for a valid new executable address
-            if ((wrapper as MSDOS).NewExeHeaderAddr >= stream.Length)
+#if NET48
+            if (msdos.NewExeHeaderAddr >= stream.Length)
+#else
+            if (msdos.NewExeHeaderAddr == null || msdos.NewExeHeaderAddr >= stream.Length)
+#endif
                 return wrapper;
 
             // Try to read the executable info
-            stream.Seek((wrapper as MSDOS).NewExeHeaderAddr, SeekOrigin.Begin);
+#if NET48
+            stream.Seek(msdos.NewExeHeaderAddr, SeekOrigin.Begin);
             byte[] magic = stream.ReadBytes(4);
+#else
+            stream.Seek(msdos.NewExeHeaderAddr.Value, SeekOrigin.Begin);
+            byte[]? magic = stream.ReadBytes(4);
+#endif
+
+            // If we didn't get valid data at the offset
+            if (magic == null)
+            {
+                return wrapper;
+            }
 
             // New Executable
-            if (magic.StartsWith(SabreTools.Models.NewExecutable.Constants.SignatureBytes))
+            else if (magic.StartsWith(SabreTools.Models.NewExecutable.Constants.SignatureBytes))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 return NewExecutable.Create(stream);

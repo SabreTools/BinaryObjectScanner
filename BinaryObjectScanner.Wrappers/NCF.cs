@@ -18,83 +18,183 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy0"/>
+#if NET48
         public uint Dummy0 => _model.Header.Dummy0;
+#else
+        public uint? Dummy0 => _model.Header?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.MajorVersion"/>
+#if NET48
         public uint MajorVersion => _model.Header.MajorVersion;
+#else
+        public uint? MajorVersion => _model.Header?.MajorVersion;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.MinorVersion"/>
+#if NET48
         public uint MinorVersion => _model.Header.MinorVersion;
+#else
+        public uint? MinorVersion => _model.Header?.MinorVersion;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.CacheID"/>
+#if NET48
         public uint CacheID => _model.Header.CacheID;
+#else
+        public uint? CacheID => _model.Header?.CacheID;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.LastVersionPlayed"/>
+#if NET48
         public uint LastVersionPlayed => _model.Header.LastVersionPlayed;
+#else
+        public uint? LastVersionPlayed => _model.Header?.LastVersionPlayed;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy1"/>
+#if NET48
         public uint Dummy1 => _model.Header.Dummy1;
+#else
+        public uint? Dummy1 => _model.Header?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy2"/>
+#if NET48
         public uint Dummy2 => _model.Header.Dummy2;
+#else
+        public uint? Dummy2 => _model.Header?.Dummy2;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.FileSize"/>
+#if NET48
         public uint FileSize => _model.Header.FileSize;
+#else
+        public uint? FileSize => _model.Header?.FileSize;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.BlockSize"/>
+#if NET48
         public uint BlockSize => _model.Header.BlockSize;
+#else
+        public uint? BlockSize => _model.Header?.BlockSize;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.BlockCount"/>
+#if NET48
         public uint BlockCount => _model.Header.BlockCount;
+#else
+        public uint? BlockCount => _model.Header?.BlockCount;
+#endif
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy3"/>
+#if NET48
         public uint Dummy3 => _model.Header.Dummy3;
+#else
+        public uint? Dummy3 => _model.Header?.Dummy3;
+#endif
 
         #endregion
 
         #region Directory Header
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy0"/>
+#if NET48
         public uint DH_Dummy0 => _model.DirectoryHeader.Dummy0;
+#else
+        public uint? DH_Dummy0 => _model.DirectoryHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.CacheID"/>
+#if NET48
         public uint DH_CacheID => _model.DirectoryHeader.CacheID;
+#else
+        public uint? DH_CacheID => _model.DirectoryHeader?.CacheID;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.LastVersionPlayed"/>
+#if NET48
         public uint DH_LastVersionPlayed => _model.DirectoryHeader.LastVersionPlayed;
+#else
+        public uint? DH_LastVersionPlayed => _model.DirectoryHeader?.LastVersionPlayed;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.ItemCount"/>
+#if NET48
         public uint DH_ItemCount => _model.DirectoryHeader.ItemCount;
+#else
+        public uint? DH_ItemCount => _model.DirectoryHeader?.ItemCount;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.FileCount"/>
+#if NET48
         public uint DH_FileCount => _model.DirectoryHeader.FileCount;
+#else
+        public uint? DH_FileCount => _model.DirectoryHeader?.FileCount;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.ChecksumDataLength"/>
+#if NET48
         public uint DH_ChecksumDataLength => _model.DirectoryHeader.ChecksumDataLength;
+#else
+        public uint? DH_ChecksumDataLength => _model.DirectoryHeader?.ChecksumDataLength;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.DirectorySize"/>
+#if NET48
         public uint DH_DirectorySize => _model.DirectoryHeader.DirectorySize;
+#else
+        public uint? DH_DirectorySize => _model.DirectoryHeader?.DirectorySize;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.NameSize"/>
+#if NET48
         public uint DH_NameSize => _model.DirectoryHeader.NameSize;
+#else
+        public uint? DH_NameSize => _model.DirectoryHeader?.NameSize;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Info1Count"/>
+#if NET48
         public uint DH_Info1Count => _model.DirectoryHeader.Info1Count;
+#else
+        public uint? DH_Info1Count => _model.DirectoryHeader?.Info1Count;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.CopyCount"/>
+#if NET48
         public uint DH_CopyCount => _model.DirectoryHeader.CopyCount;
+#else
+        public uint? DH_CopyCount => _model.DirectoryHeader?.CopyCount;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.LocalCount"/>
+#if NET48
         public uint DH_LocalCount => _model.DirectoryHeader.LocalCount;
+#else
+        public uint? DH_LocalCount => _model.DirectoryHeader?.LocalCount;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy1"/>
+#if NET48
         public uint DH_Dummy1 => _model.DirectoryHeader.Dummy1;
+#else
+        public uint? DH_Dummy1 => _model.DirectoryHeader?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy2"/>
+#if NET48
         public uint DH_Dummy2 => _model.DirectoryHeader.Dummy2;
+#else
+        public uint? DH_Dummy2 => _model.DirectoryHeader?.Dummy2;
+#endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Checksum"/>
+#if NET48
         public uint DH_Checksum => _model.DirectoryHeader.Checksum;
+#else
+        public uint? DH_Checksum => _model.DirectoryHeader?.Checksum;
+#endif
 
         #endregion
 
@@ -167,10 +267,18 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Header
 
         /// <inheritdoc cref="Models.NCF.UnknownHeader.Dummy0"/>
+#if NET48
         public uint UH_Dummy0 => _model.UnknownHeader.Dummy0;
+#else
+        public uint? UH_Dummy0 => _model.UnknownHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.NCF.UnknownHeader.Dummy1"/>
+#if NET48
         public uint UH_Dummy1 => _model.UnknownHeader.Dummy1;
+#else
+        public uint? UH_Dummy1 => _model.UnknownHeader?.Dummy1;
+#endif
 
         #endregion
 
@@ -188,26 +296,50 @@ namespace BinaryObjectScanner.Wrappers
         #region Checksum Header
 
         /// <inheritdoc cref="Models.NCF.ChecksumHeader.Dummy0"/>
+#if NET48
         public uint CH_Dummy0 => _model.ChecksumHeader.Dummy0;
+#else
+        public uint? CH_Dummy0 => _model.ChecksumHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumHeader.ChecksumSize"/>
+#if NET48
         public uint CH_ChecksumSize => _model.ChecksumHeader.ChecksumSize;
+#else
+        public uint? CH_ChecksumSize => _model.ChecksumHeader?.ChecksumSize;
+#endif
 
         #endregion
 
         #region Checksum Map Header
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.Dummy0"/>
+#if NET48
         public uint CMH_Dummy0 => _model.ChecksumMapHeader.Dummy0;
+#else
+        public uint? CMH_Dummy0 => _model.ChecksumMapHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.Dummy1"/>
+#if NET48
         public uint CMH_Dummy1 => _model.ChecksumMapHeader.Dummy1;
+#else
+        public uint? CMH_Dummy1 => _model.ChecksumMapHeader?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.ItemCount"/>
+#if NET48
         public uint CMH_ItemCount => _model.ChecksumMapHeader.ItemCount;
+#else
+        public uint? CMH_ItemCount => _model.ChecksumMapHeader?.ItemCount;
+#endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.ChecksumCount"/>
+#if NET48
         public uint CMH_ChecksumCount => _model.ChecksumMapHeader.ChecksumCount;
+#else
+        public uint? CMH_ChecksumCount => _model.ChecksumMapHeader?.ChecksumCount;
+#endif
 
         #endregion
 
@@ -414,6 +546,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryEntry = DirectoryEntries[i];
                     builder.AppendLine($"  Directory Entry {i}");
+                    if (directoryEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Name offset: {directoryEntry.NameOffset} (0x{directoryEntry.NameOffset:X})");
                     builder.AppendLine($"    Name: {directoryEntry.Name}");
                     builder.AppendLine($"    Item size: {directoryEntry.ItemSize} (0x{directoryEntry.ItemSize:X})");
@@ -445,6 +583,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryInfoEntry = DirectoryInfo1Entries[i];
                     builder.AppendLine($"  Directory Info 1 Entry {i}");
+                    if (directoryInfoEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
@@ -469,6 +613,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryInfoEntry = DirectoryInfo2Entries[i];
                     builder.AppendLine($"  Directory Info 2 Entry {i}");
+                    if (directoryInfoEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
@@ -482,7 +632,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintDirectoryCopyEntries(StringBuilder builder)
         {
             builder.AppendLine("  Directory Copy Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (DirectoryCopyEntries == null || DirectoryCopyEntries.Length == 0)
             {
                 builder.AppendLine("  No directory copy entries");
@@ -493,6 +643,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryCopyEntry = DirectoryCopyEntries[i];
                     builder.AppendLine($"  Directory Copy Entry {i}");
+                    if (directoryCopyEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Directory index: {directoryCopyEntry.DirectoryIndex} (0x{directoryCopyEntry.DirectoryIndex:X})");
                 }
             }
@@ -506,7 +662,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintDirectoryLocalEntries(StringBuilder builder)
         {
             builder.AppendLine("  Directory Local Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (DirectoryLocalEntries == null || DirectoryLocalEntries.Length == 0)
             {
                 builder.AppendLine("  No directory local entries");
@@ -517,6 +673,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryLocalEntry = DirectoryLocalEntries[i];
                     builder.AppendLine($"  Directory Local Entry {i}");
+                    if (directoryLocalEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Directory index: {directoryLocalEntry.DirectoryIndex} (0x{directoryLocalEntry.DirectoryIndex:X})");
                 }
             }
@@ -543,7 +705,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintUnknownEntries(StringBuilder builder)
         {
             builder.AppendLine("  Unknown Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (UnknownEntries == null || UnknownEntries.Length == 0)
             {
                 builder.AppendLine("  No unknown entries");
@@ -554,6 +716,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var unknownEntry = UnknownEntries[i];
                     builder.AppendLine($"  Unknown Entry {i}");
+                    if (unknownEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Dummy 0: {unknownEntry.Dummy0} (0x{unknownEntry.Dummy0:X})");
                 }
             }
@@ -595,7 +763,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintChecksumMapEntries(StringBuilder builder)
         {
             builder.AppendLine("  Checksum Map Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (ChecksumMapEntries == null || ChecksumMapEntries.Length == 0)
             {
                 builder.AppendLine("  No checksum map entries");
@@ -606,6 +774,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var checksumMapEntry = ChecksumMapEntries[i];
                     builder.AppendLine($"  Checksum Map Entry {i}");
+                    if (checksumMapEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Checksum count: {checksumMapEntry.ChecksumCount} (0x{checksumMapEntry.ChecksumCount:X})");
                     builder.AppendLine($"    First checksum index: {checksumMapEntry.FirstChecksumIndex} (0x{checksumMapEntry.FirstChecksumIndex:X})");
                 }
@@ -620,7 +794,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintChecksumEntries(StringBuilder builder)
         {
             builder.AppendLine("  Checksum Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (ChecksumEntries == null || ChecksumEntries.Length == 0)
             {
                 builder.AppendLine("  No checksum entries");
@@ -631,6 +805,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var checksumEntry = ChecksumEntries[i];
                     builder.AppendLine($"  Checksum Entry {i}");
+                    if (checksumEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Checksum: {checksumEntry.Checksum} (0x{checksumEntry.Checksum:X})");
                 }
             }

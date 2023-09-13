@@ -23,47 +23,99 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Stub_Magic => _model.Stub.Header.Magic;
 #else
-        public string? Stub_Magic => _model.Stub.Header.Magic;
+        public string? Stub_Magic => _model.Stub?.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
+#if NET48
         public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
+#else
+        public ushort? Stub_LastPageBytes => _model.Stub?.Header?.LastPageBytes;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
+#if NET48
         public ushort Stub_Pages => _model.Stub.Header.Pages;
+#else
+        public ushort? Stub_Pages => _model.Stub?.Header?.Pages;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
+#if NET48
         public ushort Stub_RelocationItems => _model.Stub.Header.RelocationItems;
+#else
+        public ushort? Stub_RelocationItems => _model.Stub?.Header?.RelocationItems;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
+#if NET48
         public ushort Stub_HeaderParagraphSize => _model.Stub.Header.HeaderParagraphSize;
+#else
+        public ushort? Stub_HeaderParagraphSize => _model.Stub?.Header?.HeaderParagraphSize;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
+#if NET48
         public ushort Stub_MinimumExtraParagraphs => _model.Stub.Header.MinimumExtraParagraphs;
+#else
+        public ushort? Stub_MinimumExtraParagraphs => _model.Stub?.Header?.MinimumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
+#if NET48
         public ushort Stub_MaximumExtraParagraphs => _model.Stub.Header.MaximumExtraParagraphs;
+#else
+        public ushort? Stub_MaximumExtraParagraphs => _model.Stub?.Header?.MaximumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
+#if NET48
         public ushort Stub_InitialSSValue => _model.Stub.Header.InitialSSValue;
+#else
+        public ushort? Stub_InitialSSValue => _model.Stub?.Header?.InitialSSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
+#if NET48
         public ushort Stub_InitialSPValue => _model.Stub.Header.InitialSPValue;
+#else
+        public ushort? Stub_InitialSPValue => _model.Stub?.Header?.InitialSPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
+#if NET48
         public ushort Stub_Checksum => _model.Stub.Header.Checksum;
+#else
+        public ushort? Stub_Checksum => _model.Stub?.Header?.Checksum;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
+#if NET48
         public ushort Stub_InitialIPValue => _model.Stub.Header.InitialIPValue;
+#else
+        public ushort? Stub_InitialIPValue => _model.Stub?.Header?.InitialIPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
+#if NET48
         public ushort Stub_InitialCSValue => _model.Stub.Header.InitialCSValue;
+#else
+        public ushort? Stub_InitialCSValue => _model.Stub?.Header?.InitialCSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
+#if NET48
         public ushort Stub_RelocationTableAddr => _model.Stub.Header.RelocationTableAddr;
+#else
+        public ushort? Stub_RelocationTableAddr => _model.Stub?.Header?.RelocationTableAddr;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
+#if NET48
         public ushort Stub_OverlayNumber => _model.Stub.Header.OverlayNumber;
+#else
+        public ushort? Stub_OverlayNumber => _model.Stub?.Header?.OverlayNumber;
+#endif
 
         #endregion
 
@@ -73,24 +125,36 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
 #else
-        public ushort[]? Stub_Reserved1 => _model.Stub.Header.Reserved1;
+        public ushort[]? Stub_Reserved1 => _model.Stub?.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
+#if NET48
         public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
+#else
+        public ushort? Stub_OEMIdentifier => _model.Stub?.Header?.OEMIdentifier;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
+#if NET48
         public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
+#else
+        public ushort? Stub_OEMInformation => _model.Stub?.Header?.OEMInformation;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
 #if NET48
         public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
 #else
-        public ushort[]? Stub_Reserved2 => _model.Stub.Header.Reserved2;
+        public ushort[]? Stub_Reserved2 => _model?.Stub?.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
+#if NET48
         public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
+#else
+        public uint? Stub_NewExeHeaderAddr => _model.Stub?.Header?.NewExeHeaderAddr;
+#endif
 
         #endregion
 
@@ -102,143 +166,323 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Signature => _model.InformationBlock.Signature;
 #else
-        public string? Signature => _model.InformationBlock.Signature;
+        public string? Signature => _model.InformationBlock?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ByteOrder"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ByteOrder ByteOrder => _model.InformationBlock.ByteOrder;
+#else
+        public SabreTools.Models.LinearExecutable.ByteOrder? ByteOrder => _model.InformationBlock?.ByteOrder;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.WordOrder"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.WordOrder WordOrder => _model.InformationBlock.WordOrder;
+#else
+        public SabreTools.Models.LinearExecutable.WordOrder? WordOrder => _model.InformationBlock?.WordOrder;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExecutableFormatLevel"/>
+#if NET48
         public uint ExecutableFormatLevel => _model.InformationBlock.ExecutableFormatLevel;
+#else
+        public uint? ExecutableFormatLevel => _model.InformationBlock?.ExecutableFormatLevel;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.CPUType"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.CPUType CPUType => _model.InformationBlock.CPUType;
+#else
+        public SabreTools.Models.LinearExecutable.CPUType? CPUType => _model.InformationBlock?.CPUType;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleOS"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.OperatingSystem ModuleOS => _model.InformationBlock.ModuleOS;
+#else
+        public SabreTools.Models.LinearExecutable.OperatingSystem? ModuleOS => _model.InformationBlock?.ModuleOS;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleVersion"/>
+#if NET48
         public uint ModuleVersion => _model.InformationBlock.ModuleVersion;
+#else
+        public uint? ModuleVersion => _model.InformationBlock?.ModuleVersion;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleTypeFlags"/>
+#if NET48
         public SabreTools.Models.LinearExecutable.ModuleFlags ModuleTypeFlags => _model.InformationBlock.ModuleTypeFlags;
+#else
+        public SabreTools.Models.LinearExecutable.ModuleFlags? ModuleTypeFlags => _model.InformationBlock?.ModuleTypeFlags;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleNumberPages"/>
+#if NET48
         public uint ModuleNumberPages => _model.InformationBlock.ModuleNumberPages;
+#else
+        public uint? ModuleNumberPages => _model.InformationBlock?.ModuleNumberPages;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialObjectCS"/>
+#if NET48
         public uint InitialObjectCS => _model.InformationBlock.InitialObjectCS;
+#else
+        public uint? InitialObjectCS => _model.InformationBlock?.InitialObjectCS;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialEIP"/>
+#if NET48
         public uint InitialEIP => _model.InformationBlock.InitialEIP;
+#else
+        public uint? InitialEIP => _model.InformationBlock?.InitialEIP;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialObjectSS"/>
+#if NET48
         public uint InitialObjectSS => _model.InformationBlock.InitialObjectSS;
+#else
+        public uint? InitialObjectSS => _model.InformationBlock?.InitialObjectSS;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialESP"/>
+#if NET48
         public uint InitialESP => _model.InformationBlock.InitialESP;
+#else
+        public uint? InitialESP => _model.InformationBlock?.InitialESP;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.MemoryPageSize"/>
+#if NET48
         public uint MemoryPageSize => _model.InformationBlock.MemoryPageSize;
+#else
+        public uint? MemoryPageSize => _model.InformationBlock?.MemoryPageSize;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.BytesOnLastPage"/>
+#if NET48
         public uint BytesOnLastPage => _model.InformationBlock.BytesOnLastPage;
+#else
+        public uint? BytesOnLastPage => _model.InformationBlock?.BytesOnLastPage;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupSectionSize"/>
+#if NET48
         public uint FixupSectionSize => _model.InformationBlock.FixupSectionSize;
+#else
+        public uint? FixupSectionSize => _model.InformationBlock?.FixupSectionSize;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupSectionChecksum"/>
+#if NET48
         public uint FixupSectionChecksum => _model.InformationBlock.FixupSectionChecksum;
+#else
+        public uint? FixupSectionChecksum => _model.InformationBlock?.FixupSectionChecksum;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.LoaderSectionSize"/>
+#if NET48
         public uint LoaderSectionSize => _model.InformationBlock.LoaderSectionSize;
+#else
+        public uint? LoaderSectionSize => _model.InformationBlock?.LoaderSectionSize;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.LoaderSectionChecksum"/>
+#if NET48
         public uint LoaderSectionChecksum => _model.InformationBlock.LoaderSectionChecksum;
+#else
+        public uint? LoaderSectionChecksum => _model.InformationBlock?.LoaderSectionChecksum;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectTableOffset"/>
+#if NET48
         public uint ObjectTableOffset => _model.InformationBlock.ObjectTableOffset;
+#else
+        public uint? ObjectTableOffset => _model.InformationBlock?.ObjectTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectTableCount"/>
+#if NET48
         public uint ObjectTableCount => _model.InformationBlock.ObjectTableCount;
+#else
+        public uint? ObjectTableCount => _model.InformationBlock?.ObjectTableCount;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectPageMapOffset"/>
+#if NET48
         public uint ObjectPageMapOffset => _model.InformationBlock.ObjectPageMapOffset;
+#else
+        public uint? ObjectPageMapOffset => _model.InformationBlock?.ObjectPageMapOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectIterateDataMapOffset"/>
+#if NET48
         public uint ObjectIterateDataMapOffset => _model.InformationBlock.ObjectIterateDataMapOffset;
+#else
+        public uint? ObjectIterateDataMapOffset => _model.InformationBlock?.ObjectIterateDataMapOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResourceTableOffset"/>
+#if NET48
         public uint ResourceTableOffset => _model.InformationBlock.ResourceTableOffset;
+#else
+        public uint? ResourceTableOffset => _model.InformationBlock?.ResourceTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResourceTableCount"/>
+#if NET48
         public uint ResourceTableCount => _model.InformationBlock.ResourceTableCount;
+#else
+        public uint? ResourceTableCount => _model.InformationBlock?.ResourceTableCount;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResidentNamesTableOffset"/>
+#if NET48
         public uint ResidentNamesTableOffset => _model.InformationBlock.ResidentNamesTableOffset;
+#else
+        public uint? ResidentNamesTableOffset => _model.InformationBlock?.ResidentNamesTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.EntryTableOffset"/>
+#if NET48
         public uint EntryTableOffset => _model.InformationBlock.EntryTableOffset;
+#else
+        public uint? EntryTableOffset => _model.InformationBlock?.EntryTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleDirectivesTableOffset"/>
+#if NET48
         public uint ModuleDirectivesTableOffset => _model.InformationBlock.ModuleDirectivesTableOffset;
+#else
+        public uint? ModuleDirectivesTableOffset => _model.InformationBlock?.ModuleDirectivesTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleDirectivesCount"/>
+#if NET48
         public uint ModuleDirectivesCount => _model.InformationBlock.ModuleDirectivesCount;
+#else
+        public uint? ModuleDirectivesCount => _model.InformationBlock?.ModuleDirectivesCount;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupPageTableOffset"/>
+#if NET48
         public uint FixupPageTableOffset => _model.InformationBlock.FixupPageTableOffset;
+#else
+        public uint? FixupPageTableOffset => _model.InformationBlock?.FixupPageTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupRecordTableOffset"/>
+#if NET48
         public uint FixupRecordTableOffset => _model.InformationBlock.FixupRecordTableOffset;
+#else
+        public uint? FixupRecordTableOffset => _model.InformationBlock?.FixupRecordTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportedModulesNameTableOffset"/>
+#if NET48
         public uint ImportedModulesNameTableOffset => _model.InformationBlock.ImportedModulesNameTableOffset;
+#else
+        public uint? ImportedModulesNameTableOffset => _model.InformationBlock?.ImportedModulesNameTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportedModulesCount"/>
+#if NET48
         public uint ImportedModulesCount => _model.InformationBlock.ImportedModulesCount;
+#else
+        public uint? ImportedModulesCount => _model.InformationBlock?.ImportedModulesCount;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportProcedureNameTableOffset"/>
+#if NET48
         public uint ImportProcedureNameTableOffset => _model.InformationBlock.ImportProcedureNameTableOffset;
+#else
+        public uint? ImportProcedureNameTableOffset => _model.InformationBlock?.ImportProcedureNameTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PerPageChecksumTableOffset"/>
+#if NET48
         public uint PerPageChecksumTableOffset => _model.InformationBlock.PerPageChecksumTableOffset;
+#else
+        public uint? PerPageChecksumTableOffset => _model.InformationBlock?.PerPageChecksumTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DataPagesOffset"/>
+#if NET48
         public uint DataPagesOffset => _model.InformationBlock.DataPagesOffset;
+#else
+        public uint? DataPagesOffset => _model.InformationBlock?.DataPagesOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PreloadPageCount"/>
+#if NET48
         public uint PreloadPageCount => _model.InformationBlock.PreloadPageCount;
+#else
+        public uint? PreloadPageCount => _model.InformationBlock?.PreloadPageCount;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableOffset"/>
+#if NET48
         public uint NonResidentNamesTableOffset => _model.InformationBlock.NonResidentNamesTableOffset;
+#else
+        public uint? NonResidentNamesTableOffset => _model.InformationBlock?.NonResidentNamesTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableLength"/>
+#if NET48
         public uint NonResidentNamesTableLength => _model.InformationBlock.NonResidentNamesTableLength;
+#else
+        public uint? NonResidentNamesTableLength => _model.InformationBlock?.NonResidentNamesTableLength;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableChecksum"/>
+#if NET48
         public uint NonResidentNamesTableChecksum => _model.InformationBlock.NonResidentNamesTableChecksum;
+#else
+        public uint? NonResidentNamesTableChecksum => _model.InformationBlock?.NonResidentNamesTableChecksum;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.AutomaticDataObject"/>
+#if NET48
         public uint AutomaticDataObject => _model.InformationBlock.AutomaticDataObject;
+#else
+        public uint? AutomaticDataObject => _model.InformationBlock?.AutomaticDataObject;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DebugInformationOffset"/>
+#if NET48
         public uint DebugInformationOffset => _model.InformationBlock.DebugInformationOffset;
+#else
+        public uint? DebugInformationOffset => _model.InformationBlock?.DebugInformationOffset;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DebugInformationLength"/>
+#if NET48
         public uint DebugInformationLength => _model.InformationBlock.DebugInformationLength;
+#else
+        public uint? DebugInformationLength => _model.InformationBlock?.DebugInformationLength;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PreloadInstancePagesNumber"/>
+#if NET48
         public uint PreloadInstancePagesNumber => _model.InformationBlock.PreloadInstancePagesNumber;
+#else
+        public uint? PreloadInstancePagesNumber => _model.InformationBlock?.PreloadInstancePagesNumber;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DemandInstancePagesNumber"/>
+#if NET48
         public uint DemandInstancePagesNumber => _model.InformationBlock.DemandInstancePagesNumber;
+#else
+        public uint? DemandInstancePagesNumber => _model.InformationBlock?.DemandInstancePagesNumber;
+#endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExtraHeapAllocation"/>
+#if NET48
         public uint ExtraHeapAllocation => _model.InformationBlock.ExtraHeapAllocation;
+#else
+        public uint? ExtraHeapAllocation => _model.InformationBlock?.ExtraHeapAllocation;
+#endif
 
         #endregion
 
@@ -389,11 +633,11 @@ namespace BinaryObjectScanner.Wrappers
         {
             // All logic is handled by the base class
         }/// <summary>
-        /// Create an LE/LX executable from a byte array and offset
-        /// </summary>
-        /// <param name="data">Byte array representing the executable</param>
-        /// <param name="offset">Offset within the array to parse</param>
-        /// <returns>An LE/LX executable wrapper on success, null on failure</returns>
+         /// Create an LE/LX executable from a byte array and offset
+         /// </summary>
+         /// <param name="data">Byte array representing the executable</param>
+         /// <param name="offset">Offset within the array to parse</param>
+         /// <returns>An LE/LX executable wrapper on success, null on failure</returns>
 #if NET48
         public static LinearExecutable Create(byte[] data, int offset)
 #else
@@ -599,6 +843,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ObjectTable[i];
                     builder.AppendLine($"  Object Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Virtual segment size: {entry.VirtualSegmentSize} (0x{entry.VirtualSegmentSize:X})");
                     builder.AppendLine($"    Relocation base address: {entry.RelocationBaseAddress} (0x{entry.RelocationBaseAddress:X})");
                     builder.AppendLine($"    Object flags: {entry.ObjectFlags} (0x{entry.ObjectFlags:X})");
@@ -628,6 +878,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ObjectPageMap[i];
                     builder.AppendLine($"  Object Page Map Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Page data offset: {entry.PageDataOffset} (0x{entry.PageDataOffset:X})");
                     builder.AppendLine($"    Data size: {entry.DataSize} (0x{entry.DataSize:X})");
                     builder.AppendLine($"    Flags: {entry.Flags} (0x{entry.Flags:X})");
@@ -654,6 +910,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ResourceTable[i];
                     builder.AppendLine($"  Resource Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X})");
                     builder.AppendLine($"    Name ID: {entry.NameID} (0x{entry.NameID:X})");
                     builder.AppendLine($"    Resource size: {entry.ResourceSize} (0x{entry.ResourceSize:X})");
@@ -682,6 +944,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ResidentNamesTable[i];
                     builder.AppendLine($"  Resident Names Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                     builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
@@ -708,6 +976,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var bundle = EntryTable[i];
                     builder.AppendLine($"  Entry Table Bundle {i}");
+                    if (bundle == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Entries: {bundle.Entries} (0x{bundle.Entries:X})");
                     builder.AppendLine($"    Bundle type: {bundle.BundleType} (0x{bundle.BundleType:X})");
                     if (bundle.TableEntries != null && bundle.TableEntries.Length != 0)
@@ -719,6 +993,12 @@ namespace BinaryObjectScanner.Wrappers
                         {
                             var entry = bundle.TableEntries[j];
                             builder.AppendLine($"    Entry Table Entry {j}");
+                            if (entry == null)
+                            {
+                                builder.AppendLine("    [NULL]");
+                                continue;
+                            }
+
                             switch (bundle.BundleType & ~SabreTools.Models.LinearExecutable.BundleType.ParameterTypingInformationPresent)
                             {
                                 case SabreTools.Models.LinearExecutable.BundleType.UnusedEntry:
@@ -781,6 +1061,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ModuleFormatDirectivesTable[i];
                     builder.AppendLine($"  Moduile Format Directives Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Directive number: {entry.DirectiveNumber} (0x{entry.DirectiveNumber:X})");
                     builder.AppendLine($"    Directive data length: {entry.DirectiveDataLength} (0x{entry.DirectiveDataLength:X})");
                     builder.AppendLine($"    Directive data offset: {entry.DirectiveDataOffset} (0x{entry.DirectiveDataOffset:X})");
@@ -807,6 +1093,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = VerifyRecordDirectiveTable[i];
                     builder.AppendLine($"  Verify Record Directive Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
                     builder.AppendLine($"    Ordinal index: {entry.OrdinalIndex} (0x{entry.OrdinalIndex:X})");
                     builder.AppendLine($"    Version: {entry.Version} (0x{entry.Version:X})");
@@ -837,6 +1129,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = FixupPageTable[i];
                     builder.AppendLine($"  Fix-up Page Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                 }
             }
@@ -862,6 +1160,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = FixupRecordTable[i];
                     builder.AppendLine($"  Fix-up Record Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Source type: {entry.SourceType} (0x{entry.SourceType:X})");
                     builder.AppendLine($"    Target flags: {entry.TargetFlags} (0x{entry.TargetFlags:X})");
 
@@ -896,26 +1200,26 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         // 16-bit Object Number/Module Ordinal Flag
                         if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
+                            builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
                         else
-                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
+                            builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
 
                         // 8-bit Ordinal Flag & 32-bit Target Offset Flag
                         if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.EightBitOrdinalFlag))
-                            builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberByte} (0x{entry.ImportedOrdinalNumberByte:X})");
+                            builder.AppendLine($"    Imported ordinal number: {entry.ImportedOrdinalNumberByte} (0x{entry.ImportedOrdinalNumberByte:X})");
                         else if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                            builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberDWORD} (0x{entry.ImportedOrdinalNumberDWORD:X})");
+                            builder.AppendLine($"    Imported ordinal number: {entry.ImportedOrdinalNumberDWORD} (0x{entry.ImportedOrdinalNumberDWORD:X})");
                         else
-                            builder.AppendLine(value: $"    Imported ordinal number: {entry.ImportedOrdinalNumberWORD} (0x{entry.ImportedOrdinalNumberWORD:X})");
+                            builder.AppendLine($"    Imported ordinal number: {entry.ImportedOrdinalNumberWORD} (0x{entry.ImportedOrdinalNumberWORD:X})");
 
                         // Additive Fixup Flag
                         if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
                             if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                                builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
-                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                                builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
                         }
                     }
 
@@ -924,24 +1228,24 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         // 16-bit Object Number/Module Ordinal Flag
                         if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
+                            builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
                         else
-                            builder.AppendLine(value: $"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
+                            builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
 
                         // 32-bit Target Offset Flag
                         if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                            builder.AppendLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableDWORD} (0x{entry.OffsetImportProcedureNameTableDWORD:X})");
+                            builder.AppendLine($"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableDWORD} (0x{entry.OffsetImportProcedureNameTableDWORD:X})");
                         else
-                            builder.AppendLine(value: $"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableWORD} (0x{entry.OffsetImportProcedureNameTableWORD:X})");
+                            builder.AppendLine($"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableWORD} (0x{entry.OffsetImportProcedureNameTableWORD:X})");
 
                         // Additive Fixup Flag
                         if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.AdditiveFixupFlag))
                         {
                             // 32-bit Additive Flag
                             if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                                builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
-                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                                builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
                         }
                     }
 
@@ -959,9 +1263,9 @@ namespace BinaryObjectScanner.Wrappers
                         {
                             // 32-bit Additive Flag
                             if (entry.TargetFlags.HasFlag(SabreTools.Models.LinearExecutable.FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                                builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
                             else
-                                builder.AppendLine(value: $"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                                builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
                         }
                     }
 
@@ -1008,6 +1312,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ImportModuleNameTable[i];
                     builder.AppendLine($"  Import Module Name Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                 }
@@ -1033,6 +1343,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ImportModuleProcedureNameTable[i];
                     builder.AppendLine($"  Import Module Procedure Name Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                 }
@@ -1058,6 +1374,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = PerPageChecksumTable[i];
                     builder.AppendLine($" Per-Page Checksum Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Checksum: {entry.Checksum} (0x{entry.Checksum:X})");
                 }
             }
@@ -1082,6 +1404,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = NonResidentNamesTable[i];
                     builder.AppendLine($"  Non-Resident Names Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
                     builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
@@ -1145,11 +1473,19 @@ namespace BinaryObjectScanner.Wrappers
                 switch (_dataSource)
                 {
                     case DataSource.ByteArray:
+#if NET48
                         length = _byteArrayData.Length - _byteArrayOffset;
+#else
+                        length = _byteArrayData!.Length - _byteArrayOffset;
+#endif
                         break;
 
                     case DataSource.Stream:
+#if NET48
                         length = (int)_streamData.Length;
+#else
+                        length = (int)_streamData!.Length;
+#endif
                         break;
                 }
             }

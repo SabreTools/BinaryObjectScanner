@@ -20,23 +20,43 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Signature => _model.Header.Signature;
 #else
-        public string? Signature => _model.Header.Signature;
+        public string? Signature => _model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.Quantum.Header.MajorVersion"/>
+#if NET48
         public byte MajorVersion => _model.Header.MajorVersion;
+#else
+        public byte? MajorVersion => _model.Header?.MajorVersion;
+#endif
 
         /// <inheritdoc cref="Models.Quantum.Header.MinorVersion"/>
+#if NET48
         public byte MinorVersion => _model.Header.MinorVersion;
+#else
+        public byte? MinorVersion => _model.Header?.MinorVersion;
+#endif
 
         /// <inheritdoc cref="Models.Quantum.Header.FileCount"/>
+#if NET48
         public ushort FileCount => _model.Header.FileCount;
+#else
+        public ushort? FileCount => _model.Header?.FileCount;
+#endif
 
         /// <inheritdoc cref="Models.Quantum.Header.TableSize"/>
+#if NET48
         public byte TableSize => _model.Header.TableSize;
+#else
+        public byte? TableSize => _model.Header?.TableSize;
+#endif
 
         /// <inheritdoc cref="Models.Quantum.Header.CompressionFlags"/>
+#if NET48
         public byte CompressionFlags => _model.Header.CompressionFlags;
+#else
+        public byte? CompressionFlags => _model.Header?.CompressionFlags;
+#endif
 
         #endregion
 
@@ -302,6 +322,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var fileDescriptor = FileList[i];
                     builder.AppendLine($"  File Descriptor {i}");
+                    if (fileDescriptor == null)
+                    {
+                    builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    File name size: {fileDescriptor.FileNameSize} (0x{fileDescriptor.FileNameSize:X})");
                     builder.AppendLine($"    File name: {fileDescriptor.FileName ?? "[NULL]"}");
                     builder.AppendLine($"    Comment field size: {fileDescriptor.CommentFieldSize} (0x{fileDescriptor.CommentFieldSize:X})");

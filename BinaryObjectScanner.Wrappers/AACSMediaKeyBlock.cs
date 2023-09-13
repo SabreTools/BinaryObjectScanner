@@ -142,6 +142,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var record = Records[i];
                     builder.AppendLine($"  Record Entry {i}");
+                    if (record == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Record type: {record.RecordType} (0x{record.RecordType:X})");
                     builder.AppendLine($"    Record length: {record.RecordLength} (0x{record.RecordLength:X})");
 
@@ -149,14 +155,17 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         case SabreTools.Models.AACS.RecordType.EndOfMediaKeyBlock:
                             var eomkb = record as SabreTools.Models.AACS.EndOfMediaKeyBlockRecord;
-                            builder.AppendLine($"    Signature data: {(eomkb.SignatureData == null ? "[NULL]" : BitConverter.ToString(eomkb.SignatureData).Replace('-', ' '))}");
+                            if (eomkb != null)
+                            {
+                                builder.AppendLine($"    Signature data: {(eomkb.SignatureData == null ? "[NULL]" : BitConverter.ToString(eomkb.SignatureData).Replace('-', ' '))}");
+                            }
                             break;
 
                         case SabreTools.Models.AACS.RecordType.ExplicitSubsetDifference:
                             var esd = record as SabreTools.Models.AACS.ExplicitSubsetDifferenceRecord;
                             builder.AppendLine($"    Subset Differences:");
                             builder.AppendLine("    -------------------------");
-                            if (esd.SubsetDifferences == null || esd.SubsetDifferences.Length == 0)
+                            if (esd?.SubsetDifferences == null || esd.SubsetDifferences.Length == 0)
                             {
                                 builder.AppendLine($"    No subset differences");
                             }
@@ -166,8 +175,15 @@ namespace BinaryObjectScanner.Wrappers
                                 {
                                     var sd = esd.SubsetDifferences[j];
                                     builder.AppendLine($"    Subset Difference {j}");
-                                    builder.AppendLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
-                                    builder.AppendLine($"      Number: {sd.Number} (0x{sd.Number:X})");
+                                    if (sd == null)
+                                    {
+                                        builder.AppendLine("      [NULL]");
+                                    }
+                                    else
+                                    {
+                                        builder.AppendLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
+                                        builder.AppendLine($"      Number: {sd.Number} (0x{sd.Number:X})");
+                                    }
                                 }
                             }
                             break;
@@ -176,7 +192,7 @@ namespace BinaryObjectScanner.Wrappers
                             var mkd = record as SabreTools.Models.AACS.MediaKeyDataRecord;
                             builder.AppendLine($"    Media Keys:");
                             builder.AppendLine("    -------------------------");
-                            if (mkd.MediaKeyData == null || mkd.MediaKeyData.Length == 0)
+                            if (mkd?.MediaKeyData == null || mkd.MediaKeyData.Length == 0)
                             {
                                 builder.AppendLine($"    No media keys");
                             }
@@ -192,10 +208,11 @@ namespace BinaryObjectScanner.Wrappers
 
                         case SabreTools.Models.AACS.RecordType.SubsetDifferenceIndex:
                             var sdi = record as SabreTools.Models.AACS.SubsetDifferenceIndexRecord;
-                            builder.AppendLine($"    Span: {sdi.Span} (0x{sdi.Span:X})");
+                            if (sdi != null)
+                                builder.AppendLine($"    Span: {sdi.Span} (0x{sdi.Span:X})");
                             builder.AppendLine($"    Offsets:");
                             builder.AppendLine("    -------------------------");
-                            if (sdi.Offsets == null || sdi.Offsets.Length == 0)
+                            if (sdi?.Offsets == null || sdi.Offsets.Length == 0)
                             {
                                 builder.AppendLine($"    No offsets");
                             }
@@ -211,16 +228,20 @@ namespace BinaryObjectScanner.Wrappers
 
                         case SabreTools.Models.AACS.RecordType.TypeAndVersion:
                             var tav = record as SabreTools.Models.AACS.TypeAndVersionRecord;
-                            builder.AppendLine($"    Media key block type: {tav.MediaKeyBlockType} (0x{tav.MediaKeyBlockType:X})");
-                            builder.AppendLine($"    Version number: {tav.VersionNumber} (0x{tav.VersionNumber:X})");
+                            if (tav != null)
+                            {
+                                builder.AppendLine($"    Media key block type: {tav.MediaKeyBlockType} (0x{tav.MediaKeyBlockType:X})");
+                                builder.AppendLine($"    Version number: {tav.VersionNumber} (0x{tav.VersionNumber:X})");
+                            }
                             break;
 
                         case SabreTools.Models.AACS.RecordType.DriveRevocationList:
                             var drl = record as SabreTools.Models.AACS.DriveRevocationListRecord;
-                            builder.AppendLine($"    Total number of entries: {drl.TotalNumberOfEntries} (0x{drl.TotalNumberOfEntries:X})");
+                            if (drl != null)
+                                builder.AppendLine($"    Total number of entries: {drl.TotalNumberOfEntries} (0x{drl.TotalNumberOfEntries:X})");
                             builder.AppendLine($"    Signature Blocks:");
                             builder.AppendLine("    -------------------------");
-                            if (drl.SignatureBlocks == null || drl.SignatureBlocks.Length == 0)
+                            if (drl?.SignatureBlocks == null || drl.SignatureBlocks.Length == 0)
                             {
                                 builder.AppendLine($"    No signature blocks");
                             }
@@ -230,21 +251,35 @@ namespace BinaryObjectScanner.Wrappers
                                 {
                                     var block = drl.SignatureBlocks[j];
                                     builder.AppendLine($"    Signature Block {j}");
-                                    builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
-                                    builder.AppendLine($"      Entry Fields:");
-                                    builder.AppendLine("      -------------------------");
-                                    if (block.EntryFields == null || block.EntryFields.Length == 0)
+                                    if (block == null)
                                     {
-                                        builder.AppendLine($"      No entry fields");
+                                        builder.AppendLine("      [NULL]");
                                     }
                                     else
                                     {
-                                        for (int k = 0; k < block.EntryFields.Length; k++)
+                                        builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
+                                        builder.AppendLine($"      Entry Fields:");
+                                        builder.AppendLine("      -------------------------");
+                                        if (block.EntryFields == null || block.EntryFields.Length == 0)
                                         {
-                                            var ef = block.EntryFields[k];
-                                            builder.AppendLine($"      Entry {k}");
-                                            builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                            builder.AppendLine($"        Drive ID: {(ef.DriveID == null ? "[NULL]" : BitConverter.ToString(ef.DriveID).Replace('-', ' '))}");
+                                            builder.AppendLine($"      No entry fields");
+                                        }
+                                        else
+                                        {
+                                            for (int k = 0; k < block.EntryFields.Length; k++)
+                                            {
+                                                var ef = block.EntryFields[k];
+                                                builder.AppendLine($"      Entry {k}");
+                                                if (ef == null)
+                                                {
+                                                    builder.AppendLine("        [NULL]");
+                                                }
+                                                else
+                                                {
+                                                    builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
+                                                    builder.AppendLine($"        Drive ID: {(ef.DriveID == null ? "[NULL]" : BitConverter.ToString(ef.DriveID).Replace('-', ' '))}");
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -253,10 +288,11 @@ namespace BinaryObjectScanner.Wrappers
 
                         case SabreTools.Models.AACS.RecordType.HostRevocationList:
                             var hrl = record as SabreTools.Models.AACS.HostRevocationListRecord;
-                            builder.AppendLine($"    Total number of entries: {hrl.TotalNumberOfEntries} (0x{hrl.TotalNumberOfEntries:X})");
+                            if (hrl != null)
+                                builder.AppendLine($"    Total number of entries: {hrl.TotalNumberOfEntries} (0x{hrl.TotalNumberOfEntries:X})");
                             builder.AppendLine($"    Signature Blocks:");
                             builder.AppendLine("    -------------------------");
-                            if (hrl.SignatureBlocks == null || hrl.SignatureBlocks.Length == 0)
+                            if (hrl?.SignatureBlocks == null || hrl.SignatureBlocks.Length == 0)
                             {
                                 builder.AppendLine($"    No signature blocks");
                             }
@@ -264,23 +300,38 @@ namespace BinaryObjectScanner.Wrappers
                             {
                                 for (int j = 0; j < hrl.SignatureBlocks.Length; j++)
                                 {
-                                    var block = hrl.SignatureBlocks[j];
                                     builder.AppendLine($"    Signature Block {j}");
-                                    builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
-                                    builder.AppendLine($"      Entry Fields:");
-                                    builder.AppendLine("      -------------------------");
-                                    if (block.EntryFields == null || block.EntryFields.Length == 0)
+                                    var block = hrl.SignatureBlocks[j];
+                                    if (block == null)
                                     {
-                                        builder.AppendLine($"      No entry fields");
+                                        builder.AppendLine("      [NULL]");
                                     }
                                     else
                                     {
-                                        for (int k = 0; k < block.EntryFields.Length; k++)
+                                        builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
+                                        builder.AppendLine($"      Entry Fields:");
+                                        builder.AppendLine("      -------------------------");
+                                        if (block.EntryFields == null || block.EntryFields.Length == 0)
                                         {
-                                            var ef = block.EntryFields[k];
-                                            builder.AppendLine($"      Entry {k}");
-                                            builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                            builder.AppendLine($"        Host ID: {(ef.HostID == null ? "[NULL]" : BitConverter.ToString(ef.HostID).Replace('-', ' '))}");
+                                            builder.AppendLine($"      No entry fields");
+                                        }
+                                        else
+                                        {
+                                            for (int k = 0; k < block.EntryFields.Length; k++)
+                                            {
+                                                var ef = block.EntryFields[k];
+                                                builder.AppendLine($"      Entry {k}");
+                                                if (ef == null)
+                                                {
+                                                    builder.AppendLine("        [NULL]");
+                                                }
+                                                else
+                                                {
+
+                                                    builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
+                                                    builder.AppendLine($"        Host ID: {(ef.HostID == null ? "[NULL]" : BitConverter.ToString(ef.HostID).Replace('-', ' '))}");
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -289,12 +340,14 @@ namespace BinaryObjectScanner.Wrappers
 
                         case SabreTools.Models.AACS.RecordType.VerifyMediaKey:
                             var vmk = record as SabreTools.Models.AACS.VerifyMediaKeyRecord;
-                            builder.AppendLine($"    Ciphertext value: {(vmk.CiphertextValue == null ? "[NULL]" : BitConverter.ToString(vmk.CiphertextValue).Replace('-', ' '))}");
+                            if (vmk != null)
+                                builder.AppendLine($"    Ciphertext value: {(vmk.CiphertextValue == null ? "[NULL]" : BitConverter.ToString(vmk.CiphertextValue).Replace('-', ' '))}");
                             break;
 
                         case SabreTools.Models.AACS.RecordType.Copyright:
                             var c = record as SabreTools.Models.AACS.CopyrightRecord;
-                            builder.AppendLine($"    Copyright: {c.Copyright ?? "[NULL]"}");
+                            if (c != null)
+                                builder.AppendLine($"    Copyright: {c.Copyright ?? "[NULL]"}");
                             break;
                     }
                 }

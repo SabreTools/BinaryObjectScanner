@@ -25,47 +25,99 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Stub_Magic => _model.Stub.Header.Magic;
 #else
-        public string? Stub_Magic => _model.Stub.Header.Magic;
+        public string? Stub_Magic => _model.Stub?.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
+#if NET48
         public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
+#else
+        public ushort? Stub_LastPageBytes => _model.Stub?.Header?.LastPageBytes;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
+#if NET48
         public ushort Stub_Pages => _model.Stub.Header.Pages;
+#else
+        public ushort? Stub_Pages => _model.Stub?.Header?.Pages;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
+#if NET48
         public ushort Stub_RelocationItems => _model.Stub.Header.RelocationItems;
+#else
+        public ushort? Stub_RelocationItems => _model.Stub?.Header?.RelocationItems;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
+#if NET48
         public ushort Stub_HeaderParagraphSize => _model.Stub.Header.HeaderParagraphSize;
+#else
+        public ushort? Stub_HeaderParagraphSize => _model.Stub?.Header?.HeaderParagraphSize;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
+#if NET48
         public ushort Stub_MinimumExtraParagraphs => _model.Stub.Header.MinimumExtraParagraphs;
+#else
+        public ushort? Stub_MinimumExtraParagraphs => _model.Stub?.Header?.MinimumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
+#if NET48
         public ushort Stub_MaximumExtraParagraphs => _model.Stub.Header.MaximumExtraParagraphs;
+#else
+        public ushort? Stub_MaximumExtraParagraphs => _model.Stub?.Header?.MaximumExtraParagraphs;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
+#if NET48
         public ushort Stub_InitialSSValue => _model.Stub.Header.InitialSSValue;
+#else
+        public ushort? Stub_InitialSSValue => _model.Stub?.Header?.InitialSSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
+#if NET48
         public ushort Stub_InitialSPValue => _model.Stub.Header.InitialSPValue;
+#else
+        public ushort? Stub_InitialSPValue => _model.Stub?.Header?.InitialSPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
+#if NET48
         public ushort Stub_Checksum => _model.Stub.Header.Checksum;
+#else
+        public ushort? Stub_Checksum => _model.Stub?.Header?.Checksum;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
+#if NET48
         public ushort Stub_InitialIPValue => _model.Stub.Header.InitialIPValue;
+#else
+        public ushort? Stub_InitialIPValue => _model.Stub?.Header?.InitialIPValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
+#if NET48
         public ushort Stub_InitialCSValue => _model.Stub.Header.InitialCSValue;
+#else
+        public ushort? Stub_InitialCSValue => _model.Stub?.Header?.InitialCSValue;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
+#if NET48
         public ushort Stub_RelocationTableAddr => _model.Stub.Header.RelocationTableAddr;
+#else
+        public ushort? Stub_RelocationTableAddr => _model.Stub?.Header?.RelocationTableAddr;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
+#if NET48
         public ushort Stub_OverlayNumber => _model.Stub.Header.OverlayNumber;
+#else
+        public ushort? Stub_OverlayNumber => _model.Stub?.Header?.OverlayNumber;
+#endif
 
         #endregion
 
@@ -75,24 +127,36 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
 #else
-        public ushort[]? Stub_Reserved1 => _model.Stub.Header.Reserved1;
+        public ushort[]? Stub_Reserved1 => _model.Stub?.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
+#if NET48
         public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
+#else
+        public ushort? Stub_OEMIdentifier => _model.Stub?.Header?.OEMIdentifier;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
+#if NET48
         public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
+#else
+        public ushort? Stub_OEMInformation => _model.Stub?.Header?.OEMInformation;
+#endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
 #if NET48
         public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
 #else
-        public ushort[]? Stub_Reserved2 => _model.Stub.Header.Reserved2;
+        public ushort[]? Stub_Reserved2 => _model.Stub?.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
+#if NET48
         public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
+#else
+        public uint? Stub_NewExeHeaderAddr => _model.Stub?.Header?.NewExeHeaderAddr;
+#endif
 
         #endregion
 
@@ -104,98 +168,218 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Magic => _model.Header.Magic;
 #else
-        public string? Magic => _model.Header.Magic;
+        public string? Magic => _model.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.LinkerVersion"/>
+#if NET48
         public byte LinkerVersion => _model.Header.LinkerVersion;
+#else
+        public byte? LinkerVersion => _model.Header?.LinkerVersion;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.LinkerRevision"/>
+#if NET48
         public byte LinkerRevision => _model.Header.LinkerRevision;
+#else
+        public byte? LinkerRevision => _model.Header?.LinkerRevision;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.EntryTableOffset"/>
+#if NET48
         public ushort EntryTableOffset => _model.Header.EntryTableOffset;
+#else
+        public ushort? EntryTableOffset => _model.Header?.EntryTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.EntryTableSize"/>
+#if NET48
         public ushort EntryTableSize => _model.Header.EntryTableSize;
+#else
+        public ushort? EntryTableSize => _model.Header?.EntryTableSize;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.CrcChecksum"/>
+#if NET48
         public uint CrcChecksum => _model.Header.CrcChecksum;
+#else
+        public uint? CrcChecksum => _model.Header?.CrcChecksum;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.FlagWord"/>
+#if NET48
         public SabreTools.Models.NewExecutable.HeaderFlag FlagWord => _model.Header.FlagWord;
+#else
+        public SabreTools.Models.NewExecutable.HeaderFlag? FlagWord => _model.Header?.FlagWord;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.AutomaticDataSegmentNumber"/>
+#if NET48
         public ushort AutomaticDataSegmentNumber => _model.Header.AutomaticDataSegmentNumber;
+#else
+        public ushort? AutomaticDataSegmentNumber => _model.Header?.AutomaticDataSegmentNumber;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialHeapAlloc"/>
+#if NET48
         public ushort InitialHeapAlloc => _model.Header.InitialHeapAlloc;
+#else
+        public ushort? InitialHeapAlloc => _model.Header?.InitialHeapAlloc;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialStackAlloc"/>
+#if NET48
         public ushort InitialStackAlloc => _model.Header.InitialStackAlloc;
+#else
+        public ushort? InitialStackAlloc => _model.Header?.InitialStackAlloc;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialCSIPSetting"/>
+#if NET48
         public uint InitialCSIPSetting => _model.Header.InitialCSIPSetting;
+#else
+        public uint? InitialCSIPSetting => _model.Header?.InitialCSIPSetting;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.InitialSSSPSetting"/>
+#if NET48
         public uint InitialSSSPSetting => _model.Header.InitialSSSPSetting;
+#else
+        public uint? InitialSSSPSetting => _model.Header?.InitialSSSPSetting;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.FileSegmentCount"/>
+#if NET48
         public ushort FileSegmentCount => _model.Header.FileSegmentCount;
+#else
+        public ushort? FileSegmentCount => _model.Header?.FileSegmentCount;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ModuleReferenceTableSize"/>
+#if NET48
         public ushort ModuleReferenceTableSize => _model.Header.ModuleReferenceTableSize;
+#else
+        public ushort? ModuleReferenceTableSize => _model.Header?.ModuleReferenceTableSize;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.NonResidentNameTableSize"/>
+#if NET48
         public ushort NonResidentNameTableSize => _model.Header.NonResidentNameTableSize;
+#else
+        public ushort? NonResidentNameTableSize => _model.Header?.NonResidentNameTableSize;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.SegmentTableOffset"/>
+#if NET48
         public ushort SegmentTableOffset => _model.Header.SegmentTableOffset;
+#else
+        public ushort? SegmentTableOffset => _model.Header?.SegmentTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ResourceTableOffset"/>
+#if NET48
         public ushort ResourceTableOffset => _model.Header.ResourceTableOffset;
+#else
+        public ushort? ResourceTableOffset => _model.Header?.ResourceTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ResidentNameTableOffset"/>
+#if NET48
         public ushort ResidentNameTableOffset => _model.Header.ResidentNameTableOffset;
+#else
+        public ushort? ResidentNameTableOffset => _model.Header?.ResidentNameTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ModuleReferenceTableOffset"/>
+#if NET48
         public ushort ModuleReferenceTableOffset => _model.Header.ModuleReferenceTableOffset;
+#else
+        public ushort? ModuleReferenceTableOffset => _model.Header?.ModuleReferenceTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ImportedNamesTableOffset"/>
+#if NET48
         public ushort ImportedNamesTableOffset => _model.Header.ImportedNamesTableOffset;
+#else
+        public ushort? ImportedNamesTableOffset => _model.Header?.ImportedNamesTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.NonResidentNamesTableOffset"/>
+#if NET48
         public uint NonResidentNamesTableOffset => _model.Header.NonResidentNamesTableOffset;
+#else
+        public uint? NonResidentNamesTableOffset => _model.Header?.NonResidentNamesTableOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.MovableEntriesCount"/>
+#if NET48
         public ushort MovableEntriesCount => _model.Header.MovableEntriesCount;
+#else
+        public ushort? MovableEntriesCount => _model.Header?.MovableEntriesCount;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.SegmentAlignmentShiftCount"/>
+#if NET48
         public ushort SegmentAlignmentShiftCount => _model.Header.SegmentAlignmentShiftCount;
+#else
+        public ushort? SegmentAlignmentShiftCount => _model.Header?.SegmentAlignmentShiftCount;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ResourceEntriesCount"/>
+#if NET48
         public ushort ResourceEntriesCount => _model.Header.ResourceEntriesCount;
+#else
+        public ushort? ResourceEntriesCount => _model.Header?.ResourceEntriesCount;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.TargetOperatingSystem"/>
+#if NET48
         public SabreTools.Models.NewExecutable.OperatingSystem TargetOperatingSystem => _model.Header.TargetOperatingSystem;
+#else
+        public SabreTools.Models.NewExecutable.OperatingSystem? TargetOperatingSystem => _model.Header?.TargetOperatingSystem;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.AdditionalFlags"/>
+#if NET48
         public SabreTools.Models.NewExecutable.OS2Flag AdditionalFlags => _model.Header.AdditionalFlags;
+#else
+        public SabreTools.Models.NewExecutable.OS2Flag? AdditionalFlags => _model.Header?.AdditionalFlags;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.ReturnThunkOffset"/>
+#if NET48
         public ushort ReturnThunkOffset => _model.Header.ReturnThunkOffset;
+#else
+        public ushort? ReturnThunkOffset => _model.Header?.ReturnThunkOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.SegmentReferenceThunkOffset"/>
+#if NET48
         public ushort SegmentReferenceThunkOffset => _model.Header.SegmentReferenceThunkOffset;
+#else
+        public ushort? SegmentReferenceThunkOffset => _model.Header?.SegmentReferenceThunkOffset;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.MinCodeSwapAreaSize"/>
+#if NET48
         public ushort MinCodeSwapAreaSize => _model.Header.MinCodeSwapAreaSize;
+#else
+        public ushort? MinCodeSwapAreaSize => _model.Header?.MinCodeSwapAreaSize;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.WindowsSDKRevision"/>
+#if NET48
         public byte WindowsSDKRevision => _model.Header.WindowsSDKRevision;
+#else
+        public byte? WindowsSDKRevision => _model.Header?.WindowsSDKRevision;
+#endif
 
         /// <inheritdoc cref="Models.NewExecutable.ExecutableHeader.WindowsSDKVersion"/>
+#if NET48
         public byte WindowsSDKVersion => _model.Header.WindowsSDKVersion;
+#else
+        public byte? WindowsSDKVersion => _model.Header?.WindowsSDKVersion;
+#endif
 
         #endregion
 
@@ -461,7 +645,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Segment Table Information:");
             builder.AppendLine("  -------------------------");
-            if (FileSegmentCount == 0 || SegmentTable.Length == 0)
+            if (FileSegmentCount == 0 || SegmentTable == null || SegmentTable.Length == 0)
             {
                 builder.AppendLine("  No segment table items");
             }
@@ -471,6 +655,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = SegmentTable[i];
                     builder.AppendLine($"  Segment Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Flag word: {entry.FlagWord} (0x{entry.FlagWord:X})");
@@ -488,8 +678,14 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Resource Table Information:");
             builder.AppendLine("  -------------------------");
+            if (ResourceTable == null)
+            {
+                builder.AppendLine("  No resource table");
+                return;
+            }
+
             builder.AppendLine($"  Alignment shift count: {ResourceTable.AlignmentShiftCount} (0x{ResourceTable.AlignmentShiftCount:X})");
-            if (ResourceEntriesCount == 0 || ResourceTable.ResourceTypes.Length == 0)
+            if (ResourceEntriesCount == 0 || ResourceTable.ResourceTypes == null || ResourceTable.ResourceTypes.Length == 0)
             {
                 builder.AppendLine("  No resource table items");
             }
@@ -500,11 +696,17 @@ namespace BinaryObjectScanner.Wrappers
                     // TODO: If not integer type, print out name
                     var entry = ResourceTable.ResourceTypes[i];
                     builder.AppendLine($"  Resource Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X}) (Is Integer Type: {entry.IsIntegerType()})");
                     builder.AppendLine($"    Resource count: {entry.ResourceCount} (0x{entry.ResourceCount:X})");
                     builder.AppendLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
                     builder.AppendLine($"    Resources = ");
-                    if (entry.ResourceCount == 0 || entry.Resources.Length == 0)
+                    if (entry.ResourceCount == 0 || entry.Resources == null || entry.Resources.Length == 0)
                     {
                         builder.AppendLine("      No resource items");
                     }
@@ -515,6 +717,12 @@ namespace BinaryObjectScanner.Wrappers
                             // TODO: If not integer type, print out name
                             var resource = entry.Resources[j];
                             builder.AppendLine($"      Resource Entry {i}");
+                            if (resource == null)
+                            {
+                                builder.AppendLine("      [NULL]");
+                                continue;
+                            }
+
                             builder.AppendLine($"        Offset: {resource.Offset} (0x{resource.Offset:X})");
                             builder.AppendLine($"        Length: {resource.Length} (0x{resource.Length:X})");
                             builder.AppendLine($"        Flag word: {resource.FlagWord} (0x{resource.FlagWord:X})");
@@ -525,7 +733,7 @@ namespace BinaryObjectScanner.Wrappers
                 }
             }
 
-            if (ResourceTable.TypeAndNameStrings.Count == 0)
+            if (ResourceTable.TypeAndNameStrings == null || ResourceTable.TypeAndNameStrings.Count == 0)
             {
                 builder.AppendLine("  No resource table type/name strings");
             }
@@ -534,6 +742,13 @@ namespace BinaryObjectScanner.Wrappers
                 foreach (var typeAndNameString in ResourceTable.TypeAndNameStrings)
                 {
                     builder.AppendLine($"  Resource Type/Name Offset {typeAndNameString.Key}");
+#if NET6_0_OR_GREATER
+                    if (typeAndNameString.Value == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+#endif
                     builder.AppendLine($"    Length: {typeAndNameString.Value.Length} (0x{typeAndNameString.Value.Length:X})");
                     builder.AppendLine($"    Text: {(typeAndNameString.Value.Text != null ? Encoding.ASCII.GetString(typeAndNameString.Value.Text).TrimEnd('\0') : "[EMPTY]")}");
                 }
@@ -549,7 +764,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Resident-Name Table Information:");
             builder.AppendLine("  -------------------------");
-            if (ResidentNameTableOffset == 0 || ResidentNameTable.Length == 0)
+            if (ResidentNameTableOffset == 0 || ResidentNameTable == null || ResidentNameTable.Length == 0)
             {
                 builder.AppendLine("  No resident-name table items");
             }
@@ -559,6 +774,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = ResidentNameTable[i];
                     builder.AppendLine($"  Resident-Name Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString).TrimEnd('\0') : "[EMPTY]")}");
                     builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
@@ -575,7 +796,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Module-Reference Table Information:");
             builder.AppendLine("  -------------------------");
-            if (ModuleReferenceTableSize == 0 || ModuleReferenceTable.Length == 0)
+            if (ModuleReferenceTableSize == 0 || ModuleReferenceTable == null || ModuleReferenceTable.Length == 0)
             {
                 builder.AppendLine("  No module-reference table items");
             }
@@ -586,6 +807,12 @@ namespace BinaryObjectScanner.Wrappers
                     // TODO: Read the imported names table and print value here
                     var entry = ModuleReferenceTable[i];
                     builder.AppendLine($"  Module-Reference Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Offset: {entry.Offset} (adjusted to be {entry.Offset + Stub_NewExeHeaderAddr + ImportedNamesTableOffset})");
                 }
             }
@@ -600,7 +827,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Imported-Name Table Information:");
             builder.AppendLine("  -------------------------");
-            if (ImportedNamesTableOffset == 0 || ImportedNameTable.Count == 0)
+            if (ImportedNamesTableOffset == 0 || ImportedNameTable == null || ImportedNameTable.Count == 0)
             {
                 builder.AppendLine("  No imported-name table items");
             }
@@ -609,6 +836,13 @@ namespace BinaryObjectScanner.Wrappers
                 foreach (var entry in ImportedNameTable)
                 {
                     builder.AppendLine($"  Imported-Name Table at Offset {entry.Key}");
+#if NET6_0_OR_GREATER
+                    if (entry.Value == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+#endif
                     builder.AppendLine($"    Length: {entry.Value.Length} (0x{entry.Value.Length:X})");
                     builder.AppendLine($"    Name string: {(entry.Value.NameString != null ? Encoding.ASCII.GetString(entry.Value.NameString) : "[EMPTY]")}");
                 }
@@ -624,7 +858,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Entry Table Information:");
             builder.AppendLine("  -------------------------");
-            if (EntryTableSize == 0 || EntryTable.Length == 0)
+            if (EntryTableSize == 0 || EntryTable == null || EntryTable.Length == 0)
             {
                 builder.AppendLine("  No entry table items");
             }
@@ -634,6 +868,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = EntryTable[i];
                     builder.AppendLine($"  Entry Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
                     builder.AppendLine($"    Segment indicator: {entry.SegmentIndicator} (0x{entry.SegmentIndicator:X}) ({entry.GetEntryType()})");
                     switch (entry.GetEntryType())
@@ -662,7 +902,7 @@ namespace BinaryObjectScanner.Wrappers
         {
             builder.AppendLine("  Nonresident-Name Table Information:");
             builder.AppendLine("  -------------------------");
-            if (NonResidentNameTableSize == 0 || NonResidentNameTable.Length == 0)
+            if (NonResidentNameTableSize == 0 || NonResidentNameTable == null || NonResidentNameTable.Length == 0)
             {
                 builder.AppendLine("  No nonresident-name table items");
             }
@@ -672,6 +912,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = NonResidentNameTable[i];
                     builder.AppendLine($"  Nonresident-Name Table Entry {i}");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
                     builder.AppendLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
                     builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
@@ -714,11 +960,19 @@ namespace BinaryObjectScanner.Wrappers
                 switch (_dataSource)
                 {
                     case DataSource.ByteArray:
+#if NET48
                         length = _byteArrayData.Length - _byteArrayOffset;
+#else
+                        length = _byteArrayData!.Length - _byteArrayOffset;
+#endif
                         break;
 
                     case DataSource.Stream:
+#if NET48
                         length = (int)_streamData.Length;
+#else
+                        length = (int)_streamData!.Length;
+#endif
                         break;
                 }
             }

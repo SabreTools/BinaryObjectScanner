@@ -19,21 +19,29 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Signature => _model.Header.Signature;
 #else
-        public string? Signature => _model.Header.Signature;
+        public string? Signature => _model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.VBSP.Header.Version"/>
+#if NET48
         public int Version => _model.Header.Version;
+#else
+        public int? Version => _model.Header?.Version;
+#endif
 
         /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
 #if NET48
         public SabreTools.Models.VBSP.Lump[] Lumps => _model.Header.Lumps;
 #else
-        public SabreTools.Models.VBSP.Lump?[]? Lumps => _model.Header.Lumps;
+        public SabreTools.Models.VBSP.Lump?[]? Lumps => _model.Header?.Lumps;
 #endif
 
         /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
+#if NET48
         public int MapRevision => _model.Header.MapRevision;
+#else
+        public int? MapRevision => _model.Header?.MapRevision;
+#endif
 
         #endregion
 
@@ -185,6 +193,12 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     builder.AppendLine($"  Lump {i}{specialLumpName}");
+                    if (lump == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
                     builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
                     builder.AppendLine($"    Version: {lump.Version} (0x{lump.Version:X})");

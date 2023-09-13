@@ -17,23 +17,39 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.PFF.Header.HeaderSize"/>
+#if NET48
         public uint HeaderSize => _model.Header.HeaderSize;
+#else
+        public uint? HeaderSize => _model.Header?.HeaderSize;
+#endif
 
         /// <inheritdoc cref="Models.PFF.Header.Signature"/>
 #if NET48
         public string Signature => _model.Header.Signature;
 #else
-        public string? Signature => _model.Header.Signature;
+        public string? Signature => _model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Header.NumberOfFiles"/>
+#if NET48
         public uint NumberOfFiles => _model.Header.NumberOfFiles;
+#else
+        public uint? NumberOfFiles => _model.Header?.NumberOfFiles;
+#endif
 
         /// <inheritdoc cref="Models.PFF.Header.FileSegmentSize"/>
+#if NET48
         public uint FileSegmentSize => _model.Header.FileSegmentSize;
+#else
+        public uint? FileSegmentSize => _model.Header?.FileSegmentSize;
+#endif
 
         /// <inheritdoc cref="Models.PFF.Header.FileListOffset"/>
+#if NET48
         public uint FileListOffset => _model.Header.FileListOffset;
+#else
+        public uint? FileListOffset => _model.Header?.FileListOffset;
+#endif
 
         #endregion
 
@@ -51,16 +67,24 @@ namespace BinaryObjectScanner.Wrappers
         #region Footer
 
         /// <inheritdoc cref="Models.PFF.Footer.SystemIP"/>
+#if NET48
         public uint SystemIP => _model.Footer.SystemIP;
+#else
+        public uint? SystemIP => _model.Footer?.SystemIP;
+#endif
 
         /// <inheritdoc cref="Models.PFF.Footer.Reserved"/>
+#if NET48
         public uint Reserved => _model.Footer.Reserved;
+#else
+        public uint? Reserved => _model.Footer?.Reserved;
+#endif
 
         /// <inheritdoc cref="Models.PFF.Footer.KingTag"/>
 #if NET48
         public string KingTag => _model.Footer.KingTag;
 #else
-        public string? KingTag => _model.Footer.KingTag;
+        public string? KingTag => _model.Footer?.KingTag;
 #endif
 
         #endregion
@@ -186,6 +210,8 @@ namespace BinaryObjectScanner.Wrappers
 
             // Get the segment information
             var file = Segments[index];
+            if (file == null)
+                return false;
 
             // Get the read index and length
             int offset = (int)file.FileLocation;
@@ -275,6 +301,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var segment = Segments[i];
                     builder.AppendLine($"  Segment {i}");
+                    if (segment == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Deleted: {segment.Deleted} (0x{segment.Deleted:X})");
                     builder.AppendLine($"    File location: {segment.FileLocation} (0x{segment.FileLocation:X})");
                     builder.AppendLine($"    File size: {segment.FileSize} (0x{segment.FileSize:X})");

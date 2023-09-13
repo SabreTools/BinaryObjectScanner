@@ -19,65 +19,129 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Signature"/>
+#if NET48
         public ulong Signature => _model.Header.Signature;
+#else
+        public ulong? Signature => _model.Header?.Signature;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.CLSID"/>
+#if NET48
         public Guid CLSID => _model.Header.CLSID;
+#else
+        public Guid? CLSID => _model.Header?.CLSID;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MinorVersion"/>
+#if NET48
         public ushort MinorVersion => _model.Header.MinorVersion;
+#else
+        public ushort? MinorVersion => _model.Header?.MinorVersion;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MajorVersion"/>
+#if NET48
         public ushort MajorVersion => _model.Header.MajorVersion;
+#else
+        public ushort? MajorVersion => _model.Header?.MajorVersion;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.ByteOrder"/>
+#if NET48
         public ushort ByteOrder => _model.Header.ByteOrder;
+#else
+        public ushort? ByteOrder => _model.Header?.ByteOrder;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.SectorShift"/>
+#if NET48
         public ushort SectorShift => _model.Header.SectorShift;
+#else
+        public ushort? SectorShift => _model.Header?.SectorShift;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MiniSectorShift"/>
+#if NET48
         public ushort MiniSectorShift => _model.Header.MiniSectorShift;
+#else
+        public ushort? MiniSectorShift => _model.Header?.MiniSectorShift;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Reserved"/>
 #if NET48
         public byte[] Reserved => _model.Header.Reserved;
 #else
-        public byte[]? Reserved => _model.Header.Reserved;
+        public byte[]? Reserved => _model.Header?.Reserved;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDirectorySectors"/>
+#if NET48
         public uint NumberOfDirectorySectors => _model.Header.NumberOfDirectorySectors;
+#else
+        public uint? NumberOfDirectorySectors => _model.Header?.NumberOfDirectorySectors;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfFATSectors"/>
+#if NET48
         public uint NumberOfFATSectors => _model.Header.NumberOfFATSectors;
+#else
+        public uint? NumberOfFATSectors => _model.Header?.NumberOfFATSectors;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstDirectorySectorLocation"/>
+#if NET48
         public uint FirstDirectorySectorLocation => _model.Header.FirstDirectorySectorLocation;
+#else
+        public uint? FirstDirectorySectorLocation => _model.Header?.FirstDirectorySectorLocation;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.TransactionSignatureNumber"/>
+#if NET48
         public uint TransactionSignatureNumber => _model.Header.TransactionSignatureNumber;
+#else
+        public uint? TransactionSignatureNumber => _model.Header?.TransactionSignatureNumber;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MiniStreamCutoffSize"/>
+#if NET48
         public uint MiniStreamCutoffSize => _model.Header.MiniStreamCutoffSize;
+#else
+        public uint? MiniStreamCutoffSize => _model.Header?.MiniStreamCutoffSize;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstMiniFATSectorLocation"/>
+#if NET48
         public uint FirstMiniFATSectorLocation => _model.Header.FirstMiniFATSectorLocation;
+#else
+        public uint? FirstMiniFATSectorLocation => _model.Header?.FirstMiniFATSectorLocation;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfMiniFATSectors"/>
+#if NET48
         public uint NumberOfMiniFATSectors => _model.Header.NumberOfMiniFATSectors;
+#else
+        public uint? NumberOfMiniFATSectors => _model.Header?.NumberOfMiniFATSectors;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstDIFATSectorLocation"/>
+#if NET48
         public uint FirstDIFATSectorLocation => _model.Header.FirstDIFATSectorLocation;
+#else
+        public uint? FirstDIFATSectorLocation => _model.Header?.FirstDIFATSectorLocation;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDIFATSectors"/>
+#if NET48
         public uint NumberOfDIFATSectors => _model.Header.NumberOfDIFATSectors;
+#else
+        public uint? NumberOfDIFATSectors => _model.Header?.NumberOfDIFATSectors;
+#endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.DIFAT"/>
 #if NET48
         public SabreTools.Models.CFB.SectorNumber[] DIFAT => _model.Header.DIFAT;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[]? DIFAT => _model.Header.DIFAT;
+        public SabreTools.Models.CFB.SectorNumber?[]? DIFAT => _model.Header?.DIFAT;
 #endif
 
         #endregion
@@ -133,12 +197,20 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Normal sector size in bytes
         /// </summary>
+#if NET48
         public long SectorSize => (long)Math.Pow(2, SectorShift);
+#else
+        public long SectorSize => (long)Math.Pow(2, SectorShift ?? 0);
+#endif
 
         /// <summary>
         /// Mini sector size in bytes
         /// </summary>
+#if NET48
         public long MiniSectorSize => (long)Math.Pow(2, MiniSectorShift);
+#else
+        public long MiniSectorSize => (long)Math.Pow(2, MiniSectorShift ?? 0);
+#endif
 
         #endregion
 
@@ -236,7 +308,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid sector
-            if (startingSector < 0 || (long)startingSector >= FATSectorNumbers.Length)
+            if (startingSector < 0 || FATSectorNumbers == null || (long)startingSector >= FATSectorNumbers.Length)
                 return null;
 
             // Setup the returned list
@@ -340,15 +412,15 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid sector
-            if (startingSector < 0 || (long)startingSector >= MiniFATSectorNumbers.Length)
+            if (startingSector < 0 || MiniFATSectorNumbers == null || (long)startingSector >= MiniFATSectorNumbers.Length)
                 return null;
 
             // Setup the returned list
-        #if NET48
+#if NET48
             var sectors = new List<SabreTools.Models.CFB.SectorNumber> { startingSector };
-        #else
+#else
             var sectors = new List<SabreTools.Models.CFB.SectorNumber?> { startingSector };
-        #endif
+#endif
 
             var lastSector = startingSector;
             while (true)
@@ -476,9 +548,16 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  First DIFAT sector location: {FirstDIFATSectorLocation} (0x{FirstDIFATSectorLocation:X})");
             builder.AppendLine($"  Number of DIFAT sectors: {NumberOfDIFATSectors} (0x{NumberOfDIFATSectors:X})");
             builder.AppendLine($"  DIFAT:");
-            for (int i = 0; i < DIFAT.Length; i++)
+            if (DIFAT == null || DIFAT.Length == 0)
             {
-                builder.AppendLine($"    DIFAT Entry {i}: {DIFAT[i]} (0x{DIFAT[i]:X})");
+                builder.AppendLine("  No DIFAT entries");
+            }
+            else
+            {
+                for (int i = 0; i < DIFAT.Length; i++)
+                {
+                    builder.AppendLine($"    DIFAT Entry {i}: {DIFAT[i]} (0x{DIFAT[i]:X})");
+                }
             }
             builder.AppendLine();
         }
@@ -567,19 +646,26 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryEntry = DirectoryEntries[i];
                     builder.AppendLine($"  Directory Entry {i}");
-                    builder.AppendLine($"    Name: {directoryEntry.Name}");
-                    builder.AppendLine($"    Name length: {directoryEntry.NameLength} (0x{directoryEntry.NameLength:X})");
-                    builder.AppendLine($"    Object type: {directoryEntry.ObjectType} (0x{directoryEntry.ObjectType:X})");
-                    builder.AppendLine($"    Color flag: {directoryEntry.ColorFlag} (0x{directoryEntry.ColorFlag:X})");
-                    builder.AppendLine($"    Left sibling ID: {directoryEntry.LeftSiblingID} (0x{directoryEntry.LeftSiblingID:X})");
-                    builder.AppendLine($"    Right sibling ID: {directoryEntry.RightSiblingID} (0x{directoryEntry.RightSiblingID:X})");
-                    builder.AppendLine($"    Child ID: {directoryEntry.ChildID} (0x{directoryEntry.ChildID:X})");
-                    builder.AppendLine($"    CLSID: {directoryEntry.CLSID}");
-                    builder.AppendLine($"    State bits: {directoryEntry.StateBits} (0x{directoryEntry.StateBits:X})");
-                    builder.AppendLine($"    Creation time: {directoryEntry.CreationTime} (0x{directoryEntry.CreationTime:X})");
-                    builder.AppendLine($"    Modification time: {directoryEntry.ModifiedTime} (0x{directoryEntry.ModifiedTime:X})");
-                    builder.AppendLine($"    Staring sector location: {directoryEntry.StartingSectorLocation} (0x{directoryEntry.StartingSectorLocation:X})");
-                    builder.AppendLine($"    Stream size: {directoryEntry.StreamSize} (0x{directoryEntry.StreamSize:X})");
+                    if (directoryEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                    }
+                    else
+                    {
+                        builder.AppendLine($"    Name: {directoryEntry.Name}");
+                        builder.AppendLine($"    Name length: {directoryEntry.NameLength} (0x{directoryEntry.NameLength:X})");
+                        builder.AppendLine($"    Object type: {directoryEntry.ObjectType} (0x{directoryEntry.ObjectType:X})");
+                        builder.AppendLine($"    Color flag: {directoryEntry.ColorFlag} (0x{directoryEntry.ColorFlag:X})");
+                        builder.AppendLine($"    Left sibling ID: {directoryEntry.LeftSiblingID} (0x{directoryEntry.LeftSiblingID:X})");
+                        builder.AppendLine($"    Right sibling ID: {directoryEntry.RightSiblingID} (0x{directoryEntry.RightSiblingID:X})");
+                        builder.AppendLine($"    Child ID: {directoryEntry.ChildID} (0x{directoryEntry.ChildID:X})");
+                        builder.AppendLine($"    CLSID: {directoryEntry.CLSID}");
+                        builder.AppendLine($"    State bits: {directoryEntry.StateBits} (0x{directoryEntry.StateBits:X})");
+                        builder.AppendLine($"    Creation time: {directoryEntry.CreationTime} (0x{directoryEntry.CreationTime:X})");
+                        builder.AppendLine($"    Modification time: {directoryEntry.ModifiedTime} (0x{directoryEntry.ModifiedTime:X})");
+                        builder.AppendLine($"    Staring sector location: {directoryEntry.StartingSectorLocation} (0x{directoryEntry.StartingSectorLocation:X})");
+                        builder.AppendLine($"    Stream size: {directoryEntry.StreamSize} (0x{directoryEntry.StreamSize:X})");
+                    }
                 }
             }
             builder.AppendLine();

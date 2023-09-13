@@ -18,10 +18,18 @@ namespace BinaryObjectScanner.Wrappers
         #region Audio Header
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Signature"/>
+#if NET48
         public uint Signature => _model.Header.Signature;
+#else
+        public uint? Signature => _model.Header?.Signature;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Version"/>
+#if NET48
         public uint Version => _model.Header.Version;
+#else
+        public uint? Version => _model.Header?.Version;
+#endif
 
         #region V1 Only
 
@@ -131,73 +139,101 @@ namespace BinaryObjectScanner.Wrappers
         #endregion
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.TrackLength"/>
+#if NET48
         public ushort TrackLength => _model.Header.TrackLength;
+#else
+        public ushort? TrackLength => _model.Header?.TrackLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Track"/>
 #if NET48
         public string Track => _model.Header.Track;
 #else
-        public string? Track => _model.Header.Track;
+        public string? Track => _model.Header?.Track;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.ArtistLength"/>
+#if NET48
         public ushort ArtistLength => _model.Header.ArtistLength;
+#else
+        public ushort? ArtistLength => _model.Header?.ArtistLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Artist"/>
 #if NET48
         public string Artist => _model.Header.Artist;
 #else
-        public string? Artist => _model.Header.Artist;
+        public string? Artist => _model.Header?.Artist;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.AlbumLength"/>
+#if NET48
         public ushort AlbumLength => _model.Header.AlbumLength;
+#else
+        public ushort? AlbumLength => _model.Header?.AlbumLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Album"/>
 #if NET48
         public string Album => _model.Header.Album;
 #else
-        public string? Album => _model.Header.Album;
+        public string? Album => _model.Header?.Album;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.WriterLength"/>
+#if NET48
         public ushort WriterLength => _model.Header.WriterLength;
+#else
+        public ushort? WriterLength => _model.Header?.WriterLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Writer"/>
 #if NET48
         public string Writer => _model.Header.Writer;
 #else
-        public string? Writer => _model.Header.Writer;
+        public string? Writer => _model.Header?.Writer;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.PublisherLength"/>
+#if NET48
         public ushort PublisherLength => _model.Header.PublisherLength;
+#else
+        public ushort? PublisherLength => _model.Header?.PublisherLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Publisher"/>
 #if NET48
         public string Publisher => _model.Header.Publisher;
 #else
-        public string? Publisher => _model.Header.Publisher;
+        public string? Publisher => _model.Header?.Publisher;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.LabelLength"/>
+#if NET48
         public ushort LabelLength => _model.Header.LabelLength;
+#else
+        public ushort? LabelLength => _model.Header?.LabelLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Label"/>
 #if NET48
         public string Label => _model.Header.Label;
 #else
-        public string? Label => _model.Header.Label;
+        public string? Label => _model.Header?.Label;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.CommentsLength"/>
+#if NET48
         public ushort CommentsLength => _model.Header.CommentsLength;
+#else
+        public ushort? CommentsLength => _model.Header?.CommentsLength;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Comments"/>
 #if NET48
         public string Comments => _model.Header.Comments;
 #else
-        public string? Comments => _model.Header.Comments;
+        public string? Comments => _model.Header?.Comments;
 #endif
 
         #endregion
@@ -205,13 +241,17 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Block 1
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Length"/>
+#if NET48
         public uint UB1_Length => _model.UnknownBlock1.Length;
+#else
+        public uint? UB1_Length => _model.UnknownBlock1?.Length;
+#endif
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Data"/>
 #if NET48
         public byte[] UB1_Data => _model.UnknownBlock1.Data;
 #else
-        public byte[]? UB1_Data => _model.UnknownBlock1.Data;
+        public byte[]? UB1_Data => _model.UnknownBlock1?.Data;
 #endif
 
         #endregion
@@ -231,7 +271,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public byte[] UB3_Data => _model.UnknownBlock3.Data;
 #else
-        public byte[]? UB3_Data => _model.UnknownBlock3.Data;
+        public byte[]? UB3_Data => _model.UnknownBlock3?.Data;
 #endif
 
         #endregion
@@ -491,6 +531,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var dataFile = DataFiles[i];
                     builder.AppendLine($"  Data File {i}:");
+                    if (dataFile == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    File name length: {dataFile.FileNameLength} (0x{dataFile.FileNameLength:X})");
                     builder.AppendLine($"    File name: {dataFile.FileName ?? "[NULL]"}");
                     builder.AppendLine($"    Data length: {dataFile.DataLength} (0x{dataFile.DataLength:X})");

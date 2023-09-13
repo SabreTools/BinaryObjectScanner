@@ -388,7 +388,7 @@ namespace BinaryObjectScanner.Utilities
 
             #region BDPlusSVM
 
-            if (extension.Equals(value: "svm", StringComparison.OrdinalIgnoreCase))
+            if (extension.Equals("svm", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.BDPlusSVM;
 
             #endregion
@@ -513,7 +513,7 @@ namespace BinaryObjectScanner.Utilities
                 return SupportedFileType.N3DS;
 
             // CIA package -- Not currently supported
-            // else if (extension.Equals(value: "cia", StringComparison.OrdinalIgnoreCase))
+            // else if (extension.Equals("cia", StringComparison.OrdinalIgnoreCase))
             //     return SupportedFileType.N3DS;
 
             #endregion

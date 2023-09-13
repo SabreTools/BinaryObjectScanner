@@ -20,14 +20,22 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Signature => _model.Header.Signature;
 #else
-        public string? Signature => _model.Header.Signature;
+        public string? Signature => _model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryOffset"/>
+#if NET48
         public uint DirectoryOffset => _model.Header.DirectoryOffset;
+#else
+        public uint? DirectoryOffset => _model.Header?.DirectoryOffset;
+#endif
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryLength"/>
+#if NET48
         public uint DirectoryLength => _model.Header.DirectoryLength;
+#else
+        public uint? DirectoryLength => _model.Header?.DirectoryLength;
+#endif
 
         #endregion
 
@@ -179,6 +187,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryItem = DirectoryItems[i];
                     builder.AppendLine($"  Directory Item {i}");
+                    if (directoryItem == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Item name: {directoryItem.ItemName}");
                     builder.AppendLine($"    Item offset: {directoryItem.ItemOffset} (0x{directoryItem.ItemOffset:X})");
                     builder.AppendLine($"    Item length: {directoryItem.ItemLength} (0x{directoryItem.ItemLength:X})");

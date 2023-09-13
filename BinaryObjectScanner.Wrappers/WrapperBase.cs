@@ -172,10 +172,18 @@ namespace BinaryObjectScanner.Wrappers
             switch (_dataSource)
             {
                 case DataSource.ByteArray:
+#if NET48
                     return _byteArrayOffset + position + length <= _byteArrayData.Length;
+#else
+                    return _byteArrayOffset + position + length <= _byteArrayData!.Length;
+#endif
 
                 case DataSource.Stream:
+#if NET48
                     return position + length <= _streamData.Length;
+#else
+                    return position + length <= _streamData!.Length;
+#endif
 
                 // Everything else is invalid
                 case DataSource.UNKNOWN:
@@ -222,7 +230,11 @@ namespace BinaryObjectScanner.Wrappers
                     break;
 
                 case DataSource.Stream:
+#if NET48
                     long currentLocation = _streamData.Position;
+#else
+                    long currentLocation = _streamData!.Position;
+#endif
                     _streamData.Seek(position, SeekOrigin.Begin);
                     sectionData = _streamData.ReadBytes(length);
                     _streamData.Seek(currentLocation, SeekOrigin.Begin);
@@ -356,10 +368,18 @@ namespace BinaryObjectScanner.Wrappers
             switch (_dataSource)
             {
                 case DataSource.ByteArray:
+#if NET48
                     return _byteArrayData.Length - _byteArrayOffset;
+#else
+                    return _byteArrayData!.Length - _byteArrayOffset;
+#endif
 
                 case DataSource.Stream:
+#if NET48
                     return (int)_streamData.Length;
+#else
+                    return (int)_streamData!.Length;
+#endif
 
                 case DataSource.UNKNOWN:
                 default:
@@ -377,12 +397,10 @@ namespace BinaryObjectScanner.Wrappers
         public abstract StringBuilder PrettyPrint();
 
 #if NET6_0_OR_GREATER
-
         /// <summary>
         /// Export the item information as JSON
         /// </summary>
         public abstract string ExportJSON();
-
 #endif
 
         #endregion

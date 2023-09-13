@@ -21,32 +21,64 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Signature => _model.Header.Signature;
 #else
-        public string? Signature => _model.Header.Signature;
+        public string? Signature => _model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.Version"/>
+#if NET48
         public uint Version => _model.Header.Version;
+#else
+        public uint? Version => _model.Header?.Version;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.PreloadDirectoryEntryCount"/>
+#if NET48
         public uint PreloadDirectoryEntryCount => _model.Header.PreloadDirectoryEntryCount;
+#else
+        public uint? PreloadDirectoryEntryCount => _model.Header?.PreloadDirectoryEntryCount;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryEntryCount"/>
+#if NET48
         public uint DirectoryEntryCount => _model.Header.DirectoryEntryCount;
+#else
+        public uint? DirectoryEntryCount => _model.Header?.DirectoryEntryCount;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.PreloadBytes"/>
+#if NET48
         public uint PreloadBytes => _model.Header.PreloadBytes;
+#else
+        public uint? PreloadBytes => _model.Header?.PreloadBytes;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.HeaderLength"/>
+#if NET48
         public uint HeaderLength => _model.Header.HeaderLength;
+#else
+        public uint? HeaderLength => _model.Header?.HeaderLength;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemCount"/>
+#if NET48
         public uint DirectoryItemCount => _model.Header.DirectoryItemCount;
+#else
+        public uint? DirectoryItemCount => _model.Header?.DirectoryItemCount;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemOffset"/>
+#if NET48
         public uint DirectoryItemOffset => _model.Header.DirectoryItemOffset;
+#else
+        public uint? DirectoryItemOffset => _model.Header?.DirectoryItemOffset;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemLength"/>
+#if NET48
         public uint DirectoryItemLength => _model.Header.DirectoryItemLength;
+#else
+        public uint? DirectoryItemLength => _model.Header?.DirectoryItemLength;
+#endif
 
         #endregion
 
@@ -97,13 +129,17 @@ namespace BinaryObjectScanner.Wrappers
         #region Footer
 
         /// <inheritdoc cref="Models.XZP.Footer.FileLength"/>
+#if NET48
         public uint F_FileLength => _model.Footer.FileLength;
+#else
+        public uint? F_FileLength => _model.Footer?.FileLength;
+#endif
 
         /// <inheritdoc cref="Models.XZP.Footer.Signature"/>
 #if NET48
         public string F_Signature => _model.Footer.Signature;
 #else
-        public string? F_Signature => _model.Footer.Signature;
+        public string? F_Signature => _model.Footer?.Signature;
 #endif
 
         #endregion
@@ -255,6 +291,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryEntry = DirectoryEntries[i];
                     builder.AppendLine($"  Directory Entry {i}");
+                    if (directoryEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    File name CRC: {directoryEntry.FileNameCRC} (0x{directoryEntry.FileNameCRC:X})");
                     builder.AppendLine($"    Entry length: {directoryEntry.EntryLength} (0x{directoryEntry.EntryLength:X})");
                     builder.AppendLine($"    Entry offset: {directoryEntry.EntryOffset} (0x{directoryEntry.EntryOffset:X})");
@@ -281,6 +323,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var preloadDirectoryEntry = PreloadDirectoryEntries[i];
                     builder.AppendLine($"  Directory Entry {i}");
+                    if (preloadDirectoryEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    File name CRC: {preloadDirectoryEntry.FileNameCRC} (0x{preloadDirectoryEntry.FileNameCRC:X})");
                     builder.AppendLine($"    Entry length: {preloadDirectoryEntry.EntryLength} (0x{preloadDirectoryEntry.EntryLength:X})");
                     builder.AppendLine($"    Entry offset: {preloadDirectoryEntry.EntryOffset} (0x{preloadDirectoryEntry.EntryOffset:X})");
@@ -307,6 +355,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var preloadDirectoryMapping = PreloadDirectoryMappings[i];
                     builder.AppendLine($"  Directory Mapping {i}");
+                    if (preloadDirectoryMapping == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Preload directory entry index: {preloadDirectoryMapping.PreloadDirectoryEntryIndex} (0x{preloadDirectoryMapping.PreloadDirectoryEntryIndex:X})");
                 }
             }
@@ -331,6 +385,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryItem = DirectoryItems[i];
                     builder.AppendLine($"  Directory Item {i}");
+                    if (directoryItem == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    File name CRC: {directoryItem.FileNameCRC} (0x{directoryItem.FileNameCRC:X})");
                     builder.AppendLine($"    Name offset: {directoryItem.NameOffset} (0x{directoryItem.NameOffset:X})");
                     builder.AppendLine($"    Name: {directoryItem.Name ?? "[NULL]"}");
@@ -411,7 +471,7 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Get the associated directory item
-            var directoryItem = DirectoryItems.Where(di => di.FileNameCRC == directoryEntry.FileNameCRC).FirstOrDefault();
+            var directoryItem = DirectoryItems.Where(di => di?.FileNameCRC == directoryEntry.FileNameCRC).FirstOrDefault();
             if (directoryItem == null)
                 return false;
 

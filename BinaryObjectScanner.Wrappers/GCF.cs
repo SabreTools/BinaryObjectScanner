@@ -19,65 +19,141 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy0"/>
+#if NET48
         public uint Dummy0 => _model.Header.Dummy0;
+#else
+        public uint? Dummy0 => _model.Header?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.MajorVersion"/>
+#if NET48
         public uint MajorVersion => _model.Header.MajorVersion;
+#else
+        public uint? MajorVersion => _model.Header?.MajorVersion;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.MinorVersion"/>
+#if NET48
         public uint MinorVersion => _model.Header.MinorVersion;
+#else
+        public uint? MinorVersion => _model.Header?.MinorVersion;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.CacheID"/>
+#if NET48
         public uint CacheID => _model.Header.CacheID;
+#else
+        public uint? CacheID => _model.Header?.CacheID;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.LastVersionPlayed"/>
+#if NET48
         public uint LastVersionPlayed => _model.Header.LastVersionPlayed;
+#else
+        public uint? LastVersionPlayed => _model.Header?.LastVersionPlayed;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy1"/>
+#if NET48
         public uint Dummy1 => _model.Header.Dummy1;
+#else
+        public uint? Dummy1 => _model.Header?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy2"/>
+#if NET48
         public uint Dummy2 => _model.Header.Dummy2;
+#else
+        public uint? Dummy2 => _model.Header?.Dummy2;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.FileSize"/>
+#if NET48
         public uint FileSize => _model.Header.FileSize;
+#else
+        public uint? FileSize => _model.Header?.FileSize;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.BlockSize"/>
+#if NET48
         public uint BlockSize => _model.Header.BlockSize;
+#else
+        public uint? BlockSize => _model.Header?.BlockSize;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.BlockCount"/>
+#if NET48
         public uint BlockCount => _model.Header.BlockCount;
+#else
+        public uint? BlockCount => _model.Header?.BlockCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.Header.Dummy3"/>
+#if NET48
         public uint Dummy3 => _model.Header.Dummy3;
+#else
+        public uint? Dummy3 => _model.Header?.Dummy3;
+#endif
 
         #endregion
 
         #region Block Entry Header
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.BlockCount"/>
+#if NET48
         public uint BEH_BlockCount => _model.BlockEntryHeader.BlockCount;
+#else
+        public uint? BEH_BlockCount => _model.BlockEntryHeader?.BlockCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.BlocksUsed"/>
+#if NET48
         public uint BEH_BlocksUsed => _model.BlockEntryHeader.BlocksUsed;
+#else
+        public uint? BEH_BlocksUsed => _model.BlockEntryHeader?.BlocksUsed;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy0"/>
+#if NET48
         public uint BEH_Dummy0 => _model.BlockEntryHeader.Dummy0;
+#else
+        public uint? BEH_Dummy0 => _model.BlockEntryHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy1"/>
+#if NET48
         public uint BEH_Dummy1 => _model.BlockEntryHeader.Dummy1;
+#else
+        public uint? BEH_Dummy1 => _model.BlockEntryHeader?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy2"/>
+#if NET48
         public uint BEH_Dummy2 => _model.BlockEntryHeader.Dummy2;
+#else
+        public uint? BEH_Dummy2 => _model.BlockEntryHeader?.Dummy2;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy3"/>
+#if NET48
         public uint BEH_Dummy3 => _model.BlockEntryHeader.Dummy3;
+#else
+        public uint? BEH_Dummy3 => _model.BlockEntryHeader?.Dummy3;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Dummy4"/>
+#if NET48
         public uint BEH_Dummy4 => _model.BlockEntryHeader.Dummy4;
+#else
+        public uint? BEH_Dummy4 => _model.BlockEntryHeader?.Dummy4;
+#endif
 
         /// <inheritdoc cref="Models.GCF.BlockEntryHeader.Checksum"/>
+#if NET48
         public uint BEH_Checksum => _model.BlockEntryHeader.Checksum;
+#else
+        public uint? BEH_Checksum => _model.BlockEntryHeader?.Checksum;
+#endif
 
         #endregion
 
@@ -95,16 +171,32 @@ namespace BinaryObjectScanner.Wrappers
         #region Fragmentation Map Header
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.BlockCount"/>
+#if NET48
         public uint FMH_BlockCount => _model.FragmentationMapHeader.BlockCount;
+#else
+        public uint? FMH_BlockCount => _model.FragmentationMapHeader?.BlockCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.FirstUnusedEntry"/>
+#if NET48
         public uint FMH_FirstUnusedEntry => _model.FragmentationMapHeader.FirstUnusedEntry;
+#else
+        public uint? FMH_FirstUnusedEntry => _model.FragmentationMapHeader?.FirstUnusedEntry;
+#endif
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.Terminator"/>
+#if NET48
         public uint FMH_Terminator => _model.FragmentationMapHeader.Terminator;
+#else
+        public uint? FMH_Terminator => _model.FragmentationMapHeader?.Terminator;
+#endif
 
         /// <inheritdoc cref="Models.GCF.FragmentationMapHeader.Checksum"/>
+#if NET48
         public uint FMH_Checksum => _model.FragmentationMapHeader.Checksum;
+#else
+        public uint? FMH_Checksum => _model.FragmentationMapHeader?.Checksum;
+#endif
 
         #endregion
 
@@ -152,46 +244,102 @@ namespace BinaryObjectScanner.Wrappers
         #region Directory Header
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy0"/>
+#if NET48
         public uint DH_Dummy0 => _model.DirectoryHeader.Dummy0;
+#else
+        public uint? DH_Dummy0 => _model.DirectoryHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.CacheID"/>
+#if NET48
         public uint DH_CacheID => _model.DirectoryHeader.CacheID;
+#else
+        public uint? DH_CacheID => _model.DirectoryHeader?.CacheID;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.LastVersionPlayed"/>
+#if NET48
         public uint DH_LastVersionPlayed => _model.DirectoryHeader.LastVersionPlayed;
+#else
+        public uint? DH_LastVersionPlayed => _model.DirectoryHeader?.LastVersionPlayed;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.ItemCount"/>
+#if NET48
         public uint DH_ItemCount => _model.DirectoryHeader.ItemCount;
+#else
+        public uint? DH_ItemCount => _model.DirectoryHeader?.ItemCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.FileCount"/>
+#if NET48
         public uint DH_FileCount => _model.DirectoryHeader.FileCount;
+#else
+        public uint? DH_FileCount => _model.DirectoryHeader?.FileCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy1"/>
+#if NET48
         public uint DH_Dummy1 => _model.DirectoryHeader.Dummy1;
+#else
+        public uint? DH_Dummy1 => _model.DirectoryHeader?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.DirectorySize"/>
+#if NET48
         public uint DH_DirectorySize => _model.DirectoryHeader.DirectorySize;
+#else
+        public uint? DH_DirectorySize => _model.DirectoryHeader?.DirectorySize;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.NameSize"/>
+#if NET48
         public uint DH_NameSize => _model.DirectoryHeader.NameSize;
+#else
+        public uint? DH_NameSize => _model.DirectoryHeader?.NameSize;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Info1Count"/>
+#if NET48
         public uint DH_Info1Count => _model.DirectoryHeader.Info1Count;
+#else
+        public uint? DH_Info1Count => _model.DirectoryHeader?.Info1Count;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.CopyCount"/>
+#if NET48
         public uint DH_CopyCount => _model.DirectoryHeader.CopyCount;
+#else
+        public uint? DH_CopyCount => _model.DirectoryHeader?.CopyCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.LocalCount"/>
+#if NET48
         public uint DH_LocalCount => _model.DirectoryHeader.LocalCount;
+#else
+        public uint? DH_LocalCount => _model.DirectoryHeader?.LocalCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy2"/>
+#if NET48
         public uint DH_Dummy2 => _model.DirectoryHeader.Dummy2;
+#else
+        public uint? DH_Dummy2 => _model.DirectoryHeader?.Dummy2;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Dummy3"/>
+#if NET48
         public uint DH_Dummy3 => _model.DirectoryHeader.Dummy3;
+#else
+        public uint? DH_Dummy3 => _model.DirectoryHeader?.Dummy3;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DirectoryHeader.Checksum"/>
+#if NET48
         public uint DH_Checksum => _model.DirectoryHeader.Checksum;
+#else
+        public uint? DH_Checksum => _model.DirectoryHeader?.Checksum;
+#endif
 
         #endregion
 
@@ -285,26 +433,50 @@ namespace BinaryObjectScanner.Wrappers
         #region Checksum Header
 
         /// <inheritdoc cref="Models.GCF.ChecksumHeader.Dummy0"/>
+#if NET48
         public uint CH_Dummy0 => _model.ChecksumHeader.Dummy0;
+#else
+        public uint? CH_Dummy0 => _model.ChecksumHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.GCF.ChecksumHeader.ChecksumSize"/>
+#if NET48
         public uint CH_ChecksumSize => _model.ChecksumHeader.ChecksumSize;
+#else
+        public uint? CH_ChecksumSize => _model.ChecksumHeader?.ChecksumSize;
+#endif
 
         #endregion
 
         #region Checksum Map Header
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.Dummy0"/>
+#if NET48
         public uint CMH_Dummy0 => _model.ChecksumMapHeader.Dummy0;
+#else
+        public uint? CMH_Dummy0 => _model.ChecksumMapHeader?.Dummy0;
+#endif
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.Dummy1"/>
+#if NET48
         public uint CMH_Dummy1 => _model.ChecksumMapHeader.Dummy1;
+#else
+        public uint? CMH_Dummy1 => _model.ChecksumMapHeader?.Dummy1;
+#endif
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.ItemCount"/>
+#if NET48
         public uint CMH_ItemCount => _model.ChecksumMapHeader.ItemCount;
+#else
+        public uint? CMH_ItemCount => _model.ChecksumMapHeader?.ItemCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.ChecksumMapHeader.ChecksumCount"/>
+#if NET48
         public uint CMH_ChecksumCount => _model.ChecksumMapHeader.ChecksumCount;
+#else
+        public uint? CMH_ChecksumCount => _model.ChecksumMapHeader?.ChecksumCount;
+#endif
 
         #endregion
 
@@ -333,22 +505,46 @@ namespace BinaryObjectScanner.Wrappers
         #region Data Block Header
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.LastVersionPlayed"/>
+#if NET48
         public uint DBH_LastVersionPlayed => _model.DataBlockHeader.LastVersionPlayed;
+#else
+        public uint? DBH_LastVersionPlayed => _model.DataBlockHeader?.LastVersionPlayed;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.BlockCount"/>
+#if NET48
         public uint DBH_BlockCount => _model.DataBlockHeader.BlockCount;
+#else
+        public uint? DBH_BlockCount => _model.DataBlockHeader?.BlockCount;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.BlockSize"/>
+#if NET48
         public uint DBH_BlockSize => _model.DataBlockHeader.BlockSize;
+#else
+        public uint? DBH_BlockSize => _model.DataBlockHeader?.BlockSize;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.FirstBlockOffset"/>
+#if NET48
         public uint DBH_FirstBlockOffset => _model.DataBlockHeader.FirstBlockOffset;
+#else
+        public uint? DBH_FirstBlockOffset => _model.DataBlockHeader?.FirstBlockOffset;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.BlocksUsed"/>
+#if NET48
         public uint DBH_BlocksUsed => _model.DataBlockHeader.BlocksUsed;
+#else
+        public uint? DBH_BlocksUsed => _model.DataBlockHeader?.BlocksUsed;
+#endif
 
         /// <inheritdoc cref="Models.GCF.DataBlockHeader.Checksum"/>
+#if NET48
         public uint DBH_Checksum => _model.DataBlockHeader.Checksum;
+#else
+        public uint? DBH_Checksum => _model.DataBlockHeader?.Checksum;
+#endif
 
         #endregion
 
@@ -359,13 +555,21 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Set of all files and their information
         /// </summary>
+#if NET48
         public FileInfo[] Files
+#else
+        public FileInfo[]? Files
+#endif
         {
             get
             {
                 // Use the cached value if we have it
                 if (_files != null)
                     return _files;
+
+                // If we don't have a required property
+                if (DirectoryEntries == null || DirectoryMapEntries == null || BlockEntries == null)
+                    return null;
 
                 // Otherwise, scan and build the files
                 var files = new List<FileInfo>();
@@ -374,6 +578,8 @@ namespace BinaryObjectScanner.Wrappers
                     // Get the directory entry
                     var directoryEntry = DirectoryEntries[i];
                     var directoryMapEntry = DirectoryMapEntries[i];
+                    if (directoryEntry == null || directoryMapEntry == null)
+                        continue;
 
                     // If we have a directory, skip for now
                     if (!directoryEntry.DirectoryFlags.HasFlag(SabreTools.Models.GCF.HL_GCF_FLAG.HL_GCF_FLAG_FILE))
@@ -397,6 +603,9 @@ namespace BinaryObjectScanner.Wrappers
                     while (index != 0xFFFFFFFF)
                     {
                         var parentDirectoryEntry = DirectoryEntries[index];
+                        if (parentDirectoryEntry == null)
+                            break;
+
                         pathParts.Add(parentDirectoryEntry.Name ?? string.Empty);
                         index = parentDirectoryEntry.ParentIndex;
                     }
@@ -406,6 +615,9 @@ namespace BinaryObjectScanner.Wrappers
                     while (index != DBH_BlockCount)
                     {
                         var nextBlock = BlockEntries[index];
+                        if (nextBlock == null)
+                            break;
+
                         blockEntries.Add(nextBlock);
                         index = nextBlock.NextBlockEntryIndex;
                     }
@@ -430,7 +642,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Set of all data block offsets
         /// </summary>
+#if NET48
         public long[] DataBlockOffsets
+#else
+        public long[]? DataBlockOffsets
+#endif
         {
             get
             {
@@ -438,11 +654,25 @@ namespace BinaryObjectScanner.Wrappers
                 if (_dataBlockOffsets != null)
                     return _dataBlockOffsets;
 
+#if NET6_0_OR_GREATER
+                // If we don't have a block count, offset, or size
+                if (DBH_BlockCount == null || DBH_FirstBlockOffset == null || DBH_BlockSize == null)
+                    return null;
+#endif
+
                 // Otherwise, build the data block set
+#if NET48
                 _dataBlockOffsets = new long[DBH_BlockCount];
+#else
+                _dataBlockOffsets = new long[DBH_BlockCount.Value];
+#endif
                 for (int i = 0; i < DBH_BlockCount; i++)
                 {
+#if NET48
                     long dataBlockOffset = DBH_FirstBlockOffset + (i * DBH_BlockSize);
+#else
+                    long dataBlockOffset = DBH_FirstBlockOffset.Value + (i * DBH_BlockSize.Value);
+#endif
                     _dataBlockOffsets[i] = dataBlockOffset;
                 }
 
@@ -458,12 +688,20 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Set of all files and their information
         /// </summary>
+#if NET48
         private FileInfo[] _files = null;
+#else
+        private FileInfo[]? _files = null;
+#endif
 
         /// <summary>
         /// Set of all data block offsets
         /// </summary>
+#if NET48
         private long[] _dataBlockOffsets = null;
+#else
+        private long[]? _dataBlockOffsets = null;
+#endif
 
         #endregion
 
@@ -655,6 +893,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var blockEntry = BlockEntries[i];
                     builder.AppendLine($"  Block Entry {i}");
+                    if (blockEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Entry flags: {blockEntry.EntryFlags} (0x{blockEntry.EntryFlags:X})");
                     builder.AppendLine($"    File data offset: {blockEntry.FileDataOffset} (0x{blockEntry.FileDataOffset:X})");
                     builder.AppendLine($"    File data size: {blockEntry.FileDataSize} (0x{blockEntry.FileDataSize:X})");
@@ -700,6 +944,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var fragmentationMap = FragmentationMaps[i];
                     builder.AppendLine($"  Fragmentation Map {i}");
+                    if (fragmentationMap == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Next data block index: {fragmentationMap.NextDataBlockIndex} (0x{fragmentationMap.NextDataBlockIndex:X})");
                 }
             }
@@ -747,6 +997,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var blockEntryMap = BlockEntryMaps[i];
                     builder.AppendLine($"  Block Entry Map {i}");
+                    if (blockEntryMap == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Previous data block index: {blockEntryMap.PreviousBlockEntryIndex} (0x{blockEntryMap.PreviousBlockEntryIndex:X})");
                     builder.AppendLine($"    Next data block index: {blockEntryMap.NextBlockEntryIndex} (0x{blockEntryMap.NextBlockEntryIndex:X})");
                 }
@@ -797,6 +1053,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryEntry = DirectoryEntries[i];
                     builder.AppendLine($"  Directory Entry {i}");
+                    if (directoryEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Name offset: {directoryEntry.NameOffset} (0x{directoryEntry.NameOffset:X})");
                     builder.AppendLine($"    Name: {directoryEntry.Name ?? "[NULL]"}");
                     builder.AppendLine($"    Item size: {directoryEntry.ItemSize} (0x{directoryEntry.ItemSize:X})");
@@ -828,6 +1090,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryInfoEntry = DirectoryInfo1Entries[i];
                     builder.AppendLine($"  Directory Info 1 Entry {i}");
+                    if (directoryInfoEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
@@ -852,6 +1120,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryInfoEntry = DirectoryInfo2Entries[i];
                     builder.AppendLine($"  Directory Info 2 Entry {i}");
+                    if (directoryInfoEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Dummy 0: {directoryInfoEntry.Dummy0} (0x{directoryInfoEntry.Dummy0:X})");
                 }
             }
@@ -865,7 +1139,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintDirectoryCopyEntries(StringBuilder builder)
         {
             builder.AppendLine("  Directory Copy Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (DirectoryCopyEntries == null || DirectoryCopyEntries.Length == 0)
             {
                 builder.AppendLine("  No directory copy entries");
@@ -876,6 +1150,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryCopyEntry = DirectoryCopyEntries[i];
                     builder.AppendLine($"  Directory Copy Entry {i}");
+                    if (directoryCopyEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Directory index: {directoryCopyEntry.DirectoryIndex} (0x{directoryCopyEntry.DirectoryIndex:X})");
                 }
             }
@@ -889,7 +1169,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintDirectoryLocalEntries(StringBuilder builder)
         {
             builder.AppendLine("  Directory Local Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (DirectoryLocalEntries == null || DirectoryLocalEntries.Length == 0)
             {
                 builder.AppendLine("  No directory local entries");
@@ -900,6 +1180,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryLocalEntry = DirectoryLocalEntries[i];
                     builder.AppendLine($"  Directory Local Entry {i}");
+                    if (directoryLocalEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Directory index: {directoryLocalEntry.DirectoryIndex} (0x{directoryLocalEntry.DirectoryIndex:X})");
                 }
             }
@@ -933,7 +1219,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintDirectoryMapEntries(StringBuilder builder)
         {
             builder.AppendLine("  Directory Map Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (DirectoryMapEntries == null || DirectoryMapEntries.Length == 0)
             {
                 builder.AppendLine("  No directory map entries");
@@ -944,6 +1230,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var directoryMapEntry = DirectoryMapEntries[i];
                     builder.AppendLine($"  Directory Map Entry {i}");
+                    if (directoryMapEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    First block index: {directoryMapEntry.FirstBlockIndex} (0x{directoryMapEntry.FirstBlockIndex:X})");
                 }
             }
@@ -985,7 +1277,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintChecksumMapEntries(StringBuilder builder)
         {
             builder.AppendLine("  Checksum Map Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (ChecksumMapEntries == null || ChecksumMapEntries.Length == 0)
             {
                 builder.AppendLine("  No checksum map entries");
@@ -996,6 +1288,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var checksumMapEntry = ChecksumMapEntries[i];
                     builder.AppendLine($"  Checksum Map Entry {i}");
+                    if (checksumMapEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Checksum count: {checksumMapEntry.ChecksumCount} (0x{checksumMapEntry.ChecksumCount:X})");
                     builder.AppendLine($"    First checksum index: {checksumMapEntry.FirstChecksumIndex} (0x{checksumMapEntry.FirstChecksumIndex:X})");
                 }
@@ -1010,7 +1308,7 @@ namespace BinaryObjectScanner.Wrappers
         private void PrintChecksumEntries(StringBuilder builder)
         {
             builder.AppendLine("  Checksum Entries Information:");
-            builder.AppendLine(value: "  -------------------------");
+            builder.AppendLine("  -------------------------");
             if (ChecksumEntries == null || ChecksumEntries.Length == 0)
             {
                 builder.AppendLine("  No checksum entries");
@@ -1021,6 +1319,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var checksumEntry = ChecksumEntries[i];
                     builder.AppendLine($"  Checksum Entry {i}");
+                    if (checksumEntry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Checksum: {checksumEntry.Checksum} (0x{checksumEntry.Checksum:X})");
                 }
             }
@@ -1085,7 +1389,7 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have no files
-            if (Files == null || Files.Length == 0)
+            if (Files == null || Files.Length == 0 || DataBlockOffsets == null)
                 return false;
 
             // If the files index is invalid
@@ -1094,7 +1398,7 @@ namespace BinaryObjectScanner.Wrappers
 
             // Get the file
             var file = Files[index];
-            if (file.Size == 0)
+            if (file?.BlockEntries == null || file.Size == 0)
                 return false;
 
             // If the file is encrypted -- TODO: Revisit later
@@ -1106,6 +1410,8 @@ namespace BinaryObjectScanner.Wrappers
             for (int i = 0; i < file.BlockEntries.Length; i++)
             {
                 var blockEntry = file.BlockEntries[i];
+                if (blockEntry == null)
+                    continue;
 
                 uint dataBlockIndex = blockEntry.FirstDataBlockIndex;
                 long blockEntrySize = blockEntry.FileDataSize;
@@ -1113,12 +1419,20 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     long dataBlockOffset = DataBlockOffsets[dataBlockIndex++];
                     dataBlockOffsets.Add(dataBlockOffset);
+#if NET48
                     blockEntrySize -= DBH_BlockSize;
+#else
+                    blockEntrySize -= DBH_BlockSize ?? 0;
+#endif
                 }
             }
 
             // Create the filename
+#if NET48
             string filename = file.Path;
+#else
+            string? filename = file.Path;
+#endif
 
             // If we have an invalid output directory
             if (string.IsNullOrWhiteSpace(outputDirectory))
@@ -1146,11 +1460,11 @@ namespace BinaryObjectScanner.Wrappers
                     long fileSize = file.Size;
                     for (int i = 0; i < dataBlockOffsets.Count; i++)
                     {
-                        int readSize = (int)Math.Min(DBH_BlockSize, fileSize);
-
 #if NET48
+                        int readSize = (int)Math.Min(DBH_BlockSize, fileSize);
                         byte[] data = ReadFromDataSource((int)dataBlockOffsets[i], readSize);
 #else
+                        int readSize = (int)Math.Min(DBH_BlockSize ?? 0, fileSize);
                         byte[]? data = ReadFromDataSource((int)dataBlockOffsets[i], readSize);
 #endif
                         if (data == null)

@@ -22,14 +22,22 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public string Magic => _model.Header.Magic;
 #else
-        public string? Magic => _model.Header.Magic;
+        public string? Magic => _model.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.BFPK.Header.Version"/>
+#if NET48
         public int Version => _model.Header.Version;
+#else
+        public int? Version => _model.Header?.Version;
+#endif
 
         /// <inheritdoc cref="Models.BFPK.Header.Files"/>
+#if NET48
         public int Files => _model.Header.Files;
+#else
+        public int? Files => _model.Header?.Files;
+#endif
 
         #endregion
 
@@ -271,11 +279,19 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var entry = FileTable[i];
                     builder.AppendLine($"  File Table Entry {i}");
-                    builder.AppendLine($"    Name size: {entry.NameSize} (0x{entry.NameSize:X})");
-                    builder.AppendLine($"    Name: {entry.Name}");
-                    builder.AppendLine($"    Uncompressed size: {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
-                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                    builder.AppendLine($"    Compressed Size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
+                    if (entry == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+                    else
+                    {
+                        builder.AppendLine($"    Name size: {entry.NameSize} (0x{entry.NameSize:X})");
+                        builder.AppendLine($"    Name: {entry.Name}");
+                        builder.AppendLine($"    Uncompressed size: {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
+                        builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                        builder.AppendLine($"    Compressed Size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
+                    }
                 }
             }
             builder.AppendLine();

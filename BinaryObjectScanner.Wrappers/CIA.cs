@@ -18,34 +18,66 @@ namespace BinaryObjectScanner.Wrappers
         #region Header
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.HeaderSize"/>
+#if NET48
         public uint HeaderSize => _model.Header.HeaderSize;
+#else
+        public uint? HeaderSize => _model.Header?.HeaderSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.Type"/>
+#if NET48
         public ushort Type => _model.Header.Type;
+#else
+        public ushort? Type => _model.Header?.Type;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.Version"/>
+#if NET48
         public ushort Version => _model.Header.Version;
+#else
+        public ushort? Version => _model.Header?.Version;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.CertificateChainSize"/>
+#if NET48
         public uint CertificateChainSize => _model.Header.CertificateChainSize;
+#else
+        public uint? CertificateChainSize => _model.Header?.CertificateChainSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.TicketSize"/>
+#if NET48
         public uint TicketSize => _model.Header.TicketSize;
+#else
+        public uint? TicketSize => _model.Header?.TicketSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.TMDFileSize"/>
+#if NET48
         public uint TMDFileSize => _model.Header.TMDFileSize;
+#else
+        public uint? TMDFileSize => _model.Header?.TMDFileSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.MetaSize"/>
+#if NET48
         public uint MetaSize => _model.Header.MetaSize;
+#else
+        public uint? MetaSize => _model.Header?.MetaSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentSize"/>
+#if NET48
         public ulong ContentSize => _model.Header.ContentSize;
+#else
+        public ulong? ContentSize => _model.Header?.ContentSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentIndex"/>
 #if NET48
         public byte[] ContentIndex => _model.Header.ContentIndex;
 #else
-        public byte[]? ContentIndex => _model.Header.ContentIndex;
+        public byte[]? ContentIndex => _model.Header?.ContentIndex;
 #endif
 
         #endregion
@@ -64,138 +96,206 @@ namespace BinaryObjectScanner.Wrappers
         #region Ticket
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureType"/>
+#if NET48
         public SabreTools.Models.N3DS.SignatureType T_SignatureType => _model.Ticket.SignatureType;
+#else
+        public SabreTools.Models.N3DS.SignatureType? T_SignatureType => _model.Ticket?.SignatureType;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureSize"/>
+#if NET48
         public ushort T_SignatureSize => _model.Ticket.SignatureSize;
+#else
+        public ushort? T_SignatureSize => _model.Ticket?.SignatureSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.PaddingSize"/>
+#if NET48
         public byte T_PaddingSize => _model.Ticket.PaddingSize;
+#else
+        public byte? T_PaddingSize => _model.Ticket?.PaddingSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Signature"/>
 #if NET48
         public byte[] T_Signature => _model.Ticket.Signature;
 #else
-        public byte[]? T_Signature => _model.Ticket.Signature;
+        public byte[]? T_Signature => _model.Ticket?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Padding"/>
 #if NET48
         public byte[] T_Padding => _model.Ticket.Padding;
 #else
-        public byte[]? T_Padding => _model.Ticket.Padding;
+        public byte[]? T_Padding => _model.Ticket?.Padding;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Issuer"/>
 #if NET48
         public string T_Issuer => _model.Ticket.Issuer;
 #else
-        public string? T_Issuer => _model.Ticket.Issuer;
+        public string? T_Issuer => _model.Ticket?.Issuer;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ECCPublicKey"/>
 #if NET48
         public byte[] T_ECCPublicKey => _model.Ticket.ECCPublicKey;
 #else
-        public byte[]? T_ECCPublicKey => _model.Ticket.ECCPublicKey;
+        public byte[]? T_ECCPublicKey => _model.Ticket?.ECCPublicKey;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Version"/>
+#if NET48
         public byte T_Version => _model.Ticket.Version;
+#else
+        public byte? T_Version => _model.Ticket?.Version;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CaCrlVersion"/>
+#if NET48
         public byte T_CaCrlVersion => _model.Ticket.CaCrlVersion;
+#else
+        public byte? T_CaCrlVersion => _model.Ticket?.CaCrlVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignerCrlVersion"/>
+#if NET48
         public byte T_SignerCrlVersion => _model.Ticket.SignerCrlVersion;
+#else
+        public byte? T_SignerCrlVersion => _model.Ticket?.SignerCrlVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleKey"/>
 #if NET48
         public byte[] T_TitleKey => _model.Ticket.TitleKey;
 #else
-        public byte[]? T_TitleKey => _model.Ticket.TitleKey;
+        public byte[]? T_TitleKey => _model.Ticket?.TitleKey;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved1"/>
+#if NET48
         public byte T_Reserved1 => _model.Ticket.Reserved1;
+#else
+        public byte? T_Reserved1 => _model.Ticket?.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketID"/>
+#if NET48
         public ulong T_TicketID => _model.Ticket.TicketID;
+#else
+        public ulong? T_TicketID => _model.Ticket?.TicketID;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ConsoleID"/>
+#if NET48
         public uint T_ConsoleID => _model.Ticket.ConsoleID;
+#else
+        public uint? T_ConsoleID => _model.Ticket?.ConsoleID;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleID"/>
+#if NET48
         public ulong T_TitleID => _model.Ticket.TitleID;
+#else
+        public ulong? T_TitleID => _model.Ticket?.TitleID;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved2"/>
 #if NET48
         public byte[] T_Reserved2 => _model.Ticket.Reserved2;
 #else
-        public byte[]? T_Reserved2 => _model.Ticket.Reserved2;
+        public byte[]? T_Reserved2 => _model.Ticket?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketTitleVersion"/>
+#if NET48
         public ushort T_TicketTitleVersion => _model.Ticket.TicketTitleVersion;
+#else
+        public ushort? T_TicketTitleVersion => _model.Ticket?.TicketTitleVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved3"/>
 #if NET48
         public byte[] T_Reserved3 => _model.Ticket.Reserved3;
 #else
-        public byte[]? T_Reserved3 => _model.Ticket.Reserved3;
+        public byte[]? T_Reserved3 => _model.Ticket?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.LicenseType"/>
+#if NET48
         public byte T_LicenseType => _model.Ticket.LicenseType;
+#else
+        public byte? T_LicenseType => _model.Ticket?.LicenseType;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CommonKeyYIndex"/>
+#if NET48
         public byte T_CommonKeyYIndex => _model.Ticket.CommonKeyYIndex;
+#else
+        public byte? T_CommonKeyYIndex => _model.Ticket?.CommonKeyYIndex;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved4"/>
 #if NET48
         public byte[] T_Reserved4 => _model.Ticket.Reserved4;
 #else
-        public byte[]? T_Reserved4 => _model.Ticket.Reserved4;
+        public byte[]? T_Reserved4 => _model.Ticket?.Reserved4;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.eShopAccountID"/>
+#if NET48
         public uint T_eShopAccountID => _model.Ticket.eShopAccountID;
+#else
+        public uint? T_eShopAccountID => _model.Ticket?.eShopAccountID;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved5"/>
+#if NET48
         public byte T_Reserved5 => _model.Ticket.Reserved5;
+#else
+        public byte? T_Reserved5 => _model.Ticket?.Reserved5;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Audit"/>
+#if NET48
         public byte T_Audit => _model.Ticket.Audit;
+#else
+        public byte? T_Audit => _model.Ticket?.Audit;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved6"/>
 #if NET48
         public byte[] T_Reserved6 => _model.Ticket.Reserved6;
 #else
-        public byte[]? T_Reserved6 => _model.Ticket.Reserved6;
+        public byte[]? T_Reserved6 => _model.Ticket?.Reserved6;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Limits"/>
 #if NET48
         public uint[] T_Limits => _model.Ticket.Limits;
 #else
-        public uint[]? T_Limits => _model.Ticket.Limits;
+        public uint[]? T_Limits => _model.Ticket?.Limits;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndexSize"/>
+#if NET48
         public uint T_ContentIndexSize => _model.Ticket.ContentIndexSize;
+#else
+        public uint? T_ContentIndexSize => _model.Ticket?.ContentIndexSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndex"/>
 #if NET48
         public byte[] T_ContentIndex => _model.Ticket.ContentIndex;
 #else
-        public byte[]? T_ContentIndex => _model.Ticket.ContentIndex;
+        public byte[]? T_ContentIndex => _model.Ticket?.ContentIndex;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CertificateChain"/>
 #if NET48
         public SabreTools.Models.N3DS.Certificate[] T_CertificateChain => _model.Ticket.CertificateChain;
 #else
-        public SabreTools.Models.N3DS.Certificate?[]? T_CertificateChain => _model.Ticket.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate?[]? T_CertificateChain => _model.Ticket?.CertificateChain;
 #endif
 
         #endregion
@@ -203,127 +303,199 @@ namespace BinaryObjectScanner.Wrappers
         #region Title Metadata
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureType"/>
+#if NET48
         public SabreTools.Models.N3DS.SignatureType TMD_SignatureType => _model.TMDFileData.SignatureType;
+#else
+        public SabreTools.Models.N3DS.SignatureType? TMD_SignatureType => _model.TMDFileData?.SignatureType;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureSize"/>
+#if NET48
         public ushort TMD_SignatureSize => _model.TMDFileData.SignatureSize;
+#else
+        public ushort? TMD_SignatureSize => _model.TMDFileData?.SignatureSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.PaddingSize"/>
+#if NET48
         public byte TMD_PaddingSize => _model.TMDFileData.PaddingSize;
+#else
+        public byte? TMD_PaddingSize => _model.TMDFileData?.PaddingSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Signature"/>
 #if NET48
         public byte[] TMD_Signature => _model.TMDFileData.Signature;
 #else
-        public byte[]? TMD_Signature => _model.TMDFileData.Signature;
+        public byte[]? TMD_Signature => _model.TMDFileData?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding1"/>
 #if NET48
         public byte[] TMD_Padding1 => _model.TMDFileData.Padding1;
 #else
-        public byte[]? TMD_Padding1 => _model.TMDFileData.Padding1;
+        public byte[]? TMD_Padding1 => _model.TMDFileData?.Padding1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Issuer"/>
 #if NET48
         public string TMD_Issuer => _model.TMDFileData.Issuer;
 #else
-        public string? TMD_Issuer => _model.TMDFileData.Issuer;
+        public string? TMD_Issuer => _model.TMDFileData?.Issuer;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Version"/>
+#if NET48
         public byte TMD_Version => _model.TMDFileData.Version;
+#else
+        public byte? TMD_Version => _model.TMDFileData?.Version;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CaCrlVersion"/>
+#if NET48
         public byte TMD_CaCrlVersion => _model.TMDFileData.CaCrlVersion;
+#else
+        public byte? TMD_CaCrlVersion => _model.TMDFileData?.CaCrlVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignerCrlVersion"/>
+#if NET48
         public byte TMD_SignerCrlVersion => _model.TMDFileData.SignerCrlVersion;
+#else
+        public byte? TMD_SignerCrlVersion => _model.TMDFileData?.SignerCrlVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved1"/>
+#if NET48
         public byte TMD_Reserved1 => _model.TMDFileData.Reserved1;
+#else
+        public byte? TMD_Reserved1 => _model.TMDFileData?.Reserved1;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SystemVersion"/>
+#if NET48
         public ulong TMD_SystemVersion => _model.TMDFileData.SystemVersion;
+#else
+        public ulong? TMD_SystemVersion => _model.TMDFileData?.SystemVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleID"/>
+#if NET48
         public ulong TMD_TitleID => _model.TMDFileData.TitleID;
+#else
+        public ulong? TMD_TitleID => _model.TMDFileData?.TitleID;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleType"/>
+#if NET48
         public uint TMD_TitleType => _model.TMDFileData.TitleType;
+#else
+        public uint? TMD_TitleType => _model.TMDFileData?.TitleType;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.GroupID"/>
+#if NET48
         public ushort TMD_GroupID => _model.TMDFileData.GroupID;
+#else
+        public ushort? TMD_GroupID => _model.TMDFileData?.GroupID;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SaveDataSize"/>
+#if NET48
         public uint TMD_SaveDataSize => _model.TMDFileData.SaveDataSize;
+#else
+        public uint? TMD_SaveDataSize => _model.TMDFileData?.SaveDataSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLPrivateSaveDataSize"/>
+#if NET48
         public uint TMD_SRLPrivateSaveDataSize => _model.TMDFileData.SRLPrivateSaveDataSize;
+#else
+        public uint? TMD_SRLPrivateSaveDataSize => _model.TMDFileData?.SRLPrivateSaveDataSize;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved2"/>
 #if NET48
         public byte[] TMD_Reserved2 => _model.TMDFileData.Reserved2;
 #else
-        public byte[]? TMD_Reserved2 => _model.TMDFileData.Reserved2;
+        public byte[]? TMD_Reserved2 => _model.TMDFileData?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLFlag"/>
+#if NET48
         public byte TMD_SRLFlag => _model.TMDFileData.SRLFlag;
+#else
+        public byte? TMD_SRLFlag => _model.TMDFileData?.SRLFlag;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved3"/>
 #if NET48
         public byte[] TMD_Reserved3 => _model.TMDFileData.Reserved3;
 #else
-        public byte[]? TMD_Reserved3 => _model.TMDFileData.Reserved3;
+        public byte[]? TMD_Reserved3 => _model.TMDFileData?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.AccessRights"/>
+#if NET48
         public uint TMD_AccessRights => _model.TMDFileData.AccessRights;
+#else
+        public uint? TMD_AccessRights => _model.TMDFileData?.AccessRights;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleVersion"/>
+#if NET48
         public ushort TMD_TitleVersion => _model.TMDFileData.TitleVersion;
+#else
+        public ushort? TMD_TitleVersion => _model.TMDFileData?.TitleVersion;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentCount"/>
+#if NET48
         public ushort TMD_ContentCount => _model.TMDFileData.ContentCount;
+#else
+        public ushort? TMD_ContentCount => _model.TMDFileData?.ContentCount;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.BootContent"/>
+#if NET48
         public ushort TMD_BootContent => _model.TMDFileData.BootContent;
+#else
+        public ushort? TMD_BootContent => _model.TMDFileData?.BootContent;
+#endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding2"/>
 #if NET48
         public byte[] TMD_Padding2 => _model.TMDFileData.Padding2;
 #else
-        public byte[]? TMD_Padding2 => _model.TMDFileData.Padding2;
+        public byte[]? TMD_Padding2 => _model.TMDFileData?.Padding2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SHA256HashContentInfoRecords"/>
 #if NET48
         public byte[] TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
 #else
-        public byte[]? TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
+        public byte[]? TMD_SHA256HashContentInfoRecords => _model.TMDFileData?.SHA256HashContentInfoRecords;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentInfoRecords"/>
 #if NET48
         public SabreTools.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _model.TMDFileData.ContentInfoRecords;
 #else
-        public SabreTools.Models.N3DS.ContentInfoRecord?[]? TMD_ContentInfoRecords => _model.TMDFileData.ContentInfoRecords;
+        public SabreTools.Models.N3DS.ContentInfoRecord?[]? TMD_ContentInfoRecords => _model.TMDFileData?.ContentInfoRecords;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentChunkRecords"/>
 #if NET48
         public SabreTools.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _model.TMDFileData.ContentChunkRecords;
 #else
-        public SabreTools.Models.N3DS.ContentChunkRecord?[]? TMD_ContentChunkRecords => _model.TMDFileData.ContentChunkRecords;
+        public SabreTools.Models.N3DS.ContentChunkRecord?[]? TMD_ContentChunkRecords => _model.TMDFileData?.ContentChunkRecords;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CertificateChain"/>
 #if NET48
         public SabreTools.Models.N3DS.Certificate[] TMD_CertificateChain => _model.TMDFileData.CertificateChain;
 #else
-        public SabreTools.Models.N3DS.Certificate?[]? TMD_CertificateChain => _model.TMDFileData.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate?[]? TMD_CertificateChain => _model.TMDFileData?.CertificateChain;
 #endif
 
         #endregion
@@ -524,6 +696,12 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     builder.AppendLine($"  Certificate {i}{certificateName}");
+                    if (certificate == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
                     builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
                     builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
@@ -585,9 +763,16 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine($"  Audit: {T_Audit} (0x{T_Audit:X})");
             builder.AppendLine($"  Reserved 6: {(T_Reserved6 == null ? "[NULL]" : BitConverter.ToString(T_Reserved6).Replace('-', ' '))}");
             builder.AppendLine($"  Limits:");
-            for (int i = 0; i < T_Limits.Length; i++)
+            if (T_Limits == null || T_Limits.Length == 0)
             {
-                builder.AppendLine($"    Limit {i}: {T_Limits[i]} (0x{T_Limits[i]:X})");
+                builder.AppendLine("    No limits");
+            }
+            else
+            {
+                for (int i = 0; i < T_Limits.Length; i++)
+                {
+                    builder.AppendLine($"    Limit {i}: {T_Limits[i]} (0x{T_Limits[i]:X})");
+                }
             }
             builder.AppendLine($"  Content index size: {T_ContentIndexSize} (0x{T_ContentIndexSize:X})");
             builder.AppendLine($"  Content index: {(T_ContentIndex == null ? "[NULL]" : BitConverter.ToString(T_ContentIndex).Replace('-', ' '))}");
@@ -613,6 +798,12 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     builder.AppendLine($"  Certificate {i}{certificateName}");
+                    if (certificate == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
                     builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
                     builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
@@ -687,6 +878,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var contentInfoRecord = TMD_ContentInfoRecords[i];
                     builder.AppendLine($"  Content Info Record {i}");
+                    if (contentInfoRecord == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Content index offset: {contentInfoRecord.ContentIndexOffset} (0x{contentInfoRecord.ContentIndexOffset:X})");
                     builder.AppendLine($"    Content command count: {contentInfoRecord.ContentCommandCount} (0x{contentInfoRecord.ContentCommandCount:X})");
                     builder.AppendLine($"    SHA-256 hash of the next {contentInfoRecord.ContentCommandCount} records not hashed: {(contentInfoRecord.UnhashedContentRecordsSHA256Hash == null ? "[NULL]" : BitConverter.ToString(contentInfoRecord.UnhashedContentRecordsSHA256Hash).Replace('-', ' '))}");
@@ -706,6 +903,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var contentChunkRecord = TMD_ContentChunkRecords[i];
                     builder.AppendLine($"  Content Chunk Record {i}");
+                    if (contentChunkRecord == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Content ID: {contentChunkRecord.ContentId} (0x{contentChunkRecord.ContentId:X})");
                     builder.AppendLine($"    Content index: {contentChunkRecord.ContentIndex} (0x{contentChunkRecord.ContentIndex:X})");
                     builder.AppendLine($"    Content type: {contentChunkRecord.ContentType} (0x{contentChunkRecord.ContentType:X})");
@@ -735,6 +938,12 @@ namespace BinaryObjectScanner.Wrappers
                     }
 
                     builder.AppendLine($"  Certificate {i}{certificateName}");
+                    if (certificate == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     builder.AppendLine($"    Signature type: {certificate.SignatureType} (0x{certificate.SignatureType:X})");
                     builder.AppendLine($"    Signature size: {certificate.SignatureSize} (0x{certificate.SignatureSize:X})");
                     builder.AppendLine($"    Padding size: {certificate.PaddingSize} (0x{certificate.PaddingSize:X})");
@@ -780,6 +989,12 @@ namespace BinaryObjectScanner.Wrappers
                 {
                     var partitionHeader = Partitions[i];
                     builder.AppendLine($"  NCCH Partition Header {i}");
+                    if (partitionHeader == null)
+                    {
+                        builder.AppendLine("    [NULL]");
+                        continue;
+                    }
+
                     if (partitionHeader.MagicID == string.Empty)
                     {
                         builder.AppendLine($"    Empty partition, no data can be parsed");
@@ -805,14 +1020,21 @@ namespace BinaryObjectScanner.Wrappers
                         builder.AppendLine($"    Extended header size in bytes: {partitionHeader.ExtendedHeaderSizeInBytes} (0x{partitionHeader.ExtendedHeaderSizeInBytes:X})");
                         builder.AppendLine($"    Reserved 2: {(partitionHeader.Reserved2 == null ? "[NULL]" : BitConverter.ToString(partitionHeader.Reserved2).Replace('-', ' '))}");
                         builder.AppendLine("    Flags:");
-                        builder.AppendLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
-                        builder.AppendLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
-                        builder.AppendLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
-                        builder.AppendLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
-                        builder.AppendLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
-                        builder.AppendLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
-                        builder.AppendLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
-                        builder.AppendLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
+                        if (partitionHeader.Flags == null)
+                        {
+                            builder.AppendLine("      [NULL]");
+                        }
+                        else
+                        {
+                            builder.AppendLine($"      Reserved 0: {partitionHeader.Flags.Reserved0} (0x{partitionHeader.Flags.Reserved0:X})");
+                            builder.AppendLine($"      Reserved 1: {partitionHeader.Flags.Reserved1} (0x{partitionHeader.Flags.Reserved1:X})");
+                            builder.AppendLine($"      Reserved 2: {partitionHeader.Flags.Reserved2} (0x{partitionHeader.Flags.Reserved2:X})");
+                            builder.AppendLine($"      Crypto method: {partitionHeader.Flags.CryptoMethod} (0x{partitionHeader.Flags.CryptoMethod:X})");
+                            builder.AppendLine($"      Content platform: {partitionHeader.Flags.ContentPlatform} (0x{partitionHeader.Flags.ContentPlatform:X})");
+                            builder.AppendLine($"      Content type: {partitionHeader.Flags.MediaPlatformIndex} (0x{partitionHeader.Flags.MediaPlatformIndex:X})");
+                            builder.AppendLine($"      Content unit size: {partitionHeader.Flags.ContentUnitSize} (0x{partitionHeader.Flags.ContentUnitSize:X})");
+                            builder.AppendLine($"      Bitmasks: {partitionHeader.Flags.BitMasks} (0x{partitionHeader.Flags.BitMasks:X})");
+                        }
                         builder.AppendLine($"    Plain region offset, in media units: {partitionHeader.PlainRegionOffsetInMediaUnits} (0x{partitionHeader.PlainRegionOffsetInMediaUnits:X})");
                         builder.AppendLine($"    Plain region size, in media units: {partitionHeader.PlainRegionSizeInMediaUnits} (0x{partitionHeader.PlainRegionSizeInMediaUnits:X})");
                         builder.AppendLine($"    Logo region offset, in media units: {partitionHeader.LogoRegionOffsetInMediaUnits} (0x{partitionHeader.LogoRegionOffsetInMediaUnits:X})");
@@ -843,11 +1065,11 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("  -------------------------");
             if (_model.MetaData == null || MetaSize == 0)
             {
-                builder.AppendLine(value: "  No meta file data");
+                builder.AppendLine("  No meta file data");
             }
             else
             {
-                builder.AppendLine(value: $"  Title ID dependency list: {(MD_TitleIDDependencyList == null ? "[NULL]" : BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' '))}");
+                builder.AppendLine($"  Title ID dependency list: {(MD_TitleIDDependencyList == null ? "[NULL]" : BitConverter.ToString(MD_TitleIDDependencyList).Replace('-', ' '))}");
                 builder.AppendLine($"  Reserved 1: {(MD_Reserved1 == null ? "[NULL]" : BitConverter.ToString(MD_Reserved1).Replace('-', ' '))}");
                 builder.AppendLine($"  Core version: {MD_CoreVersion} (0x{MD_CoreVersion:X})");
                 builder.AppendLine($"  Reserved 2: {(MD_Reserved2 == null ? "[NULL]" : BitConverter.ToString(MD_Reserved2).Replace('-', ' '))}");
