@@ -19,7 +19,6 @@ install:
 
 # build step
 build_script:
-  - cmd: dotnet restore
   - cmd: dotnet build Test\Test.csproj --framework net48
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x86 --self-contained true -p:PublishSingleFile=true
   - cmd: dotnet publish Test\Test.csproj --framework net6.0 --runtime win-x64 --self-contained true -p:PublishSingleFile=true
