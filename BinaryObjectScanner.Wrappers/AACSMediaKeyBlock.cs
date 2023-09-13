@@ -115,20 +115,23 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
+            Print(builder, _model);
+            return builder;
+        }
 
+        private static void Print(StringBuilder builder, MediaKeyBlock mediaKeyBlock)
+        {
             builder.AppendLine("AACS Media Key Block Information:");
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
-            PrintRecords(builder, Records);
-
-            return builder;
+            Print(builder, mediaKeyBlock.Records);
         }
 
 #if NET48
-        private static void PrintRecords(StringBuilder builder, Record[] records)
+        private static void Print(StringBuilder builder, Record[] records)
 #else
-        private static void PrintRecords(StringBuilder builder, Record?[]? records)
+        private static void Print(StringBuilder builder, Record?[]? records)
 #endif
         {
             builder.AppendLine("  Records Information:");
@@ -142,16 +145,16 @@ namespace BinaryObjectScanner.Wrappers
                 for (int i = 0; i < records.Length; i++)
                 {
                     var record = records[i];
-                    PrintRecord(builder, record, i);
+                    Print(builder, record, i);
                 }
             }
             builder.AppendLine();
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, Record record, int index)
+        private static void Print(StringBuilder builder, Record record, int index)
 #else
-        private static void PrintRecord(StringBuilder builder, Record? record, int index)
+        private static void Print(StringBuilder builder, Record? record, int index)
 #endif
         {
             builder.AppendLine($"  Record Entry {index}");
@@ -167,39 +170,39 @@ namespace BinaryObjectScanner.Wrappers
             switch (record)
             {
                 case EndOfMediaKeyBlockRecord eomkb:
-                    PrintRecord(builder, eomkb);
+                    Print(builder, eomkb);
                     break;
                 case ExplicitSubsetDifferenceRecord esd:
-                    PrintRecord(builder, esd);
+                    Print(builder, esd);
                     break;
                 case MediaKeyDataRecord mkd:
-                    PrintRecord(builder, mkd);
+                    Print(builder, mkd);
                     break;
                 case SubsetDifferenceIndexRecord sdi:
-                    PrintRecord(builder, sdi);
+                    Print(builder, sdi);
                     break;
                 case TypeAndVersionRecord tav:
-                    PrintRecord(builder, tav);
+                    Print(builder, tav);
                     break;
                 case DriveRevocationListRecord drl:
-                    PrintRecord(builder, drl);
+                    Print(builder, drl);
                     break;
                 case HostRevocationListRecord hrl:
-                    PrintRecord(builder, hrl);
+                    Print(builder, hrl);
                     break;
                 case VerifyMediaKeyRecord vmk:
-                    PrintRecord(builder, vmk);
+                    Print(builder, vmk);
                     break;
                 case CopyrightRecord c:
-                    PrintRecord(builder, c);
+                    Print(builder, c);
                     break;
             }
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, EndOfMediaKeyBlockRecord record)
+        private static void Print(StringBuilder builder, EndOfMediaKeyBlockRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, EndOfMediaKeyBlockRecord record)
+        private static void Print(StringBuilder builder, EndOfMediaKeyBlockRecord record)
 #endif
         {
             if (record == null)
@@ -209,9 +212,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, ExplicitSubsetDifferenceRecord record)
+        private static void Print(StringBuilder builder, ExplicitSubsetDifferenceRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, ExplicitSubsetDifferenceRecord? record)
+        private static void Print(StringBuilder builder, ExplicitSubsetDifferenceRecord? record)
 #endif
         {
             if (record == null)
@@ -242,9 +245,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, MediaKeyDataRecord record)
+        private static void Print(StringBuilder builder, MediaKeyDataRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, MediaKeyDataRecord? record)
+        private static void Print(StringBuilder builder, MediaKeyDataRecord? record)
 #endif
         {
             if (record == null)
@@ -266,9 +269,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, SubsetDifferenceIndexRecord record)
+        private static void Print(StringBuilder builder, SubsetDifferenceIndexRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, SubsetDifferenceIndexRecord? record)
+        private static void Print(StringBuilder builder, SubsetDifferenceIndexRecord? record)
 #endif
         {
             if (record == null)
@@ -291,9 +294,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, TypeAndVersionRecord record)
+        private static void Print(StringBuilder builder, TypeAndVersionRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, TypeAndVersionRecord? record)
+        private static void Print(StringBuilder builder, TypeAndVersionRecord? record)
 #endif
         {
             if (record == null)
@@ -304,9 +307,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, DriveRevocationListRecord record)
+        private static void Print(StringBuilder builder, DriveRevocationListRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, DriveRevocationListRecord? record)
+        private static void Print(StringBuilder builder, DriveRevocationListRecord? record)
 #endif
         {
             if (record == null)
@@ -359,9 +362,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, HostRevocationListRecord record)
+        private static void Print(StringBuilder builder, HostRevocationListRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, HostRevocationListRecord? record)
+        private static void Print(StringBuilder builder, HostRevocationListRecord? record)
 #endif
         {
             if (record == null)
@@ -414,9 +417,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, VerifyMediaKeyRecord record)
+        private static void Print(StringBuilder builder, VerifyMediaKeyRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, VerifyMediaKeyRecord? record)
+        private static void Print(StringBuilder builder, VerifyMediaKeyRecord? record)
 #endif
         {
             if (record == null)
@@ -426,9 +429,9 @@ namespace BinaryObjectScanner.Wrappers
         }
 
 #if NET48
-        private static void PrintRecord(StringBuilder builder, CopyrightRecord record)
+        private static void Print(StringBuilder builder, CopyrightRecord record)
 #else
-        private static void PrintRecord(StringBuilder builder, CopyrightRecord? record)
+        private static void Print(StringBuilder builder, CopyrightRecord? record)
 #endif
         {
             if (record == null)
