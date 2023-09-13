@@ -308,7 +308,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid sector
+#if NET48
             if (startingSector < 0 || FATSectorNumbers == null || (long)startingSector >= FATSectorNumbers.Length)
+#else
+            if (startingSector == null || startingSector < 0 || FATSectorNumbers == null || (long)startingSector >= FATSectorNumbers.Length)
+#endif
                 return null;
 
             // Setup the returned list
@@ -321,8 +325,17 @@ namespace BinaryObjectScanner.Wrappers
             var lastSector = startingSector;
             while (true)
             {
+#if NET6_0_OR_GREATER
+                if (lastSector == null)
+                    break;
+#endif
+
                 // Get the next sector from the lookup table
+#if NET48
                 var nextSector = FATSectorNumbers[(uint)lastSector];
+#else
+                var nextSector = FATSectorNumbers[(uint)lastSector!.Value];
+#endif
 
                 // If we have an end of chain or free sector
                 if (nextSector == SabreTools.Models.CFB.SectorNumber.ENDOFCHAIN || nextSector == SabreTools.Models.CFB.SectorNumber.FREESECT)
@@ -412,7 +425,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid sector
+#if NET48
             if (startingSector < 0 || MiniFATSectorNumbers == null || (long)startingSector >= MiniFATSectorNumbers.Length)
+#else
+            if (startingSector == null || startingSector < 0 || MiniFATSectorNumbers == null || (long)startingSector >= MiniFATSectorNumbers.Length)
+#endif
                 return null;
 
             // Setup the returned list
@@ -425,8 +442,17 @@ namespace BinaryObjectScanner.Wrappers
             var lastSector = startingSector;
             while (true)
             {
+#if NET6_0_OR_GREATER
+                if (lastSector == null)
+                    break;
+#endif
+
                 // Get the next sector from the lookup table
+#if NET48
                 var nextSector = MiniFATSectorNumbers[(uint)lastSector];
+#else
+                var nextSector = MiniFATSectorNumbers[(uint)lastSector!.Value];
+#endif
 
                 // If we have an end of chain or free sector
                 if (nextSector == SabreTools.Models.CFB.SectorNumber.ENDOFCHAIN || nextSector == SabreTools.Models.CFB.SectorNumber.FREESECT)

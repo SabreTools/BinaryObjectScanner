@@ -852,7 +852,7 @@ namespace BinaryObjectScanner.Wrappers
 
             // Reverse and assemble the filename
             parentNames.Reverse();
-            filename = Path.Combine(parentNames.ToArray());
+            filename = Path.Combine(parentNames.Cast<string>().ToArray());
 
             // Get the file offset
             long fileOffset;
@@ -866,7 +866,7 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // Adjust the file offset
-            fileOffset += FileDataOffset.Value;
+            fileOffset += FileDataOffset ?? 0;
 
             // Get the file sizes
             long fileSize, outputFileSize;

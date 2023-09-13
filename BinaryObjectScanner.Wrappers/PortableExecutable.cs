@@ -1087,6 +1087,11 @@ namespace BinaryObjectScanner.Wrappers
                     if (_stubExecutableData != null)
                         return _stubExecutableData;
 
+#if NET6_0_OR_GREATER
+                    if (Stub_NewExeHeaderAddr == null)
+                        return null;
+#endif
+
                     // Populate the raw stub executable data based on the source
                     int endOfStubHeader = 0x40;
                     int lengthOfStubExecutableData = (int)Stub_NewExeHeaderAddr - endOfStubHeader;
@@ -1133,7 +1138,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
         public Dictionary<string, object> ResourceData
 #else
-        public Dictionary<string, object>? ResourceData
+        public Dictionary<string, object?>? ResourceData
 #endif
         {
             get
@@ -4403,7 +4408,10 @@ namespace BinaryObjectScanner.Wrappers
                 return -1;
 
             // Otherwise, find the section it exists within
-            return OH_AddressOfEntryPoint.Value.ContainingSectionIndex(SectionTable);
+            return OH_AddressOfEntryPoint.Value.ContainingSectionIndex(SectionTable
+                .Where(sh => sh != null)
+                .Cast<SabreTools.Models.PortableExecutable.SectionHeader>()
+                .ToArray());
 #endif
         }
 

@@ -152,7 +152,11 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Array of archive filenames attached to the given VPK
         /// </summary>
+#if NET48
         private string[] _archiveFilenames = null;
+#else
+        private string[]? _archiveFilenames = null;
+#endif
 
         #endregion
 
