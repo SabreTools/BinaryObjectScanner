@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- Assembly Properties -->
-    <TargetFrameworks>net48;net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <Version>2.8</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
