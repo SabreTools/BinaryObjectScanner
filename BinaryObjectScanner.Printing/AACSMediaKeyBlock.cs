@@ -26,14 +26,14 @@ namespace BinaryObjectScanner.Printing
             if (records == null || records.Length == 0)
             {
                 builder.AppendLine("  No records");
+                builder.AppendLine();
+                return;
             }
-            else
+
+            for (int i = 0; i < records.Length; i++)
             {
-                for (int i = 0; i < records.Length; i++)
-                {
-                    var record = records[i];
-                    Print(builder, record, i);
-                }
+                var record = records[i];
+                Print(builder, record, i);
             }
             builder.AppendLine();
         }

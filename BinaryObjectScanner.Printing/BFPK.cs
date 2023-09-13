@@ -26,6 +26,7 @@ namespace BinaryObjectScanner.Printing
             if (header == null)
             {
                 builder.AppendLine("  No header");
+                builder.AppendLine();
                 return;
             }
 
