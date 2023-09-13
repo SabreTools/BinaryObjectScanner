@@ -366,7 +366,7 @@ namespace BinaryObjectScanner.Printing
 #if NET48
         private static void Print(StringBuilder builder, NCCHHeader[] partitions)
 #else
-        private static void Print(StringBuilder builder, NCCHHeader[] partitions)
+        private static void Print(StringBuilder builder, NCCHHeader?[]? partitions)
 #endif
         {
             builder.AppendLine("  NCCH Partition Header Information:");
