@@ -236,65 +236,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-
-            builder.AppendLine("BFPK Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintHeader(builder);
-            PrintFileTable(builder);
-
+            Printing.BFPK.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print header information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintHeader(StringBuilder builder)
-        {
-            builder.AppendLine("  Header Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Magic: {Magic}");
-            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
-            builder.AppendLine($"  Files: {Files} (0x{Files:X})");
-            builder.AppendLine();
-        }
-
-        /// <summary>
-        /// Print file table information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintFileTable(StringBuilder builder)
-        {
-            builder.AppendLine("  File Table Information:");
-            builder.AppendLine("  -------------------------");
-            if (Files == 0 || FileTable == null || FileTable.Length == 0)
-            {
-                builder.AppendLine("  No file table items");
-            }
-            else
-            {
-                for (int i = 0; i < FileTable.Length; i++)
-                {
-                    var entry = FileTable[i];
-                    builder.AppendLine($"  File Table Entry {i}");
-                    if (entry == null)
-                    {
-                        builder.AppendLine("    [NULL]");
-                        continue;
-                    }
-                    else
-                    {
-                        builder.AppendLine($"    Name size: {entry.NameSize} (0x{entry.NameSize:X})");
-                        builder.AppendLine($"    Name: {entry.Name}");
-                        builder.AppendLine($"    Uncompressed size: {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
-                        builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                        builder.AppendLine($"    Compressed Size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
-                    }
-                }
-            }
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
