@@ -1,10 +1,10 @@
-using System;
 using System.IO;
 using System.Text;
+using SabreTools.Models.BDPlus;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class BDPlusSVM : WrapperBase<SabreTools.Models.BDPlus.SVM>
+    public class BDPlusSVM : WrapperBase<SVM>
     {
         #region Descriptive Properties
 
@@ -61,9 +61,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc/>
 #if NET48
-        public BDPlusSVM(SabreTools.Models.BDPlus.SVM model, byte[] data, int offset)
+        public BDPlusSVM(SVM model, byte[] data, int offset)
 #else
-        public BDPlusSVM(SabreTools.Models.BDPlus.SVM? model, byte[]? data, int offset)
+        public BDPlusSVM(SVM? model, byte[]? data, int offset)
 #endif
             : base(model, data, offset)
         {
@@ -72,9 +72,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc/>
 #if NET48
-        public BDPlusSVM(SabreTools.Models.BDPlus.SVM model, Stream data)
+        public BDPlusSVM(SVM model, Stream data)
 #else
-        public BDPlusSVM(SabreTools.Models.BDPlus.SVM? model, Stream? data)
+        public BDPlusSVM(SVM? model, Stream? data)
 #endif
             : base(model, data)
         {
@@ -143,33 +143,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            
-            builder.AppendLine("BD+ Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintSVM(builder);
-
+            Printing.BDPlusSVM.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print SVM information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintSVM(StringBuilder builder)
-        {
-            builder.AppendLine("  SVM Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Signature: {Signature}");
-            builder.AppendLine($"  Unknown 1: {(Unknown1 == null ? "[NULL]" : BitConverter.ToString(Unknown1).Replace('-', ' '))}");
-            builder.AppendLine($"  Year: {Year} (0x{Year:X})");
-            builder.AppendLine($"  Month: {Month} (0x{Month:X})");
-            builder.AppendLine($"  Day: {Day} (0x{Day:X})");
-            builder.AppendLine($"  Unknown 2: {(Unknown2 == null ? "[NULL]" : BitConverter.ToString(Unknown2).Replace('-', ' '))}");
-            builder.AppendLine($"  Length: {Length} (0x{Length:X})");
-            //builder.AppendLine($"  Data: {(Data == null ? "[NULL]" : BitConverter.ToString(Data).Replace('-', ' '))}");
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
