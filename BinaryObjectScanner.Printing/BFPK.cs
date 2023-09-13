@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.Printing
 #if NET48
         private static void Print(StringBuilder builder, FileEntry[] files)
 #else
-        private static void Print(StringBuilder builder, FileEntry[]? files)
+        private static void Print(StringBuilder builder, FileEntry?[]? files)
 #endif
         {
             builder.AppendLine("  File Table Information:");
