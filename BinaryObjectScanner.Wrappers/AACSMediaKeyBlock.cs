@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Text;
+using SabreTools.Models.AACS;
 
 namespace BinaryObjectScanner.Wrappers
 {
-    public class AACSMediaKeyBlock : WrapperBase<SabreTools.Models.AACS.MediaKeyBlock>
+    public class AACSMediaKeyBlock : WrapperBase<MediaKeyBlock>
     {
         #region Descriptive Properties
 
@@ -19,9 +20,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.AACS.MediaKeyBlock.Records"/>
 #if NET48
-        public SabreTools.Models.AACS.Record[] Records => _model.Records;
+        public Record[] Records => _model.Records;
 #else
-        public SabreTools.Models.AACS.Record?[]? Records => _model.Records;
+        public Record?[]? Records => _model.Records;
 #endif
 
         #endregion
@@ -32,9 +33,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc/>
 #if NET48
-        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock model, byte[] data, int offset)
+        public AACSMediaKeyBlock(MediaKeyBlock model, byte[] data, int offset)
 #else
-        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock? model, byte[]? data, int offset)
+        public AACSMediaKeyBlock(MediaKeyBlock? model, byte[]? data, int offset)
 #endif
             : base(model, data, offset)
         {
@@ -43,9 +44,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc/>
 #if NET48
-        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock model, Stream data)
+        public AACSMediaKeyBlock(MediaKeyBlock model, Stream data)
 #else
-        public AACSMediaKeyBlock(SabreTools.Models.AACS.MediaKeyBlock? model, Stream? data)
+        public AACSMediaKeyBlock(MediaKeyBlock? model, Stream? data)
 #endif
             : base(model, data)
         {
@@ -119,240 +120,321 @@ namespace BinaryObjectScanner.Wrappers
             builder.AppendLine("-------------------------");
             builder.AppendLine();
 
-            PrintRecords(builder);
+            PrintRecords(builder, Records);
 
             return builder;
         }
 
-        /// <summary>
-        /// Print records information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintRecords(StringBuilder builder)
+#if NET48
+        private static void PrintRecords(StringBuilder builder, Record[] records)
+#else
+        private static void PrintRecords(StringBuilder builder, Record?[]? records)
+#endif
         {
             builder.AppendLine("  Records Information:");
             builder.AppendLine("  -------------------------");
-            if (Records == null || Records.Length == 0)
+            if (records == null || records.Length == 0)
             {
                 builder.AppendLine("  No records");
             }
             else
             {
-                for (int i = 0; i < Records.Length; i++)
+                for (int i = 0; i < records.Length; i++)
                 {
-                    var record = Records[i];
-                    builder.AppendLine($"  Record Entry {i}");
-                    if (record == null)
-                    {
-                        builder.AppendLine("    [NULL]");
-                        continue;
-                    }
-
-                    builder.AppendLine($"    Record type: {record.RecordType} (0x{record.RecordType:X})");
-                    builder.AppendLine($"    Record length: {record.RecordLength} (0x{record.RecordLength:X})");
-
-                    switch (record.RecordType)
-                    {
-                        case SabreTools.Models.AACS.RecordType.EndOfMediaKeyBlock:
-                            var eomkb = record as SabreTools.Models.AACS.EndOfMediaKeyBlockRecord;
-                            if (eomkb != null)
-                            {
-                                builder.AppendLine($"    Signature data: {(eomkb.SignatureData == null ? "[NULL]" : BitConverter.ToString(eomkb.SignatureData).Replace('-', ' '))}");
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.ExplicitSubsetDifference:
-                            var esd = record as SabreTools.Models.AACS.ExplicitSubsetDifferenceRecord;
-                            builder.AppendLine($"    Subset Differences:");
-                            builder.AppendLine("    -------------------------");
-                            if (esd?.SubsetDifferences == null || esd.SubsetDifferences.Length == 0)
-                            {
-                                builder.AppendLine($"    No subset differences");
-                            }
-                            else
-                            {
-                                for (int j = 0; j < esd.SubsetDifferences.Length; j++)
-                                {
-                                    var sd = esd.SubsetDifferences[j];
-                                    builder.AppendLine($"    Subset Difference {j}");
-                                    if (sd == null)
-                                    {
-                                        builder.AppendLine("      [NULL]");
-                                    }
-                                    else
-                                    {
-                                        builder.AppendLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
-                                        builder.AppendLine($"      Number: {sd.Number} (0x{sd.Number:X})");
-                                    }
-                                }
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.MediaKeyData:
-                            var mkd = record as SabreTools.Models.AACS.MediaKeyDataRecord;
-                            builder.AppendLine($"    Media Keys:");
-                            builder.AppendLine("    -------------------------");
-                            if (mkd?.MediaKeyData == null || mkd.MediaKeyData.Length == 0)
-                            {
-                                builder.AppendLine($"    No media keys");
-                            }
-                            else
-                            {
-                                for (int j = 0; j < mkd.MediaKeyData.Length; j++)
-                                {
-                                    var mk = mkd.MediaKeyData[j];
-                                    builder.AppendLine($"      Media key {j}: {(mk == null ? "[NULL]" : BitConverter.ToString(mk).Replace('-', ' '))}");
-                                }
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.SubsetDifferenceIndex:
-                            var sdi = record as SabreTools.Models.AACS.SubsetDifferenceIndexRecord;
-                            if (sdi != null)
-                                builder.AppendLine($"    Span: {sdi.Span} (0x{sdi.Span:X})");
-                            builder.AppendLine($"    Offsets:");
-                            builder.AppendLine("    -------------------------");
-                            if (sdi?.Offsets == null || sdi.Offsets.Length == 0)
-                            {
-                                builder.AppendLine($"    No offsets");
-                            }
-                            else
-                            {
-                                for (int j = 0; j < sdi.Offsets.Length; j++)
-                                {
-                                    var offset = sdi.Offsets[j];
-                                    builder.AppendLine($"      Offset {j}: {offset} (0x{offset:X})");
-                                }
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.TypeAndVersion:
-                            var tav = record as SabreTools.Models.AACS.TypeAndVersionRecord;
-                            if (tav != null)
-                            {
-                                builder.AppendLine($"    Media key block type: {tav.MediaKeyBlockType} (0x{tav.MediaKeyBlockType:X})");
-                                builder.AppendLine($"    Version number: {tav.VersionNumber} (0x{tav.VersionNumber:X})");
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.DriveRevocationList:
-                            var drl = record as SabreTools.Models.AACS.DriveRevocationListRecord;
-                            if (drl != null)
-                                builder.AppendLine($"    Total number of entries: {drl.TotalNumberOfEntries} (0x{drl.TotalNumberOfEntries:X})");
-                            builder.AppendLine($"    Signature Blocks:");
-                            builder.AppendLine("    -------------------------");
-                            if (drl?.SignatureBlocks == null || drl.SignatureBlocks.Length == 0)
-                            {
-                                builder.AppendLine($"    No signature blocks");
-                            }
-                            else
-                            {
-                                for (int j = 0; j < drl.SignatureBlocks.Length; j++)
-                                {
-                                    var block = drl.SignatureBlocks[j];
-                                    builder.AppendLine($"    Signature Block {j}");
-                                    if (block == null)
-                                    {
-                                        builder.AppendLine("      [NULL]");
-                                    }
-                                    else
-                                    {
-                                        builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
-                                        builder.AppendLine($"      Entry Fields:");
-                                        builder.AppendLine("      -------------------------");
-                                        if (block.EntryFields == null || block.EntryFields.Length == 0)
-                                        {
-                                            builder.AppendLine($"      No entry fields");
-                                        }
-                                        else
-                                        {
-                                            for (int k = 0; k < block.EntryFields.Length; k++)
-                                            {
-                                                var ef = block.EntryFields[k];
-                                                builder.AppendLine($"      Entry {k}");
-                                                if (ef == null)
-                                                {
-                                                    builder.AppendLine("        [NULL]");
-                                                }
-                                                else
-                                                {
-                                                    builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                                    builder.AppendLine($"        Drive ID: {(ef.DriveID == null ? "[NULL]" : BitConverter.ToString(ef.DriveID).Replace('-', ' '))}");
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.HostRevocationList:
-                            var hrl = record as SabreTools.Models.AACS.HostRevocationListRecord;
-                            if (hrl != null)
-                                builder.AppendLine($"    Total number of entries: {hrl.TotalNumberOfEntries} (0x{hrl.TotalNumberOfEntries:X})");
-                            builder.AppendLine($"    Signature Blocks:");
-                            builder.AppendLine("    -------------------------");
-                            if (hrl?.SignatureBlocks == null || hrl.SignatureBlocks.Length == 0)
-                            {
-                                builder.AppendLine($"    No signature blocks");
-                            }
-                            else
-                            {
-                                for (int j = 0; j < hrl.SignatureBlocks.Length; j++)
-                                {
-                                    builder.AppendLine($"    Signature Block {j}");
-                                    var block = hrl.SignatureBlocks[j];
-                                    if (block == null)
-                                    {
-                                        builder.AppendLine("      [NULL]");
-                                    }
-                                    else
-                                    {
-                                        builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
-                                        builder.AppendLine($"      Entry Fields:");
-                                        builder.AppendLine("      -------------------------");
-                                        if (block.EntryFields == null || block.EntryFields.Length == 0)
-                                        {
-                                            builder.AppendLine($"      No entry fields");
-                                        }
-                                        else
-                                        {
-                                            for (int k = 0; k < block.EntryFields.Length; k++)
-                                            {
-                                                var ef = block.EntryFields[k];
-                                                builder.AppendLine($"      Entry {k}");
-                                                if (ef == null)
-                                                {
-                                                    builder.AppendLine("        [NULL]");
-                                                }
-                                                else
-                                                {
-
-                                                    builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                                                    builder.AppendLine($"        Host ID: {(ef.HostID == null ? "[NULL]" : BitConverter.ToString(ef.HostID).Replace('-', ' '))}");
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.VerifyMediaKey:
-                            var vmk = record as SabreTools.Models.AACS.VerifyMediaKeyRecord;
-                            if (vmk != null)
-                                builder.AppendLine($"    Ciphertext value: {(vmk.CiphertextValue == null ? "[NULL]" : BitConverter.ToString(vmk.CiphertextValue).Replace('-', ' '))}");
-                            break;
-
-                        case SabreTools.Models.AACS.RecordType.Copyright:
-                            var c = record as SabreTools.Models.AACS.CopyrightRecord;
-                            if (c != null)
-                                builder.AppendLine($"    Copyright: {c.Copyright ?? "[NULL]"}");
-                            break;
-                    }
+                    var record = records[i];
+                    PrintRecord(builder, record, i);
                 }
             }
             builder.AppendLine();
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, Record record, int index)
+#else
+        private static void PrintRecord(StringBuilder builder, Record? record, int index)
+#endif
+        {
+            builder.AppendLine($"  Record Entry {index}");
+            if (record == null)
+            {
+                builder.AppendLine("    [NULL]");
+                return;
+            }
+
+            builder.AppendLine($"    Record type: {record.RecordType} (0x{record.RecordType:X})");
+            builder.AppendLine($"    Record length: {record.RecordLength} (0x{record.RecordLength:X})");
+
+            switch (record)
+            {
+                case EndOfMediaKeyBlockRecord eomkb:
+                    PrintRecord(builder, eomkb);
+                    break;
+                case ExplicitSubsetDifferenceRecord esd:
+                    PrintRecord(builder, esd);
+                    break;
+                case MediaKeyDataRecord mkd:
+                    PrintRecord(builder, mkd);
+                    break;
+                case SubsetDifferenceIndexRecord sdi:
+                    PrintRecord(builder, sdi);
+                    break;
+                case TypeAndVersionRecord tav:
+                    PrintRecord(builder, tav);
+                    break;
+                case DriveRevocationListRecord drl:
+                    PrintRecord(builder, drl);
+                    break;
+                case HostRevocationListRecord hrl:
+                    PrintRecord(builder, hrl);
+                    break;
+                case VerifyMediaKeyRecord vmk:
+                    PrintRecord(builder, vmk);
+                    break;
+                case CopyrightRecord c:
+                    PrintRecord(builder, c);
+                    break;
+            }
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, EndOfMediaKeyBlockRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, EndOfMediaKeyBlockRecord record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Signature data: {(record.SignatureData == null ? "[NULL]" : BitConverter.ToString(record.SignatureData).Replace('-', ' '))}");
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, ExplicitSubsetDifferenceRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, ExplicitSubsetDifferenceRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Subset Differences:");
+            builder.AppendLine("    -------------------------");
+            if (record?.SubsetDifferences == null || record.SubsetDifferences.Length == 0)
+            {
+                builder.AppendLine($"    No subset differences");
+                return;
+            }
+
+            for (int j = 0; j < record.SubsetDifferences.Length; j++)
+            {
+                var sd = record.SubsetDifferences[j];
+                builder.AppendLine($"    Subset Difference {j}");
+                if (sd == null)
+                {
+                    builder.AppendLine("      [NULL]");
+                }
+                else
+                {
+                    builder.AppendLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
+                    builder.AppendLine($"      Number: {sd.Number} (0x{sd.Number:X})");
+                }
+            }
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, MediaKeyDataRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, MediaKeyDataRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Media Keys:");
+            builder.AppendLine("    -------------------------");
+            if (record?.MediaKeyData == null || record.MediaKeyData.Length == 0)
+            {
+                builder.AppendLine($"    No media keys");
+                return;
+            }
+
+            for (int j = 0; j < record.MediaKeyData.Length; j++)
+            {
+                var mk = record.MediaKeyData[j];
+                builder.AppendLine($"      Media key {j}: {(mk == null ? "[NULL]" : BitConverter.ToString(mk).Replace('-', ' '))}");
+            }
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, SubsetDifferenceIndexRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, SubsetDifferenceIndexRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Span: {record.Span} (0x{record.Span:X})");
+            builder.AppendLine($"    Offsets:");
+            builder.AppendLine("    -------------------------");
+            if (record.Offsets == null || record.Offsets.Length == 0)
+            {
+                builder.AppendLine($"    No offsets");
+                return;
+            }
+
+            for (int j = 0; j < record.Offsets.Length; j++)
+            {
+                var offset = record.Offsets[j];
+                builder.AppendLine($"      Offset {j}: {offset} (0x{offset:X})");
+            }
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, TypeAndVersionRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, TypeAndVersionRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Media key block type: {record.MediaKeyBlockType} (0x{record.MediaKeyBlockType:X})");
+            builder.AppendLine($"    Version number: {record.VersionNumber} (0x{record.VersionNumber:X})");
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, DriveRevocationListRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, DriveRevocationListRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Total number of entries: {record.TotalNumberOfEntries} (0x{record.TotalNumberOfEntries:X})");
+            builder.AppendLine($"    Signature Blocks:");
+            builder.AppendLine("    -------------------------");
+            if (record.SignatureBlocks == null || record.SignatureBlocks.Length == 0)
+            {
+                builder.AppendLine($"    No signature blocks");
+                return;
+            }
+
+            for (int j = 0; j < record.SignatureBlocks.Length; j++)
+            {
+                var block = record.SignatureBlocks[j];
+                builder.AppendLine($"    Signature Block {j}");
+                if (block == null)
+                {
+                    builder.AppendLine("      [NULL]");
+                    continue;
+                }
+
+                builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
+                builder.AppendLine($"      Entry Fields:");
+                builder.AppendLine("      -------------------------");
+                if (block.EntryFields == null || block.EntryFields.Length == 0)
+                {
+                    builder.AppendLine($"      No entry fields");
+                }
+                else
+                {
+                    for (int k = 0; k < block.EntryFields.Length; k++)
+                    {
+                        var ef = block.EntryFields[k];
+                        builder.AppendLine($"      Entry {k}");
+                        if (ef == null)
+                        {
+                            builder.AppendLine("        [NULL]");
+                        }
+                        else
+                        {
+                            builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
+                            builder.AppendLine($"        Drive ID: {(ef.DriveID == null ? "[NULL]" : BitConverter.ToString(ef.DriveID).Replace('-', ' '))}");
+                        }
+                    }
+                }
+            }
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, HostRevocationListRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, HostRevocationListRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Total number of entries: {record.TotalNumberOfEntries} (0x{record.TotalNumberOfEntries:X})");
+            builder.AppendLine($"    Signature Blocks:");
+            builder.AppendLine("    -------------------------");
+            if (record.SignatureBlocks == null || record.SignatureBlocks.Length == 0)
+            {
+                builder.AppendLine($"    No signature blocks");
+                return;
+            }
+
+            for (int j = 0; j < record.SignatureBlocks.Length; j++)
+            {
+                builder.AppendLine($"    Signature Block {j}");
+                var block = record.SignatureBlocks[j];
+                if (block == null)
+                {
+                    builder.AppendLine("      [NULL]");
+                    continue;
+                }
+
+                builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
+                builder.AppendLine($"      Entry Fields:");
+                builder.AppendLine("      -------------------------");
+                if (block.EntryFields == null || block.EntryFields.Length == 0)
+                {
+                    builder.AppendLine($"      No entry fields");
+                    continue;
+                }
+
+                for (int k = 0; k < block.EntryFields.Length; k++)
+                {
+                    var ef = block.EntryFields[k];
+                    builder.AppendLine($"      Entry {k}");
+                    if (ef == null)
+                    {
+                        builder.AppendLine("        [NULL]");
+                    }
+                    else
+                    {
+
+                        builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
+                        builder.AppendLine($"        Host ID: {(ef.HostID == null ? "[NULL]" : BitConverter.ToString(ef.HostID).Replace('-', ' '))}");
+                    }
+                }
+            }
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, VerifyMediaKeyRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, VerifyMediaKeyRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Ciphertext value: {(record.CiphertextValue == null ? "[NULL]" : BitConverter.ToString(record.CiphertextValue).Replace('-', ' '))}");
+        }
+
+#if NET48
+        private static void PrintRecord(StringBuilder builder, CopyrightRecord record)
+#else
+        private static void PrintRecord(StringBuilder builder, CopyrightRecord? record)
+#endif
+        {
+            if (record == null)
+                return;
+
+            builder.AppendLine($"    Copyright: {record.Copyright ?? "[NULL]"}");
         }
 
 #if NET6_0_OR_GREATER
