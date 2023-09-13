@@ -3133,7 +3133,11 @@ namespace BinaryObjectScanner.Wrappers
             foreach (var kvp in stringTable)
             {
                 int index = kvp.Key;
+#if NET48
                 string stringValue = kvp.Value;
+#else
+                string? stringValue = kvp.Value;
+#endif
                 builder.AppendLine($"{padding}String entry {index}: {stringValue}");
             }
         }
@@ -3206,13 +3210,21 @@ namespace BinaryObjectScanner.Wrappers
             else
             {
                 int offset = 0;
+#if NET48
                 byte[] magic = entry.Data.ReadBytes(ref offset, Math.Min(entry.Data.Length, 16));
+#else
+                byte[]? magic = entry.Data.ReadBytes(ref offset, Math.Min(entry.Data.Length, 16));
+#endif
 
-                if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
+                if (magic == null)
+                {
+                    // No-op
+                }
+                else if (magic[0] == 0x4D && magic[1] == 0x5A)
                 {
                     builder.AppendLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
                 }
-                else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x53 && entry.Data[2] == 0x46 && entry.Data[3] == 0x54)
+                else if (magic[0] == 0x4D && magic[1] == 0x53 && magic[2] == 0x46 && magic[3] == 0x54)
                 {
                     builder.AppendLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
                 }
@@ -3773,13 +3785,21 @@ namespace BinaryObjectScanner.Wrappers
             else
             {
                 int offset = 0;
+#if NET48
                 byte[] magic = entry.Data.ReadBytes(ref offset, Math.Min(entry.Data.Length, 16));
+#else
+                byte[]? magic = entry.Data.ReadBytes(ref offset, Math.Min(entry.Data.Length, 16));
+#endif
 
-                if (entry.Data[0] == 0x4D && entry.Data[1] == 0x5A)
+                if (magic == null)
+                {
+                    // No-op
+                }
+                else if (magic[0] == 0x4D && magic[1] == 0x5A)
                 {
                     builder.AppendLine($"{padding}Data: [Embedded Executable File]"); // TODO: Parse this out and print separately
                 }
-                else if (entry.Data[0] == 0x4D && entry.Data[1] == 0x53 && entry.Data[2] == 0x46 && entry.Data[3] == 0x54)
+                else if (magic[0] == 0x4D && magic[1] == 0x53 && magic[2] == 0x46 && magic[3] == 0x54)
                 {
                     builder.AppendLine($"{padding}Data: [Embedded OLE Library File]"); // TODO: Parse this out and print separately
                 }

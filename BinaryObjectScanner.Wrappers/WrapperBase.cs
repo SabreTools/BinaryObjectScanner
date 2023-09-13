@@ -258,7 +258,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // Read the data as a byte array first
+#if NET48
             byte[] sourceData = ReadFromDataSource(position, length);
+#else
+            byte[]? sourceData = ReadFromDataSource(position, length);
+#endif
             if (sourceData == null)
                 return null;
 

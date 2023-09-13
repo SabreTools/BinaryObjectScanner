@@ -258,7 +258,7 @@ namespace BinaryObjectScanner.Wrappers
 #if NET48
             byte[] data = ReadFromDataSource((int)directoryItem.ItemOffset, (int)directoryItem.ItemLength);
 #else
-            byte[] data = ReadFromDataSource((int)directoryItem.ItemOffset, (int)directoryItem.ItemLength);
+            byte[]? data = ReadFromDataSource((int)directoryItem.ItemOffset, (int)directoryItem.ItemLength);
 #endif
             if (data == null)
                 return false;

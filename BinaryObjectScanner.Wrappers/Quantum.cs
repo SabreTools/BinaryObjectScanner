@@ -201,7 +201,11 @@ namespace BinaryObjectScanner.Wrappers
             // Read the entire compressed data
             int compressedDataOffset = (int)CompressedDataOffset;
             int compressedDataLength = GetEndOfFile() - compressedDataOffset;
+#if NET48
             byte[] compressedData = ReadFromDataSource(compressedDataOffset, compressedDataLength);
+#else
+            byte[]? compressedData = ReadFromDataSource(compressedDataOffset, compressedDataLength);
+#endif
 
             // TODO: Figure out decompression
             // - Single-file archives seem to work
@@ -324,7 +328,7 @@ namespace BinaryObjectScanner.Wrappers
                     builder.AppendLine($"  File Descriptor {i}");
                     if (fileDescriptor == null)
                     {
-                    builder.AppendLine("    [NULL]");
+                        builder.AppendLine("    [NULL]");
                         continue;
                     }
 

@@ -350,7 +350,11 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Read the data
+#if NET48
             byte[] data = ReadFromDataSource((int)lump.Offset, (int)lump.Length);
+#else
+            byte[]? data = ReadFromDataSource((int)lump.Offset, (int)lump.Length);
+#endif
             if (data == null)
                 return false;
 
@@ -442,7 +446,11 @@ namespace BinaryObjectScanner.Wrappers
                 return false;
 
             // Read the data
+#if NET48
             byte[] data = CreateTextureData(texture);
+#else
+            byte[]? data = CreateTextureData(texture);
+#endif
             if (data == null)
                 return false;
 

@@ -351,7 +351,11 @@ namespace BinaryObjectScanner.Wrappers
                 if (dataBlock == null)
                     continue;
 
+#if NET48
                 byte[] decompressed = new byte[dataBlock.UncompressedSize];
+#else
+                byte[]? decompressed = new byte[dataBlock.UncompressedSize];
+#endif
                 switch (folder.CompressionType & SabreTools.Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
                 {
                     case SabreTools.Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
@@ -649,7 +653,7 @@ namespace BinaryObjectScanner.Wrappers
                     {
                         for (int j = 0; j < entry.DataBlocks.Length; j++)
                         {
-                            SabreTools.Models.MicrosoftCabinet.CFDATA dataBlock = entry.DataBlocks[j];
+                            var dataBlock = entry.DataBlocks[j];
                             builder.AppendLine($"    Data Block {j}");
                             if (dataBlock == null)
                             {
