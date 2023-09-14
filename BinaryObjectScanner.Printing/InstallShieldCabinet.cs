@@ -37,11 +37,7 @@ namespace BinaryObjectScanner.Printing
 
         private static int GetMajorVersion(CommonHeader header)
         {
-#if NET48
             uint majorVersion = header.Version;
-#else
-                uint majorVersion = header.Version ?? 0;
-#endif
             if (majorVersion >> 24 == 1)
             {
                 majorVersion = (majorVersion >> 12) & 0x0F;
