@@ -6,7 +6,6 @@ namespace BinaryObjectScanner.Printing
 {
     public static class MicrosoftCabinet
     {
-
         public static void Print(StringBuilder builder, Cabinet cabinet)
         {
             builder.AppendLine("Microsoft Cabinet Information:");
@@ -15,7 +14,7 @@ namespace BinaryObjectScanner.Printing
 
             Print(builder, cabinet.Header);
             Print(builder, cabinet.Folders);
-            PrintFiles(builder, cabinet.Files);
+            Print(builder, cabinet.Files);
         }
 
 #if NET48
@@ -131,9 +130,9 @@ namespace BinaryObjectScanner.Printing
         }
 
 #if NET48
-        private static void PrintFiles(StringBuilder builder, CFFILE[] entries)
+        private static void Print(StringBuilder builder, CFFILE[] entries)
 #else
-        private static void PrintFiles(StringBuilder builder, CFFILE?[]? entries)
+        private static void Print(StringBuilder builder, CFFILE?[]? entries)
 #endif
         {
             builder.AppendLine("  Files:");

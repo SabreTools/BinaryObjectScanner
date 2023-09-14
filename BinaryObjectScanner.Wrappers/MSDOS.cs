@@ -252,70 +252,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-
-            builder.AppendLine("MS-DOS Executable Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintHeader(builder);
-            PrintRelocationTable(builder);
-
+            Printing.MSDOS.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print header information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintHeader(StringBuilder builder)
-        {
-            builder.AppendLine("  Header Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Magic number: {Magic}");
-            builder.AppendLine($"  Last page bytes: {LastPageBytes} (0x{LastPageBytes:X})");
-            builder.AppendLine($"  Pages: {Pages} (0x{Pages:X})");
-            builder.AppendLine($"  Relocation items: {RelocationItems} (0x{RelocationItems:X})");
-            builder.AppendLine($"  Header paragraph size: {HeaderParagraphSize} (0x{HeaderParagraphSize:X})");
-            builder.AppendLine($"  Minimum extra paragraphs: {MinimumExtraParagraphs} (0x{MinimumExtraParagraphs:X})");
-            builder.AppendLine($"  Maximum extra paragraphs: {MaximumExtraParagraphs} (0x{MaximumExtraParagraphs:X})");
-            builder.AppendLine($"  Initial SS value: {InitialSSValue} (0x{InitialSSValue:X})");
-            builder.AppendLine($"  Initial SP value: {InitialSPValue} (0x{InitialSPValue:X})");
-            builder.AppendLine($"  Checksum: {Checksum} (0x{Checksum:X})");
-            builder.AppendLine($"  Initial IP value: {InitialIPValue} (0x{InitialIPValue:X})");
-            builder.AppendLine($"  Initial CS value: {InitialCSValue} (0x{InitialCSValue:X})");
-            builder.AppendLine($"  Relocation table address: {RelocationTableAddr} (0x{RelocationTableAddr:X})");
-            builder.AppendLine($"  Overlay number: {OverlayNumber} (0x{OverlayNumber:X})");
-        }
-
-        /// <summary>
-        /// Print relocation table information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintRelocationTable(StringBuilder builder)
-        {
-            builder.AppendLine("  Relocation Table Information:");
-            builder.AppendLine("  -------------------------");
-            if (RelocationItems == 0 || RelocationTable == null || RelocationTable.Length == 0)
-            {
-                builder.AppendLine("  No relocation table items");
-            }
-            else
-            {
-                for (int i = 0; i < RelocationTable.Length; i++)
-                {
-                    var entry = RelocationTable[i];
-                    builder.AppendLine($"  Relocation Table Entry {i}");
-                    if (entry == null)
-                    {
-                        builder.AppendLine($"    [NULL]");
-                        continue;
-                    }
-
-                    builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                    builder.AppendLine($"    Segment: {entry.Segment} (0x{entry.Segment:X})");
-                }
-            }
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
