@@ -140,6 +140,13 @@ namespace BinaryObjectScanner.Printing
         {
             builder.AppendLine("  Descriptor Information:");
             builder.AppendLine("  -------------------------");
+            if (descriptor == null)
+            {
+                builder.AppendLine("  No descriptor");
+                builder.AppendLine();
+                return;
+            }
+
             builder.AppendLine($"  Strings offset: {descriptor.StringsOffset} (0x{descriptor.StringsOffset:X})");
             builder.AppendLine($"  Reserved 0: {(descriptor.Reserved0 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved0).Replace('-', ' '))}");
             builder.AppendLine($"  Component list offset: {descriptor.ComponentListOffset} (0x{descriptor.ComponentListOffset:X})");
