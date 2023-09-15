@@ -278,72 +278,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-
-            builder.AppendLine("Quantum Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintHeader(builder);
-            PrintFileList(builder);
-            builder.AppendLine($"  Compressed data offset: {CompressedDataOffset} (0x{CompressedDataOffset:X})");
-            builder.AppendLine();
-
+            Printing.Quantum.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print header information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintHeader(StringBuilder builder)
-        {
-            builder.AppendLine("  Header Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Signature: {Signature}");
-            builder.AppendLine($"  Major version: {MajorVersion} (0x{MajorVersion:X})");
-            builder.AppendLine($"  Minor version: {MinorVersion} (0x{MinorVersion:X})");
-            builder.AppendLine($"  File count: {FileCount} (0x{FileCount:X})");
-            builder.AppendLine($"  Table size: {TableSize} (0x{TableSize:X})");
-            builder.AppendLine($"  Compression flags: {CompressionFlags} (0x{CompressionFlags:X})");
-            builder.AppendLine();
-        }
-
-        /// <summary>
-        /// Print file list information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintFileList(StringBuilder builder)
-        {
-            builder.AppendLine("  File List Information:");
-            builder.AppendLine("  -------------------------");
-            if (FileCount == 0 || FileList == null || FileList.Length == 0)
-            {
-                builder.AppendLine("  No file list items");
-            }
-            else
-            {
-                for (int i = 0; i < FileList.Length; i++)
-                {
-                    var fileDescriptor = FileList[i];
-                    builder.AppendLine($"  File Descriptor {i}");
-                    if (fileDescriptor == null)
-                    {
-                        builder.AppendLine("    [NULL]");
-                        continue;
-                    }
-
-                    builder.AppendLine($"    File name size: {fileDescriptor.FileNameSize} (0x{fileDescriptor.FileNameSize:X})");
-                    builder.AppendLine($"    File name: {fileDescriptor.FileName ?? "[NULL]"}");
-                    builder.AppendLine($"    Comment field size: {fileDescriptor.CommentFieldSize} (0x{fileDescriptor.CommentFieldSize:X})");
-                    builder.AppendLine($"    Comment field: {fileDescriptor.CommentField ?? "[NULL]"}");
-                    builder.AppendLine($"    Expanded file size: {fileDescriptor.ExpandedFileSize} (0x{fileDescriptor.ExpandedFileSize:X})");
-                    builder.AppendLine($"    File time: {fileDescriptor.FileTime} (0x{fileDescriptor.FileTime:X})");
-                    builder.AppendLine($"    File date: {fileDescriptor.FileDate} (0x{fileDescriptor.FileDate:X})");
-                    if (fileDescriptor.Unknown != null)
-                        builder.AppendLine($"    Unknown (Checksum?): {fileDescriptor.Unknown} (0x{fileDescriptor.Unknown:X})");
-                }
-            }
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
