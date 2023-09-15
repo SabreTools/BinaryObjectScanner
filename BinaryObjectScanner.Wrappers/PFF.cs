@@ -255,82 +255,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-
-            builder.AppendLine("PFF Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintHeader(builder);
-            PrintSegments(builder);
-            PrintFooter(builder);
-
+            Printing.PFF.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print header information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintHeader(StringBuilder builder)
-        {
-            builder.AppendLine("  Header Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Header size: {HeaderSize} (0x{HeaderSize:X})");
-            builder.AppendLine($"  Signature: {Signature}");
-            builder.AppendLine($"  Number of files: {NumberOfFiles} (0x{NumberOfFiles:X})");
-            builder.AppendLine($"  File segment size: {FileSegmentSize} (0x{FileSegmentSize:X})");
-            builder.AppendLine($"  File list offset: {FileListOffset} (0x{FileListOffset:X})");
-            builder.AppendLine();
-        }
-
-        /// <summary>
-        /// Print segmentsinformation
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintSegments(StringBuilder builder)
-        {
-            builder.AppendLine("  Segments Information:");
-            builder.AppendLine("  -------------------------");
-            if (NumberOfFiles == 0 || Segments == null || Segments.Length == 0)
-            {
-                builder.AppendLine("  No segments");
-            }
-            else
-            {
-                for (int i = 0; i < Segments.Length; i++)
-                {
-                    var segment = Segments[i];
-                    builder.AppendLine($"  Segment {i}");
-                    if (segment == null)
-                    {
-                        builder.AppendLine("    [NULL]");
-                        continue;
-                    }
-
-                    builder.AppendLine($"    Deleted: {segment.Deleted} (0x{segment.Deleted:X})");
-                    builder.AppendLine($"    File location: {segment.FileLocation} (0x{segment.FileLocation:X})");
-                    builder.AppendLine($"    File size: {segment.FileSize} (0x{segment.FileSize:X})");
-                    builder.AppendLine($"    Packed date: {segment.PackedDate} (0x{segment.PackedDate:X})");
-                    builder.AppendLine($"    File name: {segment.FileName ?? "[NULL]"}");
-                    builder.AppendLine($"    Modified date: {segment.ModifiedDate} (0x{segment.ModifiedDate:X})");
-                    builder.AppendLine($"    Compression level: {segment.CompressionLevel} (0x{segment.CompressionLevel:X})");
-                }
-            }
-            builder.AppendLine();
-        }
-
-        /// <summary>
-        /// Print footer information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintFooter(StringBuilder builder)
-        {
-            builder.AppendLine("  Footer Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  System IP: {SystemIP} (0x{SystemIP:X})");
-            builder.AppendLine($"  Reserved: {Reserved} (0x{Reserved:X})");
-            builder.AppendLine($"  King tag: {KingTag ?? "[NULL]"}");
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
