@@ -23,6 +23,24 @@ namespace BinaryObjectScanner.Printing
         }
 
         /// <summary>
+        /// Append a line containing a Char to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, char value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, char? value, string prefixString)
+#endif
+        {
+#if NET48
+            string valueString = value.ToString();
+#else
+            string valueString = value == null ? "[NULL]" : value.ToString();
+#endif
+
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
         /// Append a line containing a Int8 to a StringBuilder
         /// </summary>
 #if NET48
@@ -217,6 +235,19 @@ namespace BinaryObjectScanner.Printing
 #endif
         {
             string valueString = (value == null ? "[NULL]" : encoding.GetString(value).Replace("\0", string.Empty));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a Char[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, char[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, char[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
             return sb.AppendLine($"{prefixString}: {valueString}");
         }
 

@@ -137,75 +137,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-
-            builder.AppendLine("VBSP Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintHeader(builder);
-            PrintLumps(builder);
-
+            Printing.VBSP.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print header information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        /// <remarks>Slightly out of order due to the lumps</remarks>
-        private void PrintHeader(StringBuilder builder)
-        {
-            builder.AppendLine("  Header Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Signature: {Signature}");
-            builder.AppendLine($"  Version: {Version} (0x{Version:X})");
-            builder.AppendLine($"  Map revision: {MapRevision} (0x{MapRevision:X})");
-            builder.AppendLine();
-        }
-
-        /// <summary>
-        /// Print lumps information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        /// <remarks>Technically part of the header</remarks>
-        private void PrintLumps(StringBuilder builder)
-        {
-            builder.AppendLine("  Lumps Information:");
-            builder.AppendLine("  -------------------------");
-            if (Lumps == null || Lumps.Length == 0)
-            {
-                builder.AppendLine("  No lumps");
-            }
-            else
-            {
-                for (int i = 0; i < Lumps.Length; i++)
-                {
-                    var lump = Lumps[i];
-                    string specialLumpName = string.Empty;
-                    switch (i)
-                    {
-                        case HL_VBSP_LUMP_ENTITIES:
-                            specialLumpName = " (entities)";
-                            break;
-                        case HL_VBSP_LUMP_PAKFILE:
-                            specialLumpName = " (pakfile)";
-                            break;
-                    }
-
-                    builder.AppendLine($"  Lump {i}{specialLumpName}");
-                    if (lump == null)
-                    {
-                        builder.AppendLine("    [NULL]");
-                        continue;
-                    }
-
-                    builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
-                    builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
-                    builder.AppendLine($"    Version: {lump.Version} (0x{lump.Version:X})");
-                    builder.AppendLine($"    4CC: {(lump.FourCC == null ? "[NULL]" : string.Join(", ", lump.FourCC))}");
-                }
-            }
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
