@@ -144,61 +144,8 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-
-            builder.AppendLine("PAK Information:");
-            builder.AppendLine("-------------------------");
-            builder.AppendLine();
-
-            PrintHeader(builder);
-            PrintDirectoryItems(builder);
-
+            Printing.PAK.Print(builder, _model);
             return builder;
-        }
-
-        /// <summary>
-        /// Print header information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintHeader(StringBuilder builder)
-        {
-            builder.AppendLine("  Header Information:");
-            builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Signature: {Signature}");
-            builder.AppendLine($"  Directory offset: {DirectoryOffset} (0x{DirectoryOffset:X})");
-            builder.AppendLine($"  Directory length: {DirectoryLength} (0x{DirectoryLength:X})");
-            builder.AppendLine();
-        }
-
-        /// <summary>
-        /// Print directory items information
-        /// </summary>
-        /// <param name="builder">StringBuilder to append information to</param>
-        private void PrintDirectoryItems(StringBuilder builder)
-        {
-            builder.AppendLine("  Directory Items Information:");
-            builder.AppendLine("  -------------------------");
-            if (DirectoryItems == null || DirectoryItems.Length == 0)
-            {
-                builder.AppendLine("  No directory items");
-            }
-            else
-            {
-                for (int i = 0; i < DirectoryItems.Length; i++)
-                {
-                    var directoryItem = DirectoryItems[i];
-                    builder.AppendLine($"  Directory Item {i}");
-                    if (directoryItem == null)
-                    {
-                        builder.AppendLine("    [NULL]");
-                        continue;
-                    }
-
-                    builder.AppendLine($"    Item name: {directoryItem.ItemName}");
-                    builder.AppendLine($"    Item offset: {directoryItem.ItemOffset} (0x{directoryItem.ItemOffset:X})");
-                    builder.AppendLine($"    Item length: {directoryItem.ItemLength} (0x{directoryItem.ItemLength:X})");
-                }
-            }
-            builder.AppendLine();
         }
 
 #if NET6_0_OR_GREATER
