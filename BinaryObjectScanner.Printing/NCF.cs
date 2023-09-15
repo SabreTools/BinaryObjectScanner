@@ -345,7 +345,7 @@ namespace BinaryObjectScanner.Printing
 #if NET48
         private static void Print(StringBuilder builder, ChecksumMapEntry[] entries)
 #else
-        private static void Print(StringBuilder builder, ChecksumMapEntry[]? entries)
+        private static void Print(StringBuilder builder, ChecksumMapEntry?[]? entries)
 #endif
         {
             builder.AppendLine("  Checksum Map Entries Information:");

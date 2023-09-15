@@ -41,6 +41,7 @@ namespace BinaryObjectScanner.Printing
             {
                 builder.AppendLine("  No MS-DOS stub header");
                 builder.AppendLine();
+                return;
             }
 
             builder.AppendLine(header.Magic, "  Magic number");
@@ -77,6 +78,13 @@ namespace BinaryObjectScanner.Printing
         {
             builder.AppendLine("  Header Information:");
             builder.AppendLine("  -------------------------");
+            if (header == null)
+            {
+                builder.AppendLine("  No header");
+                builder.AppendLine();
+                return;
+            }
+
             builder.AppendLine(header.Magic, "  Magic number");
             builder.AppendLine(header.LinkerVersion, "  Linker version");
             builder.AppendLine(header.LinkerRevision, "  Linker revision");

@@ -3,110 +3,23 @@ using System.Text;
 
 namespace BinaryObjectScanner.Printing
 {
+    // TODO: Add extension for printing enums, if possible
     internal static class Extensions
     {
         /// <summary>
-        /// Append a line containing a UInt8[] value to a StringBuilder
+        /// Append a line containing a boolean to a StringBuilder
         /// </summary>
 #if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, byte[] value, string prefixString)
+        public static StringBuilder AppendLine(this StringBuilder sb, bool value, string prefixString)
 #else
-        public static StringBuilder AppendLine(this StringBuilder sb, byte[]? value, string prefixString)
+        public static StringBuilder AppendLine(this StringBuilder sb, bool? value, string prefixString)
 #endif
         {
-            string valueString = (value == null ? "[NULL]" : BitConverter.ToString(value).Replace('-', ' '));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
+#if NET6_0_OR_GREATER
+            value ??= false;
+#endif
 
-                /// <summary>
-        /// Append a line containing a UInt8[] value as a string to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, byte[] value, string prefixString, Encoding encoding)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, byte[]? value, string prefixString, Encoding encoding)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : encoding.GetString(value).Replace("\0", string.Empty));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
-
-        /// <summary>
-        /// Append a line containing a Int16[] value to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, short[] value, string prefixString)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, short[]? value, string prefixString)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
-
-        /// <summary>
-        /// Append a line containing a UInt16[] value to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, ushort[] value, string prefixString)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, ushort[]? value, string prefixString)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
-
-        /// <summary>
-        /// Append a line containing a Int32[] value to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, int[] value, string prefixString)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, int[]? value, string prefixString)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
-
-        /// <summary>
-        /// Append a line containing a UInt32[] value to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, uint[] value, string prefixString)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, uint[]? value, string prefixString)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
-
-        /// <summary>
-        /// Append a line containing a Int64[] value to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, long[] value, string prefixString)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, long[]? value, string prefixString)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
-            return sb.AppendLine($"{prefixString}: {valueString}");
-        }
-
-        /// <summary>
-        /// Append a line containing a UInt64[] value to a StringBuilder
-        /// </summary>
-#if NET48
-        public static StringBuilder AppendLine(this StringBuilder sb, ulong[] value, string prefixString)
-#else
-        public static StringBuilder AppendLine(this StringBuilder sb, ulong[]? value, string prefixString)
-#endif
-        {
-            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
-            return sb.AppendLine($"{prefixString}: {valueString}");
+            return sb.AppendLine($"{prefixString}: {value.ToString()}");
         }
 
         /// <summary>
@@ -279,6 +192,110 @@ namespace BinaryObjectScanner.Printing
 #endif
 
             return sb.AppendLine($"{prefixString}: {value}");
+        }
+
+        /// <summary>
+        /// Append a line containing a UInt8[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, byte[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, byte[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : BitConverter.ToString(value).Replace('-', ' '));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a UInt8[] value as a string to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, byte[] value, string prefixString, Encoding encoding)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, byte[]? value, string prefixString, Encoding encoding)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : encoding.GetString(value).Replace("\0", string.Empty));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a Int16[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, short[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, short[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a UInt16[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, ushort[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, ushort[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a Int32[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, int[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, int[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a UInt32[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, uint[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, uint[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a Int64[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, long[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, long[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
+        /// <summary>
+        /// Append a line containing a UInt64[] value to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, ulong[] value, string prefixString)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, ulong[]? value, string prefixString)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : string.Join(", ", value));
+            return sb.AppendLine($"{prefixString}: {valueString}");
         }
     }
 }

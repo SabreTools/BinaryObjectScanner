@@ -165,45 +165,45 @@ namespace BinaryObjectScanner.Printing
                 builder.AppendLine(header.InitialData.CardSeedAESMAC, "  Card seed AES-MAC");
                 builder.AppendLine(header.InitialData.CardSeedNonce, "  Card seed nonce");
                 builder.AppendLine(header.InitialData.Reserved, "  Reserved");
-            }
-            builder.AppendLine();
+                builder.AppendLine();
 
-            builder.AppendLine("  Backup Header:");
-            builder.AppendLine("  -------------------------");
-            if (header.InitialData.BackupHeader == null)
-            {
-                builder.AppendLine("  No backup header");
-            }
-            else
-            {
-                builder.AppendLine(header.InitialData.BackupHeader.MagicID, "    Magic ID");
-                builder.AppendLine(header.InitialData.BackupHeader.ContentSizeInMediaUnits, "    Content size in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.PartitionId, "    Partition ID");
-                builder.AppendLine(header.InitialData.BackupHeader.MakerCode, "    Maker code");
-                builder.AppendLine(header.InitialData.BackupHeader.Version, "    Version");
-                builder.AppendLine(header.InitialData.BackupHeader.VerificationHash, "    Verification hash");
-                builder.AppendLine(header.InitialData.BackupHeader.ProgramId, "    Program ID");
-                builder.AppendLine(header.InitialData.BackupHeader.Reserved1, "    Reserved 1");
-                builder.AppendLine(header.InitialData.BackupHeader.LogoRegionHash, "    Logo region SHA-256 hash");
-                builder.AppendLine(header.InitialData.BackupHeader.ProductCode, "    Product code");
-                builder.AppendLine(header.InitialData.BackupHeader.ExtendedHeaderHash, "    Extended header SHA-256 hash");
-                builder.AppendLine(header.InitialData.BackupHeader.ExtendedHeaderSizeInBytes, "    Extended header size in bytes");
-                builder.AppendLine(header.InitialData.BackupHeader.Reserved2, "    Reserved 2");
-                builder.AppendLine($"    Flags: {header.InitialData.BackupHeader.Flags} (0x{header.InitialData.BackupHeader.Flags:X})");
-                builder.AppendLine(header.InitialData.BackupHeader.PlainRegionOffsetInMediaUnits, "    Plain region offset, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.PlainRegionSizeInMediaUnits, "    Plain region size, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.LogoRegionOffsetInMediaUnits, "    Logo region offset, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.LogoRegionSizeInMediaUnits, "    Logo region size, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.ExeFSOffsetInMediaUnits, "    ExeFS offset, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.ExeFSSizeInMediaUnits, "    ExeFS size, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.ExeFSHashRegionSizeInMediaUnits, "    ExeFS hash region size, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.Reserved3, "    Reserved 3");
-                builder.AppendLine(header.InitialData.BackupHeader.RomFSOffsetInMediaUnits, "    RomFS offset, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.RomFSSizeInMediaUnits, "    RomFS size, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.RomFSHashRegionSizeInMediaUnits, "    RomFS hash region size, in media units");
-                builder.AppendLine(header.InitialData.BackupHeader.Reserved4, "    Reserved 4");
-                builder.AppendLine(header.InitialData.BackupHeader.ExeFSSuperblockHash, "    ExeFS superblock SHA-256 hash");
-                builder.AppendLine(header.InitialData.BackupHeader.RomFSSuperblockHash, "    RomFS superblock SHA-256 hash");
+                builder.AppendLine("  Backup Header:");
+                builder.AppendLine("  -------------------------");
+                if (header.InitialData.BackupHeader == null)
+                {
+                    builder.AppendLine("  No backup header");
+                }
+                else
+                {
+                    builder.AppendLine(header.InitialData.BackupHeader.MagicID, "    Magic ID");
+                    builder.AppendLine(header.InitialData.BackupHeader.ContentSizeInMediaUnits, "    Content size in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.PartitionId, "    Partition ID");
+                    builder.AppendLine(header.InitialData.BackupHeader.MakerCode, "    Maker code");
+                    builder.AppendLine(header.InitialData.BackupHeader.Version, "    Version");
+                    builder.AppendLine(header.InitialData.BackupHeader.VerificationHash, "    Verification hash");
+                    builder.AppendLine(header.InitialData.BackupHeader.ProgramId, "    Program ID");
+                    builder.AppendLine(header.InitialData.BackupHeader.Reserved1, "    Reserved 1");
+                    builder.AppendLine(header.InitialData.BackupHeader.LogoRegionHash, "    Logo region SHA-256 hash");
+                    builder.AppendLine(header.InitialData.BackupHeader.ProductCode, "    Product code");
+                    builder.AppendLine(header.InitialData.BackupHeader.ExtendedHeaderHash, "    Extended header SHA-256 hash");
+                    builder.AppendLine(header.InitialData.BackupHeader.ExtendedHeaderSizeInBytes, "    Extended header size in bytes");
+                    builder.AppendLine(header.InitialData.BackupHeader.Reserved2, "    Reserved 2");
+                    builder.AppendLine($"    Flags: {header.InitialData.BackupHeader.Flags} (0x{header.InitialData.BackupHeader.Flags:X})");
+                    builder.AppendLine(header.InitialData.BackupHeader.PlainRegionOffsetInMediaUnits, "    Plain region offset, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.PlainRegionSizeInMediaUnits, "    Plain region size, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.LogoRegionOffsetInMediaUnits, "    Logo region offset, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.LogoRegionSizeInMediaUnits, "    Logo region size, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.ExeFSOffsetInMediaUnits, "    ExeFS offset, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.ExeFSSizeInMediaUnits, "    ExeFS size, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.ExeFSHashRegionSizeInMediaUnits, "    ExeFS hash region size, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.Reserved3, "    Reserved 3");
+                    builder.AppendLine(header.InitialData.BackupHeader.RomFSOffsetInMediaUnits, "    RomFS offset, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.RomFSSizeInMediaUnits, "    RomFS size, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.RomFSHashRegionSizeInMediaUnits, "    RomFS hash region size, in media units");
+                    builder.AppendLine(header.InitialData.BackupHeader.Reserved4, "    Reserved 4");
+                    builder.AppendLine(header.InitialData.BackupHeader.ExeFSSuperblockHash, "    ExeFS superblock SHA-256 hash");
+                    builder.AppendLine(header.InitialData.BackupHeader.RomFSSuperblockHash, "    RomFS superblock SHA-256 hash");
+                }
             }
             builder.AppendLine();
 
