@@ -19,65 +19,65 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.XZP.Header.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.Version"/>
 #if NET48
-        public uint Version => _model.Header.Version;
+        public uint Version => this.Model.Header.Version;
 #else
-        public uint? Version => _model.Header?.Version;
+        public uint? Version => this.Model.Header?.Version;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.PreloadDirectoryEntryCount"/>
 #if NET48
-        public uint PreloadDirectoryEntryCount => _model.Header.PreloadDirectoryEntryCount;
+        public uint PreloadDirectoryEntryCount => this.Model.Header.PreloadDirectoryEntryCount;
 #else
-        public uint? PreloadDirectoryEntryCount => _model.Header?.PreloadDirectoryEntryCount;
+        public uint? PreloadDirectoryEntryCount => this.Model.Header?.PreloadDirectoryEntryCount;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryEntryCount"/>
 #if NET48
-        public uint DirectoryEntryCount => _model.Header.DirectoryEntryCount;
+        public uint DirectoryEntryCount => this.Model.Header.DirectoryEntryCount;
 #else
-        public uint? DirectoryEntryCount => _model.Header?.DirectoryEntryCount;
+        public uint? DirectoryEntryCount => this.Model.Header?.DirectoryEntryCount;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.PreloadBytes"/>
 #if NET48
-        public uint PreloadBytes => _model.Header.PreloadBytes;
+        public uint PreloadBytes => this.Model.Header.PreloadBytes;
 #else
-        public uint? PreloadBytes => _model.Header?.PreloadBytes;
+        public uint? PreloadBytes => this.Model.Header?.PreloadBytes;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.HeaderLength"/>
 #if NET48
-        public uint HeaderLength => _model.Header.HeaderLength;
+        public uint HeaderLength => this.Model.Header.HeaderLength;
 #else
-        public uint? HeaderLength => _model.Header?.HeaderLength;
+        public uint? HeaderLength => this.Model.Header?.HeaderLength;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemCount"/>
 #if NET48
-        public uint DirectoryItemCount => _model.Header.DirectoryItemCount;
+        public uint DirectoryItemCount => this.Model.Header.DirectoryItemCount;
 #else
-        public uint? DirectoryItemCount => _model.Header?.DirectoryItemCount;
+        public uint? DirectoryItemCount => this.Model.Header?.DirectoryItemCount;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemOffset"/>
 #if NET48
-        public uint DirectoryItemOffset => _model.Header.DirectoryItemOffset;
+        public uint DirectoryItemOffset => this.Model.Header.DirectoryItemOffset;
 #else
-        public uint? DirectoryItemOffset => _model.Header?.DirectoryItemOffset;
+        public uint? DirectoryItemOffset => this.Model.Header?.DirectoryItemOffset;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Header.DirectoryItemLength"/>
 #if NET48
-        public uint DirectoryItemLength => _model.Header.DirectoryItemLength;
+        public uint DirectoryItemLength => this.Model.Header.DirectoryItemLength;
 #else
-        public uint? DirectoryItemLength => _model.Header?.DirectoryItemLength;
+        public uint? DirectoryItemLength => this.Model.Header?.DirectoryItemLength;
 #endif
 
         #endregion
@@ -86,9 +86,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.XZP.DirectoryEntries"/>
 #if NET48
-        public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => this.Model.DirectoryEntries;
 #else
-        public SabreTools.Models.XZP.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry?[]? DirectoryEntries => this.Model.DirectoryEntries;
 #endif
 
         #endregion
@@ -97,9 +97,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryEntries"/>
 #if NET48
-        public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => _model.PreloadDirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => this.Model.PreloadDirectoryEntries;
 #else
-        public SabreTools.Models.XZP.DirectoryEntry?[]? PreloadDirectoryEntries => _model.PreloadDirectoryEntries;
+        public SabreTools.Models.XZP.DirectoryEntry?[]? PreloadDirectoryEntries => this.Model.PreloadDirectoryEntries;
 #endif
 
         #endregion
@@ -108,9 +108,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.XZP.PreloadDirectoryMappings"/>
 #if NET48
-        public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => _model.PreloadDirectoryMappings;
+        public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => this.Model.PreloadDirectoryMappings;
 #else
-        public SabreTools.Models.XZP.DirectoryMapping?[]? PreloadDirectoryMappings => _model.PreloadDirectoryMappings;
+        public SabreTools.Models.XZP.DirectoryMapping?[]? PreloadDirectoryMappings => this.Model.PreloadDirectoryMappings;
 #endif
 
         #endregion
@@ -119,9 +119,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.XZP.DirectoryItems"/>
 #if NET48
-        public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
+        public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => this.Model.DirectoryItems;
 #else
-        public SabreTools.Models.XZP.DirectoryItem?[]? DirectoryItems => _model.DirectoryItems;
+        public SabreTools.Models.XZP.DirectoryItem?[]? DirectoryItems => this.Model.DirectoryItems;
 #endif
 
         #endregion
@@ -130,16 +130,16 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.XZP.Footer.FileLength"/>
 #if NET48
-        public uint F_FileLength => _model.Footer.FileLength;
+        public uint F_FileLength => this.Model.Footer.FileLength;
 #else
-        public uint? F_FileLength => _model.Footer?.FileLength;
+        public uint? F_FileLength => this.Model.Footer?.FileLength;
 #endif
 
         /// <inheritdoc cref="Models.XZP.Footer.Signature"/>
 #if NET48
-        public string F_Signature => _model.Footer.Signature;
+        public string F_Signature => this.Model.Footer.Signature;
 #else
-        public string? F_Signature => _model.Footer?.Signature;
+        public string? F_Signature => this.Model.Footer?.Signature;
 #endif
 
         #endregion
@@ -238,16 +238,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.XZP.Print(builder, _model);
+            Printing.XZP.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

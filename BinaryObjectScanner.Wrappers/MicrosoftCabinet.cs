@@ -20,149 +20,149 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved1"/>
 #if NET48
-        public uint Reserved1 => _model.Header.Reserved1;
+        public uint Reserved1 => this.Model.Header.Reserved1;
 #else
-        public uint? Reserved1 => _model.Header?.Reserved1;
+        public uint? Reserved1 => this.Model.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetSize"/>
 #if NET48
-        public uint CabinetSize => _model.Header.CabinetSize;
+        public uint CabinetSize => this.Model.Header.CabinetSize;
 #else
-        public uint? CabinetSize => _model.Header?.CabinetSize;
+        public uint? CabinetSize => this.Model.Header?.CabinetSize;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved2"/>
 #if NET48
-        public uint Reserved2 => _model.Header.Reserved2;
+        public uint Reserved2 => this.Model.Header.Reserved2;
 #else
-        public uint? Reserved2 => _model.Header?.Reserved2;
+        public uint? Reserved2 => this.Model.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FilesOffset"/>
 #if NET48
-        public uint FilesOffset => _model.Header.FilesOffset;
+        public uint FilesOffset => this.Model.Header.FilesOffset;
 #else
-        public uint? FilesOffset => _model.Header?.FilesOffset;
+        public uint? FilesOffset => this.Model.Header?.FilesOffset;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved3"/>
 #if NET48
-        public uint Reserved3 => _model.Header.Reserved3;
+        public uint Reserved3 => this.Model.Header.Reserved3;
 #else
-        public uint? Reserved3 => _model.Header?.Reserved3;
+        public uint? Reserved3 => this.Model.Header?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.VersionMinor"/>
 #if NET48
-        public byte VersionMinor => _model.Header.VersionMinor;
+        public byte VersionMinor => this.Model.Header.VersionMinor;
 #else
-        public byte? VersionMinor => _model.Header?.VersionMinor;
+        public byte? VersionMinor => this.Model.Header?.VersionMinor;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.VersionMajor"/>
 #if NET48
-        public byte VersionMajor => _model.Header.VersionMajor;
+        public byte VersionMajor => this.Model.Header.VersionMajor;
 #else
-        public byte? VersionMajor => _model.Header?.VersionMajor;
+        public byte? VersionMajor => this.Model.Header?.VersionMajor;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FolderCount"/>
 #if NET48
-        public ushort FolderCount => _model.Header.FolderCount;
+        public ushort FolderCount => this.Model.Header.FolderCount;
 #else
-        public ushort? FolderCount => _model.Header?.FolderCount;
+        public ushort? FolderCount => this.Model.Header?.FolderCount;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
 #if NET48
-        public ushort FileCount => _model.Header.FileCount;
+        public ushort FileCount => this.Model.Header.FileCount;
 #else
-        public ushort? FileCount => _model.Header?.FileCount;
+        public ushort? FileCount => this.Model.Header?.FileCount;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
 #if NET48
-        public SabreTools.Models.MicrosoftCabinet.HeaderFlags Flags => _model.Header.Flags;
+        public SabreTools.Models.MicrosoftCabinet.HeaderFlags Flags => this.Model.Header.Flags;
 #else
-        public SabreTools.Models.MicrosoftCabinet.HeaderFlags? Flags => _model.Header?.Flags;
+        public SabreTools.Models.MicrosoftCabinet.HeaderFlags? Flags => this.Model.Header?.Flags;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.SetID"/>
 #if NET48
-        public ushort SetID => _model.Header.SetID;
+        public ushort SetID => this.Model.Header.SetID;
 #else
-        public ushort? SetID => _model.Header?.SetID;
+        public ushort? SetID => this.Model.Header?.SetID;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetIndex"/>
 #if NET48
-        public ushort CabinetIndex => _model.Header.CabinetIndex;
+        public ushort CabinetIndex => this.Model.Header.CabinetIndex;
 #else
-        public ushort? CabinetIndex => _model.Header?.CabinetIndex;
+        public ushort? CabinetIndex => this.Model.Header?.CabinetIndex;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.HeaderReservedSize"/>
 #if NET48
-        public ushort HeaderReservedSize => _model.Header.HeaderReservedSize;
+        public ushort HeaderReservedSize => this.Model.Header.HeaderReservedSize;
 #else
-        public ushort? HeaderReservedSize => _model.Header?.HeaderReservedSize;
+        public ushort? HeaderReservedSize => this.Model.Header?.HeaderReservedSize;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FolderReservedSize"/>
 #if NET48
-        public byte FolderReservedSize => _model.Header.FolderReservedSize;
+        public byte FolderReservedSize => this.Model.Header.FolderReservedSize;
 #else
-        public byte? FolderReservedSize => _model.Header?.FolderReservedSize;
+        public byte? FolderReservedSize => this.Model.Header?.FolderReservedSize;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DataReservedSize"/>
 #if NET48
-        public byte DataReservedSize => _model.Header.DataReservedSize;
+        public byte DataReservedSize => this.Model.Header.DataReservedSize;
 #else
-        public byte? DataReservedSize => _model.Header?.DataReservedSize;
+        public byte? DataReservedSize => this.Model.Header?.DataReservedSize;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.ReservedData"/>
 #if NET48
-        public byte[] ReservedData => _model.Header.ReservedData;
+        public byte[] ReservedData => this.Model.Header.ReservedData;
 #else
-        public byte[]? ReservedData => _model.Header?.ReservedData;
+        public byte[]? ReservedData => this.Model.Header?.ReservedData;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetPrev"/>
 #if NET48
-        public string CabinetPrev => _model.Header.CabinetPrev;
+        public string CabinetPrev => this.Model.Header.CabinetPrev;
 #else
-        public string? CabinetPrev => _model.Header?.CabinetPrev;
+        public string? CabinetPrev => this.Model.Header?.CabinetPrev;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskPrev"/>
 #if NET48
-        public string DiskPrev => _model.Header.DiskPrev;
+        public string DiskPrev => this.Model.Header.DiskPrev;
 #else
-        public string? DiskPrev => _model.Header?.DiskPrev;
+        public string? DiskPrev => this.Model.Header?.DiskPrev;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetNext"/>
 #if NET48
-        public string CabinetNext => _model.Header.CabinetNext;
+        public string CabinetNext => this.Model.Header.CabinetNext;
 #else
-        public string? CabinetNext => _model.Header?.CabinetNext;
+        public string? CabinetNext => this.Model.Header?.CabinetNext;
 #endif
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskNext"/>
 #if NET48
-        public string DiskNext => _model.Header.DiskNext;
+        public string DiskNext => this.Model.Header.DiskNext;
 #else
-        public string? DiskNext => _model.Header?.DiskNext;
+        public string? DiskNext => this.Model.Header?.DiskNext;
 #endif
 
         #endregion
@@ -171,9 +171,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Folders"/>
 #if NET48
-        public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => _model.Folders;
+        public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => this.Model.Folders;
 #else
-        public SabreTools.Models.MicrosoftCabinet.CFFOLDER?[]? Folders => _model.Folders;
+        public SabreTools.Models.MicrosoftCabinet.CFFOLDER?[]? Folders => this.Model.Folders;
 #endif
 
         #endregion
@@ -182,9 +182,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Files"/>
 #if NET48
-        public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => _model.Files;
+        public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => this.Model.Files;
 #else
-        public SabreTools.Models.MicrosoftCabinet.CFFILE?[]? Files => _model.Files;
+        public SabreTools.Models.MicrosoftCabinet.CFFILE?[]? Files => this.Model.Files;
 #endif
 
         #endregion
@@ -540,16 +540,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.MicrosoftCabinet.Print(builder, _model);
+            Printing.MicrosoftCabinet.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

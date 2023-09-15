@@ -19,37 +19,37 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.Signature"/>
 #if NET48
-        public string Signature => _model.CommonHeader.Signature;
+        public string Signature => this.Model.CommonHeader.Signature;
 #else
-        public string? Signature => _model.CommonHeader?.Signature;
+        public string? Signature => this.Model.CommonHeader?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.Version"/>
 #if NET48
-        public uint Version => _model.CommonHeader.Version;
+        public uint Version => this.Model.CommonHeader.Version;
 #else
-        public uint? Version => _model.CommonHeader?.Version;
+        public uint? Version => this.Model.CommonHeader?.Version;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.VolumeInfo"/>
 #if NET48
-        public uint VolumeInfo => _model.CommonHeader.VolumeInfo;
+        public uint VolumeInfo => this.Model.CommonHeader.VolumeInfo;
 #else
-        public uint? VolumeInfo => _model.CommonHeader?.VolumeInfo;
+        public uint? VolumeInfo => this.Model.CommonHeader?.VolumeInfo;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.DescriptorOffset"/>
 #if NET48
-        public uint DescriptorOffset => _model.CommonHeader.DescriptorOffset;
+        public uint DescriptorOffset => this.Model.CommonHeader.DescriptorOffset;
 #else
-        public uint? DescriptorOffset => _model.CommonHeader?.DescriptorOffset;
+        public uint? DescriptorOffset => this.Model.CommonHeader?.DescriptorOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.CommonHeader.DescriptorSize"/>
 #if NET48
-        public uint DescriptorSize => _model.CommonHeader.DescriptorSize;
+        public uint DescriptorSize => this.Model.CommonHeader.DescriptorSize;
 #else
-        public uint? DescriptorSize => _model.CommonHeader?.DescriptorSize;
+        public uint? DescriptorSize => this.Model.CommonHeader?.DescriptorSize;
 #endif
 
         #endregion
@@ -58,114 +58,114 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.DataOffset"/>
 #if NET48
-        public uint DataOffset => _model.VolumeHeader.DataOffset;
+        public uint DataOffset => this.Model.VolumeHeader.DataOffset;
 #else
-        public uint? DataOffset => _model.VolumeHeader?.DataOffset;
+        public uint? DataOffset => this.Model.VolumeHeader?.DataOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.DataOffsetHigh"/>
 #if NET48
-        public uint DataOffsetHigh => _model.VolumeHeader.DataOffsetHigh;
+        public uint DataOffsetHigh => this.Model.VolumeHeader.DataOffsetHigh;
 #else
-        public uint? DataOffsetHigh => _model.VolumeHeader?.DataOffsetHigh;
+        public uint? DataOffsetHigh => this.Model.VolumeHeader?.DataOffsetHigh;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileIndex"/>
 #if NET48
-        public uint FirstFileIndex => _model.VolumeHeader.FirstFileIndex;
+        public uint FirstFileIndex => this.Model.VolumeHeader.FirstFileIndex;
 #else
-        public uint? FirstFileIndex => _model.VolumeHeader?.FirstFileIndex;
+        public uint? FirstFileIndex => this.Model.VolumeHeader?.FirstFileIndex;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileIndex"/>
 #if NET48
-        public uint LastFileIndex => _model.VolumeHeader.LastFileIndex;
+        public uint LastFileIndex => this.Model.VolumeHeader.LastFileIndex;
 #else
-        public uint? LastFileIndex => _model.VolumeHeader?.LastFileIndex;
+        public uint? LastFileIndex => this.Model.VolumeHeader?.LastFileIndex;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileOffset"/>
 #if NET48
-        public uint FirstFileOffset => _model.VolumeHeader.FirstFileOffset;
+        public uint FirstFileOffset => this.Model.VolumeHeader.FirstFileOffset;
 #else
-        public uint? FirstFileOffset => _model.VolumeHeader?.FirstFileOffset;
+        public uint? FirstFileOffset => this.Model.VolumeHeader?.FirstFileOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileOffsetHigh"/>
 #if NET48
-        public uint FirstFileOffsetHigh => _model.VolumeHeader.FirstFileOffsetHigh;
+        public uint FirstFileOffsetHigh => this.Model.VolumeHeader.FirstFileOffsetHigh;
 #else
-        public uint? FirstFileOffsetHigh => _model.VolumeHeader?.FirstFileOffsetHigh;
+        public uint? FirstFileOffsetHigh => this.Model.VolumeHeader?.FirstFileOffsetHigh;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeExpanded"/>
 #if NET48
-        public uint FirstFileSizeExpanded => _model.VolumeHeader.FirstFileSizeExpanded;
+        public uint FirstFileSizeExpanded => this.Model.VolumeHeader.FirstFileSizeExpanded;
 #else
-        public uint? FirstFileSizeExpanded => _model.VolumeHeader?.FirstFileSizeExpanded;
+        public uint? FirstFileSizeExpanded => this.Model.VolumeHeader?.FirstFileSizeExpanded;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeExpandedHigh"/>
 #if NET48
-        public uint FirstFileSizeExpandedHigh => _model.VolumeHeader.FirstFileSizeExpandedHigh;
+        public uint FirstFileSizeExpandedHigh => this.Model.VolumeHeader.FirstFileSizeExpandedHigh;
 #else
-        public uint? FirstFileSizeExpandedHigh => _model.VolumeHeader?.FirstFileSizeExpandedHigh;
+        public uint? FirstFileSizeExpandedHigh => this.Model.VolumeHeader?.FirstFileSizeExpandedHigh;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeCompressed"/>
 #if NET48
-        public uint FirstFileSizeCompressed => _model.VolumeHeader.FirstFileSizeCompressed;
+        public uint FirstFileSizeCompressed => this.Model.VolumeHeader.FirstFileSizeCompressed;
 #else
-        public uint? FirstFileSizeCompressed => _model.VolumeHeader?.FirstFileSizeCompressed;
+        public uint? FirstFileSizeCompressed => this.Model.VolumeHeader?.FirstFileSizeCompressed;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.FirstFileSizeCompressedHigh"/>
 #if NET48
-        public uint FirstFileSizeCompressedHigh => _model.VolumeHeader.FirstFileSizeCompressedHigh;
+        public uint FirstFileSizeCompressedHigh => this.Model.VolumeHeader.FirstFileSizeCompressedHigh;
 #else
-        public uint? FirstFileSizeCompressedHigh => _model.VolumeHeader?.FirstFileSizeCompressedHigh;
+        public uint? FirstFileSizeCompressedHigh => this.Model.VolumeHeader?.FirstFileSizeCompressedHigh;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileOffset"/>
 #if NET48
-        public uint LastFileOffset => _model.VolumeHeader.LastFileOffset;
+        public uint LastFileOffset => this.Model.VolumeHeader.LastFileOffset;
 #else
-        public uint? LastFileOffset => _model.VolumeHeader?.LastFileOffset;
+        public uint? LastFileOffset => this.Model.VolumeHeader?.LastFileOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileOffsetHigh"/>
 #if NET48
-        public uint LastFileOffsetHigh => _model.VolumeHeader.LastFileOffsetHigh;
+        public uint LastFileOffsetHigh => this.Model.VolumeHeader.LastFileOffsetHigh;
 #else
-        public uint? LastFileOffsetHigh => _model.VolumeHeader?.LastFileOffsetHigh;
+        public uint? LastFileOffsetHigh => this.Model.VolumeHeader?.LastFileOffsetHigh;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeExpanded"/>
 #if NET48
-        public uint LastFileSizeExpanded => _model.VolumeHeader.LastFileSizeExpanded;
+        public uint LastFileSizeExpanded => this.Model.VolumeHeader.LastFileSizeExpanded;
 #else
-        public uint? LastFileSizeExpanded => _model.VolumeHeader?.LastFileSizeExpanded;
+        public uint? LastFileSizeExpanded => this.Model.VolumeHeader?.LastFileSizeExpanded;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeExpandedHigh"/>
 #if NET48
-        public uint LastFileSizeExpandedHigh => _model.VolumeHeader.LastFileSizeExpandedHigh;
+        public uint LastFileSizeExpandedHigh => this.Model.VolumeHeader.LastFileSizeExpandedHigh;
 #else
-        public uint? LastFileSizeExpandedHigh => _model.VolumeHeader?.LastFileSizeExpandedHigh;
+        public uint? LastFileSizeExpandedHigh => this.Model.VolumeHeader?.LastFileSizeExpandedHigh;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeCompressed"/>
 #if NET48
-        public uint LastFileSizeCompressed => _model.VolumeHeader.LastFileSizeCompressed;
+        public uint LastFileSizeCompressed => this.Model.VolumeHeader.LastFileSizeCompressed;
 #else
-        public uint? LastFileSizeCompressed => _model.VolumeHeader?.LastFileSizeCompressed;
+        public uint? LastFileSizeCompressed => this.Model.VolumeHeader?.LastFileSizeCompressed;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.VolumeHeader.LastFileSizeCompressedHigh"/>
 #if NET48
-        public uint LastFileSizeCompressedHigh => _model.VolumeHeader.LastFileSizeCompressedHigh;
+        public uint LastFileSizeCompressedHigh => this.Model.VolumeHeader.LastFileSizeCompressedHigh;
 #else
-        public uint? LastFileSizeCompressedHigh => _model.VolumeHeader?.LastFileSizeCompressedHigh;
+        public uint? LastFileSizeCompressedHigh => this.Model.VolumeHeader?.LastFileSizeCompressedHigh;
 #endif
 
         #endregion
@@ -174,163 +174,163 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.StringsOffset"/>
 #if NET48
-        public uint StringsOffset => _model.Descriptor.StringsOffset;
+        public uint StringsOffset => this.Model.Descriptor.StringsOffset;
 #else
-        public uint? StringsOffset => _model.Descriptor?.StringsOffset;
+        public uint? StringsOffset => this.Model.Descriptor?.StringsOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved0"/>
 #if NET48
-        public byte[] Reserved0 => _model.Descriptor.Reserved0;
+        public byte[] Reserved0 => this.Model.Descriptor.Reserved0;
 #else
-        public byte[]? Reserved0 => _model.Descriptor?.Reserved0;
+        public byte[]? Reserved0 => this.Model.Descriptor?.Reserved0;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentListOffset"/>
 #if NET48
-        public uint ComponentListOffset => _model.Descriptor.ComponentListOffset;
+        public uint ComponentListOffset => this.Model.Descriptor.ComponentListOffset;
 #else
-        public uint? ComponentListOffset => _model.Descriptor?.ComponentListOffset;
+        public uint? ComponentListOffset => this.Model.Descriptor?.ComponentListOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableOffset"/>
 #if NET48
-        public uint FileTableOffset => _model.Descriptor.FileTableOffset;
+        public uint FileTableOffset => this.Model.Descriptor.FileTableOffset;
 #else
-        public uint? FileTableOffset => _model.Descriptor?.FileTableOffset;
+        public uint? FileTableOffset => this.Model.Descriptor?.FileTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved1"/>
 #if NET48
-        public byte[] Reserved1 => _model.Descriptor.Reserved1;
+        public byte[] Reserved1 => this.Model.Descriptor.Reserved1;
 #else
-        public byte[]? Reserved1 => _model.Descriptor?.Reserved1;
+        public byte[]? Reserved1 => this.Model.Descriptor?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableSize"/>
 #if NET48
-        public uint FileTableSize => _model.Descriptor.FileTableSize;
+        public uint FileTableSize => this.Model.Descriptor.FileTableSize;
 #else
-        public uint? FileTableSize => _model.Descriptor?.FileTableSize;
+        public uint? FileTableSize => this.Model.Descriptor?.FileTableSize;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableSize2"/>
 #if NET48
-        public uint FileTableSize2 => _model.Descriptor.FileTableSize2;
+        public uint FileTableSize2 => this.Model.Descriptor.FileTableSize2;
 #else
-        public uint? FileTableSize2 => _model.Descriptor?.FileTableSize2;
+        public uint? FileTableSize2 => this.Model.Descriptor?.FileTableSize2;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.DirectoryCount"/>
 #if NET48
-        public ushort DirectoryCount => _model.Descriptor.DirectoryCount;
+        public ushort DirectoryCount => this.Model.Descriptor.DirectoryCount;
 #else
-        public ushort? DirectoryCount => _model.Descriptor?.DirectoryCount;
+        public ushort? DirectoryCount => this.Model.Descriptor?.DirectoryCount;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved2"/>
 #if NET48
-        public byte[] Reserved2 => _model.Descriptor.Reserved2;
+        public byte[] Reserved2 => this.Model.Descriptor.Reserved2;
 #else
-        public byte[]? Reserved2 => _model.Descriptor?.Reserved2;
+        public byte[]? Reserved2 => this.Model.Descriptor?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved3"/>
 #if NET48
-        public byte[] Reserved3 => _model.Descriptor.Reserved3;
+        public byte[] Reserved3 => this.Model.Descriptor.Reserved3;
 #else
-        public byte[]? Reserved3 => _model.Descriptor?.Reserved3;
+        public byte[]? Reserved3 => this.Model.Descriptor?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved4"/>
 #if NET48
-        public byte[] Reserved4 => _model.Descriptor.Reserved4;
+        public byte[] Reserved4 => this.Model.Descriptor.Reserved4;
 #else
-        public byte[]? Reserved4 => _model.Descriptor?.Reserved4;
+        public byte[]? Reserved4 => this.Model.Descriptor?.Reserved4;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileCount"/>
 #if NET48
-        public uint FileCount => _model.Descriptor.FileCount;
+        public uint FileCount => this.Model.Descriptor.FileCount;
 #else
-        public uint? FileCount => _model.Descriptor?.FileCount;
+        public uint? FileCount => this.Model.Descriptor?.FileCount;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileTableOffset2"/>
 #if NET48
-        public uint FileTableOffset2 => _model.Descriptor.FileTableOffset2;
+        public uint FileTableOffset2 => this.Model.Descriptor.FileTableOffset2;
 #else
-        public uint? FileTableOffset2 => _model.Descriptor?.FileTableOffset2;
+        public uint? FileTableOffset2 => this.Model.Descriptor?.FileTableOffset2;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentTableInfoCount"/>
 #if NET48
-        public ushort ComponentTableInfoCount => _model.Descriptor.ComponentTableInfoCount;
+        public ushort ComponentTableInfoCount => this.Model.Descriptor.ComponentTableInfoCount;
 #else
-        public ushort? ComponentTableInfoCount => _model.Descriptor?.ComponentTableInfoCount;
+        public ushort? ComponentTableInfoCount => this.Model.Descriptor?.ComponentTableInfoCount;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentTableOffset"/>
 #if NET48
-        public uint ComponentTableOffset => _model.Descriptor.ComponentTableOffset;
+        public uint ComponentTableOffset => this.Model.Descriptor.ComponentTableOffset;
 #else
-        public uint? ComponentTableOffset => _model.Descriptor?.ComponentTableOffset;
+        public uint? ComponentTableOffset => this.Model.Descriptor?.ComponentTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved5"/>
 #if NET48
-        public byte[] Reserved5 => _model.Descriptor.Reserved5;
+        public byte[] Reserved5 => this.Model.Descriptor.Reserved5;
 #else
-        public byte[]? Reserved5 => _model.Descriptor?.Reserved5;
+        public byte[]? Reserved5 => this.Model.Descriptor?.Reserved5;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved6"/>
 #if NET48
-        public byte[] Reserved6 => _model.Descriptor.Reserved6;
+        public byte[] Reserved6 => this.Model.Descriptor.Reserved6;
 #else
-        public byte[]? Reserved6 => _model.Descriptor?.Reserved6;
+        public byte[]? Reserved6 => this.Model.Descriptor?.Reserved6;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.FileGroupOffsets"/>
 #if NET48
-        public uint[] D_FileGroupOffsets => _model.Descriptor.FileGroupOffsets;
+        public uint[] D_FileGroupOffsets => this.Model.Descriptor.FileGroupOffsets;
 #else
-        public uint[]? D_FileGroupOffsets => _model.Descriptor?.FileGroupOffsets;
+        public uint[]? D_FileGroupOffsets => this.Model.Descriptor?.FileGroupOffsets;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.ComponentOffsets"/>
 #if NET48
-        public uint[] D_ComponentOffsets => _model.Descriptor.ComponentOffsets;
+        public uint[] D_ComponentOffsets => this.Model.Descriptor.ComponentOffsets;
 #else
-        public uint[]? D_ComponentOffsets => _model.Descriptor?.ComponentOffsets;
+        public uint[]? D_ComponentOffsets => this.Model.Descriptor?.ComponentOffsets;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.SetupTypesOffset"/>
 #if NET48
-        public uint SetupTypesOffset => _model.Descriptor.SetupTypesOffset;
+        public uint SetupTypesOffset => this.Model.Descriptor.SetupTypesOffset;
 #else
-        public uint? SetupTypesOffset => _model.Descriptor?.SetupTypesOffset;
+        public uint? SetupTypesOffset => this.Model.Descriptor?.SetupTypesOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.SetupTableOffset"/>
 #if NET48
-        public uint SetupTableOffset => _model.Descriptor.SetupTableOffset;
+        public uint SetupTableOffset => this.Model.Descriptor.SetupTableOffset;
 #else
-        public uint? SetupTableOffset => _model.Descriptor?.SetupTableOffset;
+        public uint? SetupTableOffset => this.Model.Descriptor?.SetupTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved7"/>
 #if NET48
-        public byte[] Reserved7 => _model.Descriptor.Reserved7;
+        public byte[] Reserved7 => this.Model.Descriptor.Reserved7;
 #else
-        public byte[]? Reserved7 => _model.Descriptor?.Reserved7;
+        public byte[]? Reserved7 => this.Model.Descriptor?.Reserved7;
 #endif
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Descriptor.Reserved8"/>
 #if NET48
-        public byte[] Reserved8 => _model.Descriptor.Reserved8;
+        public byte[] Reserved8 => this.Model.Descriptor.Reserved8;
 #else
-        public byte[]? Reserved8 => _model.Descriptor?.Reserved8;
+        public byte[]? Reserved8 => this.Model.Descriptor?.Reserved8;
 #endif
 
         #endregion
@@ -339,9 +339,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptorOffsets"/>
 #if NET48
-        public uint[] FileDescriptorOffsets => _model.FileDescriptorOffsets;
+        public uint[] FileDescriptorOffsets => this.Model.FileDescriptorOffsets;
 #else
-        public uint[]? FileDescriptorOffsets => _model.FileDescriptorOffsets;
+        public uint[]? FileDescriptorOffsets => this.Model.FileDescriptorOffsets;
 #endif
 
         #endregion
@@ -350,9 +350,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.DirectoryNames"/>
 #if NET48
-        public string[] DirectoryNames => _model.DirectoryNames;
+        public string[] DirectoryNames => this.Model.DirectoryNames;
 #else
-        public string[]? DirectoryNames => _model.DirectoryNames;
+        public string[]? DirectoryNames => this.Model.DirectoryNames;
 #endif
 
         #endregion
@@ -361,9 +361,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileDescriptors"/>
 #if NET48
-        public SabreTools.Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => _model.FileDescriptors;
+        public SabreTools.Models.InstallShieldCabinet.FileDescriptor[] FileDescriptors => this.Model.FileDescriptors;
 #else
-        public SabreTools.Models.InstallShieldCabinet.FileDescriptor?[]? FileDescriptors => _model.FileDescriptors;
+        public SabreTools.Models.InstallShieldCabinet.FileDescriptor?[]? FileDescriptors => this.Model.FileDescriptors;
 #endif
 
         #endregion
@@ -372,9 +372,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroupOffsets"/>
 #if NET48
-        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => _model.FileGroupOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> FileGroupOffsets => this.Model.FileGroupOffsets;
 #else
-        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList?>? FileGroupOffsets => _model.FileGroupOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList?>? FileGroupOffsets => this.Model.FileGroupOffsets;
 #endif
 
         #endregion
@@ -383,9 +383,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.FileGroups"/>
 #if NET48
-        public SabreTools.Models.InstallShieldCabinet.FileGroup[] FileGroups => _model.FileGroups;
+        public SabreTools.Models.InstallShieldCabinet.FileGroup[] FileGroups => this.Model.FileGroups;
 #else
-        public SabreTools.Models.InstallShieldCabinet.FileGroup?[]? FileGroups => _model.FileGroups;
+        public SabreTools.Models.InstallShieldCabinet.FileGroup?[]? FileGroups => this.Model.FileGroups;
 #endif
 
         #endregion
@@ -394,9 +394,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.ComponentOffsets"/>
 #if NET48
-        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> ComponentOffsets => _model.ComponentOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList> ComponentOffsets => this.Model.ComponentOffsets;
 #else
-        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList?>? ComponentOffsets => _model.ComponentOffsets;
+        public Dictionary<long, SabreTools.Models.InstallShieldCabinet.OffsetList?>? ComponentOffsets => this.Model.ComponentOffsets;
 #endif
 
         #endregion
@@ -405,9 +405,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.InstallShieldCabinet.Cabinet.Components"/>
 #if NET48
-        public SabreTools.Models.InstallShieldCabinet.Component[] Components => _model.Components;
+        public SabreTools.Models.InstallShieldCabinet.Component[] Components => this.Model.Components;
 #else
-        public SabreTools.Models.InstallShieldCabinet.Component?[]? Components => _model.Components;
+        public SabreTools.Models.InstallShieldCabinet.Component?[]? Components => this.Model.Components;
 #endif
 
         #endregion
@@ -531,16 +531,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.InstallShieldCabinet.Print(builder, _model);
+            Printing.InstallShieldCabinet.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

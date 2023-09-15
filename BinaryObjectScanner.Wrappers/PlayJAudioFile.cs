@@ -18,221 +18,221 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Signature"/>
 #if NET48
-        public uint Signature => _model.Header.Signature;
+        public uint Signature => this.Model.Header.Signature;
 #else
-        public uint? Signature => _model.Header?.Signature;
+        public uint? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Version"/>
 #if NET48
-        public uint Version => _model.Header.Version;
+        public uint Version => this.Model.Header.Version;
 #else
-        public uint? Version => _model.Header?.Version;
+        public uint? Version => this.Model.Header?.Version;
 #endif
 
         #region V1 Only
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.TrackID"/>
-        public uint? V1_TrackID => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.TrackID;
+        public uint? V1_TrackID => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.TrackID;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset1"/>
-        public uint? V1_UnknownOffset1 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.UnknownOffset1;
+        public uint? V1_UnknownOffset1 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.UnknownOffset1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset2"/>
-        public uint? V1_UnknownOffset2 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.UnknownOffset2;
+        public uint? V1_UnknownOffset2 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.UnknownOffset2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.UnknownOffset3"/>
-        public uint? V1_UnknownOffset3 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.UnknownOffset3;
+        public uint? V1_UnknownOffset3 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.UnknownOffset3;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Unknown1"/>
-        public uint? V1_Unknown1 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Unknown1;
+        public uint? V1_Unknown1 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Unknown1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Unknown2"/>
-        public uint? V1_Unknown2 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Unknown2;
+        public uint? V1_Unknown2 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Unknown2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Year"/>
-        public uint? V1_Year => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Year;
+        public uint? V1_Year => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Year;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.TrackNumber"/>
-        public uint? V1_TrackNumber => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.TrackNumber;
+        public uint? V1_TrackNumber => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.TrackNumber;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Subgenre"/>
-        public SabreTools.Models.PlayJ.Subgenre? V1_Subgenre => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Subgenre;
+        public SabreTools.Models.PlayJ.Subgenre? V1_Subgenre => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Subgenre;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV1.Duration"/>
-        public uint? V1_Duration => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Duration;
+        public uint? V1_Duration => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV1)?.Duration;
 
         #endregion
 
         #region V2 Only
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown1"/>
-        public uint? V2_Unknown1 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown1;
+        public uint? V2_Unknown1 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown2"/>
-        public uint? V2_Unknown2 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown2;
+        public uint? V2_Unknown2 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown3"/>
-        public uint? V2_Unknown3 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown3;
+        public uint? V2_Unknown3 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown3;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown4"/>
-        public uint? V2_Unknown4 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown4;
+        public uint? V2_Unknown4 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown4;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown5"/>
-        public uint? V2_Unknown5 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown5;
+        public uint? V2_Unknown5 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown5;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown6"/>
-        public uint? V2_Unknown6 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown6;
+        public uint? V2_Unknown6 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown6;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.UnknownOffset1"/>
-        public uint? V2_UnknownOffset1 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.UnknownOffset1;
+        public uint? V2_UnknownOffset1 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.UnknownOffset1;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown7"/>
-        public uint? V2_Unknown7 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown7;
+        public uint? V2_Unknown7 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown7;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown8"/>
-        public uint? V2_Unknown8 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown8;
+        public uint? V2_Unknown8 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown8;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown9"/>
-        public uint? V2_Unknown9 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown9;
+        public uint? V2_Unknown9 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown9;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.UnknownOffset2"/>
-        public uint? V2_UnknownOffset2 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.UnknownOffset2;
+        public uint? V2_UnknownOffset2 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.UnknownOffset2;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown10"/>
-        public uint? V2_Unknown10 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown10;
+        public uint? V2_Unknown10 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown10;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown11"/>
-        public uint? V2_Unknown11 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown11;
+        public uint? V2_Unknown11 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown11;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown12"/>
-        public uint? V2_Unknown12 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown12;
+        public uint? V2_Unknown12 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown12;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown13"/>
-        public uint? V2_Unknown13 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown13;
+        public uint? V2_Unknown13 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown13;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown14"/>
-        public uint? V2_Unknown14 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown14;
+        public uint? V2_Unknown14 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown14;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown15"/>
-        public uint? V2_Unknown15 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown15;
+        public uint? V2_Unknown15 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown15;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown16"/>
-        public uint? V2_Unknown16 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown16;
+        public uint? V2_Unknown16 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown16;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown17"/>
-        public uint? V2_Unknown17 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown17;
+        public uint? V2_Unknown17 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown17;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.TrackID"/>
-        public uint? V2_TrackID => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.TrackID;
+        public uint? V2_TrackID => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.TrackID;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Year"/>
-        public uint? V2_Year => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Year;
+        public uint? V2_Year => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Year;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.TrackNumber"/>
-        public uint? V2_TrackNumber => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.TrackNumber;
+        public uint? V2_TrackNumber => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.TrackNumber;
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeaderV2.Unknown18"/>
-        public uint? V2_Unknown18 => (_model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown18;
+        public uint? V2_Unknown18 => (Model.Header as SabreTools.Models.PlayJ.AudioHeaderV2)?.Unknown18;
 
         #endregion
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.TrackLength"/>
 #if NET48
-        public ushort TrackLength => _model.Header.TrackLength;
+        public ushort TrackLength => this.Model.Header.TrackLength;
 #else
-        public ushort? TrackLength => _model.Header?.TrackLength;
+        public ushort? TrackLength => this.Model.Header?.TrackLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Track"/>
 #if NET48
-        public string Track => _model.Header.Track;
+        public string Track => this.Model.Header.Track;
 #else
-        public string? Track => _model.Header?.Track;
+        public string? Track => this.Model.Header?.Track;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.ArtistLength"/>
 #if NET48
-        public ushort ArtistLength => _model.Header.ArtistLength;
+        public ushort ArtistLength => this.Model.Header.ArtistLength;
 #else
-        public ushort? ArtistLength => _model.Header?.ArtistLength;
+        public ushort? ArtistLength => this.Model.Header?.ArtistLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Artist"/>
 #if NET48
-        public string Artist => _model.Header.Artist;
+        public string Artist => this.Model.Header.Artist;
 #else
-        public string? Artist => _model.Header?.Artist;
+        public string? Artist => this.Model.Header?.Artist;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.AlbumLength"/>
 #if NET48
-        public ushort AlbumLength => _model.Header.AlbumLength;
+        public ushort AlbumLength => this.Model.Header.AlbumLength;
 #else
-        public ushort? AlbumLength => _model.Header?.AlbumLength;
+        public ushort? AlbumLength => this.Model.Header?.AlbumLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Album"/>
 #if NET48
-        public string Album => _model.Header.Album;
+        public string Album => this.Model.Header.Album;
 #else
-        public string? Album => _model.Header?.Album;
+        public string? Album => this.Model.Header?.Album;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.WriterLength"/>
 #if NET48
-        public ushort WriterLength => _model.Header.WriterLength;
+        public ushort WriterLength => this.Model.Header.WriterLength;
 #else
-        public ushort? WriterLength => _model.Header?.WriterLength;
+        public ushort? WriterLength => this.Model.Header?.WriterLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Writer"/>
 #if NET48
-        public string Writer => _model.Header.Writer;
+        public string Writer => this.Model.Header.Writer;
 #else
-        public string? Writer => _model.Header?.Writer;
+        public string? Writer => this.Model.Header?.Writer;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.PublisherLength"/>
 #if NET48
-        public ushort PublisherLength => _model.Header.PublisherLength;
+        public ushort PublisherLength => this.Model.Header.PublisherLength;
 #else
-        public ushort? PublisherLength => _model.Header?.PublisherLength;
+        public ushort? PublisherLength => this.Model.Header?.PublisherLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Publisher"/>
 #if NET48
-        public string Publisher => _model.Header.Publisher;
+        public string Publisher => this.Model.Header.Publisher;
 #else
-        public string? Publisher => _model.Header?.Publisher;
+        public string? Publisher => this.Model.Header?.Publisher;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.LabelLength"/>
 #if NET48
-        public ushort LabelLength => _model.Header.LabelLength;
+        public ushort LabelLength => this.Model.Header.LabelLength;
 #else
-        public ushort? LabelLength => _model.Header?.LabelLength;
+        public ushort? LabelLength => this.Model.Header?.LabelLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Label"/>
 #if NET48
-        public string Label => _model.Header.Label;
+        public string Label => this.Model.Header.Label;
 #else
-        public string? Label => _model.Header?.Label;
+        public string? Label => this.Model.Header?.Label;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.CommentsLength"/>
 #if NET48
-        public ushort CommentsLength => _model.Header.CommentsLength;
+        public ushort CommentsLength => this.Model.Header.CommentsLength;
 #else
-        public ushort? CommentsLength => _model.Header?.CommentsLength;
+        public ushort? CommentsLength => this.Model.Header?.CommentsLength;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.AudioHeader.Comments"/>
 #if NET48
-        public string Comments => _model.Header.Comments;
+        public string Comments => this.Model.Header.Comments;
 #else
-        public string? Comments => _model.Header?.Comments;
+        public string? Comments => this.Model.Header?.Comments;
 #endif
 
         #endregion
@@ -241,16 +241,16 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Length"/>
 #if NET48
-        public uint UB1_Length => _model.UnknownBlock1.Length;
+        public uint UB1_Length => this.Model.UnknownBlock1.Length;
 #else
-        public uint? UB1_Length => _model.UnknownBlock1?.Length;
+        public uint? UB1_Length => this.Model.UnknownBlock1?.Length;
 #endif
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock1.Data"/>
 #if NET48
-        public byte[] UB1_Data => _model.UnknownBlock1.Data;
+        public byte[] UB1_Data => this.Model.UnknownBlock1.Data;
 #else
-        public byte[]? UB1_Data => _model.UnknownBlock1?.Data;
+        public byte[]? UB1_Data => this.Model.UnknownBlock1?.Data;
 #endif
 
         #endregion
@@ -260,7 +260,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Unknown Value 2
 
         /// <inheritdoc cref="Models.PlayJ.AudioFile.UnknownValue2"/>
-        public uint UnknownValue2 => _model.UnknownValue2;
+        public uint UnknownValue2 => this.Model.UnknownValue2;
 
         #endregion
 
@@ -268,9 +268,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PlayJ.UnknownBlock3.Data"/>
 #if NET48
-        public byte[] UB3_Data => _model.UnknownBlock3.Data;
+        public byte[] UB3_Data => this.Model.UnknownBlock3.Data;
 #else
-        public byte[]? UB3_Data => _model.UnknownBlock3?.Data;
+        public byte[]? UB3_Data => this.Model.UnknownBlock3?.Data;
 #endif
 
         #endregion
@@ -282,7 +282,7 @@ namespace BinaryObjectScanner.Wrappers
         #region Data Files Count
 
         /// <inheritdoc cref="Models.PlayJ.AudioFile.DataFilesCount"/>
-        public uint DataFilesCount => _model.DataFilesCount;
+        public uint DataFilesCount => this.Model.DataFilesCount;
 
         #endregion
 
@@ -290,9 +290,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PlayJ.AudioFile.DataFiles"/>
 #if NET48
-        public SabreTools.Models.PlayJ.DataFile[] DataFiles => _model.DataFiles;
+        public SabreTools.Models.PlayJ.DataFile[] DataFiles => this.Model.DataFiles;
 #else
-        public SabreTools.Models.PlayJ.DataFile?[]? DataFiles => _model.DataFiles;
+        public SabreTools.Models.PlayJ.DataFile?[]? DataFiles => this.Model.DataFiles;
 #endif
 
         #endregion
@@ -387,16 +387,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PlayJAudioFile.Print(builder, _model);
+            Printing.PlayJAudioFile.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

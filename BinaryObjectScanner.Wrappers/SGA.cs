@@ -21,23 +21,23 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.SGA.Header4.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.SGA.Header4.MajorVersion"/>
 #if NET48
-        public ushort MajorVersion => _model.Header.MajorVersion;
+        public ushort MajorVersion => this.Model.Header.MajorVersion;
 #else
-        public ushort? MajorVersion => _model.Header?.MajorVersion;
+        public ushort? MajorVersion => this.Model.Header?.MajorVersion;
 #endif
 
         /// <inheritdoc cref="Models.SGA.Header4.MinorVersion"/>
 #if NET48
-        public ushort MinorVersion => _model.Header.MinorVersion;
+        public ushort MinorVersion => this.Model.Header.MinorVersion;
 #else
-        public ushort? MinorVersion => _model.Header?.MinorVersion;
+        public ushort? MinorVersion => this.Model.Header?.MinorVersion;
 #endif
 
         /// <inheritdoc cref="Models.SGA.Header4.FileMD5"/>
@@ -51,8 +51,8 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Header as SabreTools.Models.SGA.Header4)?.FileMD5;
-                    case 5: return (_model.Header as SabreTools.Models.SGA.Header4)?.FileMD5;
+                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileMD5;
+                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileMD5;
                     default: return null;
                 };
             }
@@ -69,10 +69,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Header as SabreTools.Models.SGA.Header4)?.Name;
-                    case 5: return (_model.Header as SabreTools.Models.SGA.Header4)?.Name;
-                    case 6: return (_model.Header as SabreTools.Models.SGA.Header6)?.Name;
-                    case 7: return (_model.Header as SabreTools.Models.SGA.Header6)?.Name;
+                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.Name;
+                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.Name;
+                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.Name;
+                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.Name;
                     default: return null;
                 };
             }
@@ -89,8 +89,8 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Header as SabreTools.Models.SGA.Header4)?.HeaderMD5;
-                    case 5: return (_model.Header as SabreTools.Models.SGA.Header4)?.HeaderMD5;
+                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderMD5;
+                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderMD5;
                     default: return null;
                 };
             }
@@ -103,10 +103,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Header as SabreTools.Models.SGA.Header4)?.HeaderLength;
-                    case 5: return (_model.Header as SabreTools.Models.SGA.Header4)?.HeaderLength;
-                    case 6: return (_model.Header as SabreTools.Models.SGA.Header6)?.HeaderLength;
-                    case 7: return (_model.Header as SabreTools.Models.SGA.Header6)?.HeaderLength;
+                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderLength;
+                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderLength;
+                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.HeaderLength;
+                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.HeaderLength;
                     default: return null;
                 };
             }
@@ -119,10 +119,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset;
-                    case 5: return (_model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset;
-                    case 6: return (_model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset;
-                    case 7: return (_model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset;
+                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset;
+                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset;
+                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset;
+                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset;
                     default: return null;
                 };
             }
@@ -135,10 +135,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Header as SabreTools.Models.SGA.Header4)?.Dummy0;
-                    case 5: return (_model.Header as SabreTools.Models.SGA.Header4)?.Dummy0;
-                    case 6: return (_model.Header as SabreTools.Models.SGA.Header6)?.Dummy0;
-                    case 7: return (_model.Header as SabreTools.Models.SGA.Header6)?.Dummy0;
+                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.Dummy0;
+                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.Dummy0;
+                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.Dummy0;
+                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.Dummy0;
                     default: return null;
                 };
             }
@@ -157,10 +157,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.SectionOffset;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.SectionOffset;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.SectionOffset;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.SectionOffset;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.SectionOffset;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.SectionOffset;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.SectionOffset;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.SectionOffset;
                     default: return null;
                 };
             }
@@ -173,10 +173,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.SectionCount;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.SectionCount;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.SectionCount;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.SectionCount;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.SectionCount;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.SectionCount;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.SectionCount;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.SectionCount;
                     default: return null;
                 };
             }
@@ -189,10 +189,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FolderOffset;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FolderOffset;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FolderOffset;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FolderOffset;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FolderOffset;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FolderOffset;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FolderOffset;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FolderOffset;
                     default: return null;
                 };
             }
@@ -205,10 +205,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FolderCount;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FolderCount;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FolderCount;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FolderCount;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FolderCount;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FolderCount;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FolderCount;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FolderCount;
                     default: return null;
                 };
             }
@@ -221,10 +221,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FileOffset;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FileOffset;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FileOffset;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FileOffset;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FileOffset;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FileOffset;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FileOffset;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FileOffset;
                     default: return null;
                 };
             }
@@ -237,10 +237,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FileCount;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FileCount;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FileCount;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FileCount;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FileCount;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FileCount;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FileCount;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FileCount;
                     default: return null;
                 };
             }
@@ -253,10 +253,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.StringTableOffset;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.StringTableOffset;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.StringTableOffset;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.StringTableOffset;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.StringTableOffset;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.StringTableOffset;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.StringTableOffset;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.StringTableOffset;
                     default: return null;
                 };
             }
@@ -269,10 +269,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.StringTableCount;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.StringTableCount;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.StringTableCount;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.StringTableCount;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.StringTableCount;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.StringTableCount;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.StringTableCount;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.StringTableCount;
                     default: return null;
                 };
             }
@@ -285,7 +285,7 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.HashTableOffset;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.HashTableOffset;
                     default: return null;
                 };
             }
@@ -298,7 +298,7 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.BlockSize;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.BlockSize;
                     default: return null;
                 };
             }
@@ -319,10 +319,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.Sections;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.Sections;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.Sections;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.Sections;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.Sections;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.Sections;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.Sections;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.Sections;
                     default: return null;
                 };
             }
@@ -343,10 +343,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.Folders;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.Folders;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.Folders;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.Folders;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders;
                     default: return null;
                 };
             }
@@ -367,10 +367,10 @@ namespace BinaryObjectScanner.Wrappers
             {
                 switch (MajorVersion)
                 {
-                    case 4: return (_model.Directory as SabreTools.Models.SGA.Directory4)?.Files;
-                    case 5: return (_model.Directory as SabreTools.Models.SGA.Directory5)?.Files;
-                    case 6: return (_model.Directory as SabreTools.Models.SGA.Directory6)?.Files;
-                    case 7: return (_model.Directory as SabreTools.Models.SGA.Directory7)?.Files;
+                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.Files;
+                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.Files;
+                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.Files;
+                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.Files;
                     default: return null;
                 };
             }
@@ -477,16 +477,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.SGA.Print(builder, _model);
+            Printing.SGA.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

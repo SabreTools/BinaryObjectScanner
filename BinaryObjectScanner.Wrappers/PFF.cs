@@ -18,37 +18,37 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PFF.Header.HeaderSize"/>
 #if NET48
-        public uint HeaderSize => _model.Header.HeaderSize;
+        public uint HeaderSize => this.Model.Header.HeaderSize;
 #else
-        public uint? HeaderSize => _model.Header?.HeaderSize;
+        public uint? HeaderSize => this.Model.Header?.HeaderSize;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Header.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Header.NumberOfFiles"/>
 #if NET48
-        public uint NumberOfFiles => _model.Header.NumberOfFiles;
+        public uint NumberOfFiles => this.Model.Header.NumberOfFiles;
 #else
-        public uint? NumberOfFiles => _model.Header?.NumberOfFiles;
+        public uint? NumberOfFiles => this.Model.Header?.NumberOfFiles;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Header.FileSegmentSize"/>
 #if NET48
-        public uint FileSegmentSize => _model.Header.FileSegmentSize;
+        public uint FileSegmentSize => this.Model.Header.FileSegmentSize;
 #else
-        public uint? FileSegmentSize => _model.Header?.FileSegmentSize;
+        public uint? FileSegmentSize => this.Model.Header?.FileSegmentSize;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Header.FileListOffset"/>
 #if NET48
-        public uint FileListOffset => _model.Header.FileListOffset;
+        public uint FileListOffset => this.Model.Header.FileListOffset;
 #else
-        public uint? FileListOffset => _model.Header?.FileListOffset;
+        public uint? FileListOffset => this.Model.Header?.FileListOffset;
 #endif
 
         #endregion
@@ -57,9 +57,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PFF.Archive.Segments"/>
 #if NET48
-        public SabreTools.Models.PFF.Segment[] Segments => _model.Segments;
+        public SabreTools.Models.PFF.Segment[] Segments => this.Model.Segments;
 #else
-        public SabreTools.Models.PFF.Segment?[]? Segments => _model.Segments;
+        public SabreTools.Models.PFF.Segment?[]? Segments => this.Model.Segments;
 #endif
 
         #endregion
@@ -68,23 +68,23 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PFF.Footer.SystemIP"/>
 #if NET48
-        public uint SystemIP => _model.Footer.SystemIP;
+        public uint SystemIP => this.Model.Footer.SystemIP;
 #else
-        public uint? SystemIP => _model.Footer?.SystemIP;
+        public uint? SystemIP => this.Model.Footer?.SystemIP;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Footer.Reserved"/>
 #if NET48
-        public uint Reserved => _model.Footer.Reserved;
+        public uint Reserved => this.Model.Footer.Reserved;
 #else
-        public uint? Reserved => _model.Footer?.Reserved;
+        public uint? Reserved => this.Model.Footer?.Reserved;
 #endif
 
         /// <inheritdoc cref="Models.PFF.Footer.KingTag"/>
 #if NET48
-        public string KingTag => _model.Footer.KingTag;
+        public string KingTag => this.Model.Footer.KingTag;
 #else
-        public string? KingTag => _model.Footer?.KingTag;
+        public string? KingTag => this.Model.Footer?.KingTag;
 #endif
 
         #endregion
@@ -255,16 +255,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PFF.Print(builder, _model);
+            Printing.PFF.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

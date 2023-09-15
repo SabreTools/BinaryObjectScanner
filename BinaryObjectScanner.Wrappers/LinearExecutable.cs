@@ -21,100 +21,100 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
 #if NET48
-        public string Stub_Magic => _model.Stub.Header.Magic;
+        public string Stub_Magic => this.Model.Stub.Header.Magic;
 #else
-        public string? Stub_Magic => _model.Stub?.Header?.Magic;
+        public string? Stub_Magic => this.Model.Stub?.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
 #if NET48
-        public ushort Stub_LastPageBytes => _model.Stub.Header.LastPageBytes;
+        public ushort Stub_LastPageBytes => this.Model.Stub.Header.LastPageBytes;
 #else
-        public ushort? Stub_LastPageBytes => _model.Stub?.Header?.LastPageBytes;
+        public ushort? Stub_LastPageBytes => this.Model.Stub?.Header?.LastPageBytes;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
 #if NET48
-        public ushort Stub_Pages => _model.Stub.Header.Pages;
+        public ushort Stub_Pages => this.Model.Stub.Header.Pages;
 #else
-        public ushort? Stub_Pages => _model.Stub?.Header?.Pages;
+        public ushort? Stub_Pages => this.Model.Stub?.Header?.Pages;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
 #if NET48
-        public ushort Stub_RelocationItems => _model.Stub.Header.RelocationItems;
+        public ushort Stub_RelocationItems => this.Model.Stub.Header.RelocationItems;
 #else
-        public ushort? Stub_RelocationItems => _model.Stub?.Header?.RelocationItems;
+        public ushort? Stub_RelocationItems => this.Model.Stub?.Header?.RelocationItems;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
 #if NET48
-        public ushort Stub_HeaderParagraphSize => _model.Stub.Header.HeaderParagraphSize;
+        public ushort Stub_HeaderParagraphSize => this.Model.Stub.Header.HeaderParagraphSize;
 #else
-        public ushort? Stub_HeaderParagraphSize => _model.Stub?.Header?.HeaderParagraphSize;
+        public ushort? Stub_HeaderParagraphSize => this.Model.Stub?.Header?.HeaderParagraphSize;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
 #if NET48
-        public ushort Stub_MinimumExtraParagraphs => _model.Stub.Header.MinimumExtraParagraphs;
+        public ushort Stub_MinimumExtraParagraphs => this.Model.Stub.Header.MinimumExtraParagraphs;
 #else
-        public ushort? Stub_MinimumExtraParagraphs => _model.Stub?.Header?.MinimumExtraParagraphs;
+        public ushort? Stub_MinimumExtraParagraphs => this.Model.Stub?.Header?.MinimumExtraParagraphs;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
 #if NET48
-        public ushort Stub_MaximumExtraParagraphs => _model.Stub.Header.MaximumExtraParagraphs;
+        public ushort Stub_MaximumExtraParagraphs => this.Model.Stub.Header.MaximumExtraParagraphs;
 #else
-        public ushort? Stub_MaximumExtraParagraphs => _model.Stub?.Header?.MaximumExtraParagraphs;
+        public ushort? Stub_MaximumExtraParagraphs => this.Model.Stub?.Header?.MaximumExtraParagraphs;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
 #if NET48
-        public ushort Stub_InitialSSValue => _model.Stub.Header.InitialSSValue;
+        public ushort Stub_InitialSSValue => this.Model.Stub.Header.InitialSSValue;
 #else
-        public ushort? Stub_InitialSSValue => _model.Stub?.Header?.InitialSSValue;
+        public ushort? Stub_InitialSSValue => this.Model.Stub?.Header?.InitialSSValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
 #if NET48
-        public ushort Stub_InitialSPValue => _model.Stub.Header.InitialSPValue;
+        public ushort Stub_InitialSPValue => this.Model.Stub.Header.InitialSPValue;
 #else
-        public ushort? Stub_InitialSPValue => _model.Stub?.Header?.InitialSPValue;
+        public ushort? Stub_InitialSPValue => this.Model.Stub?.Header?.InitialSPValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
 #if NET48
-        public ushort Stub_Checksum => _model.Stub.Header.Checksum;
+        public ushort Stub_Checksum => this.Model.Stub.Header.Checksum;
 #else
-        public ushort? Stub_Checksum => _model.Stub?.Header?.Checksum;
+        public ushort? Stub_Checksum => this.Model.Stub?.Header?.Checksum;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
 #if NET48
-        public ushort Stub_InitialIPValue => _model.Stub.Header.InitialIPValue;
+        public ushort Stub_InitialIPValue => this.Model.Stub.Header.InitialIPValue;
 #else
-        public ushort? Stub_InitialIPValue => _model.Stub?.Header?.InitialIPValue;
+        public ushort? Stub_InitialIPValue => this.Model.Stub?.Header?.InitialIPValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
 #if NET48
-        public ushort Stub_InitialCSValue => _model.Stub.Header.InitialCSValue;
+        public ushort Stub_InitialCSValue => this.Model.Stub.Header.InitialCSValue;
 #else
-        public ushort? Stub_InitialCSValue => _model.Stub?.Header?.InitialCSValue;
+        public ushort? Stub_InitialCSValue => this.Model.Stub?.Header?.InitialCSValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
 #if NET48
-        public ushort Stub_RelocationTableAddr => _model.Stub.Header.RelocationTableAddr;
+        public ushort Stub_RelocationTableAddr => this.Model.Stub.Header.RelocationTableAddr;
 #else
-        public ushort? Stub_RelocationTableAddr => _model.Stub?.Header?.RelocationTableAddr;
+        public ushort? Stub_RelocationTableAddr => this.Model.Stub?.Header?.RelocationTableAddr;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
 #if NET48
-        public ushort Stub_OverlayNumber => _model.Stub.Header.OverlayNumber;
+        public ushort Stub_OverlayNumber => this.Model.Stub.Header.OverlayNumber;
 #else
-        public ushort? Stub_OverlayNumber => _model.Stub?.Header?.OverlayNumber;
+        public ushort? Stub_OverlayNumber => this.Model.Stub?.Header?.OverlayNumber;
 #endif
 
         #endregion
@@ -123,37 +123,37 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
 #if NET48
-        public ushort[] Stub_Reserved1 => _model.Stub.Header.Reserved1;
+        public ushort[] Stub_Reserved1 => this.Model.Stub.Header.Reserved1;
 #else
-        public ushort[]? Stub_Reserved1 => _model.Stub?.Header?.Reserved1;
+        public ushort[]? Stub_Reserved1 => this.Model.Stub?.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
 #if NET48
-        public ushort Stub_OEMIdentifier => _model.Stub.Header.OEMIdentifier;
+        public ushort Stub_OEMIdentifier => this.Model.Stub.Header.OEMIdentifier;
 #else
-        public ushort? Stub_OEMIdentifier => _model.Stub?.Header?.OEMIdentifier;
+        public ushort? Stub_OEMIdentifier => this.Model.Stub?.Header?.OEMIdentifier;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
 #if NET48
-        public ushort Stub_OEMInformation => _model.Stub.Header.OEMInformation;
+        public ushort Stub_OEMInformation => this.Model.Stub.Header.OEMInformation;
 #else
-        public ushort? Stub_OEMInformation => _model.Stub?.Header?.OEMInformation;
+        public ushort? Stub_OEMInformation => this.Model.Stub?.Header?.OEMInformation;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
 #if NET48
-        public ushort[] Stub_Reserved2 => _model.Stub.Header.Reserved2;
+        public ushort[] Stub_Reserved2 => this.Model.Stub.Header.Reserved2;
 #else
-        public ushort[]? Stub_Reserved2 => _model?.Stub?.Header?.Reserved2;
+        public ushort[]? Stub_Reserved2 => Model?.Stub?.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
 #if NET48
-        public uint Stub_NewExeHeaderAddr => _model.Stub.Header.NewExeHeaderAddr;
+        public uint Stub_NewExeHeaderAddr => this.Model.Stub.Header.NewExeHeaderAddr;
 #else
-        public uint? Stub_NewExeHeaderAddr => _model.Stub?.Header?.NewExeHeaderAddr;
+        public uint? Stub_NewExeHeaderAddr => this.Model.Stub?.Header?.NewExeHeaderAddr;
 #endif
 
         #endregion
@@ -164,324 +164,324 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.Signature"/>
 #if NET48
-        public string Signature => _model.InformationBlock.Signature;
+        public string Signature => this.Model.InformationBlock.Signature;
 #else
-        public string? Signature => _model.InformationBlock?.Signature;
+        public string? Signature => this.Model.InformationBlock?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ByteOrder"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ByteOrder ByteOrder => _model.InformationBlock.ByteOrder;
+        public SabreTools.Models.LinearExecutable.ByteOrder ByteOrder => this.Model.InformationBlock.ByteOrder;
 #else
-        public SabreTools.Models.LinearExecutable.ByteOrder? ByteOrder => _model.InformationBlock?.ByteOrder;
+        public SabreTools.Models.LinearExecutable.ByteOrder? ByteOrder => this.Model.InformationBlock?.ByteOrder;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.WordOrder"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.WordOrder WordOrder => _model.InformationBlock.WordOrder;
+        public SabreTools.Models.LinearExecutable.WordOrder WordOrder => this.Model.InformationBlock.WordOrder;
 #else
-        public SabreTools.Models.LinearExecutable.WordOrder? WordOrder => _model.InformationBlock?.WordOrder;
+        public SabreTools.Models.LinearExecutable.WordOrder? WordOrder => this.Model.InformationBlock?.WordOrder;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExecutableFormatLevel"/>
 #if NET48
-        public uint ExecutableFormatLevel => _model.InformationBlock.ExecutableFormatLevel;
+        public uint ExecutableFormatLevel => this.Model.InformationBlock.ExecutableFormatLevel;
 #else
-        public uint? ExecutableFormatLevel => _model.InformationBlock?.ExecutableFormatLevel;
+        public uint? ExecutableFormatLevel => this.Model.InformationBlock?.ExecutableFormatLevel;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.CPUType"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.CPUType CPUType => _model.InformationBlock.CPUType;
+        public SabreTools.Models.LinearExecutable.CPUType CPUType => this.Model.InformationBlock.CPUType;
 #else
-        public SabreTools.Models.LinearExecutable.CPUType? CPUType => _model.InformationBlock?.CPUType;
+        public SabreTools.Models.LinearExecutable.CPUType? CPUType => this.Model.InformationBlock?.CPUType;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleOS"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.OperatingSystem ModuleOS => _model.InformationBlock.ModuleOS;
+        public SabreTools.Models.LinearExecutable.OperatingSystem ModuleOS => this.Model.InformationBlock.ModuleOS;
 #else
-        public SabreTools.Models.LinearExecutable.OperatingSystem? ModuleOS => _model.InformationBlock?.ModuleOS;
+        public SabreTools.Models.LinearExecutable.OperatingSystem? ModuleOS => this.Model.InformationBlock?.ModuleOS;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleVersion"/>
 #if NET48
-        public uint ModuleVersion => _model.InformationBlock.ModuleVersion;
+        public uint ModuleVersion => this.Model.InformationBlock.ModuleVersion;
 #else
-        public uint? ModuleVersion => _model.InformationBlock?.ModuleVersion;
+        public uint? ModuleVersion => this.Model.InformationBlock?.ModuleVersion;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleTypeFlags"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ModuleFlags ModuleTypeFlags => _model.InformationBlock.ModuleTypeFlags;
+        public SabreTools.Models.LinearExecutable.ModuleFlags ModuleTypeFlags => this.Model.InformationBlock.ModuleTypeFlags;
 #else
-        public SabreTools.Models.LinearExecutable.ModuleFlags? ModuleTypeFlags => _model.InformationBlock?.ModuleTypeFlags;
+        public SabreTools.Models.LinearExecutable.ModuleFlags? ModuleTypeFlags => this.Model.InformationBlock?.ModuleTypeFlags;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleNumberPages"/>
 #if NET48
-        public uint ModuleNumberPages => _model.InformationBlock.ModuleNumberPages;
+        public uint ModuleNumberPages => this.Model.InformationBlock.ModuleNumberPages;
 #else
-        public uint? ModuleNumberPages => _model.InformationBlock?.ModuleNumberPages;
+        public uint? ModuleNumberPages => this.Model.InformationBlock?.ModuleNumberPages;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialObjectCS"/>
 #if NET48
-        public uint InitialObjectCS => _model.InformationBlock.InitialObjectCS;
+        public uint InitialObjectCS => this.Model.InformationBlock.InitialObjectCS;
 #else
-        public uint? InitialObjectCS => _model.InformationBlock?.InitialObjectCS;
+        public uint? InitialObjectCS => this.Model.InformationBlock?.InitialObjectCS;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialEIP"/>
 #if NET48
-        public uint InitialEIP => _model.InformationBlock.InitialEIP;
+        public uint InitialEIP => this.Model.InformationBlock.InitialEIP;
 #else
-        public uint? InitialEIP => _model.InformationBlock?.InitialEIP;
+        public uint? InitialEIP => this.Model.InformationBlock?.InitialEIP;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialObjectSS"/>
 #if NET48
-        public uint InitialObjectSS => _model.InformationBlock.InitialObjectSS;
+        public uint InitialObjectSS => this.Model.InformationBlock.InitialObjectSS;
 #else
-        public uint? InitialObjectSS => _model.InformationBlock?.InitialObjectSS;
+        public uint? InitialObjectSS => this.Model.InformationBlock?.InitialObjectSS;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.InitialESP"/>
 #if NET48
-        public uint InitialESP => _model.InformationBlock.InitialESP;
+        public uint InitialESP => this.Model.InformationBlock.InitialESP;
 #else
-        public uint? InitialESP => _model.InformationBlock?.InitialESP;
+        public uint? InitialESP => this.Model.InformationBlock?.InitialESP;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.MemoryPageSize"/>
 #if NET48
-        public uint MemoryPageSize => _model.InformationBlock.MemoryPageSize;
+        public uint MemoryPageSize => this.Model.InformationBlock.MemoryPageSize;
 #else
-        public uint? MemoryPageSize => _model.InformationBlock?.MemoryPageSize;
+        public uint? MemoryPageSize => this.Model.InformationBlock?.MemoryPageSize;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.BytesOnLastPage"/>
 #if NET48
-        public uint BytesOnLastPage => _model.InformationBlock.BytesOnLastPage;
+        public uint BytesOnLastPage => this.Model.InformationBlock.BytesOnLastPage;
 #else
-        public uint? BytesOnLastPage => _model.InformationBlock?.BytesOnLastPage;
+        public uint? BytesOnLastPage => this.Model.InformationBlock?.BytesOnLastPage;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupSectionSize"/>
 #if NET48
-        public uint FixupSectionSize => _model.InformationBlock.FixupSectionSize;
+        public uint FixupSectionSize => this.Model.InformationBlock.FixupSectionSize;
 #else
-        public uint? FixupSectionSize => _model.InformationBlock?.FixupSectionSize;
+        public uint? FixupSectionSize => this.Model.InformationBlock?.FixupSectionSize;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupSectionChecksum"/>
 #if NET48
-        public uint FixupSectionChecksum => _model.InformationBlock.FixupSectionChecksum;
+        public uint FixupSectionChecksum => this.Model.InformationBlock.FixupSectionChecksum;
 #else
-        public uint? FixupSectionChecksum => _model.InformationBlock?.FixupSectionChecksum;
+        public uint? FixupSectionChecksum => this.Model.InformationBlock?.FixupSectionChecksum;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.LoaderSectionSize"/>
 #if NET48
-        public uint LoaderSectionSize => _model.InformationBlock.LoaderSectionSize;
+        public uint LoaderSectionSize => this.Model.InformationBlock.LoaderSectionSize;
 #else
-        public uint? LoaderSectionSize => _model.InformationBlock?.LoaderSectionSize;
+        public uint? LoaderSectionSize => this.Model.InformationBlock?.LoaderSectionSize;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.LoaderSectionChecksum"/>
 #if NET48
-        public uint LoaderSectionChecksum => _model.InformationBlock.LoaderSectionChecksum;
+        public uint LoaderSectionChecksum => this.Model.InformationBlock.LoaderSectionChecksum;
 #else
-        public uint? LoaderSectionChecksum => _model.InformationBlock?.LoaderSectionChecksum;
+        public uint? LoaderSectionChecksum => this.Model.InformationBlock?.LoaderSectionChecksum;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectTableOffset"/>
 #if NET48
-        public uint ObjectTableOffset => _model.InformationBlock.ObjectTableOffset;
+        public uint ObjectTableOffset => this.Model.InformationBlock.ObjectTableOffset;
 #else
-        public uint? ObjectTableOffset => _model.InformationBlock?.ObjectTableOffset;
+        public uint? ObjectTableOffset => this.Model.InformationBlock?.ObjectTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectTableCount"/>
 #if NET48
-        public uint ObjectTableCount => _model.InformationBlock.ObjectTableCount;
+        public uint ObjectTableCount => this.Model.InformationBlock.ObjectTableCount;
 #else
-        public uint? ObjectTableCount => _model.InformationBlock?.ObjectTableCount;
+        public uint? ObjectTableCount => this.Model.InformationBlock?.ObjectTableCount;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectPageMapOffset"/>
 #if NET48
-        public uint ObjectPageMapOffset => _model.InformationBlock.ObjectPageMapOffset;
+        public uint ObjectPageMapOffset => this.Model.InformationBlock.ObjectPageMapOffset;
 #else
-        public uint? ObjectPageMapOffset => _model.InformationBlock?.ObjectPageMapOffset;
+        public uint? ObjectPageMapOffset => this.Model.InformationBlock?.ObjectPageMapOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ObjectIterateDataMapOffset"/>
 #if NET48
-        public uint ObjectIterateDataMapOffset => _model.InformationBlock.ObjectIterateDataMapOffset;
+        public uint ObjectIterateDataMapOffset => this.Model.InformationBlock.ObjectIterateDataMapOffset;
 #else
-        public uint? ObjectIterateDataMapOffset => _model.InformationBlock?.ObjectIterateDataMapOffset;
+        public uint? ObjectIterateDataMapOffset => this.Model.InformationBlock?.ObjectIterateDataMapOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResourceTableOffset"/>
 #if NET48
-        public uint ResourceTableOffset => _model.InformationBlock.ResourceTableOffset;
+        public uint ResourceTableOffset => this.Model.InformationBlock.ResourceTableOffset;
 #else
-        public uint? ResourceTableOffset => _model.InformationBlock?.ResourceTableOffset;
+        public uint? ResourceTableOffset => this.Model.InformationBlock?.ResourceTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResourceTableCount"/>
 #if NET48
-        public uint ResourceTableCount => _model.InformationBlock.ResourceTableCount;
+        public uint ResourceTableCount => this.Model.InformationBlock.ResourceTableCount;
 #else
-        public uint? ResourceTableCount => _model.InformationBlock?.ResourceTableCount;
+        public uint? ResourceTableCount => this.Model.InformationBlock?.ResourceTableCount;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ResidentNamesTableOffset"/>
 #if NET48
-        public uint ResidentNamesTableOffset => _model.InformationBlock.ResidentNamesTableOffset;
+        public uint ResidentNamesTableOffset => this.Model.InformationBlock.ResidentNamesTableOffset;
 #else
-        public uint? ResidentNamesTableOffset => _model.InformationBlock?.ResidentNamesTableOffset;
+        public uint? ResidentNamesTableOffset => this.Model.InformationBlock?.ResidentNamesTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.EntryTableOffset"/>
 #if NET48
-        public uint EntryTableOffset => _model.InformationBlock.EntryTableOffset;
+        public uint EntryTableOffset => this.Model.InformationBlock.EntryTableOffset;
 #else
-        public uint? EntryTableOffset => _model.InformationBlock?.EntryTableOffset;
+        public uint? EntryTableOffset => this.Model.InformationBlock?.EntryTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleDirectivesTableOffset"/>
 #if NET48
-        public uint ModuleDirectivesTableOffset => _model.InformationBlock.ModuleDirectivesTableOffset;
+        public uint ModuleDirectivesTableOffset => this.Model.InformationBlock.ModuleDirectivesTableOffset;
 #else
-        public uint? ModuleDirectivesTableOffset => _model.InformationBlock?.ModuleDirectivesTableOffset;
+        public uint? ModuleDirectivesTableOffset => this.Model.InformationBlock?.ModuleDirectivesTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ModuleDirectivesCount"/>
 #if NET48
-        public uint ModuleDirectivesCount => _model.InformationBlock.ModuleDirectivesCount;
+        public uint ModuleDirectivesCount => this.Model.InformationBlock.ModuleDirectivesCount;
 #else
-        public uint? ModuleDirectivesCount => _model.InformationBlock?.ModuleDirectivesCount;
+        public uint? ModuleDirectivesCount => this.Model.InformationBlock?.ModuleDirectivesCount;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupPageTableOffset"/>
 #if NET48
-        public uint FixupPageTableOffset => _model.InformationBlock.FixupPageTableOffset;
+        public uint FixupPageTableOffset => this.Model.InformationBlock.FixupPageTableOffset;
 #else
-        public uint? FixupPageTableOffset => _model.InformationBlock?.FixupPageTableOffset;
+        public uint? FixupPageTableOffset => this.Model.InformationBlock?.FixupPageTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.FixupRecordTableOffset"/>
 #if NET48
-        public uint FixupRecordTableOffset => _model.InformationBlock.FixupRecordTableOffset;
+        public uint FixupRecordTableOffset => this.Model.InformationBlock.FixupRecordTableOffset;
 #else
-        public uint? FixupRecordTableOffset => _model.InformationBlock?.FixupRecordTableOffset;
+        public uint? FixupRecordTableOffset => this.Model.InformationBlock?.FixupRecordTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportedModulesNameTableOffset"/>
 #if NET48
-        public uint ImportedModulesNameTableOffset => _model.InformationBlock.ImportedModulesNameTableOffset;
+        public uint ImportedModulesNameTableOffset => this.Model.InformationBlock.ImportedModulesNameTableOffset;
 #else
-        public uint? ImportedModulesNameTableOffset => _model.InformationBlock?.ImportedModulesNameTableOffset;
+        public uint? ImportedModulesNameTableOffset => this.Model.InformationBlock?.ImportedModulesNameTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportedModulesCount"/>
 #if NET48
-        public uint ImportedModulesCount => _model.InformationBlock.ImportedModulesCount;
+        public uint ImportedModulesCount => this.Model.InformationBlock.ImportedModulesCount;
 #else
-        public uint? ImportedModulesCount => _model.InformationBlock?.ImportedModulesCount;
+        public uint? ImportedModulesCount => this.Model.InformationBlock?.ImportedModulesCount;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ImportProcedureNameTableOffset"/>
 #if NET48
-        public uint ImportProcedureNameTableOffset => _model.InformationBlock.ImportProcedureNameTableOffset;
+        public uint ImportProcedureNameTableOffset => this.Model.InformationBlock.ImportProcedureNameTableOffset;
 #else
-        public uint? ImportProcedureNameTableOffset => _model.InformationBlock?.ImportProcedureNameTableOffset;
+        public uint? ImportProcedureNameTableOffset => this.Model.InformationBlock?.ImportProcedureNameTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PerPageChecksumTableOffset"/>
 #if NET48
-        public uint PerPageChecksumTableOffset => _model.InformationBlock.PerPageChecksumTableOffset;
+        public uint PerPageChecksumTableOffset => this.Model.InformationBlock.PerPageChecksumTableOffset;
 #else
-        public uint? PerPageChecksumTableOffset => _model.InformationBlock?.PerPageChecksumTableOffset;
+        public uint? PerPageChecksumTableOffset => this.Model.InformationBlock?.PerPageChecksumTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DataPagesOffset"/>
 #if NET48
-        public uint DataPagesOffset => _model.InformationBlock.DataPagesOffset;
+        public uint DataPagesOffset => this.Model.InformationBlock.DataPagesOffset;
 #else
-        public uint? DataPagesOffset => _model.InformationBlock?.DataPagesOffset;
+        public uint? DataPagesOffset => this.Model.InformationBlock?.DataPagesOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PreloadPageCount"/>
 #if NET48
-        public uint PreloadPageCount => _model.InformationBlock.PreloadPageCount;
+        public uint PreloadPageCount => this.Model.InformationBlock.PreloadPageCount;
 #else
-        public uint? PreloadPageCount => _model.InformationBlock?.PreloadPageCount;
+        public uint? PreloadPageCount => this.Model.InformationBlock?.PreloadPageCount;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableOffset"/>
 #if NET48
-        public uint NonResidentNamesTableOffset => _model.InformationBlock.NonResidentNamesTableOffset;
+        public uint NonResidentNamesTableOffset => this.Model.InformationBlock.NonResidentNamesTableOffset;
 #else
-        public uint? NonResidentNamesTableOffset => _model.InformationBlock?.NonResidentNamesTableOffset;
+        public uint? NonResidentNamesTableOffset => this.Model.InformationBlock?.NonResidentNamesTableOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableLength"/>
 #if NET48
-        public uint NonResidentNamesTableLength => _model.InformationBlock.NonResidentNamesTableLength;
+        public uint NonResidentNamesTableLength => this.Model.InformationBlock.NonResidentNamesTableLength;
 #else
-        public uint? NonResidentNamesTableLength => _model.InformationBlock?.NonResidentNamesTableLength;
+        public uint? NonResidentNamesTableLength => this.Model.InformationBlock?.NonResidentNamesTableLength;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.NonResidentNamesTableChecksum"/>
 #if NET48
-        public uint NonResidentNamesTableChecksum => _model.InformationBlock.NonResidentNamesTableChecksum;
+        public uint NonResidentNamesTableChecksum => this.Model.InformationBlock.NonResidentNamesTableChecksum;
 #else
-        public uint? NonResidentNamesTableChecksum => _model.InformationBlock?.NonResidentNamesTableChecksum;
+        public uint? NonResidentNamesTableChecksum => this.Model.InformationBlock?.NonResidentNamesTableChecksum;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.AutomaticDataObject"/>
 #if NET48
-        public uint AutomaticDataObject => _model.InformationBlock.AutomaticDataObject;
+        public uint AutomaticDataObject => this.Model.InformationBlock.AutomaticDataObject;
 #else
-        public uint? AutomaticDataObject => _model.InformationBlock?.AutomaticDataObject;
+        public uint? AutomaticDataObject => this.Model.InformationBlock?.AutomaticDataObject;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DebugInformationOffset"/>
 #if NET48
-        public uint DebugInformationOffset => _model.InformationBlock.DebugInformationOffset;
+        public uint DebugInformationOffset => this.Model.InformationBlock.DebugInformationOffset;
 #else
-        public uint? DebugInformationOffset => _model.InformationBlock?.DebugInformationOffset;
+        public uint? DebugInformationOffset => this.Model.InformationBlock?.DebugInformationOffset;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DebugInformationLength"/>
 #if NET48
-        public uint DebugInformationLength => _model.InformationBlock.DebugInformationLength;
+        public uint DebugInformationLength => this.Model.InformationBlock.DebugInformationLength;
 #else
-        public uint? DebugInformationLength => _model.InformationBlock?.DebugInformationLength;
+        public uint? DebugInformationLength => this.Model.InformationBlock?.DebugInformationLength;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.PreloadInstancePagesNumber"/>
 #if NET48
-        public uint PreloadInstancePagesNumber => _model.InformationBlock.PreloadInstancePagesNumber;
+        public uint PreloadInstancePagesNumber => this.Model.InformationBlock.PreloadInstancePagesNumber;
 #else
-        public uint? PreloadInstancePagesNumber => _model.InformationBlock?.PreloadInstancePagesNumber;
+        public uint? PreloadInstancePagesNumber => this.Model.InformationBlock?.PreloadInstancePagesNumber;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.DemandInstancePagesNumber"/>
 #if NET48
-        public uint DemandInstancePagesNumber => _model.InformationBlock.DemandInstancePagesNumber;
+        public uint DemandInstancePagesNumber => this.Model.InformationBlock.DemandInstancePagesNumber;
 #else
-        public uint? DemandInstancePagesNumber => _model.InformationBlock?.DemandInstancePagesNumber;
+        public uint? DemandInstancePagesNumber => this.Model.InformationBlock?.DemandInstancePagesNumber;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.InformationBlock.ExtraHeapAllocation"/>
 #if NET48
-        public uint ExtraHeapAllocation => _model.InformationBlock.ExtraHeapAllocation;
+        public uint ExtraHeapAllocation => this.Model.InformationBlock.ExtraHeapAllocation;
 #else
-        public uint? ExtraHeapAllocation => _model.InformationBlock?.ExtraHeapAllocation;
+        public uint? ExtraHeapAllocation => this.Model.InformationBlock?.ExtraHeapAllocation;
 #endif
 
         #endregion
@@ -490,93 +490,93 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ObjectTableEntry[] ObjectTable => _model.ObjectTable;
+        public SabreTools.Models.LinearExecutable.ObjectTableEntry[] ObjectTable => this.Model.ObjectTable;
 #else
-        public SabreTools.Models.LinearExecutable.ObjectTableEntry?[]? ObjectTable => _model.ObjectTable;
+        public SabreTools.Models.LinearExecutable.ObjectTableEntry?[]? ObjectTable => this.Model.ObjectTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ObjectPageMap"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => _model.ObjectPageMap;
+        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry[] ObjectPageMap => this.Model.ObjectPageMap;
 #else
-        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry?[]? ObjectPageMap => _model.ObjectPageMap;
+        public SabreTools.Models.LinearExecutable.ObjectPageMapEntry?[]? ObjectPageMap => this.Model.ObjectPageMap;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ResourceTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ResourceTableEntry[] ResourceTable => _model.ResourceTable;
+        public SabreTools.Models.LinearExecutable.ResourceTableEntry[] ResourceTable => this.Model.ResourceTable;
 #else
-        public SabreTools.Models.LinearExecutable.ResourceTableEntry?[]? ResourceTable => _model.ResourceTable;
+        public SabreTools.Models.LinearExecutable.ResourceTableEntry?[]? ResourceTable => this.Model.ResourceTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ResidentNamesTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => _model.ResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry[] ResidentNamesTable => this.Model.ResidentNamesTable;
 #else
-        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry?[]? ResidentNamesTable => _model.ResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.ResidentNamesTableEntry?[]? ResidentNamesTable => this.Model.ResidentNamesTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.EntryTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.EntryTableBundle[] EntryTable => _model.EntryTable;
+        public SabreTools.Models.LinearExecutable.EntryTableBundle[] EntryTable => this.Model.EntryTable;
 #else
-        public SabreTools.Models.LinearExecutable.EntryTableBundle?[]? EntryTable => _model.EntryTable;
+        public SabreTools.Models.LinearExecutable.EntryTableBundle?[]? EntryTable => this.Model.EntryTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ModuleFormatDirectivesTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => _model.ModuleFormatDirectivesTable;
+        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry[] ModuleFormatDirectivesTable => this.Model.ModuleFormatDirectivesTable;
 #else
-        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry?[]? ModuleFormatDirectivesTable => _model.ModuleFormatDirectivesTable;
+        public SabreTools.Models.LinearExecutable.ModuleFormatDirectivesTableEntry?[]? ModuleFormatDirectivesTable => this.Model.ModuleFormatDirectivesTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.VerifyRecordDirectiveTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => _model.VerifyRecordDirectiveTable;
+        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry[] VerifyRecordDirectiveTable => this.Model.VerifyRecordDirectiveTable;
 #else
-        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry?[]? VerifyRecordDirectiveTable => _model.VerifyRecordDirectiveTable;
+        public SabreTools.Models.LinearExecutable.VerifyRecordDirectiveTableEntry?[]? VerifyRecordDirectiveTable => this.Model.VerifyRecordDirectiveTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.PerPageChecksumTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => _model.PerPageChecksumTable;
+        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry[] PerPageChecksumTable => this.Model.PerPageChecksumTable;
 #else
-        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry?[]? PerPageChecksumTable => _model.PerPageChecksumTable;
+        public SabreTools.Models.LinearExecutable.PerPageChecksumTableEntry?[]? PerPageChecksumTable => this.Model.PerPageChecksumTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupPageTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => _model.FixupPageTable;
+        public SabreTools.Models.LinearExecutable.FixupPageTableEntry[] FixupPageTable => this.Model.FixupPageTable;
 #else
-        public SabreTools.Models.LinearExecutable.FixupPageTableEntry?[]? FixupPageTable => _model.FixupPageTable;
+        public SabreTools.Models.LinearExecutable.FixupPageTableEntry?[]? FixupPageTable => this.Model.FixupPageTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.FixupRecordTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => _model.FixupRecordTable;
+        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry[] FixupRecordTable => this.Model.FixupRecordTable;
 #else
-        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry?[]? FixupRecordTable => _model.FixupRecordTable;
+        public SabreTools.Models.LinearExecutable.FixupRecordTableEntry?[]? FixupRecordTable => this.Model.FixupRecordTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleNameTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => _model.ImportModuleNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry[] ImportModuleNameTable => this.Model.ImportModuleNameTable;
 #else
-        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry?[]? ImportModuleNameTable => _model.ImportModuleNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleNameTableEntry?[]? ImportModuleNameTable => this.Model.ImportModuleNameTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.ImportModuleProcedureNameTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => _model.ImportModuleProcedureNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry[] ImportModuleProcedureNameTable => this.Model.ImportModuleProcedureNameTable;
 #else
-        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry?[]? ImportModuleProcedureNameTable => _model.ImportModuleProcedureNameTable;
+        public SabreTools.Models.LinearExecutable.ImportModuleProcedureNameTableEntry?[]? ImportModuleProcedureNameTable => this.Model.ImportModuleProcedureNameTable;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.NonResidentNamesTable"/>
 #if NET48
-        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => _model.NonResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry[] NonResidentNamesTable => this.Model.NonResidentNamesTable;
 #else
-        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry?[]? NonResidentNamesTable => _model.NonResidentNamesTable;
+        public SabreTools.Models.LinearExecutable.NonResidentNamesTableEntry?[]? NonResidentNamesTable => this.Model.NonResidentNamesTable;
 #endif
 
         #endregion
@@ -585,19 +585,19 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.Signature"/>
 #if NET48
-        public string DI_Signature => _model.DebugInformation?.Signature;
+        public string DI_Signature => this.Model.DebugInformation?.Signature;
 #else
-        public string? DI_Signature => _model.DebugInformation?.Signature;
+        public string? DI_Signature => this.Model.DebugInformation?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.FormatType"/>
-        public SabreTools.Models.LinearExecutable.DebugFormatType? DI_FormatType => _model.DebugInformation?.FormatType;
+        public SabreTools.Models.LinearExecutable.DebugFormatType? DI_FormatType => this.Model.DebugInformation?.FormatType;
 
         /// <inheritdoc cref="Models.LinearExecutable.DebugInformation.DebuggerData"/>
 #if NET48
-        public byte[] DebuggerData => _model.DebugInformation?.DebuggerData;
+        public byte[] DebuggerData => this.Model.DebugInformation?.DebuggerData;
 #else
-        public byte[]? DebuggerData => _model.DebugInformation?.DebuggerData;
+        public byte[]? DebuggerData => this.Model.DebugInformation?.DebuggerData;
 #endif
 
         #endregion
@@ -694,16 +694,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.LinearExecutable.Print(builder, _model);
+            Printing.LinearExecutable.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

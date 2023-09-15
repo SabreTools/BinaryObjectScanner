@@ -18,100 +18,100 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
 #if NET48
-        public string Magic => _model.Header.Magic;
+        public string Magic => this.Model.Header.Magic;
 #else
-        public string? Magic => _model.Header?.Magic;
+        public string? Magic => this.Model.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
 #if NET48
-        public ushort LastPageBytes => _model.Header.LastPageBytes;
+        public ushort LastPageBytes => this.Model.Header.LastPageBytes;
 #else
-        public ushort? LastPageBytes => _model.Header?.LastPageBytes;
+        public ushort? LastPageBytes => this.Model.Header?.LastPageBytes;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
 #if NET48
-        public ushort Pages => _model.Header.Pages;
+        public ushort Pages => this.Model.Header.Pages;
 #else
-        public ushort? Pages => _model.Header?.Pages;
+        public ushort? Pages => this.Model.Header?.Pages;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
 #if NET48
-        public ushort RelocationItems => _model.Header.RelocationItems;
+        public ushort RelocationItems => this.Model.Header.RelocationItems;
 #else
-        public ushort? RelocationItems => _model.Header?.RelocationItems;
+        public ushort? RelocationItems => this.Model.Header?.RelocationItems;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
 #if NET48
-        public ushort HeaderParagraphSize => _model.Header.HeaderParagraphSize;
+        public ushort HeaderParagraphSize => this.Model.Header.HeaderParagraphSize;
 #else
-        public ushort? HeaderParagraphSize => _model.Header?.HeaderParagraphSize;
+        public ushort? HeaderParagraphSize => this.Model.Header?.HeaderParagraphSize;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
 #if NET48
-        public ushort MinimumExtraParagraphs => _model.Header.MinimumExtraParagraphs;
+        public ushort MinimumExtraParagraphs => this.Model.Header.MinimumExtraParagraphs;
 #else
-        public ushort? MinimumExtraParagraphs => _model.Header?.MinimumExtraParagraphs;
+        public ushort? MinimumExtraParagraphs => this.Model.Header?.MinimumExtraParagraphs;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
 #if NET48
-        public ushort MaximumExtraParagraphs => _model.Header.MaximumExtraParagraphs;
+        public ushort MaximumExtraParagraphs => this.Model.Header.MaximumExtraParagraphs;
 #else
-        public ushort? MaximumExtraParagraphs => _model.Header?.MaximumExtraParagraphs;
+        public ushort? MaximumExtraParagraphs => this.Model.Header?.MaximumExtraParagraphs;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
 #if NET48
-        public ushort InitialSSValue => _model.Header.InitialSSValue;
+        public ushort InitialSSValue => this.Model.Header.InitialSSValue;
 #else
-        public ushort? InitialSSValue => _model.Header?.InitialSSValue;
+        public ushort? InitialSSValue => this.Model.Header?.InitialSSValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
 #if NET48
-        public ushort InitialSPValue => _model.Header.InitialSPValue;
+        public ushort InitialSPValue => this.Model.Header.InitialSPValue;
 #else
-        public ushort? InitialSPValue => _model.Header?.InitialSPValue;
+        public ushort? InitialSPValue => this.Model.Header?.InitialSPValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
 #if NET48
-        public ushort Checksum => _model.Header.Checksum;
+        public ushort Checksum => this.Model.Header.Checksum;
 #else
-        public ushort? Checksum => _model.Header?.Checksum;
+        public ushort? Checksum => this.Model.Header?.Checksum;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
 #if NET48
-        public ushort InitialIPValue => _model.Header.InitialIPValue;
+        public ushort InitialIPValue => this.Model.Header.InitialIPValue;
 #else
-        public ushort? InitialIPValue => _model.Header?.InitialIPValue;
+        public ushort? InitialIPValue => this.Model.Header?.InitialIPValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
 #if NET48
-        public ushort InitialCSValue => _model.Header.InitialCSValue;
+        public ushort InitialCSValue => this.Model.Header.InitialCSValue;
 #else
-        public ushort? InitialCSValue => _model.Header?.InitialCSValue;
+        public ushort? InitialCSValue => this.Model.Header?.InitialCSValue;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
 #if NET48
-        public ushort RelocationTableAddr => _model.Header.RelocationTableAddr;
+        public ushort RelocationTableAddr => this.Model.Header.RelocationTableAddr;
 #else
-        public ushort? RelocationTableAddr => _model.Header?.RelocationTableAddr;
+        public ushort? RelocationTableAddr => this.Model.Header?.RelocationTableAddr;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
 #if NET48
-        public ushort OverlayNumber => _model.Header.OverlayNumber;
+        public ushort OverlayNumber => this.Model.Header.OverlayNumber;
 #else
-        public ushort? OverlayNumber => _model.Header?.OverlayNumber;
+        public ushort? OverlayNumber => this.Model.Header?.OverlayNumber;
 #endif
 
         #endregion
@@ -120,37 +120,37 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
 #if NET48
-        public ushort[] Reserved1 => _model.Header.Reserved1;
+        public ushort[] Reserved1 => this.Model.Header.Reserved1;
 #else
-        public ushort[]? Reserved1 => _model.Header?.Reserved1;
+        public ushort[]? Reserved1 => this.Model.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
 #if NET48
-        public ushort OEMIdentifier => _model.Header.OEMIdentifier;
+        public ushort OEMIdentifier => this.Model.Header.OEMIdentifier;
 #else
-        public ushort? OEMIdentifier => _model.Header?.OEMIdentifier;
+        public ushort? OEMIdentifier => this.Model.Header?.OEMIdentifier;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
 #if NET48
-        public ushort OEMInformation => _model.Header.OEMInformation;
+        public ushort OEMInformation => this.Model.Header.OEMInformation;
 #else
-        public ushort? OEMInformation => _model.Header?.OEMInformation;
+        public ushort? OEMInformation => this.Model.Header?.OEMInformation;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
 #if NET48
-        public ushort[] Reserved2 => _model.Header.Reserved2;
+        public ushort[] Reserved2 => this.Model.Header.Reserved2;
 #else
-        public ushort[]? Reserved2 => _model.Header?.Reserved2;
+        public ushort[]? Reserved2 => this.Model.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
 #if NET48
-        public uint NewExeHeaderAddr => _model.Header.NewExeHeaderAddr;
+        public uint NewExeHeaderAddr => this.Model.Header.NewExeHeaderAddr;
 #else
-        public uint? NewExeHeaderAddr => _model.Header?.NewExeHeaderAddr;
+        public uint? NewExeHeaderAddr => this.Model.Header?.NewExeHeaderAddr;
 #endif
 
         #endregion
@@ -159,9 +159,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.MSDOS.Executable.RelocationTable"/>
 #if NET48
-        public SabreTools.Models.MSDOS.RelocationEntry[] RelocationTable => _model.RelocationTable;
+        public SabreTools.Models.MSDOS.RelocationEntry[] RelocationTable => this.Model.RelocationTable;
 #else
-        public SabreTools.Models.MSDOS.RelocationEntry?[]? RelocationTable => _model.RelocationTable;
+        public SabreTools.Models.MSDOS.RelocationEntry?[]? RelocationTable => this.Model.RelocationTable;
 #endif
 
         #endregion
@@ -252,16 +252,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.MSDOS.Print(builder, _model);
+            Printing.MSDOS.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

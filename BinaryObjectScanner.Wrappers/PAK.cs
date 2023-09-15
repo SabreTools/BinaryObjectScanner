@@ -18,23 +18,23 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PAK.Header.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryOffset"/>
 #if NET48
-        public uint DirectoryOffset => _model.Header.DirectoryOffset;
+        public uint DirectoryOffset => this.Model.Header.DirectoryOffset;
 #else
-        public uint? DirectoryOffset => _model.Header?.DirectoryOffset;
+        public uint? DirectoryOffset => this.Model.Header?.DirectoryOffset;
 #endif
 
         /// <inheritdoc cref="Models.PAK.Header.DirectoryLength"/>
 #if NET48
-        public uint DirectoryLength => _model.Header.DirectoryLength;
+        public uint DirectoryLength => this.Model.Header.DirectoryLength;
 #else
-        public uint? DirectoryLength => _model.Header?.DirectoryLength;
+        public uint? DirectoryLength => this.Model.Header?.DirectoryLength;
 #endif
 
         #endregion
@@ -43,9 +43,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.PAK.DirectoryItems"/>
 #if NET48
-        public SabreTools.Models.PAK.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
+        public SabreTools.Models.PAK.DirectoryItem[] DirectoryItems => this.Model.DirectoryItems;
 #else
-        public SabreTools.Models.PAK.DirectoryItem?[]? DirectoryItems => _model.DirectoryItems;
+        public SabreTools.Models.PAK.DirectoryItem?[]? DirectoryItems => this.Model.DirectoryItems;
 #endif
 
         #endregion
@@ -144,16 +144,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PAK.Print(builder, _model);
+            Printing.PAK.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

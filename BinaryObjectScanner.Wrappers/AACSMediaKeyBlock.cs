@@ -19,9 +19,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.AACS.MediaKeyBlock.Records"/>
 #if NET48
-        public Record[] Records => _model.Records;
+        public Record[] Records => this.Model.Records;
 #else
-        public Record?[]? Records => _model.Records;
+        public Record?[]? Records => this.Model.Records;
 #endif
 
         #endregion
@@ -114,16 +114,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.AACSMediaKeyBlock.Print(builder, _model);
+            Printing.AACSMediaKeyBlock.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

@@ -19,79 +19,79 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy0"/>
 #if NET48
-        public uint Dummy0 => _model.Header.Dummy0;
+        public uint Dummy0 => this.Model.Header.Dummy0;
 #else
-        public uint? Dummy0 => _model.Header?.Dummy0;
+        public uint? Dummy0 => this.Model.Header?.Dummy0;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.MajorVersion"/>
 #if NET48
-        public uint MajorVersion => _model.Header.MajorVersion;
+        public uint MajorVersion => this.Model.Header.MajorVersion;
 #else
-        public uint? MajorVersion => _model.Header?.MajorVersion;
+        public uint? MajorVersion => this.Model.Header?.MajorVersion;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.MinorVersion"/>
 #if NET48
-        public uint MinorVersion => _model.Header.MinorVersion;
+        public uint MinorVersion => this.Model.Header.MinorVersion;
 #else
-        public uint? MinorVersion => _model.Header?.MinorVersion;
+        public uint? MinorVersion => this.Model.Header?.MinorVersion;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.CacheID"/>
 #if NET48
-        public uint CacheID => _model.Header.CacheID;
+        public uint CacheID => this.Model.Header.CacheID;
 #else
-        public uint? CacheID => _model.Header?.CacheID;
+        public uint? CacheID => this.Model.Header?.CacheID;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.LastVersionPlayed"/>
 #if NET48
-        public uint LastVersionPlayed => _model.Header.LastVersionPlayed;
+        public uint LastVersionPlayed => this.Model.Header.LastVersionPlayed;
 #else
-        public uint? LastVersionPlayed => _model.Header?.LastVersionPlayed;
+        public uint? LastVersionPlayed => this.Model.Header?.LastVersionPlayed;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy1"/>
 #if NET48
-        public uint Dummy1 => _model.Header.Dummy1;
+        public uint Dummy1 => this.Model.Header.Dummy1;
 #else
-        public uint? Dummy1 => _model.Header?.Dummy1;
+        public uint? Dummy1 => this.Model.Header?.Dummy1;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy2"/>
 #if NET48
-        public uint Dummy2 => _model.Header.Dummy2;
+        public uint Dummy2 => this.Model.Header.Dummy2;
 #else
-        public uint? Dummy2 => _model.Header?.Dummy2;
+        public uint? Dummy2 => this.Model.Header?.Dummy2;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.FileSize"/>
 #if NET48
-        public uint FileSize => _model.Header.FileSize;
+        public uint FileSize => this.Model.Header.FileSize;
 #else
-        public uint? FileSize => _model.Header?.FileSize;
+        public uint? FileSize => this.Model.Header?.FileSize;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.BlockSize"/>
 #if NET48
-        public uint BlockSize => _model.Header.BlockSize;
+        public uint BlockSize => this.Model.Header.BlockSize;
 #else
-        public uint? BlockSize => _model.Header?.BlockSize;
+        public uint? BlockSize => this.Model.Header?.BlockSize;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.BlockCount"/>
 #if NET48
-        public uint BlockCount => _model.Header.BlockCount;
+        public uint BlockCount => this.Model.Header.BlockCount;
 #else
-        public uint? BlockCount => _model.Header?.BlockCount;
+        public uint? BlockCount => this.Model.Header?.BlockCount;
 #endif
 
         /// <inheritdoc cref="Models.NCF.Header.Dummy3"/>
 #if NET48
-        public uint Dummy3 => _model.Header.Dummy3;
+        public uint Dummy3 => this.Model.Header.Dummy3;
 #else
-        public uint? Dummy3 => _model.Header?.Dummy3;
+        public uint? Dummy3 => this.Model.Header?.Dummy3;
 #endif
 
         #endregion
@@ -100,100 +100,100 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy0"/>
 #if NET48
-        public uint DH_Dummy0 => _model.DirectoryHeader.Dummy0;
+        public uint DH_Dummy0 => this.Model.DirectoryHeader.Dummy0;
 #else
-        public uint? DH_Dummy0 => _model.DirectoryHeader?.Dummy0;
+        public uint? DH_Dummy0 => this.Model.DirectoryHeader?.Dummy0;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.CacheID"/>
 #if NET48
-        public uint DH_CacheID => _model.DirectoryHeader.CacheID;
+        public uint DH_CacheID => this.Model.DirectoryHeader.CacheID;
 #else
-        public uint? DH_CacheID => _model.DirectoryHeader?.CacheID;
+        public uint? DH_CacheID => this.Model.DirectoryHeader?.CacheID;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.LastVersionPlayed"/>
 #if NET48
-        public uint DH_LastVersionPlayed => _model.DirectoryHeader.LastVersionPlayed;
+        public uint DH_LastVersionPlayed => this.Model.DirectoryHeader.LastVersionPlayed;
 #else
-        public uint? DH_LastVersionPlayed => _model.DirectoryHeader?.LastVersionPlayed;
+        public uint? DH_LastVersionPlayed => this.Model.DirectoryHeader?.LastVersionPlayed;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.ItemCount"/>
 #if NET48
-        public uint DH_ItemCount => _model.DirectoryHeader.ItemCount;
+        public uint DH_ItemCount => this.Model.DirectoryHeader.ItemCount;
 #else
-        public uint? DH_ItemCount => _model.DirectoryHeader?.ItemCount;
+        public uint? DH_ItemCount => this.Model.DirectoryHeader?.ItemCount;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.FileCount"/>
 #if NET48
-        public uint DH_FileCount => _model.DirectoryHeader.FileCount;
+        public uint DH_FileCount => this.Model.DirectoryHeader.FileCount;
 #else
-        public uint? DH_FileCount => _model.DirectoryHeader?.FileCount;
+        public uint? DH_FileCount => this.Model.DirectoryHeader?.FileCount;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.ChecksumDataLength"/>
 #if NET48
-        public uint DH_ChecksumDataLength => _model.DirectoryHeader.ChecksumDataLength;
+        public uint DH_ChecksumDataLength => this.Model.DirectoryHeader.ChecksumDataLength;
 #else
-        public uint? DH_ChecksumDataLength => _model.DirectoryHeader?.ChecksumDataLength;
+        public uint? DH_ChecksumDataLength => this.Model.DirectoryHeader?.ChecksumDataLength;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.DirectorySize"/>
 #if NET48
-        public uint DH_DirectorySize => _model.DirectoryHeader.DirectorySize;
+        public uint DH_DirectorySize => this.Model.DirectoryHeader.DirectorySize;
 #else
-        public uint? DH_DirectorySize => _model.DirectoryHeader?.DirectorySize;
+        public uint? DH_DirectorySize => this.Model.DirectoryHeader?.DirectorySize;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.NameSize"/>
 #if NET48
-        public uint DH_NameSize => _model.DirectoryHeader.NameSize;
+        public uint DH_NameSize => this.Model.DirectoryHeader.NameSize;
 #else
-        public uint? DH_NameSize => _model.DirectoryHeader?.NameSize;
+        public uint? DH_NameSize => this.Model.DirectoryHeader?.NameSize;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Info1Count"/>
 #if NET48
-        public uint DH_Info1Count => _model.DirectoryHeader.Info1Count;
+        public uint DH_Info1Count => this.Model.DirectoryHeader.Info1Count;
 #else
-        public uint? DH_Info1Count => _model.DirectoryHeader?.Info1Count;
+        public uint? DH_Info1Count => this.Model.DirectoryHeader?.Info1Count;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.CopyCount"/>
 #if NET48
-        public uint DH_CopyCount => _model.DirectoryHeader.CopyCount;
+        public uint DH_CopyCount => this.Model.DirectoryHeader.CopyCount;
 #else
-        public uint? DH_CopyCount => _model.DirectoryHeader?.CopyCount;
+        public uint? DH_CopyCount => this.Model.DirectoryHeader?.CopyCount;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.LocalCount"/>
 #if NET48
-        public uint DH_LocalCount => _model.DirectoryHeader.LocalCount;
+        public uint DH_LocalCount => this.Model.DirectoryHeader.LocalCount;
 #else
-        public uint? DH_LocalCount => _model.DirectoryHeader?.LocalCount;
+        public uint? DH_LocalCount => this.Model.DirectoryHeader?.LocalCount;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy1"/>
 #if NET48
-        public uint DH_Dummy1 => _model.DirectoryHeader.Dummy1;
+        public uint DH_Dummy1 => this.Model.DirectoryHeader.Dummy1;
 #else
-        public uint? DH_Dummy1 => _model.DirectoryHeader?.Dummy1;
+        public uint? DH_Dummy1 => this.Model.DirectoryHeader?.Dummy1;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Dummy2"/>
 #if NET48
-        public uint DH_Dummy2 => _model.DirectoryHeader.Dummy2;
+        public uint DH_Dummy2 => this.Model.DirectoryHeader.Dummy2;
 #else
-        public uint? DH_Dummy2 => _model.DirectoryHeader?.Dummy2;
+        public uint? DH_Dummy2 => this.Model.DirectoryHeader?.Dummy2;
 #endif
 
         /// <inheritdoc cref="Models.NCF.DirectoryHeader.Checksum"/>
 #if NET48
-        public uint DH_Checksum => _model.DirectoryHeader.Checksum;
+        public uint DH_Checksum => this.Model.DirectoryHeader.Checksum;
 #else
-        public uint? DH_Checksum => _model.DirectoryHeader?.Checksum;
+        public uint? DH_Checksum => this.Model.DirectoryHeader?.Checksum;
 #endif
 
         #endregion
@@ -202,9 +202,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryEntries"/>
 #if NET48
-        public SabreTools.Models.NCF.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.NCF.DirectoryEntry[] DirectoryEntries => this.Model.DirectoryEntries;
 #else
-        public SabreTools.Models.NCF.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.NCF.DirectoryEntry?[]? DirectoryEntries => this.Model.DirectoryEntries;
 #endif
 
         #endregion
@@ -213,9 +213,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryNames"/>
 #if NET48
-        public Dictionary<long, string> DirectoryNames => _model.DirectoryNames;
+        public Dictionary<long, string> DirectoryNames => this.Model.DirectoryNames;
 #else
-        public Dictionary<long, string?>? DirectoryNames => _model.DirectoryNames;
+        public Dictionary<long, string?>? DirectoryNames => this.Model.DirectoryNames;
 #endif
 
         #endregion
@@ -224,9 +224,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo1Entries"/>
 #if NET48
-        public SabreTools.Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
+        public SabreTools.Models.NCF.DirectoryInfo1Entry[] DirectoryInfo1Entries => this.Model.DirectoryInfo1Entries;
 #else
-        public SabreTools.Models.NCF.DirectoryInfo1Entry?[]? DirectoryInfo1Entries => _model.DirectoryInfo1Entries;
+        public SabreTools.Models.NCF.DirectoryInfo1Entry?[]? DirectoryInfo1Entries => this.Model.DirectoryInfo1Entries;
 #endif
 
         #endregion
@@ -235,9 +235,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryInfo2Entries"/>
 #if NET48
-        public SabreTools.Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
+        public SabreTools.Models.NCF.DirectoryInfo2Entry[] DirectoryInfo2Entries => this.Model.DirectoryInfo2Entries;
 #else
-        public SabreTools.Models.NCF.DirectoryInfo2Entry?[]? DirectoryInfo2Entries => _model.DirectoryInfo2Entries;
+        public SabreTools.Models.NCF.DirectoryInfo2Entry?[]? DirectoryInfo2Entries => this.Model.DirectoryInfo2Entries;
 #endif
 
         #endregion
@@ -246,9 +246,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryCopyEntries"/>
 #if NET48
-        public SabreTools.Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => _model.DirectoryCopyEntries;
+        public SabreTools.Models.NCF.DirectoryCopyEntry[] DirectoryCopyEntries => this.Model.DirectoryCopyEntries;
 #else
-        public SabreTools.Models.NCF.DirectoryCopyEntry?[]? DirectoryCopyEntries => _model.DirectoryCopyEntries;
+        public SabreTools.Models.NCF.DirectoryCopyEntry?[]? DirectoryCopyEntries => this.Model.DirectoryCopyEntries;
 #endif
 
         #endregion
@@ -257,9 +257,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.DirectoryLocalEntries"/>
 #if NET48
-        public SabreTools.Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => _model.DirectoryLocalEntries;
+        public SabreTools.Models.NCF.DirectoryLocalEntry[] DirectoryLocalEntries => this.Model.DirectoryLocalEntries;
 #else
-        public SabreTools.Models.NCF.DirectoryLocalEntry?[]? DirectoryLocalEntries => _model.DirectoryLocalEntries;
+        public SabreTools.Models.NCF.DirectoryLocalEntry?[]? DirectoryLocalEntries => this.Model.DirectoryLocalEntries;
 #endif
 
         #endregion
@@ -268,16 +268,16 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.UnknownHeader.Dummy0"/>
 #if NET48
-        public uint UH_Dummy0 => _model.UnknownHeader.Dummy0;
+        public uint UH_Dummy0 => this.Model.UnknownHeader.Dummy0;
 #else
-        public uint? UH_Dummy0 => _model.UnknownHeader?.Dummy0;
+        public uint? UH_Dummy0 => this.Model.UnknownHeader?.Dummy0;
 #endif
 
         /// <inheritdoc cref="Models.NCF.UnknownHeader.Dummy1"/>
 #if NET48
-        public uint UH_Dummy1 => _model.UnknownHeader.Dummy1;
+        public uint UH_Dummy1 => this.Model.UnknownHeader.Dummy1;
 #else
-        public uint? UH_Dummy1 => _model.UnknownHeader?.Dummy1;
+        public uint? UH_Dummy1 => this.Model.UnknownHeader?.Dummy1;
 #endif
 
         #endregion
@@ -286,9 +286,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.UnknownEntries"/>
 #if NET48
-        public SabreTools.Models.NCF.UnknownEntry[] UnknownEntries => _model.UnknownEntries;
+        public SabreTools.Models.NCF.UnknownEntry[] UnknownEntries => this.Model.UnknownEntries;
 #else
-        public SabreTools.Models.NCF.UnknownEntry?[]? UnknownEntries => _model.UnknownEntries;
+        public SabreTools.Models.NCF.UnknownEntry?[]? UnknownEntries => this.Model.UnknownEntries;
 #endif
 
         #endregion
@@ -297,16 +297,16 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.ChecksumHeader.Dummy0"/>
 #if NET48
-        public uint CH_Dummy0 => _model.ChecksumHeader.Dummy0;
+        public uint CH_Dummy0 => this.Model.ChecksumHeader.Dummy0;
 #else
-        public uint? CH_Dummy0 => _model.ChecksumHeader?.Dummy0;
+        public uint? CH_Dummy0 => this.Model.ChecksumHeader?.Dummy0;
 #endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumHeader.ChecksumSize"/>
 #if NET48
-        public uint CH_ChecksumSize => _model.ChecksumHeader.ChecksumSize;
+        public uint CH_ChecksumSize => this.Model.ChecksumHeader.ChecksumSize;
 #else
-        public uint? CH_ChecksumSize => _model.ChecksumHeader?.ChecksumSize;
+        public uint? CH_ChecksumSize => this.Model.ChecksumHeader?.ChecksumSize;
 #endif
 
         #endregion
@@ -315,30 +315,30 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.Dummy0"/>
 #if NET48
-        public uint CMH_Dummy0 => _model.ChecksumMapHeader.Dummy0;
+        public uint CMH_Dummy0 => this.Model.ChecksumMapHeader.Dummy0;
 #else
-        public uint? CMH_Dummy0 => _model.ChecksumMapHeader?.Dummy0;
+        public uint? CMH_Dummy0 => this.Model.ChecksumMapHeader?.Dummy0;
 #endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.Dummy1"/>
 #if NET48
-        public uint CMH_Dummy1 => _model.ChecksumMapHeader.Dummy1;
+        public uint CMH_Dummy1 => this.Model.ChecksumMapHeader.Dummy1;
 #else
-        public uint? CMH_Dummy1 => _model.ChecksumMapHeader?.Dummy1;
+        public uint? CMH_Dummy1 => this.Model.ChecksumMapHeader?.Dummy1;
 #endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.ItemCount"/>
 #if NET48
-        public uint CMH_ItemCount => _model.ChecksumMapHeader.ItemCount;
+        public uint CMH_ItemCount => this.Model.ChecksumMapHeader.ItemCount;
 #else
-        public uint? CMH_ItemCount => _model.ChecksumMapHeader?.ItemCount;
+        public uint? CMH_ItemCount => this.Model.ChecksumMapHeader?.ItemCount;
 #endif
 
         /// <inheritdoc cref="Models.NCF.ChecksumMapHeader.ChecksumCount"/>
 #if NET48
-        public uint CMH_ChecksumCount => _model.ChecksumMapHeader.ChecksumCount;
+        public uint CMH_ChecksumCount => this.Model.ChecksumMapHeader.ChecksumCount;
 #else
-        public uint? CMH_ChecksumCount => _model.ChecksumMapHeader?.ChecksumCount;
+        public uint? CMH_ChecksumCount => this.Model.ChecksumMapHeader?.ChecksumCount;
 #endif
 
         #endregion
@@ -347,9 +347,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumMapEntries"/>
 #if NET48
-        public SabreTools.Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => _model.ChecksumMapEntries;
+        public SabreTools.Models.NCF.ChecksumMapEntry[] ChecksumMapEntries => this.Model.ChecksumMapEntries;
 #else
-        public SabreTools.Models.NCF.ChecksumMapEntry?[]? ChecksumMapEntries => _model.ChecksumMapEntries;
+        public SabreTools.Models.NCF.ChecksumMapEntry?[]? ChecksumMapEntries => this.Model.ChecksumMapEntries;
 #endif
 
         #endregion
@@ -358,9 +358,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.NCF.File.ChecksumEntries"/>
 #if NET48
-        public SabreTools.Models.NCF.ChecksumEntry[] ChecksumEntries => _model.ChecksumEntries;
+        public SabreTools.Models.NCF.ChecksumEntry[] ChecksumEntries => this.Model.ChecksumEntries;
 #else
-        public SabreTools.Models.NCF.ChecksumEntry?[]? ChecksumEntries => _model.ChecksumEntries;
+        public SabreTools.Models.NCF.ChecksumEntry?[]? ChecksumEntries => this.Model.ChecksumEntries;
 #endif
 
         #endregion
@@ -453,16 +453,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.NCF.Print(builder, _model);
+            Printing.NCF.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

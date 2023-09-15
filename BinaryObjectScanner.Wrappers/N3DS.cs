@@ -20,51 +20,51 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.RSA2048Signature"/>
 #if NET48
-        public byte[] RSA2048Signature => _model.Header.RSA2048Signature;
+        public byte[] RSA2048Signature => this.Model.Header.RSA2048Signature;
 #else
-        public byte[]? RSA2048Signature => _model.Header?.RSA2048Signature;
+        public byte[]? RSA2048Signature => this.Model.Header?.RSA2048Signature;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.MagicNumber"/>
 #if NET48
-        public string MagicNumber => _model.Header.MagicNumber;
+        public string MagicNumber => this.Model.Header.MagicNumber;
 #else
-        public string? MagicNumber => _model.Header?.MagicNumber;
+        public string? MagicNumber => this.Model.Header?.MagicNumber;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.ImageSizeInMediaUnits"/>
 #if NET48
-        public uint ImageSizeInMediaUnits => _model.Header.ImageSizeInMediaUnits;
+        public uint ImageSizeInMediaUnits => this.Model.Header.ImageSizeInMediaUnits;
 #else
-        public uint? ImageSizeInMediaUnits => _model.Header?.ImageSizeInMediaUnits;
+        public uint? ImageSizeInMediaUnits => this.Model.Header?.ImageSizeInMediaUnits;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.MediaId"/>
 #if NET48
-        public byte[] MediaId => _model.Header.MediaId;
+        public byte[] MediaId => this.Model.Header.MediaId;
 #else
-        public byte[]? MediaId => _model.Header?.MediaId;
+        public byte[]? MediaId => this.Model.Header?.MediaId;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsFSType"/>
 #if NET48
-        public SabreTools.Models.N3DS.FilesystemType PartitionsFSType => _model.Header.PartitionsFSType;
+        public SabreTools.Models.N3DS.FilesystemType PartitionsFSType => this.Model.Header.PartitionsFSType;
 #else
-        public SabreTools.Models.N3DS.FilesystemType? PartitionsFSType => _model.Header?.PartitionsFSType;
+        public SabreTools.Models.N3DS.FilesystemType? PartitionsFSType => this.Model.Header?.PartitionsFSType;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsCryptType"/>
 #if NET48
-        public byte[] PartitionsCryptType => _model.Header.PartitionsCryptType;
+        public byte[] PartitionsCryptType => this.Model.Header.PartitionsCryptType;
 #else
-        public byte[]? PartitionsCryptType => _model.Header?.PartitionsCryptType;
+        public byte[]? PartitionsCryptType => this.Model.Header?.PartitionsCryptType;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionsTable"/>
 #if NET48
-        public SabreTools.Models.N3DS.PartitionTableEntry[] PartitionsTable => _model.Header.PartitionsTable;
+        public SabreTools.Models.N3DS.PartitionTableEntry[] PartitionsTable => this.Model.Header.PartitionsTable;
 #else
-        public SabreTools.Models.N3DS.PartitionTableEntry?[]? PartitionsTable => _model.Header?.PartitionsTable;
+        public SabreTools.Models.N3DS.PartitionTableEntry?[]? PartitionsTable => this.Model.Header?.PartitionsTable;
 #endif
 
         #endregion
@@ -73,65 +73,65 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.ExheaderHash"/>
 #if NET48
-        public byte[] ExheaderHash => _model.Header.ExheaderHash;
+        public byte[] ExheaderHash => this.Model.Header.ExheaderHash;
 #else
-        public byte[]? ExheaderHash => _model.Header?.ExheaderHash;
+        public byte[]? ExheaderHash => this.Model.Header?.ExheaderHash;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.AdditionalHeaderSize"/>
 #if NET48
-        public uint AdditionalHeaderSize => _model.Header.AdditionalHeaderSize;
+        public uint AdditionalHeaderSize => this.Model.Header.AdditionalHeaderSize;
 #else
-        public uint? AdditionalHeaderSize => _model.Header?.AdditionalHeaderSize;
+        public uint? AdditionalHeaderSize => this.Model.Header?.AdditionalHeaderSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.SectorZeroOffset"/>
 #if NET48
-        public uint SectorZeroOffset => _model.Header.SectorZeroOffset;
+        public uint SectorZeroOffset => this.Model.Header.SectorZeroOffset;
 #else
-        public uint? SectorZeroOffset => _model.Header?.SectorZeroOffset;
+        public uint? SectorZeroOffset => this.Model.Header?.SectorZeroOffset;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionFlags"/>
 #if NET48
-        public byte[] PartitionFlags => _model.Header.PartitionFlags;
+        public byte[] PartitionFlags => this.Model.Header.PartitionFlags;
 #else
-        public byte[]? PartitionFlags => _model.Header?.PartitionFlags;
+        public byte[]? PartitionFlags => this.Model.Header?.PartitionFlags;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.PartitionIdTable"/>
 #if NET48
-        public ulong[] PartitionIdTable => _model.Header.PartitionIdTable;
+        public ulong[] PartitionIdTable => this.Model.Header.PartitionIdTable;
 #else
-        public ulong[]? PartitionIdTable => _model.Header?.PartitionIdTable;
+        public ulong[]? PartitionIdTable => this.Model.Header?.PartitionIdTable;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.Reserved1"/>
 #if NET48
-        public byte[] Reserved1 => _model.Header.Reserved1;
+        public byte[] Reserved1 => this.Model.Header.Reserved1;
 #else
-        public byte[]? Reserved1 => _model.Header?.Reserved1;
+        public byte[]? Reserved1 => this.Model.Header?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.Reserved2"/>
 #if NET48
-        public byte[] Reserved2 => _model.Header.Reserved2;
+        public byte[] Reserved2 => this.Model.Header.Reserved2;
 #else
-        public byte[]? Reserved2 => _model.Header?.Reserved2;
+        public byte[]? Reserved2 => this.Model.Header?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.FirmUpdateByte1"/>
 #if NET48
-        public byte FirmUpdateByte1 => _model.Header.FirmUpdateByte1;
+        public byte FirmUpdateByte1 => this.Model.Header.FirmUpdateByte1;
 #else
-        public byte? FirmUpdateByte1 => _model.Header?.FirmUpdateByte1;
+        public byte? FirmUpdateByte1 => this.Model.Header?.FirmUpdateByte1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.FirmUpdateByte2"/>
 #if NET48
-        public byte FirmUpdateByte2 => _model.Header.FirmUpdateByte2;
+        public byte FirmUpdateByte2 => this.Model.Header.FirmUpdateByte2;
 #else
-        public byte? FirmUpdateByte2 => _model.Header?.FirmUpdateByte2;
+        public byte? FirmUpdateByte2 => this.Model.Header?.FirmUpdateByte2;
 #endif
 
         #endregion
@@ -140,16 +140,16 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.Unknown"/>
 #if NET48
-        public byte[] Unknown => _model.Header.Unknown;
+        public byte[] Unknown => this.Model.Header.Unknown;
 #else
-        public byte[]? Unknown => _model.Header?.Unknown;
+        public byte[]? Unknown => this.Model.Header?.Unknown;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.NCSDHeader.EncryptedMBR"/>
 #if NET48
-        public byte[] EncryptedMBR => _model.Header.EncryptedMBR;
+        public byte[] EncryptedMBR => this.Model.Header.EncryptedMBR;
 #else
-        public byte[]? EncryptedMBR => _model.Header?.EncryptedMBR;
+        public byte[]? EncryptedMBR => this.Model.Header?.EncryptedMBR;
 #endif
 
         #endregion
@@ -160,79 +160,79 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.WritableAddressMediaUnits"/>
 #if NET48
-        public uint CIH_WritableAddressMediaUnits => _model.CardInfoHeader.WritableAddressMediaUnits;
+        public uint CIH_WritableAddressMediaUnits => this.Model.CardInfoHeader.WritableAddressMediaUnits;
 #else
-        public uint? CIH_WritableAddressMediaUnits => _model.CardInfoHeader?.WritableAddressMediaUnits;
+        public uint? CIH_WritableAddressMediaUnits => this.Model.CardInfoHeader?.WritableAddressMediaUnits;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CardInfoBitmask"/>
 #if NET48
-        public uint CIH_CardInfoBitmask => _model.CardInfoHeader.CardInfoBitmask;
+        public uint CIH_CardInfoBitmask => this.Model.CardInfoHeader.CardInfoBitmask;
 #else
-        public uint? CIH_CardInfoBitmask => _model.CardInfoHeader?.CardInfoBitmask;
+        public uint? CIH_CardInfoBitmask => this.Model.CardInfoHeader?.CardInfoBitmask;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved1"/>
 #if NET48
-        public byte[] CIH_Reserved1 => _model.CardInfoHeader.Reserved1;
+        public byte[] CIH_Reserved1 => this.Model.CardInfoHeader.Reserved1;
 #else
-        public byte[]? CIH_Reserved1 => _model.CardInfoHeader?.Reserved1;
+        public byte[]? CIH_Reserved1 => this.Model.CardInfoHeader?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.FilledSize"/>
 #if NET48
-        public uint CIH_FilledSize => _model.CardInfoHeader.FilledSize;
+        public uint CIH_FilledSize => this.Model.CardInfoHeader.FilledSize;
 #else
-        public uint? CIH_FilledSize => _model.CardInfoHeader?.FilledSize;
+        public uint? CIH_FilledSize => this.Model.CardInfoHeader?.FilledSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved2"/>
 #if NET48
-        public byte[] CIH_Reserved2 => _model.CardInfoHeader.Reserved2;
+        public byte[] CIH_Reserved2 => this.Model.CardInfoHeader.Reserved2;
 #else
-        public byte[]? CIH_Reserved2 => _model.CardInfoHeader?.Reserved2;
+        public byte[]? CIH_Reserved2 => this.Model.CardInfoHeader?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.TitleVersion"/>
 #if NET48
-        public ushort CIH_TitleVersion => _model.CardInfoHeader.TitleVersion;
+        public ushort CIH_TitleVersion => this.Model.CardInfoHeader.TitleVersion;
 #else
-        public ushort? CIH_TitleVersion => _model.CardInfoHeader?.TitleVersion;
+        public ushort? CIH_TitleVersion => this.Model.CardInfoHeader?.TitleVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CardRevision"/>
 #if NET48
-        public ushort CIH_CardRevision => _model.CardInfoHeader.CardRevision;
+        public ushort CIH_CardRevision => this.Model.CardInfoHeader.CardRevision;
 #else
-        public ushort? CIH_CardRevision => _model.CardInfoHeader?.CardRevision;
+        public ushort? CIH_CardRevision => this.Model.CardInfoHeader?.CardRevision;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved3"/>
 #if NET48
-        public byte[] CIH_Reserved3 => _model.CardInfoHeader.Reserved3;
+        public byte[] CIH_Reserved3 => this.Model.CardInfoHeader.Reserved3;
 #else
-        public byte[]? CIH_Reserved3 => _model.CardInfoHeader?.Reserved3;
+        public byte[]? CIH_Reserved3 => this.Model.CardInfoHeader?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CVerTitleID"/>
 #if NET48
-        public byte[] CIH_CVerTitleID => _model.CardInfoHeader.CVerTitleID;
+        public byte[] CIH_CVerTitleID => this.Model.CardInfoHeader.CVerTitleID;
 #else
-        public byte[]? CIH_CVerTitleID => _model.CardInfoHeader?.CVerTitleID;
+        public byte[]? CIH_CVerTitleID => this.Model.CardInfoHeader?.CVerTitleID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.CVerVersionNumber"/>
 #if NET48
-        public ushort CIH_CVerVersionNumber => _model.CardInfoHeader.CVerVersionNumber;
+        public ushort CIH_CVerVersionNumber => this.Model.CardInfoHeader.CVerVersionNumber;
 #else
-        public ushort? CIH_CVerVersionNumber => _model.CardInfoHeader?.CVerVersionNumber;
+        public ushort? CIH_CVerVersionNumber => this.Model.CardInfoHeader?.CVerVersionNumber;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CardInfoHeader.Reserved4"/>
 #if NET48
-        public byte[] CIH_Reserved4 => _model.CardInfoHeader.Reserved4;
+        public byte[] CIH_Reserved4 => this.Model.CardInfoHeader.Reserved4;
 #else
-        public byte[]? CIH_Reserved4 => _model.CardInfoHeader?.Reserved4;
+        public byte[]? CIH_Reserved4 => this.Model.CardInfoHeader?.Reserved4;
 #endif
 
         #endregion
@@ -243,136 +243,136 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.InitialData.CardSeedKeyY"/>
 #if NET48
-        public byte[] DCIH_ID_CardSeedKeyY => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedKeyY;
+        public byte[] DCIH_ID_CardSeedKeyY => this.Model.DevelopmentCardInfoHeader?.InitialData?.CardSeedKeyY;
 #else
-        public byte[]? DCIH_ID_CardSeedKeyY => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedKeyY;
+        public byte[]? DCIH_ID_CardSeedKeyY => this.Model.DevelopmentCardInfoHeader?.InitialData?.CardSeedKeyY;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.InitialData.EncryptedCardSeed"/>
 #if NET48
-        public byte[] DCIH_ID_EncryptedCardSeed => _model.DevelopmentCardInfoHeader?.InitialData?.EncryptedCardSeed;
+        public byte[] DCIH_ID_EncryptedCardSeed => this.Model.DevelopmentCardInfoHeader?.InitialData?.EncryptedCardSeed;
 #else
-        public byte[]? DCIH_ID_EncryptedCardSeed => _model.DevelopmentCardInfoHeader?.InitialData?.EncryptedCardSeed;
+        public byte[]? DCIH_ID_EncryptedCardSeed => this.Model.DevelopmentCardInfoHeader?.InitialData?.EncryptedCardSeed;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.InitialData.CardSeedAESMAC"/>
 #if NET48
-        public byte[] DCIH_ID_CardSeedAESMAC => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedAESMAC;
+        public byte[] DCIH_ID_CardSeedAESMAC => this.Model.DevelopmentCardInfoHeader?.InitialData?.CardSeedAESMAC;
 #else
-        public byte[]? DCIH_ID_CardSeedAESMAC => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedAESMAC;
+        public byte[]? DCIH_ID_CardSeedAESMAC => this.Model.DevelopmentCardInfoHeader?.InitialData?.CardSeedAESMAC;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.InitialData.CardSeedNonce"/>
 #if NET48
-        public byte[] DCIH_ID_CardSeedNonce => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedNonce;
+        public byte[] DCIH_ID_CardSeedNonce => this.Model.DevelopmentCardInfoHeader?.InitialData?.CardSeedNonce;
 #else
-        public byte[]? DCIH_ID_CardSeedNonce => _model.DevelopmentCardInfoHeader?.InitialData?.CardSeedNonce;
+        public byte[]? DCIH_ID_CardSeedNonce => this.Model.DevelopmentCardInfoHeader?.InitialData?.CardSeedNonce;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.InitialData.Reserved3"/>
 #if NET48
-        public byte[] DCIH_ID_Reserved => _model.DevelopmentCardInfoHeader?.InitialData?.Reserved;
+        public byte[] DCIH_ID_Reserved => this.Model.DevelopmentCardInfoHeader?.InitialData?.Reserved;
 #else
-        public byte[]? DCIH_ID_Reserved => _model.DevelopmentCardInfoHeader?.InitialData?.Reserved;
+        public byte[]? DCIH_ID_Reserved => this.Model.DevelopmentCardInfoHeader?.InitialData?.Reserved;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.InitialData.BackupHeader"/>
 #if NET48
-        public SabreTools.Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => _model.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
+        public SabreTools.Models.N3DS.NCCHHeader DCIH_ID_BackupHeader => this.Model.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
 #else
-        public SabreTools.Models.N3DS.NCCHHeader? DCIH_ID_BackupHeader => _model.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
+        public SabreTools.Models.N3DS.NCCHHeader? DCIH_ID_BackupHeader => this.Model.DevelopmentCardInfoHeader?.InitialData?.BackupHeader;
 #endif
 
         #endregion
 
         /// <inheritdoc cref="Models.N3DS.DevelopmentCardInfoHeader.CardDeviceReserved1"/>
 #if NET48
-        public byte[] DCIH_CardDeviceReserved1 => _model.DevelopmentCardInfoHeader?.CardDeviceReserved1;
+        public byte[] DCIH_CardDeviceReserved1 => this.Model.DevelopmentCardInfoHeader?.CardDeviceReserved1;
 #else
-        public byte[]? DCIH_CardDeviceReserved1 => _model.DevelopmentCardInfoHeader?.CardDeviceReserved1;
+        public byte[]? DCIH_CardDeviceReserved1 => this.Model.DevelopmentCardInfoHeader?.CardDeviceReserved1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.DevelopmentCardInfoHeader.TitleKey"/>
 #if NET48
-        public byte[] DCIH_TitleKey => _model.DevelopmentCardInfoHeader?.TitleKey;
+        public byte[] DCIH_TitleKey => this.Model.DevelopmentCardInfoHeader?.TitleKey;
 #else
-        public byte[]? DCIH_TitleKey => _model.DevelopmentCardInfoHeader?.TitleKey;
+        public byte[]? DCIH_TitleKey => this.Model.DevelopmentCardInfoHeader?.TitleKey;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.DevelopmentCardInfoHeader.CardDeviceReserved2"/>
 #if NET48
-        public byte[] DCIH_CardDeviceReserved2 => _model.DevelopmentCardInfoHeader?.CardDeviceReserved2;
+        public byte[] DCIH_CardDeviceReserved2 => this.Model.DevelopmentCardInfoHeader?.CardDeviceReserved2;
 #else
-        public byte[]? DCIH_CardDeviceReserved2 => _model.DevelopmentCardInfoHeader?.CardDeviceReserved2;
+        public byte[]? DCIH_CardDeviceReserved2 => this.Model.DevelopmentCardInfoHeader?.CardDeviceReserved2;
 #endif
 
         #region Test Data
 
         /// <inheritdoc cref="Models.N3DS.TestData.Signature"/>
 #if NET48
-        public byte[] DCIH_TD_Signature => _model.DevelopmentCardInfoHeader?.TestData?.Signature;
+        public byte[] DCIH_TD_Signature => this.Model.DevelopmentCardInfoHeader?.TestData?.Signature;
 #else
-        public byte[]? DCIH_TD_Signature => _model.DevelopmentCardInfoHeader?.TestData?.Signature;
+        public byte[]? DCIH_TD_Signature => this.Model.DevelopmentCardInfoHeader?.TestData?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.AscendingByteSequence"/>
 #if NET48
-        public byte[] DCIH_TD_AscendingByteSequence => _model.DevelopmentCardInfoHeader?.TestData?.AscendingByteSequence;
+        public byte[] DCIH_TD_AscendingByteSequence => this.Model.DevelopmentCardInfoHeader?.TestData?.AscendingByteSequence;
 #else
-        public byte[]? DCIH_TD_AscendingByteSequence => _model.DevelopmentCardInfoHeader?.TestData?.AscendingByteSequence;
+        public byte[]? DCIH_TD_AscendingByteSequence => this.Model.DevelopmentCardInfoHeader?.TestData?.AscendingByteSequence;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.DescendingByteSequence"/>
 #if NET48
-        public byte[] DCIH_TD_DescendingByteSequence => _model.DevelopmentCardInfoHeader?.TestData?.DescendingByteSequence;
+        public byte[] DCIH_TD_DescendingByteSequence => this.Model.DevelopmentCardInfoHeader?.TestData?.DescendingByteSequence;
 #else
-        public byte[]? DCIH_TD_DescendingByteSequence => _model.DevelopmentCardInfoHeader?.TestData?.DescendingByteSequence;
+        public byte[]? DCIH_TD_DescendingByteSequence => this.Model.DevelopmentCardInfoHeader?.TestData?.DescendingByteSequence;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.Filled00"/>
 #if NET48
-        public byte[] DCIH_TD_Filled00 => _model.DevelopmentCardInfoHeader?.TestData?.Filled00;
+        public byte[] DCIH_TD_Filled00 => this.Model.DevelopmentCardInfoHeader?.TestData?.Filled00;
 #else
-        public byte[]? DCIH_TD_Filled00 => _model.DevelopmentCardInfoHeader?.TestData?.Filled00;
+        public byte[]? DCIH_TD_Filled00 => this.Model.DevelopmentCardInfoHeader?.TestData?.Filled00;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.FilledFF"/>
 #if NET48
-        public byte[] DCIH_TD_FilledFF => _model.DevelopmentCardInfoHeader?.TestData?.FilledFF;
+        public byte[] DCIH_TD_FilledFF => this.Model.DevelopmentCardInfoHeader?.TestData?.FilledFF;
 #else
-        public byte[]? DCIH_TD_FilledFF => _model.DevelopmentCardInfoHeader?.TestData?.FilledFF;
+        public byte[]? DCIH_TD_FilledFF => this.Model.DevelopmentCardInfoHeader?.TestData?.FilledFF;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.Filled0F"/>
 #if NET48
-        public byte[] DCIH_TD_Filled0F => _model.DevelopmentCardInfoHeader?.TestData?.Filled0F;
+        public byte[] DCIH_TD_Filled0F => this.Model.DevelopmentCardInfoHeader?.TestData?.Filled0F;
 #else
-        public byte[]? DCIH_TD_Filled0F => _model.DevelopmentCardInfoHeader?.TestData?.Filled0F;
+        public byte[]? DCIH_TD_Filled0F => this.Model.DevelopmentCardInfoHeader?.TestData?.Filled0F;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.FilledF0"/>
 #if NET48
-        public byte[] DCIH_TD_FilledF0 => _model.DevelopmentCardInfoHeader?.TestData?.FilledF0;
+        public byte[] DCIH_TD_FilledF0 => this.Model.DevelopmentCardInfoHeader?.TestData?.FilledF0;
 #else
-        public byte[]? DCIH_TD_FilledF0 => _model.DevelopmentCardInfoHeader?.TestData?.FilledF0;
+        public byte[]? DCIH_TD_FilledF0 => this.Model.DevelopmentCardInfoHeader?.TestData?.FilledF0;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.Filled55"/>
 #if NET48
-        public byte[] DCIH_TD_Filled55 => _model.DevelopmentCardInfoHeader?.TestData?.Filled55;
+        public byte[] DCIH_TD_Filled55 => this.Model.DevelopmentCardInfoHeader?.TestData?.Filled55;
 #else
-        public byte[]? DCIH_TD_Filled55 => _model.DevelopmentCardInfoHeader?.TestData?.Filled55;
+        public byte[]? DCIH_TD_Filled55 => this.Model.DevelopmentCardInfoHeader?.TestData?.Filled55;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.FilledAA"/>
 #if NET48
-        public byte[] DCIH_TD_FilledAA => _model.DevelopmentCardInfoHeader?.TestData?.FilledAA;
+        public byte[] DCIH_TD_FilledAA => this.Model.DevelopmentCardInfoHeader?.TestData?.FilledAA;
 #else
-        public byte[]? DCIH_TD_FilledAA => _model.DevelopmentCardInfoHeader?.TestData?.FilledAA;
+        public byte[]? DCIH_TD_FilledAA => this.Model.DevelopmentCardInfoHeader?.TestData?.FilledAA;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TestData.FinalByte"/>
-        public byte? DCIH_TD_FinalByte => _model.DevelopmentCardInfoHeader?.TestData?.FinalByte;
+        public byte? DCIH_TD_FinalByte => this.Model.DevelopmentCardInfoHeader?.TestData?.FinalByte;
 
         #endregion
 
@@ -382,9 +382,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.Cart.Partitions"/>
 #if NET48
-        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _model.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => this.Model.Partitions;
 #else
-        public SabreTools.Models.N3DS.NCCHHeader?[]? Partitions => _model.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader?[]? Partitions => this.Model.Partitions;
 #endif
 
         #endregion
@@ -393,9 +393,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExtendedHeaders"/>
 #if NET48
-        public SabreTools.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => _model.ExtendedHeaders;
+        public SabreTools.Models.N3DS.NCCHExtendedHeader[] ExtendedHeaders => this.Model.ExtendedHeaders;
 #else
-        public SabreTools.Models.N3DS.NCCHExtendedHeader?[]? ExtendedHeaders => _model.ExtendedHeaders;
+        public SabreTools.Models.N3DS.NCCHExtendedHeader?[]? ExtendedHeaders => this.Model.ExtendedHeaders;
 #endif
 
         #endregion
@@ -404,9 +404,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.Cart.ExeFSHeaders"/>
 #if NET48
-        public SabreTools.Models.N3DS.ExeFSHeader[] ExeFSHeaders => _model.ExeFSHeaders;
+        public SabreTools.Models.N3DS.ExeFSHeader[] ExeFSHeaders => this.Model.ExeFSHeaders;
 #else
-        public SabreTools.Models.N3DS.ExeFSHeader?[]? ExeFSHeaders => _model.ExeFSHeaders;
+        public SabreTools.Models.N3DS.ExeFSHeader?[]? ExeFSHeaders => this.Model.ExeFSHeaders;
 #endif
 
         #endregion
@@ -415,9 +415,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.Cart.RomFSHeaders"/>
 #if NET48
-        public SabreTools.Models.N3DS.RomFSHeader[] RomFSHeaders => _model.RomFSHeaders;
+        public SabreTools.Models.N3DS.RomFSHeader[] RomFSHeaders => this.Model.RomFSHeaders;
 #else
-        public SabreTools.Models.N3DS.RomFSHeader?[]? RomFSHeaders => _model.RomFSHeaders;
+        public SabreTools.Models.N3DS.RomFSHeader?[]? RomFSHeaders => this.Model.RomFSHeaders;
 #endif
 
         #endregion
@@ -510,16 +510,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.N3DS.Print(builder, _model);
+            Printing.N3DS.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

@@ -20,23 +20,23 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BFPK.Header.Magic"/>
 #if NET48
-        public string Magic => _model.Header.Magic;
+        public string Magic => this.Model.Header.Magic;
 #else
-        public string? Magic => _model.Header?.Magic;
+        public string? Magic => this.Model.Header?.Magic;
 #endif
 
         /// <inheritdoc cref="Models.BFPK.Header.Version"/>
 #if NET48
-        public int Version => _model.Header.Version;
+        public int Version => this.Model.Header.Version;
 #else
-        public int? Version => _model.Header?.Version;
+        public int? Version => this.Model.Header?.Version;
 #endif
 
         /// <inheritdoc cref="Models.BFPK.Header.Files"/>
 #if NET48
-        public int Files => _model.Header.Files;
+        public int Files => this.Model.Header.Files;
 #else
-        public int? Files => _model.Header?.Files;
+        public int? Files => this.Model.Header?.Files;
 #endif
 
         #endregion
@@ -45,9 +45,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BFPK.Archive.Files"/>
 #if NET48
-        public SabreTools.Models.BFPK.FileEntry[] FileTable => _model.Files;
+        public SabreTools.Models.BFPK.FileEntry[] FileTable => this.Model.Files;
 #else
-        public SabreTools.Models.BFPK.FileEntry?[]? FileTable => _model.Files;
+        public SabreTools.Models.BFPK.FileEntry?[]? FileTable => this.Model.Files;
 #endif
 
         #endregion
@@ -236,16 +236,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.BFPK.Print(builder, _model);
+            Printing.BFPK.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

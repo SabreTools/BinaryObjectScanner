@@ -21,9 +21,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BSP.Header.Version"/>
 #if NET48
-        public uint Version => _model.Header.Version;
+        public uint Version => this.Model.Header.Version;
 #else
-        public uint? Version => _model.Header?.Version;
+        public uint? Version => this.Model.Header?.Version;
 #endif
 
         #endregion
@@ -32,9 +32,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BSP.File.Lumps"/>
 #if NET48
-        public SabreTools.Models.BSP.Lump[] Lumps => _model.Lumps;
+        public SabreTools.Models.BSP.Lump[] Lumps => this.Model.Lumps;
 #else
-        public SabreTools.Models.BSP.Lump?[]? Lumps => _model.Lumps;
+        public SabreTools.Models.BSP.Lump?[]? Lumps => this.Model.Lumps;
 #endif
 
         #endregion
@@ -43,16 +43,16 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.TextureCount"/>
 #if NET48
-        public uint TextureCount => _model.TextureHeader.TextureCount;
+        public uint TextureCount => this.Model.TextureHeader.TextureCount;
 #else
-        public uint? TextureCount => _model.TextureHeader?.TextureCount;
+        public uint? TextureCount => this.Model.TextureHeader?.TextureCount;
 #endif
 
         /// <inheritdoc cref="Models.BSP.TextureHeader.Offsets"/>
 #if NET48
-        public uint[] Offsets => _model.TextureHeader.Offsets;
+        public uint[] Offsets => this.Model.TextureHeader.Offsets;
 #else
-        public uint[]? Offsets => _model.TextureHeader?.Offsets;
+        public uint[]? Offsets => this.Model.TextureHeader?.Offsets;
 #endif
 
         #endregion
@@ -61,9 +61,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BSP.File.Textures"/>
 #if NET48
-        public SabreTools.Models.BSP.Texture[] Textures => _model.Textures;
+        public SabreTools.Models.BSP.Texture[] Textures => this.Model.Textures;
 #else
-        public SabreTools.Models.BSP.Texture?[]? Textures => _model.Textures;
+        public SabreTools.Models.BSP.Texture?[]? Textures => this.Model.Textures;
 #endif
 
         #endregion
@@ -156,16 +156,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.BSP.Print(builder, _model);
+            Printing.BSP.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

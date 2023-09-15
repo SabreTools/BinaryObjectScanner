@@ -17,42 +17,42 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Signature"/>
 #if NET48
-        public string Signature => _model.Signature;
+        public string Signature => this.Model.Signature;
 #else
-        public string? Signature => _model.Signature;
+        public string? Signature => this.Model.Signature;
 #endif
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Unknown1"/>
 #if NET48
-        public byte[] Unknown1 => _model.Unknown1;
+        public byte[] Unknown1 => this.Model.Unknown1;
 #else
-        public byte[]? Unknown1 => _model.Unknown1;
+        public byte[]? Unknown1 => this.Model.Unknown1;
 #endif
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Year"/>
-        public ushort Year => _model.Year;
+        public ushort Year => this.Model.Year;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Month"/>
-        public byte Month => _model.Month;
+        public byte Month => this.Model.Month;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Day"/>
-        public byte Day => _model.Day;
+        public byte Day => this.Model.Day;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Unknown2"/>
 #if NET48
-        public byte[] Unknown2 => _model.Unknown2;
+        public byte[] Unknown2 => this.Model.Unknown2;
 #else
-        public byte[]? Unknown2 => _model.Unknown2;
+        public byte[]? Unknown2 => this.Model.Unknown2;
 #endif
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Length"/>
-        public uint Length => _model.Length;
+        public uint Length => this.Model.Length;
 
         /// <inheritdoc cref="Models.BDPlus.SVM.Data"/>
 #if NET48
-        public byte[] Data => _model.Data;
+        public byte[] Data => this.Model.Data;
 #else
-        public byte[]? Data => _model.Data;
+        public byte[]? Data => this.Model.Data;
 #endif
 
         #endregion
@@ -143,16 +143,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.BDPlusSVM.Print(builder, _model);
+            Printing.BDPlusSVM.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

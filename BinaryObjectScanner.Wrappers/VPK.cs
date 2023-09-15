@@ -21,23 +21,23 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.VPK.Header.Signature"/>
 #if NET48
-        public uint Signature => _model.Header.Signature;
+        public uint Signature => this.Model.Header.Signature;
 #else
-        public uint? Signature => _model.Header?.Signature;
+        public uint? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.VPK.Header.Version"/>
 #if NET48
-        public uint Version => _model.Header.Version;
+        public uint Version => this.Model.Header.Version;
 #else
-        public uint? Version => _model.Header?.Version;
+        public uint? Version => this.Model.Header?.Version;
 #endif
 
         /// <inheritdoc cref="Models.VPK.Header.DirectoryLength"/>
 #if NET48
-        public uint DirectoryLength => _model.Header.DirectoryLength;
+        public uint DirectoryLength => this.Model.Header.DirectoryLength;
 #else
-        public uint? DirectoryLength => _model.Header?.DirectoryLength;
+        public uint? DirectoryLength => this.Model.Header?.DirectoryLength;
 #endif
 
         #endregion
@@ -45,16 +45,16 @@ namespace BinaryObjectScanner.Wrappers
         #region Extended Header
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.Dummy0"/>
-        public uint? Dummy0 => _model.ExtendedHeader?.Dummy0;
+        public uint? Dummy0 => this.Model.ExtendedHeader?.Dummy0;
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.ArchiveHashLength"/>
-        public uint? ArchiveHashLength => _model.ExtendedHeader?.ArchiveHashLength;
+        public uint? ArchiveHashLength => this.Model.ExtendedHeader?.ArchiveHashLength;
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.ExtraLength"/>
-        public uint? ExtraLength => _model.ExtendedHeader?.ExtraLength;
+        public uint? ExtraLength => this.Model.ExtendedHeader?.ExtraLength;
 
         /// <inheritdoc cref="Models.VPK.ExtendedHeader.Dummy1"/>
-        public uint? Dummy1 => _model.ExtendedHeader?.Dummy1;
+        public uint? Dummy1 => this.Model.ExtendedHeader?.Dummy1;
 
         #endregion
 
@@ -62,9 +62,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.VPK.ArchiveHashes"/>
 #if NET48
-        public SabreTools.Models.VPK.ArchiveHash[] ArchiveHashes => _model.ArchiveHashes;
+        public SabreTools.Models.VPK.ArchiveHash[] ArchiveHashes => this.Model.ArchiveHashes;
 #else
-        public SabreTools.Models.VPK.ArchiveHash?[]? ArchiveHashes => _model.ArchiveHashes;
+        public SabreTools.Models.VPK.ArchiveHash?[]? ArchiveHashes => this.Model.ArchiveHashes;
 #endif
 
         #endregion
@@ -73,9 +73,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.VPK.DirectoryItems"/>
 #if NET48
-        public SabreTools.Models.VPK.DirectoryItem[] DirectoryItems => _model.DirectoryItems;
+        public SabreTools.Models.VPK.DirectoryItem[] DirectoryItems => this.Model.DirectoryItems;
 #else
-        public SabreTools.Models.VPK.DirectoryItem?[]? DirectoryItems => _model.DirectoryItems;
+        public SabreTools.Models.VPK.DirectoryItem?[]? DirectoryItems => this.Model.DirectoryItems;
 #endif
 
         #endregion
@@ -245,16 +245,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.VPK.Print(builder, _model);
+            Printing.VPK.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

@@ -18,44 +18,44 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.Quantum.Header.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.Quantum.Header.MajorVersion"/>
 #if NET48
-        public byte MajorVersion => _model.Header.MajorVersion;
+        public byte MajorVersion => this.Model.Header.MajorVersion;
 #else
-        public byte? MajorVersion => _model.Header?.MajorVersion;
+        public byte? MajorVersion => this.Model.Header?.MajorVersion;
 #endif
 
         /// <inheritdoc cref="Models.Quantum.Header.MinorVersion"/>
 #if NET48
-        public byte MinorVersion => _model.Header.MinorVersion;
+        public byte MinorVersion => this.Model.Header.MinorVersion;
 #else
-        public byte? MinorVersion => _model.Header?.MinorVersion;
+        public byte? MinorVersion => this.Model.Header?.MinorVersion;
 #endif
 
         /// <inheritdoc cref="Models.Quantum.Header.FileCount"/>
 #if NET48
-        public ushort FileCount => _model.Header.FileCount;
+        public ushort FileCount => this.Model.Header.FileCount;
 #else
-        public ushort? FileCount => _model.Header?.FileCount;
+        public ushort? FileCount => this.Model.Header?.FileCount;
 #endif
 
         /// <inheritdoc cref="Models.Quantum.Header.TableSize"/>
 #if NET48
-        public byte TableSize => _model.Header.TableSize;
+        public byte TableSize => this.Model.Header.TableSize;
 #else
-        public byte? TableSize => _model.Header?.TableSize;
+        public byte? TableSize => this.Model.Header?.TableSize;
 #endif
 
         /// <inheritdoc cref="Models.Quantum.Header.CompressionFlags"/>
 #if NET48
-        public byte CompressionFlags => _model.Header.CompressionFlags;
+        public byte CompressionFlags => this.Model.Header.CompressionFlags;
 #else
-        public byte? CompressionFlags => _model.Header?.CompressionFlags;
+        public byte? CompressionFlags => this.Model.Header?.CompressionFlags;
 #endif
 
         #endregion
@@ -64,15 +64,15 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.Quantum.Archive.FileList"/>
 #if NET48
-        public SabreTools.Models.Quantum.FileDescriptor[] FileList => _model.FileList;
+        public SabreTools.Models.Quantum.FileDescriptor[] FileList => this.Model.FileList;
 #else
-        public SabreTools.Models.Quantum.FileDescriptor?[]? FileList => _model.FileList;
+        public SabreTools.Models.Quantum.FileDescriptor?[]? FileList => this.Model.FileList;
 #endif
 
         #endregion
 
         /// <inheritdoc cref="Models.Quantum.Archive.CompressedDataOffset"/>
-        public long CompressedDataOffset => _model.CompressedDataOffset;
+        public long CompressedDataOffset => this.Model.CompressedDataOffset;
 
         #endregion
 
@@ -278,16 +278,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.Quantum.Print(builder, _model);
+            Printing.Quantum.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

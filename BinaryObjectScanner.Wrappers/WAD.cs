@@ -18,23 +18,23 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.WAD.Header.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.WAD.Header.LumpCount"/>
 #if NET48
-        public uint LumpCount => _model.Header.LumpCount;
+        public uint LumpCount => this.Model.Header.LumpCount;
 #else
-        public uint? LumpCount => _model.Header?.LumpCount;
+        public uint? LumpCount => this.Model.Header?.LumpCount;
 #endif
 
         /// <inheritdoc cref="Models.WAD.Header.LumpOffset"/>
 #if NET48
-        public uint LumpOffset => _model.Header.LumpOffset;
+        public uint LumpOffset => this.Model.Header.LumpOffset;
 #else
-        public uint? LumpOffset => _model.Header?.LumpOffset;
+        public uint? LumpOffset => this.Model.Header?.LumpOffset;
 #endif
 
         #endregion
@@ -43,9 +43,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.WAD.File.Lumps"/>
 #if NET48
-        public SabreTools.Models.WAD.Lump[] Lumps => _model.Lumps;
+        public SabreTools.Models.WAD.Lump[] Lumps => this.Model.Lumps;
 #else
-        public SabreTools.Models.WAD.Lump?[]? Lumps => _model.Lumps;
+        public SabreTools.Models.WAD.Lump?[]? Lumps => this.Model.Lumps;
 #endif
 
         #endregion
@@ -54,9 +54,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.WAD.File.LumpInfos"/>
 #if NET48
-        public SabreTools.Models.WAD.LumpInfo[] LumpInfos => _model.LumpInfos;
+        public SabreTools.Models.WAD.LumpInfo[] LumpInfos => this.Model.LumpInfos;
 #else
-        public SabreTools.Models.WAD.LumpInfo?[]? LumpInfos => _model.LumpInfos;
+        public SabreTools.Models.WAD.LumpInfo?[]? LumpInfos => this.Model.LumpInfos;
 #endif
 
         #endregion
@@ -155,16 +155,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.WAD.Print(builder, _model);
+            Printing.WAD.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

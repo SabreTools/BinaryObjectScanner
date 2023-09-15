@@ -17,30 +17,30 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.VBSP.Header.Signature"/>
 #if NET48
-        public string Signature => _model.Header.Signature;
+        public string Signature => this.Model.Header.Signature;
 #else
-        public string? Signature => _model.Header?.Signature;
+        public string? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.VBSP.Header.Version"/>
 #if NET48
-        public int Version => _model.Header.Version;
+        public int Version => this.Model.Header.Version;
 #else
-        public int? Version => _model.Header?.Version;
+        public int? Version => this.Model.Header?.Version;
 #endif
 
         /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
 #if NET48
-        public SabreTools.Models.VBSP.Lump[] Lumps => _model.Header.Lumps;
+        public SabreTools.Models.VBSP.Lump[] Lumps => this.Model.Header.Lumps;
 #else
-        public SabreTools.Models.VBSP.Lump?[]? Lumps => _model.Header?.Lumps;
+        public SabreTools.Models.VBSP.Lump?[]? Lumps => this.Model.Header?.Lumps;
 #endif
 
         /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
 #if NET48
-        public int MapRevision => _model.Header.MapRevision;
+        public int MapRevision => this.Model.Header.MapRevision;
 #else
-        public int? MapRevision => _model.Header?.MapRevision;
+        public int? MapRevision => this.Model.Header?.MapRevision;
 #endif
 
         #endregion
@@ -137,16 +137,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.VBSP.Print(builder, _model);
+            Printing.VBSP.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
 

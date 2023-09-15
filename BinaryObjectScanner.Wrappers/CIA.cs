@@ -18,65 +18,65 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.HeaderSize"/>
 #if NET48
-        public uint HeaderSize => _model.Header.HeaderSize;
+        public uint HeaderSize => this.Model.Header.HeaderSize;
 #else
-        public uint? HeaderSize => _model.Header?.HeaderSize;
+        public uint? HeaderSize => this.Model.Header?.HeaderSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.Type"/>
 #if NET48
-        public ushort Type => _model.Header.Type;
+        public ushort Type => this.Model.Header.Type;
 #else
-        public ushort? Type => _model.Header?.Type;
+        public ushort? Type => this.Model.Header?.Type;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.Version"/>
 #if NET48
-        public ushort Version => _model.Header.Version;
+        public ushort Version => this.Model.Header.Version;
 #else
-        public ushort? Version => _model.Header?.Version;
+        public ushort? Version => this.Model.Header?.Version;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.CertificateChainSize"/>
 #if NET48
-        public uint CertificateChainSize => _model.Header.CertificateChainSize;
+        public uint CertificateChainSize => this.Model.Header.CertificateChainSize;
 #else
-        public uint? CertificateChainSize => _model.Header?.CertificateChainSize;
+        public uint? CertificateChainSize => this.Model.Header?.CertificateChainSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.TicketSize"/>
 #if NET48
-        public uint TicketSize => _model.Header.TicketSize;
+        public uint TicketSize => this.Model.Header.TicketSize;
 #else
-        public uint? TicketSize => _model.Header?.TicketSize;
+        public uint? TicketSize => this.Model.Header?.TicketSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.TMDFileSize"/>
 #if NET48
-        public uint TMDFileSize => _model.Header.TMDFileSize;
+        public uint TMDFileSize => this.Model.Header.TMDFileSize;
 #else
-        public uint? TMDFileSize => _model.Header?.TMDFileSize;
+        public uint? TMDFileSize => this.Model.Header?.TMDFileSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.MetaSize"/>
 #if NET48
-        public uint MetaSize => _model.Header.MetaSize;
+        public uint MetaSize => this.Model.Header.MetaSize;
 #else
-        public uint? MetaSize => _model.Header?.MetaSize;
+        public uint? MetaSize => this.Model.Header?.MetaSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentSize"/>
 #if NET48
-        public ulong ContentSize => _model.Header.ContentSize;
+        public ulong ContentSize => this.Model.Header.ContentSize;
 #else
-        public ulong? ContentSize => _model.Header?.ContentSize;
+        public ulong? ContentSize => this.Model.Header?.ContentSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.CIAHeader.ContentIndex"/>
 #if NET48
-        public byte[] ContentIndex => _model.Header.ContentIndex;
+        public byte[] ContentIndex => this.Model.Header.ContentIndex;
 #else
-        public byte[]? ContentIndex => _model.Header?.ContentIndex;
+        public byte[]? ContentIndex => this.Model.Header?.ContentIndex;
 #endif
 
         #endregion
@@ -85,9 +85,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.CIA.CertificateChain"/>
 #if NET48
-        public SabreTools.Models.N3DS.Certificate[] CertificateChain => _model.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate[] CertificateChain => this.Model.CertificateChain;
 #else
-        public SabreTools.Models.N3DS.Certificate?[]? CertificateChain => _model.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate?[]? CertificateChain => this.Model.CertificateChain;
 #endif
 
         #endregion
@@ -96,205 +96,205 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureType"/>
 #if NET48
-        public SabreTools.Models.N3DS.SignatureType T_SignatureType => _model.Ticket.SignatureType;
+        public SabreTools.Models.N3DS.SignatureType T_SignatureType => this.Model.Ticket.SignatureType;
 #else
-        public SabreTools.Models.N3DS.SignatureType? T_SignatureType => _model.Ticket?.SignatureType;
+        public SabreTools.Models.N3DS.SignatureType? T_SignatureType => this.Model.Ticket?.SignatureType;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignatureSize"/>
 #if NET48
-        public ushort T_SignatureSize => _model.Ticket.SignatureSize;
+        public ushort T_SignatureSize => this.Model.Ticket.SignatureSize;
 #else
-        public ushort? T_SignatureSize => _model.Ticket?.SignatureSize;
+        public ushort? T_SignatureSize => this.Model.Ticket?.SignatureSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.PaddingSize"/>
 #if NET48
-        public byte T_PaddingSize => _model.Ticket.PaddingSize;
+        public byte T_PaddingSize => this.Model.Ticket.PaddingSize;
 #else
-        public byte? T_PaddingSize => _model.Ticket?.PaddingSize;
+        public byte? T_PaddingSize => this.Model.Ticket?.PaddingSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Signature"/>
 #if NET48
-        public byte[] T_Signature => _model.Ticket.Signature;
+        public byte[] T_Signature => this.Model.Ticket.Signature;
 #else
-        public byte[]? T_Signature => _model.Ticket?.Signature;
+        public byte[]? T_Signature => this.Model.Ticket?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Padding"/>
 #if NET48
-        public byte[] T_Padding => _model.Ticket.Padding;
+        public byte[] T_Padding => this.Model.Ticket.Padding;
 #else
-        public byte[]? T_Padding => _model.Ticket?.Padding;
+        public byte[]? T_Padding => this.Model.Ticket?.Padding;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Issuer"/>
 #if NET48
-        public string T_Issuer => _model.Ticket.Issuer;
+        public string T_Issuer => this.Model.Ticket.Issuer;
 #else
-        public string? T_Issuer => _model.Ticket?.Issuer;
+        public string? T_Issuer => this.Model.Ticket?.Issuer;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ECCPublicKey"/>
 #if NET48
-        public byte[] T_ECCPublicKey => _model.Ticket.ECCPublicKey;
+        public byte[] T_ECCPublicKey => this.Model.Ticket.ECCPublicKey;
 #else
-        public byte[]? T_ECCPublicKey => _model.Ticket?.ECCPublicKey;
+        public byte[]? T_ECCPublicKey => this.Model.Ticket?.ECCPublicKey;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Version"/>
 #if NET48
-        public byte T_Version => _model.Ticket.Version;
+        public byte T_Version => this.Model.Ticket.Version;
 #else
-        public byte? T_Version => _model.Ticket?.Version;
+        public byte? T_Version => this.Model.Ticket?.Version;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CaCrlVersion"/>
 #if NET48
-        public byte T_CaCrlVersion => _model.Ticket.CaCrlVersion;
+        public byte T_CaCrlVersion => this.Model.Ticket.CaCrlVersion;
 #else
-        public byte? T_CaCrlVersion => _model.Ticket?.CaCrlVersion;
+        public byte? T_CaCrlVersion => this.Model.Ticket?.CaCrlVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.SignerCrlVersion"/>
 #if NET48
-        public byte T_SignerCrlVersion => _model.Ticket.SignerCrlVersion;
+        public byte T_SignerCrlVersion => this.Model.Ticket.SignerCrlVersion;
 #else
-        public byte? T_SignerCrlVersion => _model.Ticket?.SignerCrlVersion;
+        public byte? T_SignerCrlVersion => this.Model.Ticket?.SignerCrlVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleKey"/>
 #if NET48
-        public byte[] T_TitleKey => _model.Ticket.TitleKey;
+        public byte[] T_TitleKey => this.Model.Ticket.TitleKey;
 #else
-        public byte[]? T_TitleKey => _model.Ticket?.TitleKey;
+        public byte[]? T_TitleKey => this.Model.Ticket?.TitleKey;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved1"/>
 #if NET48
-        public byte T_Reserved1 => _model.Ticket.Reserved1;
+        public byte T_Reserved1 => this.Model.Ticket.Reserved1;
 #else
-        public byte? T_Reserved1 => _model.Ticket?.Reserved1;
+        public byte? T_Reserved1 => this.Model.Ticket?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketID"/>
 #if NET48
-        public ulong T_TicketID => _model.Ticket.TicketID;
+        public ulong T_TicketID => this.Model.Ticket.TicketID;
 #else
-        public ulong? T_TicketID => _model.Ticket?.TicketID;
+        public ulong? T_TicketID => this.Model.Ticket?.TicketID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ConsoleID"/>
 #if NET48
-        public uint T_ConsoleID => _model.Ticket.ConsoleID;
+        public uint T_ConsoleID => this.Model.Ticket.ConsoleID;
 #else
-        public uint? T_ConsoleID => _model.Ticket?.ConsoleID;
+        public uint? T_ConsoleID => this.Model.Ticket?.ConsoleID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TitleID"/>
 #if NET48
-        public ulong T_TitleID => _model.Ticket.TitleID;
+        public ulong T_TitleID => this.Model.Ticket.TitleID;
 #else
-        public ulong? T_TitleID => _model.Ticket?.TitleID;
+        public ulong? T_TitleID => this.Model.Ticket?.TitleID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved2"/>
 #if NET48
-        public byte[] T_Reserved2 => _model.Ticket.Reserved2;
+        public byte[] T_Reserved2 => this.Model.Ticket.Reserved2;
 #else
-        public byte[]? T_Reserved2 => _model.Ticket?.Reserved2;
+        public byte[]? T_Reserved2 => this.Model.Ticket?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.TicketTitleVersion"/>
 #if NET48
-        public ushort T_TicketTitleVersion => _model.Ticket.TicketTitleVersion;
+        public ushort T_TicketTitleVersion => this.Model.Ticket.TicketTitleVersion;
 #else
-        public ushort? T_TicketTitleVersion => _model.Ticket?.TicketTitleVersion;
+        public ushort? T_TicketTitleVersion => this.Model.Ticket?.TicketTitleVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved3"/>
 #if NET48
-        public byte[] T_Reserved3 => _model.Ticket.Reserved3;
+        public byte[] T_Reserved3 => this.Model.Ticket.Reserved3;
 #else
-        public byte[]? T_Reserved3 => _model.Ticket?.Reserved3;
+        public byte[]? T_Reserved3 => this.Model.Ticket?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.LicenseType"/>
 #if NET48
-        public byte T_LicenseType => _model.Ticket.LicenseType;
+        public byte T_LicenseType => this.Model.Ticket.LicenseType;
 #else
-        public byte? T_LicenseType => _model.Ticket?.LicenseType;
+        public byte? T_LicenseType => this.Model.Ticket?.LicenseType;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CommonKeyYIndex"/>
 #if NET48
-        public byte T_CommonKeyYIndex => _model.Ticket.CommonKeyYIndex;
+        public byte T_CommonKeyYIndex => this.Model.Ticket.CommonKeyYIndex;
 #else
-        public byte? T_CommonKeyYIndex => _model.Ticket?.CommonKeyYIndex;
+        public byte? T_CommonKeyYIndex => this.Model.Ticket?.CommonKeyYIndex;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved4"/>
 #if NET48
-        public byte[] T_Reserved4 => _model.Ticket.Reserved4;
+        public byte[] T_Reserved4 => this.Model.Ticket.Reserved4;
 #else
-        public byte[]? T_Reserved4 => _model.Ticket?.Reserved4;
+        public byte[]? T_Reserved4 => this.Model.Ticket?.Reserved4;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.eShopAccountID"/>
 #if NET48
-        public uint T_eShopAccountID => _model.Ticket.eShopAccountID;
+        public uint T_eShopAccountID => this.Model.Ticket.eShopAccountID;
 #else
-        public uint? T_eShopAccountID => _model.Ticket?.eShopAccountID;
+        public uint? T_eShopAccountID => this.Model.Ticket?.eShopAccountID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved5"/>
 #if NET48
-        public byte T_Reserved5 => _model.Ticket.Reserved5;
+        public byte T_Reserved5 => this.Model.Ticket.Reserved5;
 #else
-        public byte? T_Reserved5 => _model.Ticket?.Reserved5;
+        public byte? T_Reserved5 => this.Model.Ticket?.Reserved5;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Audit"/>
 #if NET48
-        public byte T_Audit => _model.Ticket.Audit;
+        public byte T_Audit => this.Model.Ticket.Audit;
 #else
-        public byte? T_Audit => _model.Ticket?.Audit;
+        public byte? T_Audit => this.Model.Ticket?.Audit;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Reserved6"/>
 #if NET48
-        public byte[] T_Reserved6 => _model.Ticket.Reserved6;
+        public byte[] T_Reserved6 => this.Model.Ticket.Reserved6;
 #else
-        public byte[]? T_Reserved6 => _model.Ticket?.Reserved6;
+        public byte[]? T_Reserved6 => this.Model.Ticket?.Reserved6;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.Limits"/>
 #if NET48
-        public uint[] T_Limits => _model.Ticket.Limits;
+        public uint[] T_Limits => this.Model.Ticket.Limits;
 #else
-        public uint[]? T_Limits => _model.Ticket?.Limits;
+        public uint[]? T_Limits => this.Model.Ticket?.Limits;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndexSize"/>
 #if NET48
-        public uint T_ContentIndexSize => _model.Ticket.ContentIndexSize;
+        public uint T_ContentIndexSize => this.Model.Ticket.ContentIndexSize;
 #else
-        public uint? T_ContentIndexSize => _model.Ticket?.ContentIndexSize;
+        public uint? T_ContentIndexSize => this.Model.Ticket?.ContentIndexSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.ContentIndex"/>
 #if NET48
-        public byte[] T_ContentIndex => _model.Ticket.ContentIndex;
+        public byte[] T_ContentIndex => this.Model.Ticket.ContentIndex;
 #else
-        public byte[]? T_ContentIndex => _model.Ticket?.ContentIndex;
+        public byte[]? T_ContentIndex => this.Model.Ticket?.ContentIndex;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.Ticket.CertificateChain"/>
 #if NET48
-        public SabreTools.Models.N3DS.Certificate[] T_CertificateChain => _model.Ticket.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate[] T_CertificateChain => this.Model.Ticket.CertificateChain;
 #else
-        public SabreTools.Models.N3DS.Certificate?[]? T_CertificateChain => _model.Ticket?.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate?[]? T_CertificateChain => this.Model.Ticket?.CertificateChain;
 #endif
 
         #endregion
@@ -303,198 +303,198 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureType"/>
 #if NET48
-        public SabreTools.Models.N3DS.SignatureType TMD_SignatureType => _model.TMDFileData.SignatureType;
+        public SabreTools.Models.N3DS.SignatureType TMD_SignatureType => this.Model.TMDFileData.SignatureType;
 #else
-        public SabreTools.Models.N3DS.SignatureType? TMD_SignatureType => _model.TMDFileData?.SignatureType;
+        public SabreTools.Models.N3DS.SignatureType? TMD_SignatureType => this.Model.TMDFileData?.SignatureType;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignatureSize"/>
 #if NET48
-        public ushort TMD_SignatureSize => _model.TMDFileData.SignatureSize;
+        public ushort TMD_SignatureSize => this.Model.TMDFileData.SignatureSize;
 #else
-        public ushort? TMD_SignatureSize => _model.TMDFileData?.SignatureSize;
+        public ushort? TMD_SignatureSize => this.Model.TMDFileData?.SignatureSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.PaddingSize"/>
 #if NET48
-        public byte TMD_PaddingSize => _model.TMDFileData.PaddingSize;
+        public byte TMD_PaddingSize => this.Model.TMDFileData.PaddingSize;
 #else
-        public byte? TMD_PaddingSize => _model.TMDFileData?.PaddingSize;
+        public byte? TMD_PaddingSize => this.Model.TMDFileData?.PaddingSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Signature"/>
 #if NET48
-        public byte[] TMD_Signature => _model.TMDFileData.Signature;
+        public byte[] TMD_Signature => this.Model.TMDFileData.Signature;
 #else
-        public byte[]? TMD_Signature => _model.TMDFileData?.Signature;
+        public byte[]? TMD_Signature => this.Model.TMDFileData?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding1"/>
 #if NET48
-        public byte[] TMD_Padding1 => _model.TMDFileData.Padding1;
+        public byte[] TMD_Padding1 => this.Model.TMDFileData.Padding1;
 #else
-        public byte[]? TMD_Padding1 => _model.TMDFileData?.Padding1;
+        public byte[]? TMD_Padding1 => this.Model.TMDFileData?.Padding1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Issuer"/>
 #if NET48
-        public string TMD_Issuer => _model.TMDFileData.Issuer;
+        public string TMD_Issuer => this.Model.TMDFileData.Issuer;
 #else
-        public string? TMD_Issuer => _model.TMDFileData?.Issuer;
+        public string? TMD_Issuer => this.Model.TMDFileData?.Issuer;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Version"/>
 #if NET48
-        public byte TMD_Version => _model.TMDFileData.Version;
+        public byte TMD_Version => this.Model.TMDFileData.Version;
 #else
-        public byte? TMD_Version => _model.TMDFileData?.Version;
+        public byte? TMD_Version => this.Model.TMDFileData?.Version;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CaCrlVersion"/>
 #if NET48
-        public byte TMD_CaCrlVersion => _model.TMDFileData.CaCrlVersion;
+        public byte TMD_CaCrlVersion => this.Model.TMDFileData.CaCrlVersion;
 #else
-        public byte? TMD_CaCrlVersion => _model.TMDFileData?.CaCrlVersion;
+        public byte? TMD_CaCrlVersion => this.Model.TMDFileData?.CaCrlVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SignerCrlVersion"/>
 #if NET48
-        public byte TMD_SignerCrlVersion => _model.TMDFileData.SignerCrlVersion;
+        public byte TMD_SignerCrlVersion => this.Model.TMDFileData.SignerCrlVersion;
 #else
-        public byte? TMD_SignerCrlVersion => _model.TMDFileData?.SignerCrlVersion;
+        public byte? TMD_SignerCrlVersion => this.Model.TMDFileData?.SignerCrlVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved1"/>
 #if NET48
-        public byte TMD_Reserved1 => _model.TMDFileData.Reserved1;
+        public byte TMD_Reserved1 => this.Model.TMDFileData.Reserved1;
 #else
-        public byte? TMD_Reserved1 => _model.TMDFileData?.Reserved1;
+        public byte? TMD_Reserved1 => this.Model.TMDFileData?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SystemVersion"/>
 #if NET48
-        public ulong TMD_SystemVersion => _model.TMDFileData.SystemVersion;
+        public ulong TMD_SystemVersion => this.Model.TMDFileData.SystemVersion;
 #else
-        public ulong? TMD_SystemVersion => _model.TMDFileData?.SystemVersion;
+        public ulong? TMD_SystemVersion => this.Model.TMDFileData?.SystemVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleID"/>
 #if NET48
-        public ulong TMD_TitleID => _model.TMDFileData.TitleID;
+        public ulong TMD_TitleID => this.Model.TMDFileData.TitleID;
 #else
-        public ulong? TMD_TitleID => _model.TMDFileData?.TitleID;
+        public ulong? TMD_TitleID => this.Model.TMDFileData?.TitleID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleType"/>
 #if NET48
-        public uint TMD_TitleType => _model.TMDFileData.TitleType;
+        public uint TMD_TitleType => this.Model.TMDFileData.TitleType;
 #else
-        public uint? TMD_TitleType => _model.TMDFileData?.TitleType;
+        public uint? TMD_TitleType => this.Model.TMDFileData?.TitleType;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.GroupID"/>
 #if NET48
-        public ushort TMD_GroupID => _model.TMDFileData.GroupID;
+        public ushort TMD_GroupID => this.Model.TMDFileData.GroupID;
 #else
-        public ushort? TMD_GroupID => _model.TMDFileData?.GroupID;
+        public ushort? TMD_GroupID => this.Model.TMDFileData?.GroupID;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SaveDataSize"/>
 #if NET48
-        public uint TMD_SaveDataSize => _model.TMDFileData.SaveDataSize;
+        public uint TMD_SaveDataSize => this.Model.TMDFileData.SaveDataSize;
 #else
-        public uint? TMD_SaveDataSize => _model.TMDFileData?.SaveDataSize;
+        public uint? TMD_SaveDataSize => this.Model.TMDFileData?.SaveDataSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLPrivateSaveDataSize"/>
 #if NET48
-        public uint TMD_SRLPrivateSaveDataSize => _model.TMDFileData.SRLPrivateSaveDataSize;
+        public uint TMD_SRLPrivateSaveDataSize => this.Model.TMDFileData.SRLPrivateSaveDataSize;
 #else
-        public uint? TMD_SRLPrivateSaveDataSize => _model.TMDFileData?.SRLPrivateSaveDataSize;
+        public uint? TMD_SRLPrivateSaveDataSize => this.Model.TMDFileData?.SRLPrivateSaveDataSize;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved2"/>
 #if NET48
-        public byte[] TMD_Reserved2 => _model.TMDFileData.Reserved2;
+        public byte[] TMD_Reserved2 => this.Model.TMDFileData.Reserved2;
 #else
-        public byte[]? TMD_Reserved2 => _model.TMDFileData?.Reserved2;
+        public byte[]? TMD_Reserved2 => this.Model.TMDFileData?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SRLFlag"/>
 #if NET48
-        public byte TMD_SRLFlag => _model.TMDFileData.SRLFlag;
+        public byte TMD_SRLFlag => this.Model.TMDFileData.SRLFlag;
 #else
-        public byte? TMD_SRLFlag => _model.TMDFileData?.SRLFlag;
+        public byte? TMD_SRLFlag => this.Model.TMDFileData?.SRLFlag;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Reserved3"/>
 #if NET48
-        public byte[] TMD_Reserved3 => _model.TMDFileData.Reserved3;
+        public byte[] TMD_Reserved3 => this.Model.TMDFileData.Reserved3;
 #else
-        public byte[]? TMD_Reserved3 => _model.TMDFileData?.Reserved3;
+        public byte[]? TMD_Reserved3 => this.Model.TMDFileData?.Reserved3;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.AccessRights"/>
 #if NET48
-        public uint TMD_AccessRights => _model.TMDFileData.AccessRights;
+        public uint TMD_AccessRights => this.Model.TMDFileData.AccessRights;
 #else
-        public uint? TMD_AccessRights => _model.TMDFileData?.AccessRights;
+        public uint? TMD_AccessRights => this.Model.TMDFileData?.AccessRights;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.TitleVersion"/>
 #if NET48
-        public ushort TMD_TitleVersion => _model.TMDFileData.TitleVersion;
+        public ushort TMD_TitleVersion => this.Model.TMDFileData.TitleVersion;
 #else
-        public ushort? TMD_TitleVersion => _model.TMDFileData?.TitleVersion;
+        public ushort? TMD_TitleVersion => this.Model.TMDFileData?.TitleVersion;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentCount"/>
 #if NET48
-        public ushort TMD_ContentCount => _model.TMDFileData.ContentCount;
+        public ushort TMD_ContentCount => this.Model.TMDFileData.ContentCount;
 #else
-        public ushort? TMD_ContentCount => _model.TMDFileData?.ContentCount;
+        public ushort? TMD_ContentCount => this.Model.TMDFileData?.ContentCount;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.BootContent"/>
 #if NET48
-        public ushort TMD_BootContent => _model.TMDFileData.BootContent;
+        public ushort TMD_BootContent => this.Model.TMDFileData.BootContent;
 #else
-        public ushort? TMD_BootContent => _model.TMDFileData?.BootContent;
+        public ushort? TMD_BootContent => this.Model.TMDFileData?.BootContent;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.Padding2"/>
 #if NET48
-        public byte[] TMD_Padding2 => _model.TMDFileData.Padding2;
+        public byte[] TMD_Padding2 => this.Model.TMDFileData.Padding2;
 #else
-        public byte[]? TMD_Padding2 => _model.TMDFileData?.Padding2;
+        public byte[]? TMD_Padding2 => this.Model.TMDFileData?.Padding2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.SHA256HashContentInfoRecords"/>
 #if NET48
-        public byte[] TMD_SHA256HashContentInfoRecords => _model.TMDFileData.SHA256HashContentInfoRecords;
+        public byte[] TMD_SHA256HashContentInfoRecords => this.Model.TMDFileData.SHA256HashContentInfoRecords;
 #else
-        public byte[]? TMD_SHA256HashContentInfoRecords => _model.TMDFileData?.SHA256HashContentInfoRecords;
+        public byte[]? TMD_SHA256HashContentInfoRecords => this.Model.TMDFileData?.SHA256HashContentInfoRecords;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentInfoRecords"/>
 #if NET48
-        public SabreTools.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => _model.TMDFileData.ContentInfoRecords;
+        public SabreTools.Models.N3DS.ContentInfoRecord[] TMD_ContentInfoRecords => this.Model.TMDFileData.ContentInfoRecords;
 #else
-        public SabreTools.Models.N3DS.ContentInfoRecord?[]? TMD_ContentInfoRecords => _model.TMDFileData?.ContentInfoRecords;
+        public SabreTools.Models.N3DS.ContentInfoRecord?[]? TMD_ContentInfoRecords => this.Model.TMDFileData?.ContentInfoRecords;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.ContentChunkRecords"/>
 #if NET48
-        public SabreTools.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => _model.TMDFileData.ContentChunkRecords;
+        public SabreTools.Models.N3DS.ContentChunkRecord[] TMD_ContentChunkRecords => this.Model.TMDFileData.ContentChunkRecords;
 #else
-        public SabreTools.Models.N3DS.ContentChunkRecord?[]? TMD_ContentChunkRecords => _model.TMDFileData?.ContentChunkRecords;
+        public SabreTools.Models.N3DS.ContentChunkRecord?[]? TMD_ContentChunkRecords => this.Model.TMDFileData?.ContentChunkRecords;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.TitleMetadata.CertificateChain"/>
 #if NET48
-        public SabreTools.Models.N3DS.Certificate[] TMD_CertificateChain => _model.TMDFileData.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate[] TMD_CertificateChain => this.Model.TMDFileData.CertificateChain;
 #else
-        public SabreTools.Models.N3DS.Certificate?[]? TMD_CertificateChain => _model.TMDFileData?.CertificateChain;
+        public SabreTools.Models.N3DS.Certificate?[]? TMD_CertificateChain => this.Model.TMDFileData?.CertificateChain;
 #endif
 
         #endregion
@@ -503,9 +503,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.CIA.Partitions"/>
 #if NET48
-        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => _model.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader[] Partitions => this.Model.Partitions;
 #else
-        public SabreTools.Models.N3DS.NCCHHeader?[]? Partitions => _model.Partitions;
+        public SabreTools.Models.N3DS.NCCHHeader?[]? Partitions => this.Model.Partitions;
 #endif
 
         #endregion
@@ -514,33 +514,33 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.N3DS.MetaData.TitleIDDependencyList"/>
 #if NET48
-        public byte[] MD_TitleIDDependencyList => _model.MetaData?.TitleIDDependencyList;
+        public byte[] MD_TitleIDDependencyList => this.Model.MetaData?.TitleIDDependencyList;
 #else
-        public byte[]? MD_TitleIDDependencyList => _model.MetaData?.TitleIDDependencyList;
+        public byte[]? MD_TitleIDDependencyList => this.Model.MetaData?.TitleIDDependencyList;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.MetaData.Reserved1"/>
 #if NET48
-        public byte[] MD_Reserved1 => _model.MetaData?.Reserved1;
+        public byte[] MD_Reserved1 => this.Model.MetaData?.Reserved1;
 #else
-        public byte[]? MD_Reserved1 => _model.MetaData?.Reserved1;
+        public byte[]? MD_Reserved1 => this.Model.MetaData?.Reserved1;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.MetaData.CoreVersion"/>
-        public uint? MD_CoreVersion => _model.MetaData?.CoreVersion;
+        public uint? MD_CoreVersion => this.Model.MetaData?.CoreVersion;
 
         /// <inheritdoc cref="Models.N3DS.MetaData.Reserved2"/>
 #if NET48
-        public byte[] MD_Reserved2 => _model.MetaData?.Reserved2;
+        public byte[] MD_Reserved2 => this.Model.MetaData?.Reserved2;
 #else
-        public byte[]? MD_Reserved2 => _model.MetaData?.Reserved2;
+        public byte[]? MD_Reserved2 => this.Model.MetaData?.Reserved2;
 #endif
 
         /// <inheritdoc cref="Models.N3DS.MetaData.IconData"/>
 #if NET48
-        public byte[] MD_IconData => _model.MetaData?.IconData;
+        public byte[] MD_IconData => this.Model.MetaData?.IconData;
 #else
-        public byte[]? MD_IconData => _model.MetaData?.IconData;
+        public byte[]? MD_IconData => this.Model.MetaData?.IconData;
 #endif
 
         #endregion
@@ -633,16 +633,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.CIA.Print(builder, _model);
+            Printing.CIA.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }

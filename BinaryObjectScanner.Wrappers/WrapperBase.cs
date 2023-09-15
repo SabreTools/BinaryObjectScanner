@@ -21,13 +21,20 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Instance Variables
+        #region Properties
 
         /// <summary>
         /// Internal model
         /// </summary>
-        /// <remarks>TODO: Should this have a public getter?</remarks>
-        protected T _model;
+#if NET48
+        public T Model { get; private set; }
+#else
+        public T Model { get; init; }
+#endif
+
+        #endregion
+
+        #region Instance Variables
 
         /// <summary>
         /// Source of the original data
@@ -99,7 +106,7 @@ namespace BinaryObjectScanner.Wrappers
             if (offset < 0 || offset >= data.Length)
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            _model = model;
+            this.Model = model;
             _dataSource = DataSource.ByteArray;
             _byteArrayData = data;
             _byteArrayOffset = offset;
@@ -121,7 +128,7 @@ namespace BinaryObjectScanner.Wrappers
             if (data.Length == 0 || !data.CanSeek || !data.CanRead)
                 throw new ArgumentOutOfRangeException(nameof(data));
 
-            _model = model;
+            this.Model = model;
             _dataSource = DataSource.Stream;
             _streamData = data;
         }
@@ -404,7 +411,7 @@ namespace BinaryObjectScanner.Wrappers
         /// <summary>
         /// Export the item information as JSON
         /// </summary>
-        public abstract string ExportJSON();
+        public string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(Model, _jsonSerializerOptions);
 #endif
 
         #endregion

@@ -20,128 +20,128 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Signature"/>
 #if NET48
-        public ulong Signature => _model.Header.Signature;
+        public ulong Signature => this.Model.Header.Signature;
 #else
-        public ulong? Signature => _model.Header?.Signature;
+        public ulong? Signature => this.Model.Header?.Signature;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.CLSID"/>
 #if NET48
-        public Guid CLSID => _model.Header.CLSID;
+        public Guid CLSID => this.Model.Header.CLSID;
 #else
-        public Guid? CLSID => _model.Header?.CLSID;
+        public Guid? CLSID => this.Model.Header?.CLSID;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MinorVersion"/>
 #if NET48
-        public ushort MinorVersion => _model.Header.MinorVersion;
+        public ushort MinorVersion => this.Model.Header.MinorVersion;
 #else
-        public ushort? MinorVersion => _model.Header?.MinorVersion;
+        public ushort? MinorVersion => this.Model.Header?.MinorVersion;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MajorVersion"/>
 #if NET48
-        public ushort MajorVersion => _model.Header.MajorVersion;
+        public ushort MajorVersion => this.Model.Header.MajorVersion;
 #else
-        public ushort? MajorVersion => _model.Header?.MajorVersion;
+        public ushort? MajorVersion => this.Model.Header?.MajorVersion;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.ByteOrder"/>
 #if NET48
-        public ushort ByteOrder => _model.Header.ByteOrder;
+        public ushort ByteOrder => this.Model.Header.ByteOrder;
 #else
-        public ushort? ByteOrder => _model.Header?.ByteOrder;
+        public ushort? ByteOrder => this.Model.Header?.ByteOrder;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.SectorShift"/>
 #if NET48
-        public ushort SectorShift => _model.Header.SectorShift;
+        public ushort SectorShift => this.Model.Header.SectorShift;
 #else
-        public ushort? SectorShift => _model.Header?.SectorShift;
+        public ushort? SectorShift => this.Model.Header?.SectorShift;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MiniSectorShift"/>
 #if NET48
-        public ushort MiniSectorShift => _model.Header.MiniSectorShift;
+        public ushort MiniSectorShift => this.Model.Header.MiniSectorShift;
 #else
-        public ushort? MiniSectorShift => _model.Header?.MiniSectorShift;
+        public ushort? MiniSectorShift => this.Model.Header?.MiniSectorShift;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.Reserved"/>
 #if NET48
-        public byte[] Reserved => _model.Header.Reserved;
+        public byte[] Reserved => this.Model.Header.Reserved;
 #else
-        public byte[]? Reserved => _model.Header?.Reserved;
+        public byte[]? Reserved => this.Model.Header?.Reserved;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDirectorySectors"/>
 #if NET48
-        public uint NumberOfDirectorySectors => _model.Header.NumberOfDirectorySectors;
+        public uint NumberOfDirectorySectors => this.Model.Header.NumberOfDirectorySectors;
 #else
-        public uint? NumberOfDirectorySectors => _model.Header?.NumberOfDirectorySectors;
+        public uint? NumberOfDirectorySectors => this.Model.Header?.NumberOfDirectorySectors;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfFATSectors"/>
 #if NET48
-        public uint NumberOfFATSectors => _model.Header.NumberOfFATSectors;
+        public uint NumberOfFATSectors => this.Model.Header.NumberOfFATSectors;
 #else
-        public uint? NumberOfFATSectors => _model.Header?.NumberOfFATSectors;
+        public uint? NumberOfFATSectors => this.Model.Header?.NumberOfFATSectors;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstDirectorySectorLocation"/>
 #if NET48
-        public uint FirstDirectorySectorLocation => _model.Header.FirstDirectorySectorLocation;
+        public uint FirstDirectorySectorLocation => this.Model.Header.FirstDirectorySectorLocation;
 #else
-        public uint? FirstDirectorySectorLocation => _model.Header?.FirstDirectorySectorLocation;
+        public uint? FirstDirectorySectorLocation => this.Model.Header?.FirstDirectorySectorLocation;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.TransactionSignatureNumber"/>
 #if NET48
-        public uint TransactionSignatureNumber => _model.Header.TransactionSignatureNumber;
+        public uint TransactionSignatureNumber => this.Model.Header.TransactionSignatureNumber;
 #else
-        public uint? TransactionSignatureNumber => _model.Header?.TransactionSignatureNumber;
+        public uint? TransactionSignatureNumber => this.Model.Header?.TransactionSignatureNumber;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.MiniStreamCutoffSize"/>
 #if NET48
-        public uint MiniStreamCutoffSize => _model.Header.MiniStreamCutoffSize;
+        public uint MiniStreamCutoffSize => this.Model.Header.MiniStreamCutoffSize;
 #else
-        public uint? MiniStreamCutoffSize => _model.Header?.MiniStreamCutoffSize;
+        public uint? MiniStreamCutoffSize => this.Model.Header?.MiniStreamCutoffSize;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstMiniFATSectorLocation"/>
 #if NET48
-        public uint FirstMiniFATSectorLocation => _model.Header.FirstMiniFATSectorLocation;
+        public uint FirstMiniFATSectorLocation => this.Model.Header.FirstMiniFATSectorLocation;
 #else
-        public uint? FirstMiniFATSectorLocation => _model.Header?.FirstMiniFATSectorLocation;
+        public uint? FirstMiniFATSectorLocation => this.Model.Header?.FirstMiniFATSectorLocation;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfMiniFATSectors"/>
 #if NET48
-        public uint NumberOfMiniFATSectors => _model.Header.NumberOfMiniFATSectors;
+        public uint NumberOfMiniFATSectors => this.Model.Header.NumberOfMiniFATSectors;
 #else
-        public uint? NumberOfMiniFATSectors => _model.Header?.NumberOfMiniFATSectors;
+        public uint? NumberOfMiniFATSectors => this.Model.Header?.NumberOfMiniFATSectors;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.FirstDIFATSectorLocation"/>
 #if NET48
-        public uint FirstDIFATSectorLocation => _model.Header.FirstDIFATSectorLocation;
+        public uint FirstDIFATSectorLocation => this.Model.Header.FirstDIFATSectorLocation;
 #else
-        public uint? FirstDIFATSectorLocation => _model.Header?.FirstDIFATSectorLocation;
+        public uint? FirstDIFATSectorLocation => this.Model.Header?.FirstDIFATSectorLocation;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDIFATSectors"/>
 #if NET48
-        public uint NumberOfDIFATSectors => _model.Header.NumberOfDIFATSectors;
+        public uint NumberOfDIFATSectors => this.Model.Header.NumberOfDIFATSectors;
 #else
-        public uint? NumberOfDIFATSectors => _model.Header?.NumberOfDIFATSectors;
+        public uint? NumberOfDIFATSectors => this.Model.Header?.NumberOfDIFATSectors;
 #endif
 
         /// <inheritdoc cref="Models.CFB.FileHeader.DIFAT"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] DIFAT => _model.Header.DIFAT;
+        public SabreTools.Models.CFB.SectorNumber[] DIFAT => this.Model.Header.DIFAT;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[]? DIFAT => _model.Header?.DIFAT;
+        public SabreTools.Models.CFB.SectorNumber?[]? DIFAT => this.Model.Header?.DIFAT;
 #endif
 
         #endregion
@@ -150,9 +150,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.FATSectorNumbers"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] FATSectorNumbers => _model.FATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber[] FATSectorNumbers => this.Model.FATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[]? FATSectorNumbers => _model.FATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[]? FATSectorNumbers => this.Model.FATSectorNumbers;
 #endif
 
         #endregion
@@ -161,9 +161,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.MiniFATSectorNumbers"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber[] MiniFATSectorNumbers => this.Model.MiniFATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[]? MiniFATSectorNumbers => _model.MiniFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[]? MiniFATSectorNumbers => this.Model.MiniFATSectorNumbers;
 #endif
 
         #endregion
@@ -172,9 +172,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.DIFATSectorNumbers"/>
 #if NET48
-        public SabreTools.Models.CFB.SectorNumber[] DIFATSectorNumbers => _model.DIFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber[] DIFATSectorNumbers => this.Model.DIFATSectorNumbers;
 #else
-        public SabreTools.Models.CFB.SectorNumber?[]? DIFATSectorNumbers => _model.DIFATSectorNumbers;
+        public SabreTools.Models.CFB.SectorNumber?[]? DIFATSectorNumbers => this.Model.DIFATSectorNumbers;
 #endif
 
         #endregion
@@ -183,9 +183,9 @@ namespace BinaryObjectScanner.Wrappers
 
         /// <inheritdoc cref="Models.CFB.Binary.DirectoryEntries"/>
 #if NET48
-        public SabreTools.Models.CFB.DirectoryEntry[] DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.CFB.DirectoryEntry[] DirectoryEntries => this.Model.DirectoryEntries;
 #else
-        public SabreTools.Models.CFB.DirectoryEntry?[]? DirectoryEntries => _model.DirectoryEntries;
+        public SabreTools.Models.CFB.DirectoryEntry?[]? DirectoryEntries => this.Model.DirectoryEntries;
 #endif
 
         #endregion
@@ -534,16 +534,9 @@ namespace BinaryObjectScanner.Wrappers
         public override StringBuilder PrettyPrint()
         {
             StringBuilder builder = new StringBuilder();
-            Printing.CFB.Print(builder, _model);
+            Printing.CFB.Print(builder, this.Model);
             return builder;
         }
-
-#if NET6_0_OR_GREATER
-
-        /// <inheritdoc/>
-        public override string ExportJSON() =>  System.Text.Json.JsonSerializer.Serialize(_model, _jsonSerializerOptions);
-
-#endif
 
         #endregion
     }
