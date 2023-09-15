@@ -25,6 +25,7 @@
   
   <ItemGroup>
     <PackageReference Include="SabreTools.Models" Version="1.1.1" />
+    <PackageReference Include="SabreTools.Serialization" Version="1.1.1" />
   </ItemGroup>
   
 </Project>
