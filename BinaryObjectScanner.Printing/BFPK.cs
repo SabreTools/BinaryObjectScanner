@@ -30,9 +30,9 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Magic: {header.Magic}");
-            builder.AppendLine($"  Version: {header.Version} (0x{header.Version:X})");
-            builder.AppendLine($"  Files: {header.Files} (0x{header.Files:X})");
+            builder.AppendLine(header.Magic, "  Magic");
+            builder.AppendLine(header.Version, "  Version");
+            builder.AppendLine(header.Files, "  Files");
             builder.AppendLine();
         }
 
@@ -60,11 +60,11 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Name size: {entry.NameSize} (0x{entry.NameSize:X})");
-                builder.AppendLine($"    Name: {entry.Name}");
-                builder.AppendLine($"    Uncompressed size: {entry.UncompressedSize} (0x{entry.UncompressedSize:X})");
-                builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                builder.AppendLine($"    Compressed Size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
+                builder.AppendLine(entry.NameSize, "    Name size");
+                builder.AppendLine(entry.Name, "    Name");
+                builder.AppendLine(entry.UncompressedSize, "    Uncompressed size");
+                builder.AppendLine(entry.Offset, "    Offset");
+                builder.AppendLine(entry.CompressedSize, "    Compressed size");
             }
         }
     }

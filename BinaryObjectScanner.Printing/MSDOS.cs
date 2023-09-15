@@ -30,20 +30,20 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Magic number: {header.Magic}");
-            builder.AppendLine($"  Last page bytes: {header.LastPageBytes} (0x{header.LastPageBytes:X})");
-            builder.AppendLine($"  Pages: {header.Pages} (0x{header.Pages:X})");
-            builder.AppendLine($"  Relocation items: {header.RelocationItems} (0x{header.RelocationItems:X})");
-            builder.AppendLine($"  Header paragraph size: {header.HeaderParagraphSize} (0x{header.HeaderParagraphSize:X})");
-            builder.AppendLine($"  Minimum extra paragraphs: {header.MinimumExtraParagraphs} (0x{header.MinimumExtraParagraphs:X})");
-            builder.AppendLine($"  Maximum extra paragraphs: {header.MaximumExtraParagraphs} (0x{header.MaximumExtraParagraphs:X})");
-            builder.AppendLine($"  Initial SS value: {header.InitialSSValue} (0x{header.InitialSSValue:X})");
-            builder.AppendLine($"  Initial SP value: {header.InitialSPValue} (0x{header.InitialSPValue:X})");
-            builder.AppendLine($"  Checksum: {header.Checksum} (0x{header.Checksum:X})");
-            builder.AppendLine($"  Initial IP value: {header.InitialIPValue} (0x{header.InitialIPValue:X})");
-            builder.AppendLine($"  Initial CS value: {header.InitialCSValue} (0x{header.InitialCSValue:X})");
-            builder.AppendLine($"  Relocation table address: {header.RelocationTableAddr} (0x{header.RelocationTableAddr:X})");
-            builder.AppendLine($"  Overlay number: {header.OverlayNumber} (0x{header.OverlayNumber:X})");
+            builder.AppendLine(header.Magic, "  Magic number");
+            builder.AppendLine(header.LastPageBytes, "  Last page bytes");
+            builder.AppendLine(header.Pages, "  Pages");
+            builder.AppendLine(header.RelocationItems, "  Relocation items");
+            builder.AppendLine(header.HeaderParagraphSize, "  Header paragraph size");
+            builder.AppendLine(header.MinimumExtraParagraphs, "  Minimum extra paragraphs");
+            builder.AppendLine(header.MaximumExtraParagraphs, "  Maximum extra paragraphs");
+            builder.AppendLine(header.InitialSSValue, "  Initial SS value");
+            builder.AppendLine(header.InitialSPValue, "  Initial SP value");
+            builder.AppendLine(header.Checksum, "  Checksum");
+            builder.AppendLine(header.InitialIPValue, "  Initial IP value");
+            builder.AppendLine(header.InitialCSValue, "  Initial CS value");
+            builder.AppendLine(header.RelocationTableAddr, "  Relocation table address");
+            builder.AppendLine(header.OverlayNumber, "  Overlay number");
             builder.AppendLine();
         }
 
@@ -68,12 +68,12 @@ namespace BinaryObjectScanner.Printing
                 builder.AppendLine($"  Relocation Table Entry {i}");
                 if (entry == null)
                 {
-                    builder.AppendLine($"    [NULL]");
+                    builder.AppendLine("    [NULL]");
                     continue;
                 }
 
-                builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
-                builder.AppendLine($"    Segment: {entry.Segment} (0x{entry.Segment:X})");
+                builder.AppendLine(entry.Offset, "    Offset");
+                builder.AppendLine(entry.Segment, "    Segment");
             }
             builder.AppendLine();
         }

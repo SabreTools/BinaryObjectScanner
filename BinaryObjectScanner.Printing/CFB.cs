@@ -33,24 +33,24 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Signature: {header.Signature} (0x{header.Signature:X})");
-            builder.AppendLine($"  CLSID: {header.CLSID}");
-            builder.AppendLine($"  Minor version: {header.MinorVersion} (0x{header.MinorVersion:X})");
-            builder.AppendLine($"  Major version: {header.MajorVersion} (0x{header.MajorVersion:X})");
-            builder.AppendLine($"  Byte order: {header.ByteOrder} (0x{header.ByteOrder:X})");
+            builder.AppendLine(header.Signature, "  Signature");
+            builder.AppendLine(header.CLSID, "  CLSID");
+            builder.AppendLine(header.MinorVersion, "  Minor version");
+            builder.AppendLine(header.MajorVersion, "  Major version");
+            builder.AppendLine(header.ByteOrder, "  Byte order");
             builder.AppendLine($"  Sector shift: {header.SectorShift} (0x{header.SectorShift:X}) => {Math.Pow(2, header.SectorShift)}");
             builder.AppendLine($"  Mini sector shift: {header.MiniSectorShift} (0x{header.MiniSectorShift:X}) => {Math.Pow(2, header.MiniSectorShift)}");
-            builder.AppendLine($"  Reserved: {(header.Reserved == null ? "[NULL]" : BitConverter.ToString(header.Reserved).Replace('-', ' '))}");
-            builder.AppendLine($"  Number of directory sectors: {header.NumberOfDirectorySectors} (0x{header.NumberOfDirectorySectors:X})");
-            builder.AppendLine($"  Number of FAT sectors: {header.NumberOfFATSectors} (0x{header.NumberOfFATSectors:X})");
-            builder.AppendLine($"  First directory sector location: {header.FirstDirectorySectorLocation} (0x{header.FirstDirectorySectorLocation:X})");
-            builder.AppendLine($"  Transaction signature number: {header.TransactionSignatureNumber} (0x{header.TransactionSignatureNumber:X})");
-            builder.AppendLine($"  Mini stream cutoff size: {header.MiniStreamCutoffSize} (0x{header.MiniStreamCutoffSize:X})");
-            builder.AppendLine($"  First mini FAT sector location: {header.FirstMiniFATSectorLocation} (0x{header.FirstMiniFATSectorLocation:X})");
-            builder.AppendLine($"  Number of mini FAT sectors: {header.NumberOfMiniFATSectors} (0x{header.NumberOfMiniFATSectors:X})");
-            builder.AppendLine($"  First DIFAT sector location: {header.FirstDIFATSectorLocation} (0x{header.FirstDIFATSectorLocation:X})");
-            builder.AppendLine($"  Number of DIFAT sectors: {header.NumberOfDIFATSectors} (0x{header.NumberOfDIFATSectors:X})");
-            builder.AppendLine($"  DIFAT:");
+            builder.AppendLine(header.Reserved, "  Reserved");
+            builder.AppendLine(header.NumberOfDirectorySectors, "  Number of directory sectors");
+            builder.AppendLine(header.NumberOfFATSectors, "  Number of FAT sectors");
+            builder.AppendLine(header.FirstDirectorySectorLocation, "  First directory sector location");
+            builder.AppendLine(header.TransactionSignatureNumber, "  Transaction signature number");
+            builder.AppendLine(header.MiniStreamCutoffSize, "  Mini stream cutoff size");
+            builder.AppendLine(header.FirstMiniFATSectorLocation, "  First mini FAT sector location");
+            builder.AppendLine(header.NumberOfMiniFATSectors, "  Number of mini FAT sectors");
+            builder.AppendLine(header.FirstDIFATSectorLocation, "  First DIFAT sector location");
+            builder.AppendLine(header.NumberOfDIFATSectors, "  Number of DIFAT sectors");
+            builder.AppendLine("  DIFAT:");
             if (header.DIFAT == null || header.DIFAT.Length == 0)
             {
                 builder.AppendLine("  No DIFAT entries");
@@ -112,19 +112,19 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Name: {directoryEntry.Name}");
-                builder.AppendLine($"    Name length: {directoryEntry.NameLength} (0x{directoryEntry.NameLength:X})");
+                builder.AppendLine(directoryEntry.Name, "    Name");
+                builder.AppendLine(directoryEntry.NameLength, "    Name length");
                 builder.AppendLine($"    Object type: {directoryEntry.ObjectType} (0x{directoryEntry.ObjectType:X})");
                 builder.AppendLine($"    Color flag: {directoryEntry.ColorFlag} (0x{directoryEntry.ColorFlag:X})");
                 builder.AppendLine($"    Left sibling ID: {directoryEntry.LeftSiblingID} (0x{directoryEntry.LeftSiblingID:X})");
                 builder.AppendLine($"    Right sibling ID: {directoryEntry.RightSiblingID} (0x{directoryEntry.RightSiblingID:X})");
                 builder.AppendLine($"    Child ID: {directoryEntry.ChildID} (0x{directoryEntry.ChildID:X})");
-                builder.AppendLine($"    CLSID: {directoryEntry.CLSID}");
-                builder.AppendLine($"    State bits: {directoryEntry.StateBits} (0x{directoryEntry.StateBits:X})");
-                builder.AppendLine($"    Creation time: {directoryEntry.CreationTime} (0x{directoryEntry.CreationTime:X})");
-                builder.AppendLine($"    Modification time: {directoryEntry.ModifiedTime} (0x{directoryEntry.ModifiedTime:X})");
-                builder.AppendLine($"    Staring sector location: {directoryEntry.StartingSectorLocation} (0x{directoryEntry.StartingSectorLocation:X})");
-                builder.AppendLine($"    Stream size: {directoryEntry.StreamSize} (0x{directoryEntry.StreamSize:X})");
+                builder.AppendLine(directoryEntry.CLSID, "    CLSID");
+                builder.AppendLine(directoryEntry.StateBits, "    State bits");
+                builder.AppendLine(directoryEntry.CreationTime, "    Creation time");
+                builder.AppendLine(directoryEntry.ModifiedTime, "    Modification time");
+                builder.AppendLine(directoryEntry.StartingSectorLocation, "    Staring sector location");
+                builder.AppendLine(directoryEntry.StreamSize, "    Stream size");
             }
             builder.AppendLine();
         }

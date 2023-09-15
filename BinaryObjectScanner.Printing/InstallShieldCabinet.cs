@@ -75,11 +75,11 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Signature: {header.Signature}");
+            builder.AppendLine(header.Signature, "  Signature");
             builder.AppendLine($"  Version: {header.Version} (0x{header.Version:X}) [{majorVersion}]");
-            builder.AppendLine($"  Volume info: {header.VolumeInfo} (0x{header.VolumeInfo:X})");
-            builder.AppendLine($"  Descriptor offset: {header.DescriptorOffset} (0x{header.DescriptorOffset:X})");
-            builder.AppendLine($"  Descriptor size: {header.DescriptorSize} (0x{header.DescriptorSize:X})");
+            builder.AppendLine(header.VolumeInfo, "  Volume info");
+            builder.AppendLine(header.DescriptorOffset, "  Descriptor offset");
+            builder.AppendLine(header.DescriptorSize, "  Descriptor size");
             builder.AppendLine();
         }
 
@@ -100,34 +100,34 @@ namespace BinaryObjectScanner.Printing
 
             if (majorVersion <= 5)
             {
-                builder.AppendLine($"  Data offset: {header.DataOffset} (0x{header.DataOffset:X})");
-                builder.AppendLine($"  First file index: {header.FirstFileIndex} (0x{header.FirstFileIndex:X})");
-                builder.AppendLine($"  Last file index: {header.LastFileIndex} (0x{header.LastFileIndex:X})");
-                builder.AppendLine($"  First file offset: {header.FirstFileOffset} (0x{header.FirstFileOffset:X})");
-                builder.AppendLine($"  First file size expanded: {header.FirstFileSizeExpanded} (0x{header.FirstFileSizeExpanded:X})");
-                builder.AppendLine($"  First file size compressed: {header.FirstFileSizeCompressed} (0x{header.FirstFileSizeCompressed:X})");
-                builder.AppendLine($"  Last file offset: {header.LastFileOffset} (0x{header.LastFileOffset:X})");
-                builder.AppendLine($"  Last file size expanded: {header.LastFileSizeExpanded} (0x{header.LastFileSizeExpanded:X})");
-                builder.AppendLine($"  Last file size compressed: {header.LastFileSizeCompressed} (0x{header.LastFileSizeCompressed:X})");
+                builder.AppendLine(header.DataOffset, "  Data offset");
+                builder.AppendLine(header.FirstFileIndex, "  First file index");
+                builder.AppendLine(header.LastFileIndex, "  Last file index");
+                builder.AppendLine(header.FirstFileOffset, "  First file offset");
+                builder.AppendLine(header.FirstFileSizeExpanded, "  First file size expanded");
+                builder.AppendLine(header.FirstFileSizeCompressed, "  First file size compressed");
+                builder.AppendLine(header.LastFileOffset, "  Last file offset");
+                builder.AppendLine(header.LastFileSizeExpanded, "  Last file size expanded");
+                builder.AppendLine(header.LastFileSizeCompressed, "  Last file size compressed");
             }
             else
             {
-                builder.AppendLine($"  Data offset: {header.DataOffset} (0x{header.DataOffset:X})");
-                builder.AppendLine($"  Data offset high: {header.DataOffsetHigh} (0x{header.DataOffsetHigh:X})");
-                builder.AppendLine($"  First file index: {header.FirstFileIndex} (0x{header.FirstFileIndex:X})");
-                builder.AppendLine($"  Last file index: {header.LastFileIndex} (0x{header.LastFileIndex:X})");
-                builder.AppendLine($"  First file offset: {header.FirstFileOffset} (0x{header.FirstFileOffset:X})");
-                builder.AppendLine($"  First file offset high: {header.FirstFileOffsetHigh} (0x{header.FirstFileOffsetHigh:X})");
-                builder.AppendLine($"  First file size expanded: {header.FirstFileSizeExpanded} (0x{header.FirstFileSizeExpanded:X})");
-                builder.AppendLine($"  First file size expanded high: {header.FirstFileSizeExpandedHigh} (0x{header.FirstFileSizeExpandedHigh:X})");
-                builder.AppendLine($"  First file size compressed: {header.FirstFileSizeCompressed} (0x{header.FirstFileSizeCompressed:X})");
-                builder.AppendLine($"  First file size compressed high: {header.FirstFileSizeCompressedHigh} (0x{header.FirstFileSizeCompressedHigh:X})");
-                builder.AppendLine($"  Last file offset: {header.LastFileOffset} (0x{header.LastFileOffset:X})");
-                builder.AppendLine($"  Last file offset high: {header.LastFileOffsetHigh} (0x{header.LastFileOffsetHigh:X})");
-                builder.AppendLine($"  Last file size expanded: {header.LastFileSizeExpanded} (0x{header.LastFileSizeExpanded:X})");
-                builder.AppendLine($"  Last file size expanded high: {header.LastFileSizeExpandedHigh} (0x{header.LastFileSizeExpandedHigh:X})");
-                builder.AppendLine($"  Last file size compressed: {header.LastFileSizeCompressed} (0x{header.LastFileSizeCompressed:X})");
-                builder.AppendLine($"  Last file size compressed high: {header.LastFileSizeCompressedHigh} (0x{header.LastFileSizeCompressedHigh:X})");
+                builder.AppendLine(header.DataOffset, "  Data offset");
+                builder.AppendLine(header.DataOffsetHigh, "  Data offset high");
+                builder.AppendLine(header.FirstFileIndex, "  First file index");
+                builder.AppendLine(header.LastFileIndex, "  Last file index");
+                builder.AppendLine(header.FirstFileOffset, "  First file offset");
+                builder.AppendLine(header.FirstFileOffsetHigh, "  First file offset high");
+                builder.AppendLine(header.FirstFileSizeExpanded, "  First file size expanded");
+                builder.AppendLine(header.FirstFileSizeExpandedHigh, "  First file size expanded high");
+                builder.AppendLine(header.FirstFileSizeCompressed, "  First file size compressed");
+                builder.AppendLine(header.FirstFileSizeCompressedHigh, "  First file size compressed high");
+                builder.AppendLine(header.LastFileOffset, "  Last file offset");
+                builder.AppendLine(header.LastFileOffsetHigh, "  Last file offset high");
+                builder.AppendLine(header.LastFileSizeExpanded, "  Last file size expanded");
+                builder.AppendLine(header.LastFileSizeExpandedHigh, "  Last file size expanded high");
+                builder.AppendLine(header.LastFileSizeCompressed, "  Last file size compressed");
+                builder.AppendLine(header.LastFileSizeCompressedHigh, "  Last file size compressed high");
             }
             builder.AppendLine();
         }
@@ -147,26 +147,26 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Strings offset: {descriptor.StringsOffset} (0x{descriptor.StringsOffset:X})");
-            builder.AppendLine($"  Reserved 0: {(descriptor.Reserved0 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved0).Replace('-', ' '))}");
-            builder.AppendLine($"  Component list offset: {descriptor.ComponentListOffset} (0x{descriptor.ComponentListOffset:X})");
-            builder.AppendLine($"  File table offset: {descriptor.FileTableOffset} (0x{descriptor.FileTableOffset:X})");
-            builder.AppendLine($"  Reserved 1: {(descriptor.Reserved1 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved1).Replace('-', ' '))}");
-            builder.AppendLine($"  File table size: {descriptor.FileTableSize} (0x{descriptor.FileTableSize:X})");
-            builder.AppendLine($"  File table size 2: {descriptor.FileTableSize2} (0x{descriptor.FileTableSize2:X})");
-            builder.AppendLine($"  Directory count: {descriptor.DirectoryCount} (0x{descriptor.DirectoryCount:X})");
-            builder.AppendLine($"  Reserved 2: {(descriptor.Reserved2 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved2).Replace('-', ' '))}");
-            builder.AppendLine($"  Reserved 3: {(descriptor.Reserved3 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved3).Replace('-', ' '))}");
-            builder.AppendLine($"  Reserved 4: {(descriptor.Reserved4 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved4).Replace('-', ' '))}");
-            builder.AppendLine($"  File count: {descriptor.FileCount} (0x{descriptor.FileCount:X})");
-            builder.AppendLine($"  File table offset 2: {descriptor.FileTableOffset2} (0x{descriptor.FileTableOffset2:X})");
-            builder.AppendLine($"  Component table info count: {descriptor.ComponentTableInfoCount} (0x{descriptor.ComponentTableInfoCount:X})");
-            builder.AppendLine($"  Component table offset: {descriptor.ComponentTableOffset} (0x{descriptor.ComponentTableOffset:X})");
-            builder.AppendLine($"  Reserved 5: {(descriptor.Reserved5 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved5).Replace('-', ' '))}");
-            builder.AppendLine($"  Reserved 6: {(descriptor.Reserved6 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved6).Replace('-', ' '))}");
+            builder.AppendLine(descriptor.StringsOffset, "  Strings offset");
+            builder.AppendLine(descriptor.Reserved0, "  Reserved 0");
+            builder.AppendLine(descriptor.ComponentListOffset, "  Component list offset");
+            builder.AppendLine(descriptor.FileTableOffset, "  File table offset");
+            builder.AppendLine(descriptor.Reserved1, "  Reserved 1");
+            builder.AppendLine(descriptor.FileTableSize, "  File table size");
+            builder.AppendLine(descriptor.FileTableSize2, "  File table size 2");
+            builder.AppendLine(descriptor.DirectoryCount, "  Directory count");
+            builder.AppendLine(descriptor.Reserved2, "  Reserved 2");
+            builder.AppendLine(descriptor.Reserved3, "  Reserved 3");
+            builder.AppendLine(descriptor.Reserved4, "  Reserved 4");
+            builder.AppendLine(descriptor.FileCount, "  File count");
+            builder.AppendLine(descriptor.FileTableOffset2, "  File table offset 2");
+            builder.AppendLine(descriptor.ComponentTableInfoCount, "  Component table info count");
+            builder.AppendLine(descriptor.ComponentTableOffset, "  Component table offset");
+            builder.AppendLine(descriptor.Reserved5, "  Reserved 5");
+            builder.AppendLine(descriptor.Reserved6, "  Reserved 6");
             builder.AppendLine();
 
-            builder.AppendLine($"  File group offsets:");
+            builder.AppendLine("  File group offsets:");
             builder.AppendLine("  -------------------------");
             if (descriptor.FileGroupOffsets == null || descriptor.FileGroupOffsets.Length == 0)
             {
@@ -176,12 +176,12 @@ namespace BinaryObjectScanner.Printing
             {
                 for (int i = 0; i < descriptor.FileGroupOffsets.Length; i++)
                 {
-                    builder.AppendLine($"      File Group Offset {i}: {descriptor.FileGroupOffsets[i]} (0x{descriptor.FileGroupOffsets[i]:X})");
+                    builder.AppendLine(descriptor.FileGroupOffsets[i], $"      File Group Offset {i}");
                 }
             }
             builder.AppendLine();
 
-            builder.AppendLine($"  Component offsets:");
+            builder.AppendLine("  Component offsets:");
             builder.AppendLine("  -------------------------");
             if (descriptor.ComponentOffsets == null || descriptor.ComponentOffsets.Length == 0)
             {
@@ -191,15 +191,15 @@ namespace BinaryObjectScanner.Printing
             {
                 for (int i = 0; i < descriptor.ComponentOffsets.Length; i++)
                 {
-                    builder.AppendLine($"      Component Offset {i}: {descriptor.ComponentOffsets[i]} (0x{descriptor.ComponentOffsets[i]:X})");
+                    builder.AppendLine(descriptor.ComponentOffsets[i], $"      Component Offset {i}");
                 }
             }
             builder.AppendLine();
 
-            builder.AppendLine($"  Setup types offset: {descriptor.SetupTypesOffset} (0x{descriptor.SetupTypesOffset:X})");
-            builder.AppendLine($"  Setup table offset: {descriptor.SetupTableOffset} (0x{descriptor.SetupTableOffset:X})");
-            builder.AppendLine($"  Reserved 7: {(descriptor.Reserved7 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved7).Replace('-', ' '))}");
-            builder.AppendLine($"  Reserved 8: {(descriptor.Reserved8 == null ? "[NULL]" : BitConverter.ToString(descriptor.Reserved8).Replace('-', ' '))}");
+            builder.AppendLine(descriptor.SetupTypesOffset, "  Setup types offset");
+            builder.AppendLine(descriptor.SetupTableOffset, "  Setup table offset");
+            builder.AppendLine(descriptor.Reserved7, "  Reserved 7");
+            builder.AppendLine(descriptor.Reserved8, "  Reserved 8");
             builder.AppendLine();
         }
 
@@ -220,7 +220,7 @@ namespace BinaryObjectScanner.Printing
 
             for (int i = 0; i < entries.Length; i++)
             {
-                builder.AppendLine($"    File Descriptor Offset {i}: {entries[i]} (0x{entries[i]:X})");
+                builder.AppendLine(entries[i], $"    File Descriptor Offset {i}");
             }
             builder.AppendLine();
         }
@@ -242,7 +242,7 @@ namespace BinaryObjectScanner.Printing
 
             for (int i = 0; i < entries.Length; i++)
             {
-                builder.AppendLine($"    Directory Name {i}: {entries[i] ?? "[NULL]"}");
+                builder.AppendLine(entries[i], $"    Directory Name {i}");
             }
             builder.AppendLine();
         }
@@ -272,17 +272,17 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Name offset: {entry.NameOffset} (0x{entry.NameOffset:X})");
-                builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
-                builder.AppendLine($"    Directory index: {entry.DirectoryIndex} (0x{entry.DirectoryIndex:X})");
+                builder.AppendLine(entry.NameOffset, "    Name offset");
+                builder.AppendLine(entry.Name, "    Name");
+                builder.AppendLine(entry.DirectoryIndex, "    Directory index");
                 builder.AppendLine($"    Flags: {entry.Flags} (0x{entry.Flags:X})");
-                builder.AppendLine($"    Expanded size: {entry.ExpandedSize} (0x{entry.ExpandedSize:X})");
-                builder.AppendLine($"    Compressed size: {entry.CompressedSize} (0x{entry.CompressedSize:X})");
-                builder.AppendLine($"    Data offset: {entry.DataOffset} (0x{entry.DataOffset:X})");
-                builder.AppendLine($"    MD5: {(entry.MD5 == null ? "[NULL]" : BitConverter.ToString(entry.MD5).Replace('-', ' '))}");
-                builder.AppendLine($"    Volume: {entry.Volume} (0x{entry.Volume:X})");
-                builder.AppendLine($"    Link previous: {entry.LinkPrevious} (0x{entry.LinkPrevious:X})");
-                builder.AppendLine($"    Link next: {entry.LinkNext} (0x{entry.LinkNext:X})");
+                builder.AppendLine(entry.ExpandedSize, "    Expanded size");
+                builder.AppendLine(entry.CompressedSize, "    Compressed size");
+                builder.AppendLine(entry.DataOffset, "    Data offset");
+                builder.AppendLine(entry.MD5, "    MD5");
+                builder.AppendLine(entry.Volume, "    Volume");
+                builder.AppendLine(entry.LinkPrevious, "    Link previous");
+                builder.AppendLine(entry.LinkNext, "    Link next");
                 builder.AppendLine($"    Link flags: {entry.LinkFlags} (0x{entry.LinkFlags:X})");
             }
             builder.AppendLine();
@@ -315,10 +315,10 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Name offset: {value.NameOffset} (0x{value.NameOffset:X})");
-                builder.AppendLine($"    Name: {value.Name ?? "[NULL]"}");
-                builder.AppendLine($"    Descriptor offset: {value.DescriptorOffset} (0x{value.DescriptorOffset:X})");
-                builder.AppendLine($"    Next offset: {value.NextOffset} (0x{value.NextOffset:X})");
+                builder.AppendLine(value.NameOffset, "    Name offset");
+                builder.AppendLine(value.Name, "    Name");
+                builder.AppendLine(value.DescriptorOffset, "    Descriptor offset");
+                builder.AppendLine(value.NextOffset, "    Next offset");
             }
             builder.AppendLine();
         }
@@ -344,34 +344,34 @@ namespace BinaryObjectScanner.Printing
                 builder.AppendLine($"  File Group {i}:");
                 if (fileGroup == null)
                 {
-                    builder.AppendLine($"    Unassigned file group");
+                    builder.AppendLine("    Unassigned file group");
                     continue;
                 }
 
-                builder.AppendLine($"    Name offset: {fileGroup.NameOffset} (0x{fileGroup.NameOffset:X})");
-                builder.AppendLine($"    Name: {fileGroup.Name ?? "[NULL]"}");
-                builder.AppendLine($"    Expanded size: {fileGroup.ExpandedSize} (0x{fileGroup.ExpandedSize:X})");
-                builder.AppendLine($"    Reserved 0: {(fileGroup.Reserved0 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved0).Replace('-', ' '))}");
-                builder.AppendLine($"    Compressed size: {fileGroup.CompressedSize} (0x{fileGroup.CompressedSize:X})");
-                builder.AppendLine($"    Reserved 1: {(fileGroup.Reserved1 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved1).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved 2: {(fileGroup.Reserved2 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved2).Replace('-', ' '))}");
-                builder.AppendLine($"    Attribute 1: {fileGroup.Attribute1} (0x{fileGroup.Attribute1:X})");
-                builder.AppendLine($"    Attribute 2: {fileGroup.Attribute2} (0x{fileGroup.Attribute2:X})");
-                builder.AppendLine($"    First file: {fileGroup.FirstFile} (0x{fileGroup.FirstFile:X})");
-                builder.AppendLine($"    Last file: {fileGroup.LastFile} (0x{fileGroup.LastFile:X})");
-                builder.AppendLine($"    Unknown offset: {fileGroup.UnknownOffset} (0x{fileGroup.UnknownOffset:X})");
-                builder.AppendLine($"    Var 4 offset: {fileGroup.Var4Offset} (0x{fileGroup.Var4Offset:X})");
-                builder.AppendLine($"    Var 1 offset: {fileGroup.Var1Offset} (0x{fileGroup.Var1Offset:X})");
-                builder.AppendLine($"    HTTP location offset: {fileGroup.HTTPLocationOffset} (0x{fileGroup.HTTPLocationOffset:X})");
-                builder.AppendLine($"    FTP location offset: {fileGroup.FTPLocationOffset} (0x{fileGroup.FTPLocationOffset:X})");
-                builder.AppendLine($"    Misc. offset: {fileGroup.MiscOffset} (0x{fileGroup.MiscOffset:X})");
-                builder.AppendLine($"    Var 2 offset: {fileGroup.Var2Offset} (0x{fileGroup.Var2Offset:X})");
-                builder.AppendLine($"    Target directory offset: {fileGroup.TargetDirectoryOffset} (0x{fileGroup.TargetDirectoryOffset:X})");
-                builder.AppendLine($"    Reserved 3: {(fileGroup.Reserved3 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved3).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved 4: {(fileGroup.Reserved4 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved4).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved 5: {(fileGroup.Reserved5 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved5).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved 6: {(fileGroup.Reserved6 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved6).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved 7: {(fileGroup.Reserved7 == null ? "[NULL]" : BitConverter.ToString(fileGroup.Reserved7).Replace('-', ' '))}");
+                builder.AppendLine(fileGroup.NameOffset, "    Name offset");
+                builder.AppendLine(fileGroup.Name, "    Name");
+                builder.AppendLine(fileGroup.ExpandedSize, "    Expanded size");
+                builder.AppendLine(fileGroup.Reserved0, "    Reserved 0");
+                builder.AppendLine(fileGroup.CompressedSize, "    Compressed size");
+                builder.AppendLine(fileGroup.Reserved1, "    Reserved 1");
+                builder.AppendLine(fileGroup.Reserved2, "    Reserved 2");
+                builder.AppendLine(fileGroup.Attribute1, "    Attribute 1");
+                builder.AppendLine(fileGroup.Attribute2, "    Attribute 2");
+                builder.AppendLine(fileGroup.FirstFile, "    First file");
+                builder.AppendLine(fileGroup.LastFile, "    Last file");
+                builder.AppendLine(fileGroup.UnknownOffset, "    Unknown offset");
+                builder.AppendLine(fileGroup.Var4Offset, "    Var 4 offset");
+                builder.AppendLine(fileGroup.Var1Offset, "    Var 1 offset");
+                builder.AppendLine(fileGroup.HTTPLocationOffset, "    HTTP location offset");
+                builder.AppendLine(fileGroup.FTPLocationOffset, "    FTP location offset");
+                builder.AppendLine(fileGroup.MiscOffset, "    Misc. offset");
+                builder.AppendLine(fileGroup.Var2Offset, "    Var 2 offset");
+                builder.AppendLine(fileGroup.TargetDirectoryOffset, "    Target directory offset");
+                builder.AppendLine(fileGroup.Reserved3, "    Reserved 3");
+                builder.AppendLine(fileGroup.Reserved4, "    Reserved 4");
+                builder.AppendLine(fileGroup.Reserved5, "    Reserved 5");
+                builder.AppendLine(fileGroup.Reserved6, "    Reserved 6");
+                builder.AppendLine(fileGroup.Reserved7, "    Reserved 7");
             }
             builder.AppendLine();
         }
@@ -397,36 +397,36 @@ namespace BinaryObjectScanner.Printing
                 builder.AppendLine($"  Component {i}:");
                 if (component == null)
                 {
-                    builder.AppendLine($"    Unassigned component");
+                    builder.AppendLine("    Unassigned component");
                     continue;
                 }
 
-                builder.AppendLine($"    Identifier offset: {component.IdentifierOffset} (0x{component.IdentifierOffset:X})");
-                builder.AppendLine($"    Identifier: {component.Identifier ?? "[NULL]"}");
-                builder.AppendLine($"    Descriptor offset: {component.DescriptorOffset} (0x{component.DescriptorOffset:X})");
-                builder.AppendLine($"    Display name offset: {component.DisplayNameOffset} (0x{component.DisplayNameOffset:X})");
-                builder.AppendLine($"    Display name: {component.DisplayName ?? "[NULL]"}");
-                builder.AppendLine($"    Reserved 0: {(component.Reserved0 == null ? "[NULL]" : BitConverter.ToString(component.Reserved0).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved offset 0: {component.ReservedOffset0} (0x{component.ReservedOffset0:X})");
-                builder.AppendLine($"    Reserved offset 1: {component.ReservedOffset1} (0x{component.ReservedOffset1:X})");
-                builder.AppendLine($"    Component index: {component.ComponentIndex} (0x{component.ComponentIndex:X})");
-                builder.AppendLine($"    Name offset: {component.NameOffset} (0x{component.NameOffset:X})");
-                builder.AppendLine($"    Name: {component.Name ?? "[NULL]"}");
-                builder.AppendLine($"    Reserved offset 2: {component.ReservedOffset2} (0x{component.ReservedOffset2:X})");
-                builder.AppendLine($"    Reserved offset 3: {component.ReservedOffset3} (0x{component.ReservedOffset3:X})");
-                builder.AppendLine($"    Reserved offset 4: {component.ReservedOffset4} (0x{component.ReservedOffset4:X})");
-                builder.AppendLine($"    Reserved 1: {(component.Reserved1 == null ? "[NULL]" : BitConverter.ToString(component.Reserved1).Replace('-', ' '))}");
-                builder.AppendLine($"    CLSID offset: {component.CLSIDOffset} (0x{component.CLSIDOffset:X})");
-                builder.AppendLine($"    CLSID: {component.CLSID}");
-                builder.AppendLine($"    Reserved 2: {(component.Reserved2 == null ? "[NULL]" : BitConverter.ToString(component.Reserved2).Replace('-', ' '))}");
-                builder.AppendLine($"    Reserved 3: {(component.Reserved3 == null ? "[NULL]" : BitConverter.ToString(component.Reserved3).Replace('-', ' '))}");
-                builder.AppendLine($"    Depends count: {component.DependsCount} (0x{component.DependsCount:X})");
-                builder.AppendLine($"    Depends offset: {component.DependsOffset} (0x{component.DependsOffset:X})");
-                builder.AppendLine($"    File group count: {component.FileGroupCount} (0x{component.FileGroupCount:X})");
-                builder.AppendLine($"    File group names offset: {component.FileGroupNamesOffset} (0x{component.FileGroupNamesOffset:X})");
+                builder.AppendLine(component.IdentifierOffset, "    Identifier offset");
+                builder.AppendLine(component.Identifier, "    Identifier");
+                builder.AppendLine(component.DescriptorOffset, "    Descriptor offset");
+                builder.AppendLine(component.DisplayNameOffset, "    Display name offset");
+                builder.AppendLine(component.DisplayName, "    Display name");
+                builder.AppendLine(component.Reserved0, "    Reserved 0");
+                builder.AppendLine(component.ReservedOffset0, "    Reserved offset 0");
+                builder.AppendLine(component.ReservedOffset1, "    Reserved offset 1");
+                builder.AppendLine(component.ComponentIndex, "    Component index");
+                builder.AppendLine(component.NameOffset, "    Name offset");
+                builder.AppendLine(component.Name, "    Name");
+                builder.AppendLine(component.ReservedOffset2, "    Reserved offset 2");
+                builder.AppendLine(component.ReservedOffset3, "    Reserved offset 3");
+                builder.AppendLine(component.ReservedOffset4, "    Reserved offset 4");
+                builder.AppendLine(component.Reserved1, "    Reserved 1");
+                builder.AppendLine(component.CLSIDOffset, "    CLSID offset");
+                builder.AppendLine(component.CLSID, "    CLSID");
+                builder.AppendLine(component.Reserved2, "    Reserved 2");
+                builder.AppendLine(component.Reserved3, "    Reserved 3");
+                builder.AppendLine(component.DependsCount, "    Depends count");
+                builder.AppendLine(component.DependsOffset, "    Depends offset");
+                builder.AppendLine(component.FileGroupCount, "    File group count");
+                builder.AppendLine(component.FileGroupNamesOffset, "    File group names offset");
                 builder.AppendLine();
 
-                builder.AppendLine($"    File group names:");
+                builder.AppendLine("    File group names:");
                 builder.AppendLine("    -------------------------");
                 if (component.FileGroupNames == null || component.FileGroupNames.Length == 0)
                 {
@@ -436,20 +436,20 @@ namespace BinaryObjectScanner.Printing
                 {
                     for (int j = 0; j < component.FileGroupNames.Length; j++)
                     {
-                        builder.AppendLine($"      File Group Name {j}: {component.FileGroupNames[j] ?? "[NULL]"}");
+                        builder.AppendLine(component.FileGroupNames[j], $"      File Group Name {j}");
                     }
                 }
                 builder.AppendLine();
 
-                builder.AppendLine($"    X3 count: {component.X3Count} (0x{component.X3Count:X})");
-                builder.AppendLine($"    X3 offset: {component.X3Offset} (0x{component.X3Offset:X})");
-                builder.AppendLine($"    Sub-components count: {component.SubComponentsCount} (0x{component.SubComponentsCount:X})");
-                builder.AppendLine($"    Sub-components offset: {component.SubComponentsOffset} (0x{component.SubComponentsOffset:X})");
-                builder.AppendLine($"    Next component offset: {component.NextComponentOffset} (0x{component.NextComponentOffset:X})");
-                builder.AppendLine($"    Reserved offset 5: {component.ReservedOffset5} (0x{component.ReservedOffset5:X})");
-                builder.AppendLine($"    Reserved offset 6: {component.ReservedOffset6} (0x{component.ReservedOffset6:X})");
-                builder.AppendLine($"    Reserved offset 7: {component.ReservedOffset7} (0x{component.ReservedOffset7:X})");
-                builder.AppendLine($"    Reserved offset 8: {component.ReservedOffset8} (0x{component.ReservedOffset8:X})");
+                builder.AppendLine(component.X3Count, "    X3 count");
+                builder.AppendLine(component.X3Offset, "    X3 offset");
+                builder.AppendLine(component.SubComponentsCount, "    Sub-components count");
+                builder.AppendLine(component.SubComponentsOffset, "    Sub-components offset");
+                builder.AppendLine(component.NextComponentOffset, "    Next component offset");
+                builder.AppendLine(component.ReservedOffset5, "    Reserved offset 5");
+                builder.AppendLine(component.ReservedOffset6, "    Reserved offset 6");
+                builder.AppendLine(component.ReservedOffset7, "    Reserved offset 7");
+                builder.AppendLine(component.ReservedOffset8, "    Reserved offset 8");
             }
             builder.AppendLine();
         }

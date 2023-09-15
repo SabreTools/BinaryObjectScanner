@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Version: {header.Version} (0x{header.Version:X})");
+            builder.AppendLine(header.Version, "  Version");
             builder.AppendLine();
         }
 
@@ -73,8 +73,8 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Offset: {lump.Offset} (0x{lump.Offset:X})");
-                builder.AppendLine($"    Length: {lump.Length} (0x{lump.Length:X})");
+                builder.AppendLine(lump.Offset, "    Offset");
+                builder.AppendLine(lump.Length, "    Length");
             }
             builder.AppendLine();
         }
@@ -94,8 +94,8 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Texture count: {header.TextureCount}");
-            builder.AppendLine($"  Offsets:");
+            builder.AppendLine(header.TextureCount, "  Texture count");
+            builder.AppendLine("  Offsets:");
             if (header.Offsets == null || header.Offsets.Length == 0)
             {
                 builder.AppendLine("  No offsets");
@@ -105,7 +105,7 @@ namespace BinaryObjectScanner.Printing
 
             for (int i = 0; i < header.Offsets.Length; i++)
             {
-                builder.AppendLine($"    Offset {i}: {header.Offsets[i]} (0x{header.Offsets[i]:X})");
+                builder.AppendLine(header.Offsets[i], $"    Offset {i}");
             }
             builder.AppendLine();
         }
@@ -135,24 +135,24 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Name: {texture.Name}");
-                builder.AppendLine($"    Width: {texture.Width} (0x{texture.Width:X})");
-                builder.AppendLine($"    Height: {texture.Height} (0x{texture.Height:X})");
-                builder.AppendLine($"    Offsets:");
+                builder.AppendLine(texture.Name, "    Name");
+                builder.AppendLine(texture.Width, "    Width");
+                builder.AppendLine(texture.Height, "    Height");
+                builder.AppendLine("    Offsets:");
                 if (texture.Offsets == null || texture.Offsets.Length == 0)
                 {
-                    builder.AppendLine($"    No offsets");
+                    builder.AppendLine("    No offsets");
                     continue;
                 }
                 else
                 {
                     for (int j = 0; j < texture.Offsets.Length; j++)
                     {
-                        builder.AppendLine($"      Offset {j}: {texture.Offsets[i]} (0x{texture.Offsets[j]:X})");
+                        builder.AppendLine(texture.Offsets[i], $"      Offset {j}");
                     }
                 }
                 // Skip texture data
-                builder.AppendLine($"    Palette size: {texture.PaletteSize} (0x{texture.PaletteSize:X})");
+                builder.AppendLine(texture.PaletteSize, "    Palette size");
                 // Skip palette data
             }
             builder.AppendLine();

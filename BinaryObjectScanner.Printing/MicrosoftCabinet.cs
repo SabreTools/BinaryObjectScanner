@@ -32,38 +32,38 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Signature: {header.Signature}");
-            builder.AppendLine($"  Reserved 1: {header.Reserved1} (0x{header.Reserved1:X})");
-            builder.AppendLine($"  Cabinet size: {header.CabinetSize} (0x{header.CabinetSize:X})");
-            builder.AppendLine($"  Reserved 2: {header.Reserved2} (0x{header.Reserved2:X})");
-            builder.AppendLine($"  Files offset: {header.FilesOffset} (0x{header.FilesOffset:X})");
-            builder.AppendLine($"  Reserved 3: {header.Reserved3} (0x{header.Reserved3:X})");
-            builder.AppendLine($"  Minor version: {header.VersionMinor} (0x{header.VersionMinor:X})");
-            builder.AppendLine($"  Major version: {header.VersionMajor} (0x{header.VersionMajor:X})");
-            builder.AppendLine($"  Folder count: {header.FolderCount} (0x{header.FolderCount:X})");
-            builder.AppendLine($"  File count: {header.FileCount} (0x{header.FileCount:X})");
+            builder.AppendLine(header.Signature, "  Signature");
+            builder.AppendLine(header.Reserved1, "  Reserved 1");
+            builder.AppendLine(header.CabinetSize, "  Cabinet size");
+            builder.AppendLine(header.Reserved2, "  Reserved 2");
+            builder.AppendLine(header.FilesOffset, "  Files offset");
+            builder.AppendLine(header.Reserved3, "  Reserved 3");
+            builder.AppendLine(header.VersionMinor, "  Minor version");
+            builder.AppendLine(header.VersionMajor, "  Major version");
+            builder.AppendLine(header.FolderCount, "  Folder count");
+            builder.AppendLine(header.FileCount, "  File count");
             builder.AppendLine($"  Flags: {header.Flags} (0x{header.Flags:X})");
-            builder.AppendLine($"  Set ID: {header.SetID} (0x{header.SetID:X})");
-            builder.AppendLine($"  Cabinet index: {header.CabinetIndex} (0x{header.CabinetIndex:X})");
+            builder.AppendLine(header.SetID, "  Set ID");
+            builder.AppendLine(header.CabinetIndex, "  Cabinet index");
 
             if (header.Flags.HasFlag(HeaderFlags.RESERVE_PRESENT))
             {
-                builder.AppendLine($"  Header reserved size: {header.HeaderReservedSize} (0x{header.HeaderReservedSize:X})");
-                builder.AppendLine($"  Folder reserved size: {header.FolderReservedSize} (0x{header.FolderReservedSize:X})");
-                builder.AppendLine($"  Data reserved size: {header.DataReservedSize} (0x{header.DataReservedSize:X})");
-                builder.AppendLine($"  Reserved data = {(header.ReservedData == null ? "[NULL]" : BitConverter.ToString(header.ReservedData).Replace(" - ", " "))}");
+                builder.AppendLine(header.HeaderReservedSize, "  Header reserved size");
+                builder.AppendLine(header.FolderReservedSize, "  Folder reserved size");
+                builder.AppendLine(header.DataReservedSize, "  Data reserved size");
+                builder.AppendLine(header.ReservedData, "  Reserved data");
             }
 
             if (header.Flags.HasFlag(HeaderFlags.PREV_CABINET))
             {
-                builder.AppendLine($"  Previous cabinet: {header.CabinetPrev}");
-                builder.AppendLine($"  Previous disk: {header.DiskPrev}");
+                builder.AppendLine(header.CabinetPrev, "  Previous cabinet");
+                builder.AppendLine(header.DiskPrev, "  Previous disk");
             }
 
             if (header.Flags.HasFlag(HeaderFlags.NEXT_CABINET))
             {
-                builder.AppendLine($"  Next cabinet: {header.CabinetNext}");
-                builder.AppendLine($"  Next disk: {header.DiskNext}");
+                builder.AppendLine(header.CabinetNext, "  Next cabinet");
+                builder.AppendLine(header.DiskNext, "  Next disk");
             }
 
             builder.AppendLine();
@@ -94,11 +94,11 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Cab start offset = {entry.CabStartOffset} (0x{entry.CabStartOffset:X})");
-                builder.AppendLine($"    Data count = {entry.DataCount} (0x{entry.DataCount:X})");
-                builder.AppendLine($"    Compression type = {entry.CompressionType} (0x{entry.CompressionType:X})");
-                builder.AppendLine($"    Masked compression type = {entry.CompressionType & CompressionType.MASK_TYPE}");
-                builder.AppendLine($"    Reserved data = {(entry.ReservedData == null ? "[NULL]" : BitConverter.ToString(entry.ReservedData).Replace("-", " "))}");
+                builder.AppendLine(entry.CabStartOffset, "    Cab start offset");
+                builder.AppendLine(entry.DataCount, "    Data count");
+                builder.AppendLine($"    Compression type: {entry.CompressionType} (0x{entry.CompressionType:X})");
+                builder.AppendLine($"    Masked compression type: {entry.CompressionType & CompressionType.MASK_TYPE}");
+                builder.AppendLine(entry.ReservedData, "    Reserved data");
                 builder.AppendLine();
 
                 builder.AppendLine("    Data Blocks");
@@ -119,11 +119,11 @@ namespace BinaryObjectScanner.Printing
                         continue;
                     }
 
-                    builder.AppendLine($"      Checksum = {dataBlock.Checksum} (0x{dataBlock.Checksum:X})");
-                    builder.AppendLine($"      Compressed size = {dataBlock.CompressedSize} (0x{dataBlock.CompressedSize:X})");
-                    builder.AppendLine($"      Uncompressed size = {dataBlock.UncompressedSize} (0x{dataBlock.UncompressedSize:X})");
-                    builder.AppendLine($"      Reserved data = {(dataBlock.ReservedData == null ? "[NULL]" : BitConverter.ToString(dataBlock.ReservedData).Replace("-", " "))}");
-                    //builder.AppendLine($"      Compressed data = {BitConverter.ToString(dataBlock.CompressedData).Replace("-", " ")}");
+                    builder.AppendLine(dataBlock.Checksum, "      Checksum");
+                    builder.AppendLine(dataBlock.CompressedSize, "      Compressed size");
+                    builder.AppendLine(dataBlock.UncompressedSize, "      Uncompressed size");
+                    builder.AppendLine(dataBlock.ReservedData, "      Reserved data");
+                    //builder.AppendLine(dataBlock.CompressedData, "      Compressed data");
                 }
             }
             builder.AppendLine();
@@ -154,13 +154,13 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    File size = {entry.FileSize} (0x{entry.FileSize:X})");
-                builder.AppendLine($"    Folder start offset = {entry.FolderStartOffset} (0x{entry.FolderStartOffset:X})");
-                builder.AppendLine($"    Folder index = {entry.FolderIndex} (0x{entry.FolderIndex:X})");
-                builder.AppendLine($"    Date = {entry.Date} (0x{entry.Date:X})");
-                builder.AppendLine($"    Time = {entry.Time} (0x{entry.Time:X})");
-                builder.AppendLine($"    Attributes = {entry.Attributes} (0x{entry.Attributes:X})");
-                builder.AppendLine($"    Name = {entry.Name ?? "[NULL]"}");
+                builder.AppendLine(entry.FileSize, "    File size");
+                builder.AppendLine(entry.FolderStartOffset, "    Folder start offset");
+                builder.AppendLine($"    Folder index: {entry.FolderIndex} (0x{entry.FolderIndex:X})");
+                builder.AppendLine(entry.Date, "    Date");
+                builder.AppendLine(entry.Time, "    Time");
+                builder.AppendLine($"    Attributes: {entry.Attributes} (0x{entry.Attributes:X})");
+                builder.AppendLine(entry.Name, "    Name");
             }
             builder.AppendLine();
         }

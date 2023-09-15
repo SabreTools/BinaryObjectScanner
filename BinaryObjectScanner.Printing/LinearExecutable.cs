@@ -51,29 +51,29 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Magic number: {header.Magic}");
-            builder.AppendLine($"  Last page bytes: {header.LastPageBytes} (0x{header.LastPageBytes:X})");
-            builder.AppendLine($"  Pages: {header.Pages} (0x{header.Pages:X})");
-            builder.AppendLine($"  Relocation items: {header.RelocationItems} (0x{header.RelocationItems:X})");
-            builder.AppendLine($"  Header paragraph size: {header.HeaderParagraphSize} (0x{header.HeaderParagraphSize:X})");
-            builder.AppendLine($"  Minimum extra paragraphs: {header.MinimumExtraParagraphs} (0x{header.MinimumExtraParagraphs:X})");
-            builder.AppendLine($"  Maximum extra paragraphs: {header.MaximumExtraParagraphs} (0x{header.MaximumExtraParagraphs:X})");
-            builder.AppendLine($"  Initial SS value: {header.InitialSSValue} (0x{header.InitialSSValue:X})");
-            builder.AppendLine($"  Initial SP value: {header.InitialSPValue} (0x{header.InitialSPValue:X})");
-            builder.AppendLine($"  Checksum: {header.Checksum} (0x{header.Checksum:X})");
-            builder.AppendLine($"  Initial IP value: {header.InitialIPValue} (0x{header.InitialIPValue:X})");
-            builder.AppendLine($"  Initial CS value: {header.InitialCSValue} (0x{header.InitialCSValue:X})");
-            builder.AppendLine($"  Relocation table address: {header.RelocationTableAddr} (0x{header.RelocationTableAddr:X})");
-            builder.AppendLine($"  Overlay number: {header.OverlayNumber} (0x{header.OverlayNumber:X})");
+            builder.AppendLine(header.Magic, "  Magic number");
+            builder.AppendLine(header.LastPageBytes, "  Last page bytes");
+            builder.AppendLine(header.Pages, "  Pages");
+            builder.AppendLine(header.RelocationItems, "  Relocation items");
+            builder.AppendLine(header.HeaderParagraphSize, "  Header paragraph size");
+            builder.AppendLine(header.MinimumExtraParagraphs, "  Minimum extra paragraphs");
+            builder.AppendLine(header.MaximumExtraParagraphs, "  Maximum extra paragraphs");
+            builder.AppendLine(header.InitialSSValue, "  Initial SS value");
+            builder.AppendLine(header.InitialSPValue, "  Initial SP value");
+            builder.AppendLine(header.Checksum, "  Checksum");
+            builder.AppendLine(header.InitialIPValue, "  Initial IP value");
+            builder.AppendLine(header.InitialCSValue, "  Initial CS value");
+            builder.AppendLine(header.RelocationTableAddr, "  Relocation table address");
+            builder.AppendLine(header.OverlayNumber, "  Overlay number");
             builder.AppendLine();
 
             builder.AppendLine("  MS-DOS Stub Extended Header Information:");
             builder.AppendLine("  -------------------------");
-            builder.AppendLine($"  Reserved words: {(header.Reserved1 == null ? "[NULL]" : string.Join(", ", header.Reserved1))}");
-            builder.AppendLine($"  OEM identifier: {header.OEMIdentifier} (0x{header.OEMIdentifier:X})");
-            builder.AppendLine($"  OEM information: {header.OEMInformation} (0x{header.OEMInformation:X})");
-            builder.AppendLine($"  Reserved words: {(header.Reserved2 == null ? "[NULL]" : string.Join(", ", header.Reserved2))}");
-            builder.AppendLine($"  New EXE header address: {header.NewExeHeaderAddr} (0x{header.NewExeHeaderAddr:X})");
+            builder.AppendLine(header.Reserved1, "  Reserved words");
+            builder.AppendLine(header.OEMIdentifier, "  OEM identifier");
+            builder.AppendLine(header.OEMInformation, "  OEM information");
+            builder.AppendLine(header.Reserved2, "  Reserved words");
+            builder.AppendLine(header.NewExeHeaderAddr, "  New EXE header address");
             builder.AppendLine();
         }
 
@@ -92,52 +92,52 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Signature: {block.Signature}");
+            builder.AppendLine(block.Signature, "  Signature");
             builder.AppendLine($"  Byte order: {block.ByteOrder} (0x{block.ByteOrder:X})");
             builder.AppendLine($"  Word order: {block.WordOrder} (0x{block.WordOrder:X})");
-            builder.AppendLine($"  Executable format level: {block.ExecutableFormatLevel} (0x{block.ExecutableFormatLevel:X})");
+            builder.AppendLine(block.ExecutableFormatLevel, "  Executable format level");
             builder.AppendLine($"  CPU type: {block.CPUType} (0x{block.CPUType:X})");
             builder.AppendLine($"  Module OS: {block.ModuleOS} (0x{block.ModuleOS:X})");
-            builder.AppendLine($"  Module version: {block.ModuleVersion} (0x{block.ModuleVersion:X})");
+            builder.AppendLine(block.ModuleVersion, "  Module version");
             builder.AppendLine($"  Module type flags: {block.ModuleTypeFlags} (0x{block.ModuleTypeFlags:X})");
-            builder.AppendLine($"  Module number pages: {block.ModuleNumberPages} (0x{block.ModuleNumberPages:X})");
-            builder.AppendLine($"  Initial object CS: {block.InitialObjectCS} (0x{block.InitialObjectCS:X})");
-            builder.AppendLine($"  Initial EIP: {block.InitialEIP} (0x{block.InitialEIP:X})");
-            builder.AppendLine($"  Initial object SS: {block.InitialObjectSS} (0x{block.InitialObjectSS:X})");
-            builder.AppendLine($"  Initial ESP: {block.InitialESP} (0x{block.InitialESP:X})");
-            builder.AppendLine($"  Memory page size: {block.MemoryPageSize} (0x{block.MemoryPageSize:X})");
-            builder.AppendLine($"  Bytes on last page: {block.BytesOnLastPage} (0x{block.BytesOnLastPage:X})");
-            builder.AppendLine($"  Fix-up section size: {block.FixupSectionSize} (0x{block.FixupSectionSize:X})");
-            builder.AppendLine($"  Fix-up section checksum: {block.FixupSectionChecksum} (0x{block.FixupSectionChecksum:X})");
-            builder.AppendLine($"  Loader section size: {block.LoaderSectionSize} (0x{block.LoaderSectionSize:X})");
-            builder.AppendLine($"  Loader section checksum: {block.LoaderSectionChecksum} (0x{block.LoaderSectionChecksum:X})");
-            builder.AppendLine($"  Object table offset: {block.ObjectTableOffset} (0x{block.ObjectTableOffset:X})");
-            builder.AppendLine($"  Object table count: {block.ObjectTableCount} (0x{block.ObjectTableCount:X})");
-            builder.AppendLine($"  Object page map offset: {block.ObjectPageMapOffset} (0x{block.ObjectPageMapOffset:X})");
-            builder.AppendLine($"  Object iterate data map offset: {block.ObjectIterateDataMapOffset} (0x{block.ObjectIterateDataMapOffset:X})");
-            builder.AppendLine($"  Resource table offset: {block.ResourceTableOffset} (0x{block.ResourceTableOffset:X})");
-            builder.AppendLine($"  Resource table count: {block.ResourceTableCount} (0x{block.ResourceTableCount:X})");
-            builder.AppendLine($"  Resident names table offset: {block.ResidentNamesTableOffset} (0x{block.ResidentNamesTableOffset:X})");
-            builder.AppendLine($"  Entry table offset: {block.EntryTableOffset} (0x{block.EntryTableOffset:X})");
-            builder.AppendLine($"  Module directives table offset: {block.ModuleDirectivesTableOffset} (0x{block.ModuleDirectivesTableOffset:X})");
-            builder.AppendLine($"  Module directives table count: {block.ModuleDirectivesCount} (0x{block.ModuleDirectivesCount:X})");
-            builder.AppendLine($"  Fix-up page table offset: {block.FixupPageTableOffset} (0x{block.FixupPageTableOffset:X})");
-            builder.AppendLine($"  Fix-up record table offset: {block.FixupRecordTableOffset} (0x{block.FixupRecordTableOffset:X})");
-            builder.AppendLine($"  Imported modules name table offset: {block.ImportedModulesNameTableOffset} (0x{block.ImportedModulesNameTableOffset:X})");
-            builder.AppendLine($"  Imported modules count: {block.ImportedModulesCount} (0x{block.ImportedModulesCount:X})");
-            builder.AppendLine($"  Imported procedure name table count: {block.ImportProcedureNameTableOffset} (0x{block.ImportProcedureNameTableOffset:X})");
-            builder.AppendLine($"  Per-page checksum table offset: {block.PerPageChecksumTableOffset} (0x{block.PerPageChecksumTableOffset:X})");
-            builder.AppendLine($"  Data pages offset: {block.DataPagesOffset} (0x{block.DataPagesOffset:X})");
-            builder.AppendLine($"  Preload page count: {block.PreloadPageCount} (0x{block.PreloadPageCount:X})");
-            builder.AppendLine($"  Non-resident names table offset: {block.NonResidentNamesTableOffset} (0x{block.NonResidentNamesTableOffset:X})");
-            builder.AppendLine($"  Non-resident names table length: {block.NonResidentNamesTableLength} (0x{block.NonResidentNamesTableLength:X})");
-            builder.AppendLine($"  Non-resident names table checksum: {block.NonResidentNamesTableChecksum} (0x{block.NonResidentNamesTableChecksum:X})");
-            builder.AppendLine($"  Automatic data object: {block.AutomaticDataObject} (0x{block.AutomaticDataObject:X})");
-            builder.AppendLine($"  Debug information offset: {block.DebugInformationOffset} (0x{block.DebugInformationOffset:X})");
-            builder.AppendLine($"  Debug information length: {block.DebugInformationLength} (0x{block.DebugInformationLength:X})");
-            builder.AppendLine($"  Preload instance pages number: {block.PreloadInstancePagesNumber} (0x{block.PreloadInstancePagesNumber:X})");
-            builder.AppendLine($"  Demand instance pages number: {block.DemandInstancePagesNumber} (0x{block.DemandInstancePagesNumber:X})");
-            builder.AppendLine($"  Extra heap allocation: {block.ExtraHeapAllocation} (0x{block.ExtraHeapAllocation:X})");
+            builder.AppendLine(block.ModuleNumberPages, "  Module number pages");
+            builder.AppendLine(block.InitialObjectCS, "  Initial object CS");
+            builder.AppendLine(block.InitialEIP, "  Initial EIP");
+            builder.AppendLine(block.InitialObjectSS, "  Initial object SS");
+            builder.AppendLine(block.InitialESP, "  Initial ESP");
+            builder.AppendLine(block.MemoryPageSize, "  Memory page size");
+            builder.AppendLine(block.BytesOnLastPage, "  Bytes on last page");
+            builder.AppendLine(block.FixupSectionSize, "  Fix-up section size");
+            builder.AppendLine(block.FixupSectionChecksum, "  Fix-up section checksum");
+            builder.AppendLine(block.LoaderSectionSize, "  Loader section size");
+            builder.AppendLine(block.LoaderSectionChecksum, "  Loader section checksum");
+            builder.AppendLine(block.ObjectTableOffset, "  Object table offset");
+            builder.AppendLine(block.ObjectTableCount, "  Object table count");
+            builder.AppendLine(block.ObjectPageMapOffset, "  Object page map offset");
+            builder.AppendLine(block.ObjectIterateDataMapOffset, "  Object iterate data map offset");
+            builder.AppendLine(block.ResourceTableOffset, "  Resource table offset");
+            builder.AppendLine(block.ResourceTableCount, "  Resource table count");
+            builder.AppendLine(block.ResidentNamesTableOffset, "  Resident names table offset");
+            builder.AppendLine(block.EntryTableOffset, "  Entry table offset");
+            builder.AppendLine(block.ModuleDirectivesTableOffset, "  Module directives table offset");
+            builder.AppendLine(block.ModuleDirectivesCount, "  Module directives table count");
+            builder.AppendLine(block.FixupPageTableOffset, "  Fix-up page table offset");
+            builder.AppendLine(block.FixupRecordTableOffset, "  Fix-up record table offset");
+            builder.AppendLine(block.ImportedModulesNameTableOffset, "  Imported modules name table offset");
+            builder.AppendLine(block.ImportedModulesCount, "  Imported modules count");
+            builder.AppendLine(block.ImportProcedureNameTableOffset, "  Imported procedure name table count");
+            builder.AppendLine(block.PerPageChecksumTableOffset, "  Per-page checksum table offset");
+            builder.AppendLine(block.DataPagesOffset, "  Data pages offset");
+            builder.AppendLine(block.PreloadPageCount, "  Preload page count");
+            builder.AppendLine(block.NonResidentNamesTableOffset, "  Non-resident names table offset");
+            builder.AppendLine(block.NonResidentNamesTableLength, "  Non-resident names table length");
+            builder.AppendLine(block.NonResidentNamesTableChecksum, "  Non-resident names table checksum");
+            builder.AppendLine(block.AutomaticDataObject, "  Automatic data object");
+            builder.AppendLine(block.DebugInformationOffset, "  Debug information offset");
+            builder.AppendLine(block.DebugInformationLength, "  Debug information length");
+            builder.AppendLine(block.PreloadInstancePagesNumber, "  Preload instance pages number");
+            builder.AppendLine(block.DemandInstancePagesNumber, "  Demand instance pages number");
+            builder.AppendLine(block.ExtraHeapAllocation, "  Extra heap allocation");
             builder.AppendLine();
         }
 
@@ -166,12 +166,12 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Virtual segment size: {entry.VirtualSegmentSize} (0x{entry.VirtualSegmentSize:X})");
-                builder.AppendLine($"    Relocation base address: {entry.RelocationBaseAddress} (0x{entry.RelocationBaseAddress:X})");
+                builder.AppendLine(entry.VirtualSegmentSize, "    Virtual segment size");
+                builder.AppendLine(entry.RelocationBaseAddress, "    Relocation base address");
                 builder.AppendLine($"    Object flags: {entry.ObjectFlags} (0x{entry.ObjectFlags:X})");
-                builder.AppendLine($"    Page table index: {entry.PageTableIndex} (0x{entry.PageTableIndex:X})");
-                builder.AppendLine($"    Page table entries: {entry.PageTableEntries} (0x{entry.PageTableEntries:X})");
-                builder.AppendLine($"    Reserved: {entry.Reserved} (0x{entry.Reserved:X})");
+                builder.AppendLine(entry.PageTableIndex, "    Page table index");
+                builder.AppendLine(entry.PageTableEntries, "    Page table entries");
+                builder.AppendLine(entry.Reserved, "    Reserved");
             }
             builder.AppendLine();
         }
@@ -201,8 +201,8 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Page data offset: {entry.PageDataOffset} (0x{entry.PageDataOffset:X})");
-                builder.AppendLine($"    Data size: {entry.DataSize} (0x{entry.DataSize:X})");
+                builder.AppendLine(entry.PageDataOffset, "    Page data offset");
+                builder.AppendLine(entry.DataSize, "    Data size");
                 builder.AppendLine($"    Flags: {entry.Flags} (0x{entry.Flags:X})");
             }
             builder.AppendLine();
@@ -234,10 +234,10 @@ namespace BinaryObjectScanner.Printing
                 }
 
                 builder.AppendLine($"    Type ID: {entry.TypeID} (0x{entry.TypeID:X})");
-                builder.AppendLine($"    Name ID: {entry.NameID} (0x{entry.NameID:X})");
-                builder.AppendLine($"    Resource size: {entry.ResourceSize} (0x{entry.ResourceSize:X})");
-                builder.AppendLine($"    Object number: {entry.ObjectNumber} (0x{entry.ObjectNumber:X})");
-                builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                builder.AppendLine(entry.NameID, "    Name ID");
+                builder.AppendLine(entry.ResourceSize, "    Resource size");
+                builder.AppendLine(entry.ObjectNumber, "    Object number");
+                builder.AppendLine(entry.Offset, "    Offset");
             }
             builder.AppendLine();
         }
@@ -267,9 +267,9 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
-                builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
+                builder.AppendLine(entry.Length, "    Length");
+                builder.AppendLine(entry.Name, "    Name");
+                builder.AppendLine(entry.OrdinalNumber, "    Ordinal number");
             }
             builder.AppendLine();
         }
@@ -299,11 +299,11 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Entries: {bundle.Entries} (0x{bundle.Entries:X})");
+                builder.AppendLine(bundle.Entries, "    Entries");
                 builder.AppendLine($"    Bundle type: {bundle.BundleType} (0x{bundle.BundleType:X})");
                 builder.AppendLine();
 
-                builder.AppendLine($"    Entry Table Entries:");
+                builder.AppendLine("    Entry Table Entries:");
                 builder.AppendLine("    -------------------------");
                 if (bundle.TableEntries == null || bundle.TableEntries.Length == 0)
                 {
@@ -325,34 +325,34 @@ namespace BinaryObjectScanner.Printing
                     switch (bundle.BundleType & ~BundleType.ParameterTypingInformationPresent)
                     {
                         case BundleType.UnusedEntry:
-                            builder.AppendLine($"      Unused, empty entry");
+                            builder.AppendLine("      Unused, empty entry");
                             break;
 
                         case BundleType.SixteenBitEntry:
-                            builder.AppendLine($"      Object number: {entry.SixteenBitObjectNumber} (0x{entry.SixteenBitObjectNumber:X})");
+                            builder.AppendLine(entry.SixteenBitObjectNumber, "      Object number");
                             builder.AppendLine($"      Entry flags: {entry.SixteenBitEntryFlags} (0x{entry.SixteenBitEntryFlags:X})");
-                            builder.AppendLine($"      Offset: {entry.SixteenBitOffset} (0x{entry.SixteenBitOffset:X})");
+                            builder.AppendLine(entry.SixteenBitOffset, "      Offset");
                             break;
 
                         case BundleType.TwoEightySixCallGateEntry:
-                            builder.AppendLine($"      Object number: {entry.TwoEightySixObjectNumber} (0x{entry.TwoEightySixObjectNumber:X})");
+                            builder.AppendLine(entry.TwoEightySixObjectNumber, "      Object number");
                             builder.AppendLine($"      Entry flags: {entry.TwoEightySixEntryFlags} (0x{entry.TwoEightySixEntryFlags:X})");
-                            builder.AppendLine($"      Offset: {entry.TwoEightySixOffset} (0x{entry.TwoEightySixOffset:X})");
-                            builder.AppendLine($"      Callgate: {entry.TwoEightySixCallgate} (0x{entry.TwoEightySixCallgate:X})");
+                            builder.AppendLine(entry.TwoEightySixOffset, "      Offset");
+                            builder.AppendLine(entry.TwoEightySixCallgate, "      Callgate");
                             break;
 
                         case BundleType.ThirtyTwoBitEntry:
-                            builder.AppendLine($"      Object number: {entry.ThirtyTwoBitObjectNumber} (0x{entry.ThirtyTwoBitObjectNumber:X})");
+                            builder.AppendLine(entry.ThirtyTwoBitObjectNumber, "      Object number");
                             builder.AppendLine($"      Entry flags: {entry.ThirtyTwoBitEntryFlags} (0x{entry.ThirtyTwoBitEntryFlags:X})");
-                            builder.AppendLine($"      Offset: {entry.ThirtyTwoBitOffset} (0x{entry.ThirtyTwoBitOffset:X})");
+                            builder.AppendLine(entry.ThirtyTwoBitOffset, "      Offset");
                             break;
 
                         case BundleType.ForwarderEntry:
-                            builder.AppendLine($"      Reserved: {entry.ForwarderReserved} (0x{entry.ForwarderReserved:X})");
+                            builder.AppendLine(entry.ForwarderReserved, "      Reserved");
                             builder.AppendLine($"      Forwarder flags: {entry.ForwarderFlags} (0x{entry.ForwarderFlags:X})");
-                            builder.AppendLine($"      Module ordinal number: {entry.ForwarderModuleOrdinalNumber} (0x{entry.ForwarderModuleOrdinalNumber:X})");
-                            builder.AppendLine($"      Procedure name offset: {entry.ProcedureNameOffset} (0x{entry.ProcedureNameOffset:X})");
-                            builder.AppendLine($"      Import ordinal number: {entry.ImportOrdinalNumber} (0x{entry.ImportOrdinalNumber:X})");
+                            builder.AppendLine(entry.ForwarderModuleOrdinalNumber, "      Module ordinal number");
+                            builder.AppendLine(entry.ProcedureNameOffset, "      Procedure name offset");
+                            builder.AppendLine(entry.ImportOrdinalNumber, "      Import ordinal number");
                             break;
 
                         default:
@@ -390,8 +390,8 @@ namespace BinaryObjectScanner.Printing
                 }
 
                 builder.AppendLine($"    Directive number: {entry.DirectiveNumber} (0x{entry.DirectiveNumber:X})");
-                builder.AppendLine($"    Directive data length: {entry.DirectiveDataLength} (0x{entry.DirectiveDataLength:X})");
-                builder.AppendLine($"    Directive data offset: {entry.DirectiveDataOffset} (0x{entry.DirectiveDataOffset:X})");
+                builder.AppendLine(entry.DirectiveDataLength, "    Directive data length");
+                builder.AppendLine(entry.DirectiveDataOffset, "    Directive data offset");
             }
             builder.AppendLine();
         }
@@ -421,13 +421,13 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Entry count: {entry.EntryCount} (0x{entry.EntryCount:X})");
-                builder.AppendLine($"    Ordinal index: {entry.OrdinalIndex} (0x{entry.OrdinalIndex:X})");
-                builder.AppendLine($"    Version: {entry.Version} (0x{entry.Version:X})");
-                builder.AppendLine($"    Object entries count: {entry.ObjectEntriesCount} (0x{entry.ObjectEntriesCount:X})");
-                builder.AppendLine($"    Object number in module: {entry.ObjectNumberInModule} (0x{entry.ObjectNumberInModule:X})");
-                builder.AppendLine($"    Object load base address: {entry.ObjectLoadBaseAddress} (0x{entry.ObjectLoadBaseAddress:X})");
-                builder.AppendLine($"    Object virtual address size: {entry.ObjectVirtualAddressSize} (0x{entry.ObjectVirtualAddressSize:X})");
+                builder.AppendLine(entry.EntryCount, "    Entry count");
+                builder.AppendLine(entry.OrdinalIndex, "    Ordinal index");
+                builder.AppendLine(entry.Version, "    Version");
+                builder.AppendLine(entry.ObjectEntriesCount, "    Object entries count");
+                builder.AppendLine(entry.ObjectNumberInModule, "    Object number in module");
+                builder.AppendLine(entry.ObjectLoadBaseAddress, "    Object load base address");
+                builder.AppendLine(entry.ObjectVirtualAddressSize, "    Object virtual address size");
             }
             builder.AppendLine();
         }
@@ -457,7 +457,7 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Offset: {entry.Offset} (0x{entry.Offset:X})");
+                builder.AppendLine(entry.Offset, "    Offset");
             }
             builder.AppendLine();
         }
@@ -492,27 +492,27 @@ namespace BinaryObjectScanner.Printing
 
                 // Source list flag
                 if (entry.SourceType.HasFlag(FixupRecordSourceType.SourceListFlag))
-                    builder.AppendLine($"    Source offset list count: {entry.SourceOffsetListCount} (0x{entry.SourceOffsetListCount:X})");
+                    builder.AppendLine(entry.SourceOffsetListCount, "    Source offset list count");
                 else
-                    builder.AppendLine($"    Source offset: {entry.SourceOffset} (0x{entry.SourceOffset:X})");
+                    builder.AppendLine(entry.SourceOffset, "    Source offset");
 
                 // OBJECT / TRGOFF
                 if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.InternalReference))
                 {
                     // 16-bit Object Number/Module Ordinal Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        builder.AppendLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
+                        builder.AppendLine(entry.TargetObjectNumberWORD, "    Target object number");
                     else
-                        builder.AppendLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
+                        builder.AppendLine(entry.TargetObjectNumberByte, "    Target object number");
 
                     // 16-bit Selector fixup
                     if (!entry.SourceType.HasFlag(FixupRecordSourceType.SixteenBitSelectorFixup))
                     {
                         // 32-bit Target Offset Flag
                         if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                            builder.AppendLine($"    Target offset: {entry.TargetOffsetDWORD} (0x{entry.TargetOffsetDWORD:X})");
+                            builder.AppendLine(entry.TargetOffsetDWORD, "    Target offset");
                         else
-                            builder.AppendLine($"    Target offset: {entry.TargetOffsetWORD} (0x{entry.TargetOffsetWORD:X})");
+                            builder.AppendLine(entry.TargetOffsetWORD, "    Target offset");
                     }
                 }
 
@@ -521,26 +521,26 @@ namespace BinaryObjectScanner.Printing
                 {
                     // 16-bit Object Number/Module Ordinal Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
+                        builder.AppendLine(entry.OrdinalIndexImportModuleNameTableWORD, "    Ordinal index import module name table");
                     else
-                        builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
+                        builder.AppendLine(entry.OrdinalIndexImportModuleNameTableByte, "    Ordinal index import module name table");
 
                     // 8-bit Ordinal Flag & 32-bit Target Offset Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.EightBitOrdinalFlag))
-                        builder.AppendLine($"    Imported ordinal number: {entry.ImportedOrdinalNumberByte} (0x{entry.ImportedOrdinalNumberByte:X})");
+                        builder.AppendLine(entry.ImportedOrdinalNumberByte, "    Imported ordinal number");
                     else if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                        builder.AppendLine($"    Imported ordinal number: {entry.ImportedOrdinalNumberDWORD} (0x{entry.ImportedOrdinalNumberDWORD:X})");
+                        builder.AppendLine(entry.ImportedOrdinalNumberDWORD, "    Imported ordinal number");
                     else
-                        builder.AppendLine($"    Imported ordinal number: {entry.ImportedOrdinalNumberWORD} (0x{entry.ImportedOrdinalNumberWORD:X})");
+                        builder.AppendLine(entry.ImportedOrdinalNumberWORD, "    Imported ordinal number");
 
                     // Additive Fixup Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
                     {
                         // 32-bit Additive Flag
                         if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                            builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                            builder.AppendLine(entry.AdditiveFixupValueDWORD, "    Additive fixup value");
                         else
-                            builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                            builder.AppendLine(entry.AdditiveFixupValueWORD, "    Additive fixup value");
                     }
                 }
 
@@ -549,24 +549,24 @@ namespace BinaryObjectScanner.Printing
                 {
                     // 16-bit Object Number/Module Ordinal Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableWORD} (0x{entry.OrdinalIndexImportModuleNameTableWORD:X})");
+                        builder.AppendLine(entry.OrdinalIndexImportModuleNameTableWORD, "    Ordinal index import module name table");
                     else
-                        builder.AppendLine($"    Ordinal index import module name table: {entry.OrdinalIndexImportModuleNameTableByte} (0x{entry.OrdinalIndexImportModuleNameTableByte:X})");
+                        builder.AppendLine(entry.OrdinalIndexImportModuleNameTableByte, "    Ordinal index import module name table");
 
                     // 32-bit Target Offset Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitTargetOffsetFlag))
-                        builder.AppendLine($"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableDWORD} (0x{entry.OffsetImportProcedureNameTableDWORD:X})");
+                        builder.AppendLine(entry.OffsetImportProcedureNameTableDWORD, "    Offset import procedure name table");
                     else
-                        builder.AppendLine($"    Offset import procedure name table: {entry.OffsetImportProcedureNameTableWORD} (0x{entry.OffsetImportProcedureNameTableWORD:X})");
+                        builder.AppendLine(entry.OffsetImportProcedureNameTableWORD, "    Offset import procedure name table");
 
                     // Additive Fixup Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
                     {
                         // 32-bit Additive Flag
                         if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                            builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                            builder.AppendLine(entry.AdditiveFixupValueDWORD, "    Additive fixup value");
                         else
-                            builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                            builder.AppendLine(entry.AdditiveFixupValueWORD, "    Additive fixup value");
                     }
                 }
 
@@ -575,39 +575,39 @@ namespace BinaryObjectScanner.Printing
                 {
                     // 16-bit Object Number/Module Ordinal Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.SixteenBitObjectNumberModuleOrdinalFlag))
-                        builder.AppendLine($"    Target object number: {entry.TargetObjectNumberWORD} (0x{entry.TargetObjectNumberWORD:X})");
+                        builder.AppendLine(entry.TargetObjectNumberWORD, "    Target object number");
                     else
-                        builder.AppendLine($"    Target object number: {entry.TargetObjectNumberByte} (0x{entry.TargetObjectNumberByte:X})");
+                        builder.AppendLine(entry.TargetObjectNumberByte, "    Target object number");
 
                     // Additive Fixup Flag
                     if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.AdditiveFixupFlag))
                     {
                         // 32-bit Additive Flag
                         if (entry.TargetFlags.HasFlag(FixupRecordTargetFlags.ThirtyTwoBitAdditiveFixupFlag))
-                            builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueDWORD} (0x{entry.AdditiveFixupValueDWORD:X})");
+                            builder.AppendLine(entry.AdditiveFixupValueDWORD, "    Additive fixup value");
                         else
-                            builder.AppendLine($"    Additive fixup value: {entry.AdditiveFixupValueWORD} (0x{entry.AdditiveFixupValueWORD:X})");
+                            builder.AppendLine(entry.AdditiveFixupValueWORD, "    Additive fixup value");
                     }
                 }
 
                 // No other top-level flags recognized
                 else
                 {
-                    builder.AppendLine($"    Unknown entry format");
+                    builder.AppendLine("    Unknown entry format");
                 }
 
                 builder.AppendLine();
-                builder.AppendLine($"    Source Offset List:");
+                builder.AppendLine("    Source Offset List:");
                 builder.AppendLine("    -------------------------");
                 if (entry.SourceOffsetList == null || entry.SourceOffsetList.Length == 0)
                 {
-                    builder.AppendLine($"    No source offset list entries");
+                    builder.AppendLine("    No source offset list entries");
                 }
                 else
                 {
                     for (int j = 0; j < entry.SourceOffsetList.Length; j++)
                     {
-                        builder.AppendLine($"    Source Offset List Entry {j}: {entry.SourceOffsetList[j]} (0x{entry.SourceOffsetList[j]:X})");
+                        builder.AppendLine(entry.SourceOffsetList[j], $"    Source Offset List Entry {j}");
                     }
                 }
                 builder.AppendLine();
@@ -639,8 +639,8 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
+                builder.AppendLine(entry.Length, "    Length");
+                builder.AppendLine(entry.Name, "    Name");
             }
             builder.AppendLine();
         }
@@ -670,8 +670,8 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
+                builder.AppendLine(entry.Length, "    Length");
+                builder.AppendLine(entry.Name, "    Name");
             }
             builder.AppendLine();
         }
@@ -701,7 +701,7 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Checksum: {entry.Checksum} (0x{entry.Checksum:X})");
+                builder.AppendLine(entry.Checksum, "    Checksum");
             }
             builder.AppendLine();
         }
@@ -731,9 +731,9 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"    Length: {entry.Length} (0x{entry.Length:X})");
-                builder.AppendLine($"    Name: {entry.Name ?? "[NULL]"}");
-                builder.AppendLine($"    Ordinal number: {entry.OrdinalNumber} (0x{entry.OrdinalNumber:X})");
+                builder.AppendLine(entry.Length, "    Length");
+                builder.AppendLine(entry.Name, "    Name");
+                builder.AppendLine(entry.OrdinalNumber, "    Ordinal number");
             }
             builder.AppendLine();
         }
@@ -753,7 +753,7 @@ namespace BinaryObjectScanner.Printing
                 return;
             }
 
-            builder.AppendLine($"  Signature: {di.Signature ?? "[NULL]"}");
+            builder.AppendLine(di.Signature, "  Signature");
             builder.AppendLine($"  Format type: {di.FormatType} (0x{di.FormatType:X})");
             // Debugger data
             builder.AppendLine();

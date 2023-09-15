@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using SabreTools.Models.AACS;
 
@@ -52,7 +51,7 @@ namespace BinaryObjectScanner.Printing
             }
 
             builder.AppendLine($"    Record type: {record.RecordType} (0x{record.RecordType:X})");
-            builder.AppendLine($"    Record length: {record.RecordLength} (0x{record.RecordLength:X})");
+            builder.AppendLine(record.RecordLength, "    Record length");
 
             switch (record)
             {
@@ -95,7 +94,7 @@ namespace BinaryObjectScanner.Printing
             if (record == null)
                 return;
 
-            builder.AppendLine($"    Signature data: {(record.SignatureData == null ? "[NULL]" : BitConverter.ToString(record.SignatureData).Replace('-', ' '))}");
+            builder.AppendLine(record.SignatureData, "    Signature data");
         }
 
 #if NET48
@@ -107,11 +106,11 @@ namespace BinaryObjectScanner.Printing
             if (record == null)
                 return;
 
-            builder.AppendLine($"    Subset Differences:");
+            builder.AppendLine("    Subset Differences:");
             builder.AppendLine("    -------------------------");
             if (record?.SubsetDifferences == null || record.SubsetDifferences.Length == 0)
             {
-                builder.AppendLine($"    No subset differences");
+                builder.AppendLine("    No subset differences");
                 return;
             }
 
@@ -125,8 +124,8 @@ namespace BinaryObjectScanner.Printing
                 }
                 else
                 {
-                    builder.AppendLine($"      Mask: {sd.Mask} (0x{sd.Mask:X})");
-                    builder.AppendLine($"      Number: {sd.Number} (0x{sd.Number:X})");
+                    builder.AppendLine(sd.Mask, "      Mask");
+                    builder.AppendLine(sd.Number, "      Number");
                 }
             }
         }
@@ -140,18 +139,18 @@ namespace BinaryObjectScanner.Printing
             if (record == null)
                 return;
 
-            builder.AppendLine($"    Media Keys:");
+            builder.AppendLine("    Media Keys:");
             builder.AppendLine("    -------------------------");
             if (record?.MediaKeyData == null || record.MediaKeyData.Length == 0)
             {
-                builder.AppendLine($"    No media keys");
+                builder.AppendLine("    No media keys");
                 return;
             }
 
             for (int j = 0; j < record.MediaKeyData.Length; j++)
             {
                 var mk = record.MediaKeyData[j];
-                builder.AppendLine($"      Media key {j}: {(mk == null ? "[NULL]" : BitConverter.ToString(mk).Replace('-', ' '))}");
+                builder.AppendLine(mk, $"      Media key {j}");
             }
         }
 
@@ -165,18 +164,18 @@ namespace BinaryObjectScanner.Printing
                 return;
 
             builder.AppendLine($"    Span: {record.Span} (0x{record.Span:X})");
-            builder.AppendLine($"    Offsets:");
+            builder.AppendLine("    Offsets:");
             builder.AppendLine("    -------------------------");
             if (record.Offsets == null || record.Offsets.Length == 0)
             {
-                builder.AppendLine($"    No offsets");
+                builder.AppendLine("    No offsets");
                 return;
             }
 
             for (int j = 0; j < record.Offsets.Length; j++)
             {
                 var offset = record.Offsets[j];
-                builder.AppendLine($"      Offset {j}: {offset} (0x{offset:X})");
+                builder.AppendLine(offset, $"      Offset {j}");
             }
         }
 
@@ -190,7 +189,7 @@ namespace BinaryObjectScanner.Printing
                 return;
 
             builder.AppendLine($"    Media key block type: {record.MediaKeyBlockType} (0x{record.MediaKeyBlockType:X})");
-            builder.AppendLine($"    Version number: {record.VersionNumber} (0x{record.VersionNumber:X})");
+            builder.AppendLine(record.VersionNumber, "    Version number");
         }
 
 #if NET48
@@ -202,12 +201,12 @@ namespace BinaryObjectScanner.Printing
             if (record == null)
                 return;
 
-            builder.AppendLine($"    Total number of entries: {record.TotalNumberOfEntries} (0x{record.TotalNumberOfEntries:X})");
-            builder.AppendLine($"    Signature Blocks:");
+            builder.AppendLine(record.TotalNumberOfEntries, "    Total number of entries");
+            builder.AppendLine("    Signature Blocks:");
             builder.AppendLine("    -------------------------");
             if (record.SignatureBlocks == null || record.SignatureBlocks.Length == 0)
             {
-                builder.AppendLine($"    No signature blocks");
+                builder.AppendLine("    No signature blocks");
                 return;
             }
 
@@ -221,12 +220,12 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
-                builder.AppendLine($"      Entry Fields:");
+                builder.AppendLine(block.NumberOfEntries, "      Number of entries");
+                builder.AppendLine("      Entry Fields:");
                 builder.AppendLine("      -------------------------");
                 if (block.EntryFields == null || block.EntryFields.Length == 0)
                 {
-                    builder.AppendLine($"      No entry fields");
+                    builder.AppendLine("      No entry fields");
                 }
                 else
                 {
@@ -240,8 +239,8 @@ namespace BinaryObjectScanner.Printing
                         }
                         else
                         {
-                            builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                            builder.AppendLine($"        Drive ID: {(ef.DriveID == null ? "[NULL]" : BitConverter.ToString(ef.DriveID).Replace('-', ' '))}");
+                            builder.AppendLine(ef.Range, "        Range");
+                            builder.AppendLine(ef.DriveID, "        Drive ID");
                         }
                     }
                 }
@@ -258,11 +257,11 @@ namespace BinaryObjectScanner.Printing
                 return;
 
             builder.AppendLine($"    Total number of entries: {record.TotalNumberOfEntries} (0x{record.TotalNumberOfEntries:X})");
-            builder.AppendLine($"    Signature Blocks:");
+            builder.AppendLine("    Signature Blocks:");
             builder.AppendLine("    -------------------------");
             if (record.SignatureBlocks == null || record.SignatureBlocks.Length == 0)
             {
-                builder.AppendLine($"    No signature blocks");
+                builder.AppendLine("    No signature blocks");
                 return;
             }
 
@@ -276,12 +275,12 @@ namespace BinaryObjectScanner.Printing
                     continue;
                 }
 
-                builder.AppendLine($"      Number of entries: {block.NumberOfEntries}");
-                builder.AppendLine($"      Entry Fields:");
+                builder.AppendLine(block.NumberOfEntries, "      Number of entries");
+                builder.AppendLine("      Entry Fields:");
                 builder.AppendLine("      -------------------------");
                 if (block.EntryFields == null || block.EntryFields.Length == 0)
                 {
-                    builder.AppendLine($"      No entry fields");
+                    builder.AppendLine("      No entry fields");
                     continue;
                 }
 
@@ -296,8 +295,8 @@ namespace BinaryObjectScanner.Printing
                     else
                     {
 
-                        builder.AppendLine($"        Range: {ef.Range} (0x{ef.Range:X})");
-                        builder.AppendLine($"        Host ID: {(ef.HostID == null ? "[NULL]" : BitConverter.ToString(ef.HostID).Replace('-', ' '))}");
+                        builder.AppendLine(ef.Range, "        Range");
+                        builder.AppendLine(ef.HostID, "        Host ID");
                     }
                 }
             }
@@ -312,7 +311,7 @@ namespace BinaryObjectScanner.Printing
             if (record == null)
                 return;
 
-            builder.AppendLine($"    Ciphertext value: {(record.CiphertextValue == null ? "[NULL]" : BitConverter.ToString(record.CiphertextValue).Replace('-', ' '))}");
+            builder.AppendLine(record.CiphertextValue, "    Ciphertext value");
         }
 
 #if NET48
@@ -324,7 +323,7 @@ namespace BinaryObjectScanner.Printing
             if (record == null)
                 return;
 
-            builder.AppendLine($"    Copyright: {record.Copyright ?? "[NULL]"}");
+            builder.AppendLine(record.Copyright, "    Copyright");
         }
     }
 }
