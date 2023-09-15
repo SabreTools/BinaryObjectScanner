@@ -100,21 +100,7 @@ namespace BinaryObjectScanner.Printing
                     Print(builder, directory7.DirectoryHeader);
                     Print(builder, directory7.Sections);
                     Print(builder, directory7.Folders);
-
-/* Unmerged change from project 'b:\Programs\GitHub\BurnOutSharp\BinaryObjectScanner.Printing\BinaryObjectScanner.Printing.csproj ($net6.0)'
-Before:
                     Print(builder, directory7.Files);
-After:
-                    Print(builder, (File6?[]?)directory7.Files);
-*/
-
-/* Unmerged change from project 'b:\Programs\GitHub\BurnOutSharp\BinaryObjectScanner.Printing\BinaryObjectScanner.Printing.csproj ($net7.0)'
-Before:
-                    Print(builder, directory7.Files);
-After:
-                    Print(builder, (File6?[]?)directory7.Files);
-*/
-                    Print(builder, (File6[])directory7.Files);
                     break;
 
                 default:
