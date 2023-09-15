@@ -225,7 +225,7 @@ namespace BinaryObjectScanner.Printing
                     }
 #endif
                     builder.AppendLine(typeAndNameString.Value.Length, "    Length");
-                    builder.AppendLine($"    Text: {(typeAndNameString.Value.Text != null ? Encoding.ASCII.GetString(typeAndNameString.Value.Text).TrimEnd('\0') : "[EMPTY]")}");
+                    builder.AppendLine(typeAndNameString.Value.Text, "    Text", Encoding.ASCII);
                 }
             }
             builder.AppendLine();
@@ -257,7 +257,7 @@ namespace BinaryObjectScanner.Printing
                 }
 
                 builder.AppendLine(entry.Length, "    Length");
-                builder.AppendLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString).TrimEnd('\0') : "[EMPTY]")}");
+                builder.AppendLine(entry.NameString, "    Name string", Encoding.ASCII);
                 builder.AppendLine(entry.OrdinalNumber, "    Ordinal number");
             }
             builder.AppendLine();
@@ -324,7 +324,7 @@ namespace BinaryObjectScanner.Printing
                     }
 #endif
                 builder.AppendLine(entry.Value.Length, "    Length");
-                builder.AppendLine($"    Name string: {(entry.Value.NameString != null ? Encoding.ASCII.GetString(entry.Value.NameString) : "[EMPTY]")}");
+                builder.AppendLine(entry.Value.NameString, "    Name string", Encoding.ASCII);
             }
             builder.AppendLine();
         }
@@ -399,7 +399,7 @@ namespace BinaryObjectScanner.Printing
                 }
 
                 builder.AppendLine(entry.Length, "    Length");
-                builder.AppendLine($"    Name string: {(entry.NameString != null ? Encoding.ASCII.GetString(entry.NameString) : "[EMPTY]")}");
+                builder.AppendLine(entry.NameString, "    Name string", Encoding.ASCII);
                 builder.AppendLine(entry.OrdinalNumber, "    Ordinal number");
             }
             builder.AppendLine();

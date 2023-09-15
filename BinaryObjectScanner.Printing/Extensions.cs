@@ -18,6 +18,19 @@ namespace BinaryObjectScanner.Printing
             return sb.AppendLine($"{prefixString}: {valueString}");
         }
 
+                /// <summary>
+        /// Append a line containing a UInt8[] value as a string to a StringBuilder
+        /// </summary>
+#if NET48
+        public static StringBuilder AppendLine(this StringBuilder sb, byte[] value, string prefixString, Encoding encoding)
+#else
+        public static StringBuilder AppendLine(this StringBuilder sb, byte[]? value, string prefixString, Encoding encoding)
+#endif
+        {
+            string valueString = (value == null ? "[NULL]" : encoding.GetString(value).Replace("\0", string.Empty));
+            return sb.AppendLine($"{prefixString}: {valueString}");
+        }
+
         /// <summary>
         /// Append a line containing a Int16[] value to a StringBuilder
         /// </summary>
