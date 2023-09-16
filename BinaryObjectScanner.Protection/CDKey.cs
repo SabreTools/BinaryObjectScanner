@@ -1,6 +1,6 @@
 ﻿using System;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Wrappers;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {

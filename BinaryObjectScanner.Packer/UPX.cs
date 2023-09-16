@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Wrappers;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {

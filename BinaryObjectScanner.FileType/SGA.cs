@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using BinaryObjectScanner.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -27,7 +28,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create the wrapper
-                Wrappers.SGA sga = Wrappers.SGA.Create(stream);
+                SabreTools.Serialization.Wrappers.SGA sga = SabreTools.Serialization.Wrappers.SGA.Create(stream);
                 if (sga == null)
                     return null;
 

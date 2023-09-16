@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
-using BinaryObjectScanner.Wrappers;
 using SabreTools.IO;
+using SabreTools.Serialization.Wrappers;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BinaryObjectScanner.Packer

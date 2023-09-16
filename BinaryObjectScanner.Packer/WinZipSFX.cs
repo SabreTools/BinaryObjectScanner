@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Wrappers;
+using SabreTools.Serialization.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 

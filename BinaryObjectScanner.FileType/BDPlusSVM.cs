@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create the wrapper
-                Wrappers.BDPlusSVM svm = Wrappers.BDPlusSVM.Create(stream);
+                SabreTools.Serialization.Wrappers.BDPlusSVM svm = SabreTools.Serialization.Wrappers.BDPlusSVM.Create(stream);
                 if (svm == null)
                     return null;
 

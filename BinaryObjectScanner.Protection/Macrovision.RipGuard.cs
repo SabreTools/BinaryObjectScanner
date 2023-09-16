@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Matching;
-using BinaryObjectScanner.Wrappers;
+using SabreTools.Serialization.Wrappers;
 using static BinaryObjectScanner.Utilities.Hashing;
 
 namespace BinaryObjectScanner.Protection

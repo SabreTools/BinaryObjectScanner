@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Wrappers;
 using SabreTools.IO;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {

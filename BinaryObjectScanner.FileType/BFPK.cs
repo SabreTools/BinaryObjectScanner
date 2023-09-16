@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using BinaryObjectScanner.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -27,7 +28,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create the wrapper
-                Wrappers.BFPK bfpk = Wrappers.BFPK.Create(stream);
+                SabreTools.Serialization.Wrappers.BFPK bfpk = SabreTools.Serialization.Wrappers.BFPK.Create(stream);
                 if (bfpk == null)
                     return null;
 

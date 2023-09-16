@@ -7,6 +7,7 @@ using BinaryObjectScanner.Utilities;
 using BinaryObjectScanner.Wrappers;
 using OpenMcdf;
 using SabreTools.IO;
+using SabreTools.Serialization.Wrappers;
 using SharpCompress.Archives;
 using SharpCompress.Archives.GZip;
 using SharpCompress.Archives.Rar;

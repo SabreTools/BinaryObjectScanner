@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Wrappers;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {

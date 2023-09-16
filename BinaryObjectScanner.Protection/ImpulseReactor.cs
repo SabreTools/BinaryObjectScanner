@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Matching;
-using BinaryObjectScanner.Wrappers;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {

@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using BinaryObjectScanner.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -27,7 +28,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create the wrapper
-                Wrappers.GCF gcf = Wrappers.GCF.Create(stream);
+                SabreTools.Serialization.Wrappers.GCF gcf = SabreTools.Serialization.Wrappers.GCF.Create(stream);
                 if (gcf == null)
                     return null;
 

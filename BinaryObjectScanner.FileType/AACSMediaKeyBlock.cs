@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create the wrapper
-                Wrappers.AACSMediaKeyBlock mkb = Wrappers.AACSMediaKeyBlock.Create(stream);
+                SabreTools.Serialization.Wrappers.AACSMediaKeyBlock mkb = SabreTools.Serialization.Wrappers.AACSMediaKeyBlock.Create(stream);
                 if (mkb == null)
                     return null;
 

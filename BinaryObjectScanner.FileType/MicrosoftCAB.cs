@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.FileType
                 return null;
 
                 // Open the cab file
-                var cabFile = MicrosoftCabinet.Create(stream);
+                var cabFile = SabreTools.Serialization.Wrappers.MicrosoftCabinet.Create(stream);
                 if (cabFile == null)
                     return null;
 
