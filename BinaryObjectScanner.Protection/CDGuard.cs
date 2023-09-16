@@ -27,26 +27,26 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // TODO: Investigate the numerous ".guard" sections present in "Randevu.exe" in Redump entry 97142.
 
             // Get the export directory table
-            if (pex.ExportTable?.ExportDirectoryTable != null)
+            if (pex.Model.ExportTable?.ExportDirectoryTable != null)
             {
                 // Found in "cdguard.dll" in Redump entry 97142 and IA item "pahgeby-he3hakomkou".
-                bool match = pex.ExportTable.ExportDirectoryTable.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true;
+                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true;
                 if (match)
                     return "CD-Guard Copy Protection System";
             }
 
             // Get the import directory table
-            if (pex.ImportTable?.ImportDirectoryTable != null)
+            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
                 // Found in "Randevu.exe" in Redump entry 97142.
-                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true);
+                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true);
                 if (match)
                       return "CD-Guard Copy Protection System";
             }

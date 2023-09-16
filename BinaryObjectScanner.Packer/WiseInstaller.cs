@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.Packer
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -120,7 +120,7 @@ namespace BinaryObjectScanner.Packer
         private FormatProperty MatchesNEVersion(NewExecutable nex)
         {
             // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
-            switch (nex.Stub_NewExeHeaderAddr)
+            switch (nex.Model.Stub?.Header?.NewExeHeaderAddr)
             {
                 case 0x84b0:
                     return new FormatProperty { Dll = false, ArchiveStart = 0x11, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = true };

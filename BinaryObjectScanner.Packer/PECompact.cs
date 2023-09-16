@@ -12,12 +12,12 @@ namespace BinaryObjectScanner.Packer
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // 0x4F434550 is "PECO"
-            if (pex.PointerToSymbolTable == 0x4F434550)
+            if (pex.Model.COFFFileHeader?.PointerToSymbolTable == 0x4F434550)
                 return "PE Compact v1.x";
 
             // TODO: Get more granular version detection. PiD is somehow able to detect version ranges based

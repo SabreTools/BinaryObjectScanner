@@ -13,50 +13,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Signature"/>
-#if NET48
-        public string Signature => this.Model.Signature;
-#else
-        public string? Signature => this.Model.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Unknown1"/>
-#if NET48
-        public byte[] Unknown1 => this.Model.Unknown1;
-#else
-        public byte[]? Unknown1 => this.Model.Unknown1;
-#endif
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Year"/>
-        public ushort Year => this.Model.Year;
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Month"/>
-        public byte Month => this.Model.Month;
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Day"/>
-        public byte Day => this.Model.Day;
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Unknown2"/>
-#if NET48
-        public byte[] Unknown2 => this.Model.Unknown2;
-#else
-        public byte[]? Unknown2 => this.Model.Unknown2;
-#endif
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Length"/>
-        public uint Length => this.Model.Length;
-
-        /// <inheritdoc cref="Models.BDPlus.SVM.Data"/>
-#if NET48
-        public byte[] Data => this.Model.Data;
-#else
-        public byte[]? Data => this.Model.Data;
-#endif
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>

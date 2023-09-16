@@ -14,183 +14,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved1"/>
-#if NET48
-        public uint Reserved1 => this.Model.Header.Reserved1;
-#else
-        public uint? Reserved1 => this.Model.Header?.Reserved1;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetSize"/>
-#if NET48
-        public uint CabinetSize => this.Model.Header.CabinetSize;
-#else
-        public uint? CabinetSize => this.Model.Header?.CabinetSize;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved2"/>
-#if NET48
-        public uint Reserved2 => this.Model.Header.Reserved2;
-#else
-        public uint? Reserved2 => this.Model.Header?.Reserved2;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FilesOffset"/>
-#if NET48
-        public uint FilesOffset => this.Model.Header.FilesOffset;
-#else
-        public uint? FilesOffset => this.Model.Header?.FilesOffset;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.Reserved3"/>
-#if NET48
-        public uint Reserved3 => this.Model.Header.Reserved3;
-#else
-        public uint? Reserved3 => this.Model.Header?.Reserved3;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.VersionMinor"/>
-#if NET48
-        public byte VersionMinor => this.Model.Header.VersionMinor;
-#else
-        public byte? VersionMinor => this.Model.Header?.VersionMinor;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.VersionMajor"/>
-#if NET48
-        public byte VersionMajor => this.Model.Header.VersionMajor;
-#else
-        public byte? VersionMajor => this.Model.Header?.VersionMajor;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FolderCount"/>
-#if NET48
-        public ushort FolderCount => this.Model.Header.FolderCount;
-#else
-        public ushort? FolderCount => this.Model.Header?.FolderCount;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
-#if NET48
-        public ushort FileCount => this.Model.Header.FileCount;
-#else
-        public ushort? FileCount => this.Model.Header?.FileCount;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FileCount"/>
-#if NET48
-        public SabreTools.Models.MicrosoftCabinet.HeaderFlags Flags => this.Model.Header.Flags;
-#else
-        public SabreTools.Models.MicrosoftCabinet.HeaderFlags? Flags => this.Model.Header?.Flags;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.SetID"/>
-#if NET48
-        public ushort SetID => this.Model.Header.SetID;
-#else
-        public ushort? SetID => this.Model.Header?.SetID;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetIndex"/>
-#if NET48
-        public ushort CabinetIndex => this.Model.Header.CabinetIndex;
-#else
-        public ushort? CabinetIndex => this.Model.Header?.CabinetIndex;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.HeaderReservedSize"/>
-#if NET48
-        public ushort HeaderReservedSize => this.Model.Header.HeaderReservedSize;
-#else
-        public ushort? HeaderReservedSize => this.Model.Header?.HeaderReservedSize;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.FolderReservedSize"/>
-#if NET48
-        public byte FolderReservedSize => this.Model.Header.FolderReservedSize;
-#else
-        public byte? FolderReservedSize => this.Model.Header?.FolderReservedSize;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DataReservedSize"/>
-#if NET48
-        public byte DataReservedSize => this.Model.Header.DataReservedSize;
-#else
-        public byte? DataReservedSize => this.Model.Header?.DataReservedSize;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.ReservedData"/>
-#if NET48
-        public byte[] ReservedData => this.Model.Header.ReservedData;
-#else
-        public byte[]? ReservedData => this.Model.Header?.ReservedData;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetPrev"/>
-#if NET48
-        public string CabinetPrev => this.Model.Header.CabinetPrev;
-#else
-        public string? CabinetPrev => this.Model.Header?.CabinetPrev;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskPrev"/>
-#if NET48
-        public string DiskPrev => this.Model.Header.DiskPrev;
-#else
-        public string? DiskPrev => this.Model.Header?.DiskPrev;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.CabinetNext"/>
-#if NET48
-        public string CabinetNext => this.Model.Header.CabinetNext;
-#else
-        public string? CabinetNext => this.Model.Header?.CabinetNext;
-#endif
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.CFHEADER.DiskNext"/>
-#if NET48
-        public string DiskNext => this.Model.Header.DiskNext;
-#else
-        public string? DiskNext => this.Model.Header?.DiskNext;
-#endif
-
-        #endregion
-
-        #region Folders
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Folders"/>
-#if NET48
-        public SabreTools.Models.MicrosoftCabinet.CFFOLDER[] Folders => this.Model.Folders;
-#else
-        public SabreTools.Models.MicrosoftCabinet.CFFOLDER?[]? Folders => this.Model.Folders;
-#endif
-
-        #endregion
-
-        #region Files
-
-        /// <inheritdoc cref="Models.MicrosoftCabinet.Cabinet.Files"/>
-#if NET48
-        public SabreTools.Models.MicrosoftCabinet.CFFILE[] Files => this.Model.Files;
-#else
-        public SabreTools.Models.MicrosoftCabinet.CFFILE?[]? Files => this.Model.Files;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -322,11 +145,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid folder index
-            if (folderIndex < 0 || Folders == null || folderIndex >= Folders.Length)
+            if (folderIndex < 0 || this.Model.Folders == null || folderIndex >= this.Model.Folders.Length)
                 return null;
 
             // Get the folder header
-            var folder = Folders[folderIndex];
+            var folder = this.Model.Folders[folderIndex];
             if (folder == null)
                 return null;
 
@@ -395,12 +218,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAll(string outputDirectory)
         {
             // If we have no files
-            if (Files == null || Files.Length == 0)
+            if (this.Model.Files == null || this.Model.Files.Length == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < Files.Length; i++)
+            for (int i = 0; i < this.Model.Files.Length; i++)
             {
                 allExtracted &= ExtractFile(i, outputDirectory);
             }
@@ -417,7 +240,7 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have an invalid file index
-            if (index < 0 || Files == null || index >= Files.Length)
+            if (index < 0 || this.Model.Files == null || index >= this.Model.Files.Length)
                 return false;
 
             // If we have an invalid output directory
@@ -428,7 +251,7 @@ namespace BinaryObjectScanner.Wrappers
             Directory.CreateDirectory(outputDirectory);
 
             // Get the file header
-            var file = Files[index];
+            var file = this.Model.Files[index];
             if (file == null || file.FileSize == 0)
                 return false;
 
@@ -461,11 +284,11 @@ namespace BinaryObjectScanner.Wrappers
         public DateTime? GetDateTime(int fileIndex)
         {
             // If we have an invalid file index
-            if (fileIndex < 0 || Files == null || fileIndex >= Files.Length)
+            if (fileIndex < 0 || this.Model.Files == null || fileIndex >= this.Model.Files.Length)
                 return null;
 
             // Get the file header
-            var file = Files[fileIndex];
+            var file = this.Model.Files[fileIndex];
             if (file == null)
                 return null;
 
@@ -505,11 +328,11 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have an invalid file index
-            if (fileIndex < 0 || Files == null || fileIndex >= Files.Length)
+            if (fileIndex < 0 || this.Model.Files == null || fileIndex >= this.Model.Files.Length)
                 return null;
 
             // Get the file header
-            var file = Files[fileIndex];
+            var file = this.Model.Files[fileIndex];
             if (file == null || file.FileSize == 0)
                 return null;
 

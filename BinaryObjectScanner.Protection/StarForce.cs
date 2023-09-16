@@ -21,7 +21,7 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -52,10 +52,10 @@ namespace BinaryObjectScanner.Protection
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // Check the export name table
-            if (pex.ExportNameTable != null)
+            if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
                 // TODO: Should we just check for "PSA_*" instead of a single entry?
-                if (pex.ExportNameTable.Any(s => s == "PSA_GetDiscLabel"))
+                if (pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "PSA_GetDiscLabel"))
                     return $"StarForce {pex.GetInternalVersion()}";
             }
 

@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
             
             // Check for "Inno" in the reserved words
-            if (nex.Stub_Reserved2[4] == 0x6E49 && nex.Stub_Reserved2[5] == 0x6F6E)
+            if (nex.Model.Stub?.Header?.Reserved2[4] == 0x6E49 && nex.Model.Stub?.Header?.Reserved2[5] == 0x6F6E)
             {
                 string version = GetOldVersion(file, nex);
                 if (!string.IsNullOrWhiteSpace(version))
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Packer
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 

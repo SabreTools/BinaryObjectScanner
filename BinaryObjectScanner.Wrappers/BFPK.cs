@@ -14,46 +14,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.BFPK.Header.Magic"/>
-#if NET48
-        public string Magic => this.Model.Header.Magic;
-#else
-        public string? Magic => this.Model.Header?.Magic;
-#endif
-
-        /// <inheritdoc cref="Models.BFPK.Header.Version"/>
-#if NET48
-        public int Version => this.Model.Header.Version;
-#else
-        public int? Version => this.Model.Header?.Version;
-#endif
-
-        /// <inheritdoc cref="Models.BFPK.Header.Files"/>
-#if NET48
-        public int Files => this.Model.Header.Files;
-#else
-        public int? Files => this.Model.Header?.Files;
-#endif
-
-        #endregion
-
-        #region Files
-
-        /// <inheritdoc cref="Models.BFPK.Archive.Files"/>
-#if NET48
-        public SabreTools.Models.BFPK.FileEntry[] FileTable => this.Model.Files;
-#else
-        public SabreTools.Models.BFPK.FileEntry?[]? FileTable => this.Model.Files;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -144,12 +104,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAll(string outputDirectory)
         {
             // If we have no files
-            if (FileTable == null || FileTable.Length == 0)
+            if (this.Model.Files == null || this.Model.Files.Length == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < FileTable.Length; i++)
+            for (int i = 0; i < this.Model.Files.Length; i++)
             {
                 allExtracted &= ExtractFile(i, outputDirectory);
             }
@@ -166,15 +126,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have no files
-            if (Files == 0 || FileTable == null || FileTable.Length == 0)
+            if (this.Model.Files == null || this.Model.Files.Length == 0)
                 return false;
 
             // If we have an invalid index
-            if (index < 0 || index >= FileTable.Length)
+            if (index < 0 || index >= this.Model.Files.Length)
                 return false;
 
             // Get the file information
-            var file = FileTable[index];
+            var file = this.Model.Files[index];
             if (file == null)
                 return false;
 

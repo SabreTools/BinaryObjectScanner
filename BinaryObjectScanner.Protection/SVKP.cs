@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -77,7 +77,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // 0x504B5653 is "SVKP"
-            if (pex.PointerToSymbolTable == 0x504B5653)
+            if (pex.Model.COFFFileHeader?.PointerToSymbolTable == 0x504B5653)
                 return "SVKP";
 
             // Get the .svkp section, if it exists.

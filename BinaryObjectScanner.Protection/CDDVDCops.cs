@@ -102,7 +102,7 @@ namespace BinaryObjectScanner.Protection
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
-            bool importedNameTableEntries = nex.ImportedNameTable?
+            bool importedNameTableEntries = nex.Model.ImportedNameTable?
                 .Select(kvp => kvp.Value)
                 .Where(inte => inte.NameString != null)
                 .Select(inte => Encoding.ASCII.GetString(inte.NameString))
@@ -112,7 +112,7 @@ namespace BinaryObjectScanner.Protection
 
             // Check the nonresident-name table
             // Found in "CDCOPS.DLL" in Redump entry 85077.
-            bool nonresidentNameTableEntries = nex.NonResidentNameTable?
+            bool nonresidentNameTableEntries = nex.Model.NonResidentNameTable?
                 .Where(nrnte => nrnte.NameString != null)
                 .Select(nrnte => Encoding.ASCII.GetString(nrnte.NameString))
                 .Any(s => s.Contains("CDcops assembly-language DLL")) ?? false;
@@ -126,7 +126,7 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 

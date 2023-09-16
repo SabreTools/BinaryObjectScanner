@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Most of the relevant executables are highly obfuscated, making executable detection mostly impractical.
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 

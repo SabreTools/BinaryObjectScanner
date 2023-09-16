@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -69,7 +69,7 @@ namespace BinaryObjectScanner.Protection
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
             // Found in "ByteShield.dll" in Redump entry 6236
-            name = pex.ExportTable?.ExportDirectoryTable?.Name;
+            name = pex.Model.ExportTable?.ExportDirectoryTable?.Name;
             if (name?.Equals("ByteShield Client") == true)
                 return "ByteShield Component Module";
 

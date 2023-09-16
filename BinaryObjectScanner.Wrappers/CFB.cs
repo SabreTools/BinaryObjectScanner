@@ -14,202 +14,24 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.Signature"/>
-#if NET48
-        public ulong Signature => this.Model.Header.Signature;
-#else
-        public ulong? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.CLSID"/>
-#if NET48
-        public Guid CLSID => this.Model.Header.CLSID;
-#else
-        public Guid? CLSID => this.Model.Header?.CLSID;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.MinorVersion"/>
-#if NET48
-        public ushort MinorVersion => this.Model.Header.MinorVersion;
-#else
-        public ushort? MinorVersion => this.Model.Header?.MinorVersion;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.MajorVersion"/>
-#if NET48
-        public ushort MajorVersion => this.Model.Header.MajorVersion;
-#else
-        public ushort? MajorVersion => this.Model.Header?.MajorVersion;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.ByteOrder"/>
-#if NET48
-        public ushort ByteOrder => this.Model.Header.ByteOrder;
-#else
-        public ushort? ByteOrder => this.Model.Header?.ByteOrder;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.SectorShift"/>
-#if NET48
-        public ushort SectorShift => this.Model.Header.SectorShift;
-#else
-        public ushort? SectorShift => this.Model.Header?.SectorShift;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.MiniSectorShift"/>
-#if NET48
-        public ushort MiniSectorShift => this.Model.Header.MiniSectorShift;
-#else
-        public ushort? MiniSectorShift => this.Model.Header?.MiniSectorShift;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.Reserved"/>
-#if NET48
-        public byte[] Reserved => this.Model.Header.Reserved;
-#else
-        public byte[]? Reserved => this.Model.Header?.Reserved;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDirectorySectors"/>
-#if NET48
-        public uint NumberOfDirectorySectors => this.Model.Header.NumberOfDirectorySectors;
-#else
-        public uint? NumberOfDirectorySectors => this.Model.Header?.NumberOfDirectorySectors;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfFATSectors"/>
-#if NET48
-        public uint NumberOfFATSectors => this.Model.Header.NumberOfFATSectors;
-#else
-        public uint? NumberOfFATSectors => this.Model.Header?.NumberOfFATSectors;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.FirstDirectorySectorLocation"/>
-#if NET48
-        public uint FirstDirectorySectorLocation => this.Model.Header.FirstDirectorySectorLocation;
-#else
-        public uint? FirstDirectorySectorLocation => this.Model.Header?.FirstDirectorySectorLocation;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.TransactionSignatureNumber"/>
-#if NET48
-        public uint TransactionSignatureNumber => this.Model.Header.TransactionSignatureNumber;
-#else
-        public uint? TransactionSignatureNumber => this.Model.Header?.TransactionSignatureNumber;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.MiniStreamCutoffSize"/>
-#if NET48
-        public uint MiniStreamCutoffSize => this.Model.Header.MiniStreamCutoffSize;
-#else
-        public uint? MiniStreamCutoffSize => this.Model.Header?.MiniStreamCutoffSize;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.FirstMiniFATSectorLocation"/>
-#if NET48
-        public uint FirstMiniFATSectorLocation => this.Model.Header.FirstMiniFATSectorLocation;
-#else
-        public uint? FirstMiniFATSectorLocation => this.Model.Header?.FirstMiniFATSectorLocation;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfMiniFATSectors"/>
-#if NET48
-        public uint NumberOfMiniFATSectors => this.Model.Header.NumberOfMiniFATSectors;
-#else
-        public uint? NumberOfMiniFATSectors => this.Model.Header?.NumberOfMiniFATSectors;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.FirstDIFATSectorLocation"/>
-#if NET48
-        public uint FirstDIFATSectorLocation => this.Model.Header.FirstDIFATSectorLocation;
-#else
-        public uint? FirstDIFATSectorLocation => this.Model.Header?.FirstDIFATSectorLocation;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.NumberOfDIFATSectors"/>
-#if NET48
-        public uint NumberOfDIFATSectors => this.Model.Header.NumberOfDIFATSectors;
-#else
-        public uint? NumberOfDIFATSectors => this.Model.Header?.NumberOfDIFATSectors;
-#endif
-
-        /// <inheritdoc cref="Models.CFB.FileHeader.DIFAT"/>
-#if NET48
-        public SabreTools.Models.CFB.SectorNumber[] DIFAT => this.Model.Header.DIFAT;
-#else
-        public SabreTools.Models.CFB.SectorNumber?[]? DIFAT => this.Model.Header?.DIFAT;
-#endif
-
-        #endregion
-
-        #region FAT Sector Numbers
-
-        /// <inheritdoc cref="Models.CFB.Binary.FATSectorNumbers"/>
-#if NET48
-        public SabreTools.Models.CFB.SectorNumber[] FATSectorNumbers => this.Model.FATSectorNumbers;
-#else
-        public SabreTools.Models.CFB.SectorNumber?[]? FATSectorNumbers => this.Model.FATSectorNumbers;
-#endif
-
-        #endregion
-
-        #region Mini FAT Sector Numbers
-
-        /// <inheritdoc cref="Models.CFB.Binary.MiniFATSectorNumbers"/>
-#if NET48
-        public SabreTools.Models.CFB.SectorNumber[] MiniFATSectorNumbers => this.Model.MiniFATSectorNumbers;
-#else
-        public SabreTools.Models.CFB.SectorNumber?[]? MiniFATSectorNumbers => this.Model.MiniFATSectorNumbers;
-#endif
-
-        #endregion
-
-        #region DIFAT Sector Numbers
-
-        /// <inheritdoc cref="Models.CFB.Binary.DIFATSectorNumbers"/>
-#if NET48
-        public SabreTools.Models.CFB.SectorNumber[] DIFATSectorNumbers => this.Model.DIFATSectorNumbers;
-#else
-        public SabreTools.Models.CFB.SectorNumber?[]? DIFATSectorNumbers => this.Model.DIFATSectorNumbers;
-#endif
-
-        #endregion
-
-        #region Directory Entries
-
-        /// <inheritdoc cref="Models.CFB.Binary.DirectoryEntries"/>
-#if NET48
-        public SabreTools.Models.CFB.DirectoryEntry[] DirectoryEntries => this.Model.DirectoryEntries;
-#else
-        public SabreTools.Models.CFB.DirectoryEntry?[]? DirectoryEntries => this.Model.DirectoryEntries;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Extension Properties
 
         /// <summary>
         /// Normal sector size in bytes
         /// </summary>
 #if NET48
-        public long SectorSize => (long)Math.Pow(2, SectorShift);
+        public long SectorSize => (long)Math.Pow(2, this.Model.Header.SectorShift);
 #else
-        public long SectorSize => (long)Math.Pow(2, SectorShift ?? 0);
+        public long SectorSize => (long)Math.Pow(2, this.Model.Header?.SectorShift ?? 0);
 #endif
 
         /// <summary>
         /// Mini sector size in bytes
         /// </summary>
 #if NET48
-        public long MiniSectorSize => (long)Math.Pow(2, MiniSectorShift);
+        public long MiniSectorSize => (long)Math.Pow(2, this.Model.Header.MiniSectorShift);
 #else
-        public long MiniSectorSize => (long)Math.Pow(2, MiniSectorShift ?? 0);
+        public long MiniSectorSize => (long)Math.Pow(2, this.Model.Header?.MiniSectorShift ?? 0);
 #endif
 
         #endregion
@@ -309,9 +131,9 @@ namespace BinaryObjectScanner.Wrappers
         {
             // If we have an invalid sector
 #if NET48
-            if (startingSector < 0 || FATSectorNumbers == null || (long)startingSector >= FATSectorNumbers.Length)
+            if (startingSector < 0 || this.Model.FATSectorNumbers == null || (long)startingSector >= this.Model.FATSectorNumbers.Length)
 #else
-            if (startingSector == null || startingSector < 0 || FATSectorNumbers == null || (long)startingSector >= FATSectorNumbers.Length)
+            if (startingSector == null || startingSector < 0 || this.Model.FATSectorNumbers == null || (long)startingSector >= this.Model.FATSectorNumbers.Length)
 #endif
                 return null;
 
@@ -332,9 +154,9 @@ namespace BinaryObjectScanner.Wrappers
 
                 // Get the next sector from the lookup table
 #if NET48
-                var nextSector = FATSectorNumbers[(uint)lastSector];
+                var nextSector = this.Model.FATSectorNumbers[(uint)lastSector];
 #else
-                var nextSector = FATSectorNumbers[(uint)lastSector!.Value];
+                var nextSector = this.Model.FATSectorNumbers[(uint)lastSector!.Value];
 #endif
 
                 // If we have an end of chain or free sector
@@ -426,9 +248,9 @@ namespace BinaryObjectScanner.Wrappers
         {
             // If we have an invalid sector
 #if NET48
-            if (startingSector < 0 || MiniFATSectorNumbers == null || (long)startingSector >= MiniFATSectorNumbers.Length)
+            if (startingSector < 0 || this.Model.MiniFATSectorNumbers == null || (long)startingSector >= this.Model.MiniFATSectorNumbers.Length)
 #else
-            if (startingSector == null || startingSector < 0 || MiniFATSectorNumbers == null || (long)startingSector >= MiniFATSectorNumbers.Length)
+            if (startingSector == null || startingSector < 0 || this.Model.MiniFATSectorNumbers == null || (long)startingSector >= this.Model.MiniFATSectorNumbers.Length)
 #endif
                 return null;
 
@@ -449,9 +271,9 @@ namespace BinaryObjectScanner.Wrappers
 
                 // Get the next sector from the lookup table
 #if NET48
-                var nextSector = MiniFATSectorNumbers[(uint)lastSector];
+                var nextSector = this.Model.MiniFATSectorNumbers[(uint)lastSector];
 #else
-                var nextSector = MiniFATSectorNumbers[(uint)lastSector!.Value];
+                var nextSector = this.Model.MiniFATSectorNumbers[(uint)lastSector!.Value];
 #endif
 
                 // If we have an end of chain or free sector

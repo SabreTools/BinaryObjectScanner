@@ -20,7 +20,7 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -53,9 +53,9 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the export name table
-            if (pex.ExportNameTable != null)
+            if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
-                if (pex.ExportNameTable.Any(s => s == "DllInstallSbcp"))
+                if (pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "DllInstallSbcp"))
                     return "MediaMax CD-3";
             }
 

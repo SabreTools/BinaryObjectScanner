@@ -18,7 +18,7 @@ namespace BurnOutSharp.ProtectionType
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -86,17 +86,17 @@ namespace BurnOutSharp.ProtectionType
             }
 
             // Get the import directory table, if it exists
-            if (pex.ImportTable?.ImportDirectoryTable != null)
+            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "dvm.dll");
+                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "dvm.dll");
                 if (match)
                     return "SolidShield EXE Wrapper v1";
 
-                match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x86.dll");
+                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x86.dll");
                 if (match)
                     return "SolidShield EXE Wrapper v2";
 
-                match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x64.dll");
+                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x64.dll");
                 if (match)
                     return "SolidShield EXE Wrapper v2";
             }

@@ -18,15 +18,15 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the export directory table
-            if (pex.ExportTable?.ExportDirectoryTable != null)
+            if (pex.Model.ExportTable?.ExportDirectoryTable != null)
             {
                 // Found in "cenega.dll" in IA item "speed-pack".
-                bool match = pex.ExportTable.ExportDirectoryTable.Name?.Equals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase) == true;
+                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name?.Equals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase) == true;
                 if (match)
                     return "Cenega ProtectDVD";
             }

@@ -13,145 +13,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.XZP.Header.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.Version"/>
-#if NET48
-        public uint Version => this.Model.Header.Version;
-#else
-        public uint? Version => this.Model.Header?.Version;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.PreloadDirectoryEntryCount"/>
-#if NET48
-        public uint PreloadDirectoryEntryCount => this.Model.Header.PreloadDirectoryEntryCount;
-#else
-        public uint? PreloadDirectoryEntryCount => this.Model.Header?.PreloadDirectoryEntryCount;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.DirectoryEntryCount"/>
-#if NET48
-        public uint DirectoryEntryCount => this.Model.Header.DirectoryEntryCount;
-#else
-        public uint? DirectoryEntryCount => this.Model.Header?.DirectoryEntryCount;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.PreloadBytes"/>
-#if NET48
-        public uint PreloadBytes => this.Model.Header.PreloadBytes;
-#else
-        public uint? PreloadBytes => this.Model.Header?.PreloadBytes;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.HeaderLength"/>
-#if NET48
-        public uint HeaderLength => this.Model.Header.HeaderLength;
-#else
-        public uint? HeaderLength => this.Model.Header?.HeaderLength;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.DirectoryItemCount"/>
-#if NET48
-        public uint DirectoryItemCount => this.Model.Header.DirectoryItemCount;
-#else
-        public uint? DirectoryItemCount => this.Model.Header?.DirectoryItemCount;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.DirectoryItemOffset"/>
-#if NET48
-        public uint DirectoryItemOffset => this.Model.Header.DirectoryItemOffset;
-#else
-        public uint? DirectoryItemOffset => this.Model.Header?.DirectoryItemOffset;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Header.DirectoryItemLength"/>
-#if NET48
-        public uint DirectoryItemLength => this.Model.Header.DirectoryItemLength;
-#else
-        public uint? DirectoryItemLength => this.Model.Header?.DirectoryItemLength;
-#endif
-
-        #endregion
-
-        #region Directory Entries
-
-        /// <inheritdoc cref="Models.XZP.DirectoryEntries"/>
-#if NET48
-        public SabreTools.Models.XZP.DirectoryEntry[] DirectoryEntries => this.Model.DirectoryEntries;
-#else
-        public SabreTools.Models.XZP.DirectoryEntry?[]? DirectoryEntries => this.Model.DirectoryEntries;
-#endif
-
-        #endregion
-
-        #region Preload Directory Entries
-
-        /// <inheritdoc cref="Models.XZP.PreloadDirectoryEntries"/>
-#if NET48
-        public SabreTools.Models.XZP.DirectoryEntry[] PreloadDirectoryEntries => this.Model.PreloadDirectoryEntries;
-#else
-        public SabreTools.Models.XZP.DirectoryEntry?[]? PreloadDirectoryEntries => this.Model.PreloadDirectoryEntries;
-#endif
-
-        #endregion
-
-        #region Preload Directory Entries
-
-        /// <inheritdoc cref="Models.XZP.PreloadDirectoryMappings"/>
-#if NET48
-        public SabreTools.Models.XZP.DirectoryMapping[] PreloadDirectoryMappings => this.Model.PreloadDirectoryMappings;
-#else
-        public SabreTools.Models.XZP.DirectoryMapping?[]? PreloadDirectoryMappings => this.Model.PreloadDirectoryMappings;
-#endif
-
-        #endregion
-
-        #region Directory Items
-
-        /// <inheritdoc cref="Models.XZP.DirectoryItems"/>
-#if NET48
-        public SabreTools.Models.XZP.DirectoryItem[] DirectoryItems => this.Model.DirectoryItems;
-#else
-        public SabreTools.Models.XZP.DirectoryItem?[]? DirectoryItems => this.Model.DirectoryItems;
-#endif
-
-        #endregion
-
-        #region Footer
-
-        /// <inheritdoc cref="Models.XZP.Footer.FileLength"/>
-#if NET48
-        public uint F_FileLength => this.Model.Footer.FileLength;
-#else
-        public uint? F_FileLength => this.Model.Footer?.FileLength;
-#endif
-
-        /// <inheritdoc cref="Models.XZP.Footer.Signature"/>
-#if NET48
-        public string F_Signature => this.Model.Footer.Signature;
-#else
-        public string? F_Signature => this.Model.Footer?.Signature;
-#endif
-
-        #endregion
-
-        #endregion
-
-        #region Extension Properties
-
-        // TODO: Figure out what extensions are needed
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -254,12 +115,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAll(string outputDirectory)
         {
             // If we have no directory entries
-            if (DirectoryEntries == null || DirectoryEntries.Length == 0)
+            if (this.Model.DirectoryEntries == null || this.Model.DirectoryEntries.Length == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < DirectoryEntries.Length; i++)
+            for (int i = 0; i < this.Model.DirectoryEntries.Length; i++)
             {
                 allExtracted &= ExtractFile(i, outputDirectory);
             }
@@ -276,24 +137,24 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have no directory entries
-            if (DirectoryEntries == null || DirectoryEntries.Length == 0)
+            if (this.Model.DirectoryEntries == null || this.Model.DirectoryEntries.Length == 0)
                 return false;
 
             // If we have no directory items
-            if (DirectoryItems == null || DirectoryItems.Length == 0)
+            if (this.Model.DirectoryItems == null || this.Model.DirectoryItems.Length == 0)
                 return false;
 
             // If the directory entry index is invalid
-            if (index < 0 || index >= DirectoryEntries.Length)
+            if (index < 0 || index >= this.Model.DirectoryEntries.Length)
                 return false;
 
             // Get the directory entry
-            var directoryEntry = DirectoryEntries[index];
+            var directoryEntry = this.Model.DirectoryEntries[index];
             if (directoryEntry == null)
                 return false;
 
             // Get the associated directory item
-            var directoryItem = DirectoryItems.Where(di => di?.FileNameCRC == directoryEntry.FileNameCRC).FirstOrDefault();
+            var directoryItem = this.Model.DirectoryItems.Where(di => di?.FileNameCRC == directoryEntry.FileNameCRC).FirstOrDefault();
             if (directoryItem == null)
                 return false;
 

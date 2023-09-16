@@ -45,7 +45,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Check for the CDAC01AA name string.
-            bool cdac01aaNameFound = nex.ResidentNameTable.Where(rnte => rnte?.NameString != null)
+            bool cdac01aaNameFound = nex.Model.ResidentNameTable.Where(rnte => rnte?.NameString != null)
                 .Select(rnte => Encoding.ASCII.GetString(rnte.NameString))
                 .Any(s => s.Contains("CDAC01AA"));
             
@@ -71,7 +71,7 @@ namespace BinaryObjectScanner.Protection
         internal string SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -79,9 +79,9 @@ namespace BinaryObjectScanner.Protection
             // TODO: Investigate string table entries: "CDWP02DG", "CDWP02DG", "CDWS02DG"
 
             // Get the import directory table, if it exists
-            if (pex.ImportTable?.ImportDirectoryTable != null)
+            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase) == true))
+                if (pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase) == true))
                     return "SafeCast";
             }
 

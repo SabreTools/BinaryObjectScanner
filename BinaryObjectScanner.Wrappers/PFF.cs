@@ -12,85 +12,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.PFF.Header.HeaderSize"/>
-#if NET48
-        public uint HeaderSize => this.Model.Header.HeaderSize;
-#else
-        public uint? HeaderSize => this.Model.Header?.HeaderSize;
-#endif
-
-        /// <inheritdoc cref="Models.PFF.Header.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.PFF.Header.NumberOfFiles"/>
-#if NET48
-        public uint NumberOfFiles => this.Model.Header.NumberOfFiles;
-#else
-        public uint? NumberOfFiles => this.Model.Header?.NumberOfFiles;
-#endif
-
-        /// <inheritdoc cref="Models.PFF.Header.FileSegmentSize"/>
-#if NET48
-        public uint FileSegmentSize => this.Model.Header.FileSegmentSize;
-#else
-        public uint? FileSegmentSize => this.Model.Header?.FileSegmentSize;
-#endif
-
-        /// <inheritdoc cref="Models.PFF.Header.FileListOffset"/>
-#if NET48
-        public uint FileListOffset => this.Model.Header.FileListOffset;
-#else
-        public uint? FileListOffset => this.Model.Header?.FileListOffset;
-#endif
-
-        #endregion
-
-        #region Segments
-
-        /// <inheritdoc cref="Models.PFF.Archive.Segments"/>
-#if NET48
-        public SabreTools.Models.PFF.Segment[] Segments => this.Model.Segments;
-#else
-        public SabreTools.Models.PFF.Segment?[]? Segments => this.Model.Segments;
-#endif
-
-        #endregion
-
-        #region Footer
-
-        /// <inheritdoc cref="Models.PFF.Footer.SystemIP"/>
-#if NET48
-        public uint SystemIP => this.Model.Footer.SystemIP;
-#else
-        public uint? SystemIP => this.Model.Footer?.SystemIP;
-#endif
-
-        /// <inheritdoc cref="Models.PFF.Footer.Reserved"/>
-#if NET48
-        public uint Reserved => this.Model.Footer.Reserved;
-#else
-        public uint? Reserved => this.Model.Footer?.Reserved;
-#endif
-
-        /// <inheritdoc cref="Models.PFF.Footer.KingTag"/>
-#if NET48
-        public string KingTag => this.Model.Footer.KingTag;
-#else
-        public string? KingTag => this.Model.Footer?.KingTag;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -179,12 +100,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAll(string outputDirectory)
         {
             // If we have no segments
-            if (Segments == null || Segments.Length == 0)
+            if (this.Model.Segments == null || this.Model.Segments.Length == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < Segments.Length; i++)
+            for (int i = 0; i < this.Model.Segments.Length; i++)
             {
                 allExtracted &= ExtractSegment(i, outputDirectory);
             }
@@ -201,15 +122,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractSegment(int index, string outputDirectory)
         {
             // If we have no segments
-            if (NumberOfFiles == 0 || Segments == null || Segments.Length == 0)
+            if (this.Model.Header?.NumberOfFiles == null || this.Model.Header.NumberOfFiles == 0 || this.Model.Segments == null || this.Model.Segments.Length == 0)
                 return false;
 
             // If we have an invalid index
-            if (index < 0 || index >= Segments.Length)
+            if (index < 0 || index >= this.Model.Segments.Length)
                 return false;
 
             // Get the segment information
-            var file = Segments[index];
+            var file = this.Model.Segments[index];
             if (file == null)
                 return false;
 

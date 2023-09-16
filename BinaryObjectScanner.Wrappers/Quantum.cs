@@ -12,70 +12,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.Quantum.Header.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.Quantum.Header.MajorVersion"/>
-#if NET48
-        public byte MajorVersion => this.Model.Header.MajorVersion;
-#else
-        public byte? MajorVersion => this.Model.Header?.MajorVersion;
-#endif
-
-        /// <inheritdoc cref="Models.Quantum.Header.MinorVersion"/>
-#if NET48
-        public byte MinorVersion => this.Model.Header.MinorVersion;
-#else
-        public byte? MinorVersion => this.Model.Header?.MinorVersion;
-#endif
-
-        /// <inheritdoc cref="Models.Quantum.Header.FileCount"/>
-#if NET48
-        public ushort FileCount => this.Model.Header.FileCount;
-#else
-        public ushort? FileCount => this.Model.Header?.FileCount;
-#endif
-
-        /// <inheritdoc cref="Models.Quantum.Header.TableSize"/>
-#if NET48
-        public byte TableSize => this.Model.Header.TableSize;
-#else
-        public byte? TableSize => this.Model.Header?.TableSize;
-#endif
-
-        /// <inheritdoc cref="Models.Quantum.Header.CompressionFlags"/>
-#if NET48
-        public byte CompressionFlags => this.Model.Header.CompressionFlags;
-#else
-        public byte? CompressionFlags => this.Model.Header?.CompressionFlags;
-#endif
-
-        #endregion
-
-        #region File List
-
-        /// <inheritdoc cref="Models.Quantum.Archive.FileList"/>
-#if NET48
-        public SabreTools.Models.Quantum.FileDescriptor[] FileList => this.Model.FileList;
-#else
-        public SabreTools.Models.Quantum.FileDescriptor?[]? FileList => this.Model.FileList;
-#endif
-
-        #endregion
-
-        /// <inheritdoc cref="Models.Quantum.Archive.CompressedDataOffset"/>
-        public long CompressedDataOffset => this.Model.CompressedDataOffset;
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -166,12 +102,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAll(string outputDirectory)
         {
             // If we have no files
-            if (FileList == null || FileList.Length == 0)
+            if (this.Model.FileList == null || this.Model.FileList.Length == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < FileList.Length; i++)
+            for (int i = 0; i < this.Model.FileList.Length; i++)
             {
                 allExtracted &= ExtractFile(i, outputDirectory);
             }
@@ -188,18 +124,18 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have no files
-            if (FileCount == 0 || FileList == null || FileList.Length == 0)
+            if (this.Model.Header == null || this.Model.Header.FileCount == 0 || this.Model.FileList == null || this.Model.FileList.Length == 0)
                 return false;
 
             // If we have an invalid index
-            if (index < 0 || index >= FileList.Length)
+            if (index < 0 || index >= this.Model.FileList.Length)
                 return false;
 
             // Get the file information
-            var fileDescriptor = FileList[index];
+            var fileDescriptor = this.Model.FileList[index];
 
             // Read the entire compressed data
-            int compressedDataOffset = (int)CompressedDataOffset;
+            int compressedDataOffset = (int)this.Model.CompressedDataOffset;
             int compressedDataLength = GetEndOfFile() - compressedDataOffset;
 #if NET48
             byte[] compressedData = ReadFromDataSource(compressedDataOffset, compressedDataLength);

@@ -49,7 +49,7 @@ namespace BinaryObjectScanner.Protection
             // }, "LaserLok 5"),
 
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -63,14 +63,14 @@ namespace BinaryObjectScanner.Protection
                 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73,
                 0x2E, 0x50, 0x45
             };
-            int endDosStub = (int)pex.Stub_NewExeHeaderAddr;
+            int endDosStub = (int)(pex.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
             bool containsCheck = pex.StubExecutableData.FirstPosition(check, out int position);
 
             // Check the executable tables
-            bool containsCheck2 = (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetModuleHandleA") ?? false)
-                && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetProcAddress") ?? false)
-                && (pex.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "LoadLibraryA") ?? false)
-                && (pex.ImportTable?.ImportDirectoryTable.Any(idte => idte.Name == "KERNEL32.dll") ?? false);
+            bool containsCheck2 = (pex.Model.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetModuleHandleA") ?? false)
+                && (pex.Model.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetProcAddress") ?? false)
+                && (pex.Model.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "LoadLibraryA") ?? false)
+                && (pex.Model.ImportTable?.ImportDirectoryTable.Any(idte => idte.Name == "KERNEL32.dll") ?? false);
 
             int position2 = -1;
 

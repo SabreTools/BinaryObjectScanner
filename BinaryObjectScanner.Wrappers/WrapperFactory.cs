@@ -84,19 +84,14 @@ namespace BinaryObjectScanner.Wrappers
                 return null;
 
             // Check for a valid new executable address
-#if NET48
-            if (msdos.NewExeHeaderAddr >= stream.Length)
-#else
-            if (msdos.NewExeHeaderAddr == null || msdos.NewExeHeaderAddr >= stream.Length)
-#endif
+            if (msdos.Model.Header?.NewExeHeaderAddr == null || msdos.Model.Header.NewExeHeaderAddr >= stream.Length)
                 return wrapper;
 
             // Try to read the executable info
+            stream.Seek(msdos.Model.Header.NewExeHeaderAddr, SeekOrigin.Begin);
 #if NET48
-            stream.Seek(msdos.NewExeHeaderAddr, SeekOrigin.Begin);
             byte[] magic = stream.ReadBytes(4);
 #else
-            stream.Seek(msdos.NewExeHeaderAddr.Value, SeekOrigin.Begin);
             byte[]? magic = stream.ReadBytes(4);
 #endif
 

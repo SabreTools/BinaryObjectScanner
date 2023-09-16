@@ -15,61 +15,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.BSP.Header.Version"/>
-#if NET48
-        public uint Version => this.Model.Header.Version;
-#else
-        public uint? Version => this.Model.Header?.Version;
-#endif
-
-        #endregion
-
-        #region Lumps
-
-        /// <inheritdoc cref="Models.BSP.File.Lumps"/>
-#if NET48
-        public SabreTools.Models.BSP.Lump[] Lumps => this.Model.Lumps;
-#else
-        public SabreTools.Models.BSP.Lump?[]? Lumps => this.Model.Lumps;
-#endif
-
-        #endregion
-
-        #region Texture Header
-
-        /// <inheritdoc cref="Models.BSP.TextureHeader.TextureCount"/>
-#if NET48
-        public uint TextureCount => this.Model.TextureHeader.TextureCount;
-#else
-        public uint? TextureCount => this.Model.TextureHeader?.TextureCount;
-#endif
-
-        /// <inheritdoc cref="Models.BSP.TextureHeader.Offsets"/>
-#if NET48
-        public uint[] Offsets => this.Model.TextureHeader.Offsets;
-#else
-        public uint[]? Offsets => this.Model.TextureHeader?.Offsets;
-#endif
-
-        #endregion
-
-        #region Textures
-
-        /// <inheritdoc cref="Models.BSP.File.Textures"/>
-#if NET48
-        public SabreTools.Models.BSP.Texture[] Textures => this.Model.Textures;
-#else
-        public SabreTools.Models.BSP.Texture?[]? Textures => this.Model.Textures;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -172,12 +117,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAllLumps(string outputDirectory)
         {
             // If we have no lumps
-            if (Lumps == null || Lumps.Length == 0)
+            if (this.Model.Lumps == null || this.Model.Lumps.Length == 0)
                 return false;
 
             // Loop through and extract all lumps to the output
             bool allExtracted = true;
-            for (int i = 0; i < Lumps.Length; i++)
+            for (int i = 0; i < this.Model.Lumps.Length; i++)
             {
                 allExtracted &= ExtractLump(i, outputDirectory);
             }
@@ -194,15 +139,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractLump(int index, string outputDirectory)
         {
             // If we have no lumps
-            if (Lumps == null || Lumps.Length == 0)
+            if (this.Model.Lumps == null || this.Model.Lumps.Length == 0)
                 return false;
 
             // If the lumps index is invalid
-            if (index < 0 || index >= Lumps.Length)
+            if (index < 0 || index >= this.Model.Lumps.Length)
                 return false;
 
             // Get the lump
-            var lump = Lumps[index];
+            var lump = this.Model.Lumps[index];
             if (lump == null)
                 return false;
 
@@ -268,12 +213,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAllTextures(string outputDirectory)
         {
             // If we have no textures
-            if (Offsets == null || Offsets.Length == 0)
+            if (this.Model.TextureHeader?.Offsets == null || this.Model.TextureHeader.Offsets.Length == 0)
                 return false;
 
             // Loop through and extract all lumps to the output
             bool allExtracted = true;
-            for (int i = 0; i < Offsets.Length; i++)
+            for (int i = 0; i < this.Model.TextureHeader.Offsets.Length; i++)
             {
                 allExtracted &= ExtractTexture(i, outputDirectory);
             }
@@ -290,15 +235,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractTexture(int index, string outputDirectory)
         {
             // If we have no textures
-            if (Textures == null || Textures.Length == 0)
+            if (this.Model.Textures == null || this.Model.Textures.Length == 0)
                 return false;
 
             // If the texture index is invalid
-            if (index < 0 || index >= Textures.Length)
+            if (index < 0 || index >= this.Model.Textures.Length)
                 return false;
 
             // Get the texture
-            var texture = Textures[index];
+            var texture = this.Model.Textures[index];
             if (texture == null)
                 return false;
 

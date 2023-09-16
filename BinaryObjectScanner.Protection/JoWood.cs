@@ -16,15 +16,15 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .ext     section, if it exists
             if (pex.ContainsSection(".ext    ", exact: true))
             {
-                bool importTableMatches = (pex.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "kernel32.dll") ?? false)
-                    && (pex.ImportHintNameTable?.Any(s => s == "VirtualProtect") ?? false);
+                bool importTableMatches = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "kernel32.dll") ?? false)
+                    && (pex.Model.ImportTable?.HintNameTable?.Any(s => s.Name == "VirtualProtect") ?? false);
 
                 // Get the .dcrtext section, if it exists
                 if (pex.ContainsSection(".dcrtext") && importTableMatches)

@@ -14,7 +14,7 @@ namespace BurnOutSharp.ProtectionType
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -25,9 +25,9 @@ namespace BurnOutSharp.ProtectionType
                 return $"Games for Windows LIVE {pex.GetInternalVersion()}";
 
             // Get the import directory table
-            if (pex.ImportTable?.ImportDirectoryTable != null)
+            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "xlive.dll");
+                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "xlive.dll");
                 if (match)
                     return "Games for Windows LIVE";
             }

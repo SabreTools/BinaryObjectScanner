@@ -19,11 +19,11 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // If the resident-name table doesnt exist
-            if (nex.ResidentNameTable == null)
+            if (nex.Model.ResidentNameTable == null)
                 return null;
 
             // Check for the WinZip name string
-            bool winZipNameFound = nex.ResidentNameTable.Where(rnte => rnte?.NameString != null)
+            bool winZipNameFound = nex.Model.ResidentNameTable.Where(rnte => rnte?.NameString != null)
                 .Select(rnte => Encoding.ASCII.GetString(rnte.NameString))
                 .Any(s => s.Contains("WZ-SE-01"));
 
@@ -43,12 +43,12 @@ namespace BinaryObjectScanner.Packer
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Check the export directory table, if it exists
-            if (pex.ExportTable?.ExportDirectoryTable != null)
+            if (pex.Model.ExportTable?.ExportDirectoryTable != null)
             {
                 string version = GetPEExportDirectoryVersion(pex);
                 if (!string.IsNullOrWhiteSpace(version))
@@ -127,146 +127,146 @@ namespace BinaryObjectScanner.Packer
             #region 2.0 Variants
 
             // 2.0 (MS-DOS/16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0086
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0086
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x00012BE6
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006C
-                && nex.NonResidentNamesTableOffset == 0x000044B8
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x00012BE6
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006C
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000044B8
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "2.0 (MS-DOS/16-bit)";
 
             // 2.0 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0086
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0086
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x00013174
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006C
-                && nex.NonResidentNamesTableOffset == 0x00000198
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x00013174
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006C
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x00000198
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "2.0 (16-bit)";
 
             // Compact 2.0 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0080
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0080
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x000124A0
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0003
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006A
-                && nex.NonResidentNamesTableOffset == 0x00000192
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x000124A0
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0003
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006A
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x00000192
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Compact 2.0 (16-bit)";
 
             // Software Installation 2.0 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00CD
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00CD
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x000136FA
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0005
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0097
-                && nex.ModuleReferenceTableOffset == 0x00A3
-                && nex.ImportedNamesTableOffset == 0x00AD
-                && nex.NonResidentNamesTableOffset == 0x000001DF
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x000136FA
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0005
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0097
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x00A3
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00AD
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001DF
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Software Installation 2.0 (16-bit)";
 
             #endregion
@@ -274,145 +274,145 @@ namespace BinaryObjectScanner.Packer
             #region 2.1 RC2 Variants
 
             // 2.1 RC2 (MS-DOS/16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0086
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0086
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x00013386
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006C
-                && nex.NonResidentNamesTableOffset == 0x000043C8
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x00013386
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006C
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000043C8
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "2.1 RC2 (MS-DOS/16-bit)";
 
             // 2.1 RC2 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00BE
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00BE
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x00013E56
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0090
-                && nex.ModuleReferenceTableOffset == 0x009C
-                && nex.ImportedNamesTableOffset == 0x00A4
-                && nex.NonResidentNamesTableOffset == 0x000001D0
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x00013E56
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0090
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x009C
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00A4
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001D0
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "2.1 RC2 (16-bit)";
 
             // Compact 2.1 RC2 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0080
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0080
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x00012B84
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0003
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006A
-                && nex.NonResidentNamesTableOffset == 0x00000192
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x00012B84
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0003
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006A
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x00000192
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Compact 2.1 RC2 (16-bit)";
 
             // Software Installation 2.1 RC2 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00BE
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00BE
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x000143AC
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0090
-                && nex.ModuleReferenceTableOffset == 0x009C
-                && nex.ImportedNamesTableOffset == 0x00A4
-                && nex.NonResidentNamesTableOffset == 0x000001D0
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x000143AC
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0090
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x009C
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00A4
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001D0
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Software Installation 2.1 RC2 (16-bit)";
 
             #endregion
@@ -420,145 +420,145 @@ namespace BinaryObjectScanner.Packer
             #region 2.1 Variants
 
             // 2.1 (MS-DOS/16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0086
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0086
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x3A00
-                && nex.InitialCSIPSetting == 0x00013396
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006C
-                && nex.NonResidentNamesTableOffset == 0x000043C8
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x3A00
+                && nex.Model.Header?.InitialCSIPSetting == 0x00013396
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006C
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000043C8
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "2.1 (MS-DOS/16-bit)";
 
             // 2.1 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00BE
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00BE
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x3A00
-                && nex.InitialCSIPSetting == 0x00013E7E
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0090
-                && nex.ModuleReferenceTableOffset == 0x009C
-                && nex.ImportedNamesTableOffset == 0x00A4
-                && nex.NonResidentNamesTableOffset == 0x000001D0
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x3A00
+                && nex.Model.Header?.InitialCSIPSetting == 0x00013E7E
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0090
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x009C
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00A4
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001D0
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "2.1 (16-bit)";
 
             // Compact 2.1 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0080
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0080
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x3A00
-                && nex.InitialCSIPSetting == 0x00012B90
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0003
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006A
-                && nex.NonResidentNamesTableOffset == 0x00000192
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x3A00
+                && nex.Model.Header?.InitialCSIPSetting == 0x00012B90
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0003
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006A
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x00000192
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Compact 2.1 (16-bit)";
 
             // Software Installation 2.1 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00BE
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00BE
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x3A00
-                && nex.InitialCSIPSetting == 0x00014408
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0090
-                && nex.ModuleReferenceTableOffset == 0x009C
-                && nex.ImportedNamesTableOffset == 0x00A4
-                && nex.NonResidentNamesTableOffset == 0x000001D0
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x3A00
+                && nex.Model.Header?.InitialCSIPSetting == 0x00014408
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0090
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x009C
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00A4
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001D0
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Software Installation 2.1 (16-bit)";
 
             #endregion
@@ -566,109 +566,109 @@ namespace BinaryObjectScanner.Packer
             #region Misc. Variants
 
             // Personal Edition (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x0086
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x0086
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x4000
-                && nex.InitialCSIPSetting == 0x0001317C
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0058
-                && nex.ModuleReferenceTableOffset == 0x0064
-                && nex.ImportedNamesTableOffset == 0x006C
-                && nex.NonResidentNamesTableOffset == 0x00000198
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x4000
+                && nex.Model.Header?.InitialCSIPSetting == 0x0001317C
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0058
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x0064
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x006C
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x00000198
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Personal Edition (16-bit)";
 
             // Personal Edition 32-bit (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00BE
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00BE
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x2000
-                && nex.InitialStackAlloc == 0x3C00
-                && nex.InitialCSIPSetting == 0x00013E7C
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0004
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0090
-                && nex.ModuleReferenceTableOffset == 0x009C
-                && nex.ImportedNamesTableOffset == 0x00A4
-                && nex.NonResidentNamesTableOffset == 0x000001D0
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x2000
+                && nex.Model.Header?.InitialStackAlloc == 0x3C00
+                && nex.Model.Header?.InitialCSIPSetting == 0x00013E7C
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0004
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0090
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x009C
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00A4
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001D0
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Personal Edition 32-bit (16-bit)";
 
             // Personal Edition 32-bit Build 1260/1285 (16-bit)
-            if (nex.LinkerVersion == 0x11
-                && nex.LinkerRevision == 0x20
-                && nex.EntryTableOffset == 0x00C6
-                && nex.EntryTableSize == 0x0002
-                && nex.CrcChecksum == 0x00000000
-                && nex.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+            if (nex.Model.Header?.LinkerVersion == 0x11
+                && nex.Model.Header?.LinkerRevision == 0x20
+                && nex.Model.Header?.EntryTableOffset == 0x00C6
+                && nex.Model.Header?.EntryTableSize == 0x0002
+                && nex.Model.Header?.CrcChecksum == 0x00000000
+                && nex.Model.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
                     | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
                     | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
-                && nex.AutomaticDataSegmentNumber == 0x0003
-                && nex.InitialHeapAlloc == 0x43DC
-                && nex.InitialStackAlloc == 0x2708
-                && nex.InitialCSIPSetting == 0x00014ADC
-                && nex.InitialSSSPSetting == 0x00030000
-                && nex.FileSegmentCount == 0x0003
-                && nex.ModuleReferenceTableSize == 0x0005
-                && nex.NonResidentNameTableSize == 0x004B
-                && nex.SegmentTableOffset == 0x0040
-                && nex.ResourceTableOffset == 0x0058
-                && nex.ResidentNameTableOffset == 0x0090
-                && nex.ModuleReferenceTableOffset == 0x009C
-                && nex.ImportedNamesTableOffset == 0x00A6
-                && nex.NonResidentNamesTableOffset == 0x000001D8
-                && nex.MovableEntriesCount == 0x0000
-                && nex.SegmentAlignmentShiftCount == 0x0001
-                && nex.ResourceEntriesCount == 0x0000
-                && nex.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
-                && nex.AdditionalFlags == 0x00
-                && nex.ReturnThunkOffset == 0x0000
-                && nex.SegmentReferenceThunkOffset == 0x0000
-                && nex.MinCodeSwapAreaSize == 0x0000
-                && nex.WindowsSDKRevision == 0x00
-                && nex.WindowsSDKVersion == 0x03)
+                && nex.Model.Header?.AutomaticDataSegmentNumber == 0x0003
+                && nex.Model.Header?.InitialHeapAlloc == 0x43DC
+                && nex.Model.Header?.InitialStackAlloc == 0x2708
+                && nex.Model.Header?.InitialCSIPSetting == 0x00014ADC
+                && nex.Model.Header?.InitialSSSPSetting == 0x00030000
+                && nex.Model.Header?.FileSegmentCount == 0x0003
+                && nex.Model.Header?.ModuleReferenceTableSize == 0x0005
+                && nex.Model.Header?.NonResidentNameTableSize == 0x004B
+                && nex.Model.Header?.SegmentTableOffset == 0x0040
+                && nex.Model.Header?.ResourceTableOffset == 0x0058
+                && nex.Model.Header?.ResidentNameTableOffset == 0x0090
+                && nex.Model.Header?.ModuleReferenceTableOffset == 0x009C
+                && nex.Model.Header?.ImportedNamesTableOffset == 0x00A6
+                && nex.Model.Header?.NonResidentNamesTableOffset == 0x000001D8
+                && nex.Model.Header?.MovableEntriesCount == 0x0000
+                && nex.Model.Header?.SegmentAlignmentShiftCount == 0x0001
+                && nex.Model.Header?.ResourceEntriesCount == 0x0000
+                && nex.Model.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && nex.Model.Header?.AdditionalFlags == 0x00
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.ReturnThunkOffset == 0x0000
+                && nex.Model.Header?.MinCodeSwapAreaSize == 0x0000
+                && nex.Model.Header?.WindowsSDKRevision == 0x00
+                && nex.Model.Header?.WindowsSDKVersion == 0x03)
                 return "Personal Edition 32-bit Build 1260/1285 (16-bit)";
 
             #endregion
@@ -682,8 +682,8 @@ namespace BinaryObjectScanner.Packer
         /// TODO: Research to see if the versions are embedded elsewhere in these files
         private string GetPEExportDirectoryVersion(PortableExecutable pex)
         {
-            string sfxFileName = pex.ExportTable.ExportDirectoryTable.Name;
-            uint sfxTimeDateStamp = pex.ExportTable.ExportDirectoryTable.TimeDateStamp;
+            string sfxFileName = pex.Model.ExportTable.ExportDirectoryTable.Name;
+            uint sfxTimeDateStamp = pex.Model.ExportTable.ExportDirectoryTable.TimeDateStamp;
             string assemblyVersion = pex.AssemblyVersion ?? "Unknown Version";
 
             // Standard

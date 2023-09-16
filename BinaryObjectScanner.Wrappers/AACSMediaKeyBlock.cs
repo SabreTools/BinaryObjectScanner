@@ -13,21 +13,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Records
-
-        /// <inheritdoc cref="Models.AACS.MediaKeyBlock.Records"/>
-#if NET48
-        public Record[] Records => this.Model.Records;
-#else
-        public Record?[]? Records => this.Model.Records;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>

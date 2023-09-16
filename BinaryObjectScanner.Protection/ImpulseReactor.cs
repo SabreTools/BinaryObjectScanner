@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
                 return $"Stardock Product Activation {pex.GetInternalVersion()}";
 
             // TODO: Check for CVP* instead?
-            bool containsCheck = pex.ExportNameTable?.Any(s => s?.StartsWith("CVPInitializeClient") ?? false) ?? false;
+            bool containsCheck = pex.Model.ExportTable?.ExportNameTable?.Strings?.Any(s => s?.StartsWith("CVPInitializeClient") ?? false) ?? false;
             bool containsCheck2 = false;
 
             // Get the .rdata section strings, if they exist

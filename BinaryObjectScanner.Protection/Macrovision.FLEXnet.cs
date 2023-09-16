@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Protection
         internal string FLEXnetCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 

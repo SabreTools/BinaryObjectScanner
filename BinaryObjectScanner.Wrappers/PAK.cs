@@ -12,52 +12,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.PAK.Header.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.PAK.Header.DirectoryOffset"/>
-#if NET48
-        public uint DirectoryOffset => this.Model.Header.DirectoryOffset;
-#else
-        public uint? DirectoryOffset => this.Model.Header?.DirectoryOffset;
-#endif
-
-        /// <inheritdoc cref="Models.PAK.Header.DirectoryLength"/>
-#if NET48
-        public uint DirectoryLength => this.Model.Header.DirectoryLength;
-#else
-        public uint? DirectoryLength => this.Model.Header?.DirectoryLength;
-#endif
-
-        #endregion
-
-        #region Directory Items
-
-        /// <inheritdoc cref="Models.PAK.DirectoryItems"/>
-#if NET48
-        public SabreTools.Models.PAK.DirectoryItem[] DirectoryItems => this.Model.DirectoryItems;
-#else
-        public SabreTools.Models.PAK.DirectoryItem?[]? DirectoryItems => this.Model.DirectoryItems;
-#endif
-
-        #endregion
-
-        #endregion
-
-        #region Extension Properties
-
-        // TODO: Figure out what extensions are needed
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -160,12 +114,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAll(string outputDirectory)
         {
             // If we have no directory items
-            if (DirectoryItems == null || DirectoryItems.Length == 0)
+            if (this.Model.DirectoryItems == null || this.Model.DirectoryItems.Length == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < DirectoryItems.Length; i++)
+            for (int i = 0; i < this.Model.DirectoryItems.Length; i++)
             {
                 allExtracted &= ExtractFile(i, outputDirectory);
             }
@@ -182,15 +136,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractFile(int index, string outputDirectory)
         {
             // If we have no directory items
-            if (DirectoryItems == null || DirectoryItems.Length == 0)
+            if (this.Model.DirectoryItems == null || this.Model.DirectoryItems.Length == 0)
                 return false;
 
             // If the directory item index is invalid
-            if (index < 0 || index >= DirectoryItems.Length)
+            if (index < 0 || index >= this.Model.DirectoryItems.Length)
                 return false;
 
             // Get the directory item
-            var directoryItem = DirectoryItems[index];
+            var directoryItem = this.Model.DirectoryItems[index];
             if (directoryItem == null)
                 return false;
 

@@ -15,382 +15,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.SGA.Header4.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.SGA.Header4.MajorVersion"/>
-#if NET48
-        public ushort MajorVersion => this.Model.Header.MajorVersion;
-#else
-        public ushort? MajorVersion => this.Model.Header?.MajorVersion;
-#endif
-
-        /// <inheritdoc cref="Models.SGA.Header4.MinorVersion"/>
-#if NET48
-        public ushort MinorVersion => this.Model.Header.MinorVersion;
-#else
-        public ushort? MinorVersion => this.Model.Header?.MinorVersion;
-#endif
-
-        /// <inheritdoc cref="Models.SGA.Header4.FileMD5"/>
-#if NET48
-        public byte[] FileMD5
-#else
-        public byte[]? FileMD5
-#endif
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileMD5;
-                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileMD5;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.Header4.Name"/>
-#if NET48
-        public string Name
-#else
-        public string? Name
-#endif
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.Name;
-                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.Name;
-                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.Name;
-                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.Name;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.Header4.HeaderMD5"/>
-#if NET48
-        public byte[] HeaderMD5
-#else
-        public byte[]? HeaderMD5
-#endif
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderMD5;
-                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderMD5;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.Header4.HeaderLength"/>
-        public uint? HeaderLength
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderLength;
-                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.HeaderLength;
-                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.HeaderLength;
-                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.HeaderLength;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.Header4.FileDataOffset"/>
-        public uint? FileDataOffset
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset;
-                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset;
-                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset;
-                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.Header4.Dummy0"/>
-        public uint? Dummy0
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Header as SabreTools.Models.SGA.Header4)?.Dummy0;
-                    case 5: return (Model.Header as SabreTools.Models.SGA.Header4)?.Dummy0;
-                    case 6: return (Model.Header as SabreTools.Models.SGA.Header6)?.Dummy0;
-                    case 7: return (Model.Header as SabreTools.Models.SGA.Header6)?.Dummy0;
-                    default: return null;
-                };
-            }
-        }
-
-        #endregion
-
-        #region Directory
-
-        #region Directory Header
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.SectionOffset"/>
-        public uint? SectionOffset
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.SectionOffset;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.SectionOffset;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.SectionOffset;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.SectionOffset;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.SectionCount"/>
-        public uint? SectionCount
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.SectionCount;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.SectionCount;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.SectionCount;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.SectionCount;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.FolderOffset"/>
-        public uint? FolderOffset
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FolderOffset;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FolderOffset;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FolderOffset;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FolderOffset;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.FolderCount"/>
-        public uint? FolderCount
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FolderCount;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FolderCount;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FolderCount;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FolderCount;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.FileOffset"/>
-        public uint? FileOffset
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FileOffset;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FileOffset;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FileOffset;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FileOffset;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.FileCount"/>
-        public uint? FileCount
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.FileCount;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.FileCount;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.FileCount;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.FileCount;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.StringTableOffset"/>
-        public uint? StringTableOffset
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.StringTableOffset;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.StringTableOffset;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.StringTableOffset;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.StringTableOffset;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader{T}.StringTableCount"/>
-        public uint? StringTableCount
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.DirectoryHeader?.StringTableCount;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.DirectoryHeader?.StringTableCount;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.DirectoryHeader?.StringTableCount;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.StringTableCount;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader7.HashTableOffset"/>
-        public uint? HashTableOffset
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.HashTableOffset;
-                    default: return null;
-                };
-            }
-        }
-
-        /// <inheritdoc cref="Models.SGA.DirectoryHeader7.BlockSize"/>
-        public uint? BlockSize
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.DirectoryHeader?.BlockSize;
-                    default: return null;
-                };
-            }
-        }
-
-        #endregion
-
-        #region Sections
-
-        /// <inheritdoc cref="Models.SGA.SpecializedDirectory{THeader, TDirectoryHeader, TSection, TFolder, TFile, U}.Sections"/>
-#if NET48
-        public object[] Sections
-#else
-        public object?[]? Sections
-#endif
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.Sections;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.Sections;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.Sections;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.Sections;
-                    default: return null;
-                };
-            }
-        }
-
-        #endregion
-
-        #region Folders
-
-        /// <inheritdoc cref="Models.SGA.SpecializedDirectory{THeader, TDirectoryHeader, TSection, TFolder, TFile, U}.Folders"/>
-#if NET48
-        public object[] Folders
-#else
-        public object?[]? Folders
-#endif
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders;
-                    default: return null;
-                };
-            }
-        }
-
-        #endregion
-
-        #region Files
-
-        /// <inheritdoc cref="Models.SGA.SpecializedDirectory{THeader, TDirectoryHeader, TSection, TFolder, TFile, U}.Files"/>
-#if NET48
-        public object[] Files
-#else
-        public object?[]? Files
-#endif
-        {
-            get
-            {
-                switch (MajorVersion)
-                {
-                    case 4: return (Model.Directory as SabreTools.Models.SGA.Directory4)?.Files;
-                    case 5: return (Model.Directory as SabreTools.Models.SGA.Directory5)?.Files;
-                    case 6: return (Model.Directory as SabreTools.Models.SGA.Directory6)?.Files;
-                    case 7: return (Model.Directory as SabreTools.Models.SGA.Directory7)?.Files;
-                    default: return null;
-                };
-            }
-        }
-
-        #endregion
-
-        // TODO: Figure out how to deal with all of the parts of the directory
-        // TODO: Should anything be passed through?
-
-        #endregion
-
-        #endregion
-
-        #region Extension Properties
-
-        // TODO: Figure out what extension oroperties are needed
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -492,13 +116,24 @@ namespace BinaryObjectScanner.Wrappers
         /// <returns>True if all files extracted, false otherwise</returns>
         public bool ExtractAll(string outputDirectory)
         {
+            // Get the number of files
+            int filesLength;
+            switch (this.Model.Header?.MajorVersion)
+            {
+                case 4: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?.Length ?? 0; break;
+                case 5: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory5)?.Files?.Length ?? 0; break;
+                case 6: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory6)?.Files?.Length ?? 0; break;
+                case 7: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory7)?.Files?.Length ?? 0; break;
+                default: return false;
+            }
+
             // If we have no files
-            if (Files == null || Files.Length == 0)
+            if (filesLength == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < Files.Length; i++)
+            for (int i = 0; i < filesLength; i++)
             {
                 allExtracted &= ExtractFile(i, outputDirectory);
             }
@@ -514,16 +149,40 @@ namespace BinaryObjectScanner.Wrappers
         /// <returns>True if the file extracted, false otherwise</returns>
         public bool ExtractFile(int index, string outputDirectory)
         {
+            // Get the number of files
+            int filesLength;
+            switch (this.Model.Header?.MajorVersion)
+            {
+                case 4: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?.Length ?? 0; break;
+                case 5: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory5)?.Files?.Length ?? 0; break;
+                case 6: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory6)?.Files?.Length ?? 0; break;
+                case 7: filesLength = (Model.Directory as SabreTools.Models.SGA.Directory7)?.Files?.Length ?? 0; break;
+                default: return false;
+            }
+
             // If we have no files
-            if (Files == null || Files.Length == 0)
+            if (filesLength == 0)
                 return false;
 
             // If the files index is invalid
-            if (index < 0 || index >= Files.Length)
+            if (index < 0 || index >= filesLength)
                 return false;
 
             // Get the files
-            var file = Files[index];
+#if NET48
+            object file;
+#else
+            object? file;
+#endif
+            switch (this.Model.Header?.MajorVersion)
+            {
+                case 4: file = (Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?[index]; break;
+                case 5: file = (Model.Directory as SabreTools.Models.SGA.Directory5)?.Files?[index]; break;
+                case 6: file = (Model.Directory as SabreTools.Models.SGA.Directory6)?.Files?[index]; break;
+                case 7: file = (Model.Directory as SabreTools.Models.SGA.Directory7)?.Files?[index]; break;
+                default: return false;
+            }
+
             if (file == null)
                 return false;
 
@@ -533,7 +192,7 @@ namespace BinaryObjectScanner.Wrappers
 #else
             string? filename;
 #endif
-            switch (MajorVersion)
+            switch (this.Model.Header?.MajorVersion)
             {
                 case 4:
                 case 5: filename = (file as SabreTools.Models.SGA.File4)?.Name; break;
@@ -555,19 +214,26 @@ namespace BinaryObjectScanner.Wrappers
 #else
             object? folder;
 #endif
-            switch (MajorVersion)
+            switch (this.Model.Header?.MajorVersion)
             {
-                case 4: folder = (Folders as SabreTools.Models.SGA.Folder4[])?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 5:
-                case 6:
-                case 7: folder = (Folders as SabreTools.Models.SGA.Folder5[])?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+#if NET48
+                case 4: folder = (Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 5: folder = (Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 6: folder = (Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 7: folder = (Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+#else
+                case 4: folder = (Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 5: folder = (Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 6: folder = (Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+                case 7: folder = (Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
+#endif
                 default: return false;
             }
 
             // If we have a parent folder
             if (folder != null)
             {
-                switch (MajorVersion)
+                switch (this.Model.Header?.MajorVersion)
                 {
                     case 4: parentNames.Add((folder as SabreTools.Models.SGA.Folder4)?.Name); break;
                     case 5:
@@ -585,7 +251,7 @@ namespace BinaryObjectScanner.Wrappers
 
             // Get the file offset
             long fileOffset;
-            switch (MajorVersion)
+            switch (this.Model.Header?.MajorVersion)
             {
                 case 4:
                 case 5: fileOffset = (file as SabreTools.Models.SGA.File4)?.Offset ?? 0; break;
@@ -595,11 +261,18 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // Adjust the file offset
-            fileOffset += FileDataOffset ?? 0;
+            switch (this.Model.Header?.MajorVersion)
+            {
+                case 4: fileOffset += (Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset ?? 0; break;
+                case 5: fileOffset += (Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset ?? 0; break;
+                case 6: fileOffset += (Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset ?? 0; break;
+                case 7: fileOffset += (Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset ?? 0; break;
+                default: return false;
+            };
 
             // Get the file sizes
             long fileSize, outputFileSize;
-            switch (MajorVersion)
+            switch (this.Model.Header?.MajorVersion)
             {
                 case 4:
                 case 5:

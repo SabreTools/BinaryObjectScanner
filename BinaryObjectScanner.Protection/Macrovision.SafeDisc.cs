@@ -45,17 +45,17 @@ namespace BinaryObjectScanner.Protection
         internal string SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in Redump entry 57986.
-            bool hintNameTableMatch = pex.ImportHintNameTable?.Any(ihne => ihne == "LTDLL_Authenticate") ?? false;
+            bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable?.Any(ihne => ihne.Name == "LTDLL_Authenticate") ?? false;
             if (hintNameTableMatch)
                 return "SafeDisc Lite";
 
             // Found in Redump entry 57986.
-            bool importTableMatch = (pex.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "ltdll.dll") ?? false);
+            bool importTableMatch = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "ltdll.dll") ?? false);
             if (importTableMatch)
                 return "SafeDisc Lite";
 

@@ -12,63 +12,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region Header
-
-        /// <inheritdoc cref="Models.WAD.Header.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.WAD.Header.LumpCount"/>
-#if NET48
-        public uint LumpCount => this.Model.Header.LumpCount;
-#else
-        public uint? LumpCount => this.Model.Header?.LumpCount;
-#endif
-
-        /// <inheritdoc cref="Models.WAD.Header.LumpOffset"/>
-#if NET48
-        public uint LumpOffset => this.Model.Header.LumpOffset;
-#else
-        public uint? LumpOffset => this.Model.Header?.LumpOffset;
-#endif
-
-        #endregion
-
-        #region Lumps
-
-        /// <inheritdoc cref="Models.WAD.File.Lumps"/>
-#if NET48
-        public SabreTools.Models.WAD.Lump[] Lumps => this.Model.Lumps;
-#else
-        public SabreTools.Models.WAD.Lump?[]? Lumps => this.Model.Lumps;
-#endif
-
-        #endregion
-
-        #region Lump Infos
-
-        /// <inheritdoc cref="Models.WAD.File.LumpInfos"/>
-#if NET48
-        public SabreTools.Models.WAD.LumpInfo[] LumpInfos => this.Model.LumpInfos;
-#else
-        public SabreTools.Models.WAD.LumpInfo?[]? LumpInfos => this.Model.LumpInfos;
-#endif
-
-        #endregion
-
-        #endregion
-
-        #region Extension Properties
-
-        // TODO: Figure out what extension oroperties are needed
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -171,12 +114,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAllLumps(string outputDirectory)
         {
             // If we have no lumps
-            if (Lumps == null || Lumps.Length == 0)
+            if (this.Model.Lumps == null || this.Model.Lumps.Length == 0)
                 return false;
 
             // Loop through and extract all lumps to the output
             bool allExtracted = true;
-            for (int i = 0; i < Lumps.Length; i++)
+            for (int i = 0; i < this.Model.Lumps.Length; i++)
             {
                 allExtracted &= ExtractLump(i, outputDirectory);
             }
@@ -193,15 +136,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractLump(int index, string outputDirectory)
         {
             // If we have no lumps
-            if (Lumps == null || Lumps.Length == 0)
+            if (this.Model.Lumps == null || this.Model.Lumps.Length == 0)
                 return false;
 
             // If the lumps index is invalid
-            if (index < 0 || index >= Lumps.Length)
+            if (index < 0 || index >= this.Model.Lumps.Length)
                 return false;
 
             // Get the lump
-            var lump = Lumps[index];
+            var lump = this.Model.Lumps[index];
             if (lump == null)
                 return false;
 

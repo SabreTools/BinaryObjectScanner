@@ -17,635 +17,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        #region MS-DOS Stub
-
-        #region Standard Fields
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Magic"/>
-#if NET48
-        public string Stub_Magic => this.Model.Stub.Header.Magic;
-#else
-        public string? Stub_Magic => this.Model.Stub?.Header?.Magic;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.LastPageBytes"/>
-#if NET48
-        public ushort Stub_LastPageBytes => this.Model.Stub.Header.LastPageBytes;
-#else
-        public ushort? Stub_LastPageBytes => this.Model.Stub?.Header?.LastPageBytes;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Pages"/>
-#if NET48
-        public ushort Stub_Pages => this.Model.Stub.Header.Pages;
-#else
-        public ushort? Stub_Pages => this.Model.Stub?.Header?.Pages;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationItems"/>
-#if NET48
-        public ushort Stub_RelocationItems => this.Model.Stub.Header.RelocationItems;
-#else
-        public ushort? Stub_RelocationItems => this.Model.Stub?.Header?.RelocationItems;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.HeaderParagraphSize"/>
-#if NET48
-        public ushort Stub_HeaderParagraphSize => this.Model.Stub.Header.HeaderParagraphSize;
-#else
-        public ushort? Stub_HeaderParagraphSize => this.Model.Stub?.Header?.HeaderParagraphSize;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MinimumExtraParagraphs"/>
-#if NET48
-        public ushort Stub_MinimumExtraParagraphs => this.Model.Stub.Header.MinimumExtraParagraphs;
-#else
-        public ushort? Stub_MinimumExtraParagraphs => this.Model.Stub?.Header?.MinimumExtraParagraphs;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.MaximumExtraParagraphs"/>
-#if NET48
-        public ushort Stub_MaximumExtraParagraphs => this.Model.Stub.Header.MaximumExtraParagraphs;
-#else
-        public ushort? Stub_MaximumExtraParagraphs => this.Model.Stub?.Header?.MaximumExtraParagraphs;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSSValue"/>
-#if NET48
-        public ushort Stub_InitialSSValue => this.Model.Stub.Header.InitialSSValue;
-#else
-        public ushort? Stub_InitialSSValue => this.Model.Stub?.Header?.InitialSSValue;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialSPValue"/>
-#if NET48
-        public ushort Stub_InitialSPValue => this.Model.Stub.Header.InitialSPValue;
-#else
-        public ushort? Stub_InitialSPValue => this.Model.Stub?.Header?.InitialSPValue;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Checksum"/>
-#if NET48
-        public ushort Stub_Checksum => this.Model.Stub.Header.Checksum;
-#else
-        public ushort? Stub_Checksum => this.Model.Stub?.Header?.Checksum;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialIPValue"/>
-#if NET48
-        public ushort Stub_InitialIPValue => this.Model.Stub.Header.InitialIPValue;
-#else
-        public ushort? Stub_InitialIPValue => this.Model.Stub?.Header?.InitialIPValue;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.InitialCSValue"/>
-#if NET48
-        public ushort Stub_InitialCSValue => this.Model.Stub.Header.InitialCSValue;
-#else
-        public ushort? Stub_InitialCSValue => this.Model.Stub?.Header?.InitialCSValue;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.RelocationTableAddr"/>
-#if NET48
-        public ushort Stub_RelocationTableAddr => this.Model.Stub.Header.RelocationTableAddr;
-#else
-        public ushort? Stub_RelocationTableAddr => this.Model.Stub?.Header?.RelocationTableAddr;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OverlayNumber"/>
-#if NET48
-        public ushort Stub_OverlayNumber => this.Model.Stub.Header.OverlayNumber;
-#else
-        public ushort? Stub_OverlayNumber => this.Model.Stub?.Header?.OverlayNumber;
-#endif
-
-        #endregion
-
-        #region PE Extensions
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved1"/>
-#if NET48
-        public ushort[] Stub_Reserved1 => this.Model.Stub.Header.Reserved1;
-#else
-        public ushort[]? Stub_Reserved1 => this.Model.Stub?.Header?.Reserved1;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMIdentifier"/>
-#if NET48
-        public ushort Stub_OEMIdentifier => this.Model.Stub.Header.OEMIdentifier;
-#else
-        public ushort? Stub_OEMIdentifier => this.Model.Stub?.Header?.OEMIdentifier;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.OEMInformation"/>
-#if NET48
-        public ushort Stub_OEMInformation => this.Model.Stub.Header.OEMInformation;
-#else
-        public ushort? Stub_OEMInformation => this.Model.Stub?.Header?.OEMInformation;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.Reserved2"/>
-#if NET48
-        public ushort[] Stub_Reserved2 => this.Model.Stub.Header.Reserved2;
-#else
-        public ushort[]? Stub_Reserved2 => this.Model.Stub?.Header?.Reserved2;
-#endif
-
-        /// <inheritdoc cref="Models.MSDOS.ExecutableHeader.NewExeHeaderAddr"/>
-#if NET48
-        public uint Stub_NewExeHeaderAddr => this.Model.Stub.Header.NewExeHeaderAddr;
-#else
-        public uint? Stub_NewExeHeaderAddr => this.Model.Stub?.Header?.NewExeHeaderAddr;
-#endif
-
-        #endregion
-
-        #endregion
-
-        /// <inheritdoc cref="Models.PortableExecutable.Executable.Signature"/>
-#if NET48
-        public string Signature => this.Model.Signature;
-#else
-        public string? Signature => this.Model.Signature;
-#endif
-
-        #region COFF File Header
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Machine"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.MachineType Machine => this.Model.COFFFileHeader.Machine;
-#else
-        public SabreTools.Models.PortableExecutable.MachineType? Machine => this.Model.COFFFileHeader?.Machine;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSections"/>
-#if NET48
-        public ushort NumberOfSections => this.Model.COFFFileHeader.NumberOfSections;
-#else
-        public ushort? NumberOfSections => this.Model.COFFFileHeader?.NumberOfSections;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.TimeDateStamp"/>
-#if NET48
-        public uint TimeDateStamp => this.Model.COFFFileHeader.TimeDateStamp;
-#else
-        public uint? TimeDateStamp => this.Model.COFFFileHeader?.TimeDateStamp;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.PointerToSymbolTable"/>
-#if NET48
-        public uint PointerToSymbolTable => this.Model.COFFFileHeader.PointerToSymbolTable;
-#else
-        public uint? PointerToSymbolTable => this.Model.COFFFileHeader?.PointerToSymbolTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.NumberOfSymbols"/>
-#if NET48
-        public uint NumberOfSymbols => this.Model.COFFFileHeader.NumberOfSymbols;
-#else
-        public uint? NumberOfSymbols => this.Model.COFFFileHeader?.NumberOfSymbols;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.SizeOfOptionalHeader"/>
-#if NET48
-        public uint SizeOfOptionalHeader => this.Model.COFFFileHeader.SizeOfOptionalHeader;
-#else
-        public uint? SizeOfOptionalHeader => this.Model.COFFFileHeader?.SizeOfOptionalHeader;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFFileHeader.Characteristics"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.Characteristics Characteristics => this.Model.COFFFileHeader.Characteristics;
-#else
-        public SabreTools.Models.PortableExecutable.Characteristics? Characteristics => this.Model.COFFFileHeader?.Characteristics;
-#endif
-
-        #endregion
-
-        #region Optional Header
-
-        #region Standard Fields
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Machine"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber OH_Magic => this.Model.OptionalHeader.Magic;
-#else
-        public SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber? OH_Magic => this.Model.OptionalHeader?.Magic;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorLinkerVersion"/>
-#if NET48
-        public byte OH_MajorLinkerVersion => this.Model.OptionalHeader.MajorLinkerVersion;
-#else
-        public byte? OH_MajorLinkerVersion => this.Model.OptionalHeader?.MajorLinkerVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorLinkerVersion"/>
-#if NET48
-        public byte OH_MinorLinkerVersion => this.Model.OptionalHeader.MinorLinkerVersion;
-#else
-        public byte? OH_MinorLinkerVersion => this.Model.OptionalHeader?.MinorLinkerVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfCode"/>
-#if NET48
-        public uint OH_SizeOfCode => this.Model.OptionalHeader.SizeOfCode;
-#else
-        public uint? OH_SizeOfCode => this.Model.OptionalHeader?.SizeOfCode;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfInitializedData"/>
-#if NET48
-        public uint OH_SizeOfInitializedData => this.Model.OptionalHeader.SizeOfInitializedData;
-#else
-        public uint? OH_SizeOfInitializedData => this.Model.OptionalHeader?.SizeOfInitializedData;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfUninitializedData"/>
-#if NET48
-        public uint OH_SizeOfUninitializedData => this.Model.OptionalHeader.SizeOfUninitializedData;
-#else
-        public uint? OH_SizeOfUninitializedData => this.Model.OptionalHeader?.SizeOfUninitializedData;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.AddressOfEntryPoint"/>
-#if NET48
-        public uint OH_AddressOfEntryPoint => this.Model.OptionalHeader.AddressOfEntryPoint;
-#else
-        public uint? OH_AddressOfEntryPoint => this.Model.OptionalHeader?.AddressOfEntryPoint;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfCode"/>
-#if NET48
-        public uint OH_BaseOfCode => this.Model.OptionalHeader.BaseOfCode;
-#else
-        public uint? OH_BaseOfCode => this.Model.OptionalHeader?.BaseOfCode;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseOfData"/>
-        public uint? OH_BaseOfData => this.Model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? (uint?)Model.OptionalHeader.BaseOfData
-            : null;
-
-        #endregion
-
-        #region Windows-Specific Fields
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImageBase_PE32"/>
-        public ulong OH_ImageBase => this.Model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? Model.OptionalHeader.ImageBase_PE32
-            : Model.OptionalHeader?.ImageBase_PE32Plus ?? 0;
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SectionAlignment"/>
-#if NET48
-        public uint OH_SectionAlignment => this.Model.OptionalHeader.SectionAlignment;
-#else
-        public uint? OH_SectionAlignment => this.Model.OptionalHeader?.SectionAlignment;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.FileAlignment"/>
-#if NET48
-        public uint OH_FileAlignment => this.Model.OptionalHeader.FileAlignment;
-#else
-        public uint? OH_FileAlignment => this.Model.OptionalHeader?.FileAlignment;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorOperatingSystemVersion"/>
-#if NET48
-        public ushort OH_MajorOperatingSystemVersion => this.Model.OptionalHeader.MajorOperatingSystemVersion;
-#else
-        public ushort? OH_MajorOperatingSystemVersion => this.Model.OptionalHeader?.MajorOperatingSystemVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorOperatingSystemVersion"/>
-#if NET48
-        public ushort OH_MinorOperatingSystemVersion => this.Model.OptionalHeader.MinorOperatingSystemVersion;
-#else
-        public ushort? OH_MinorOperatingSystemVersion => this.Model.OptionalHeader?.MinorOperatingSystemVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorImageVersion"/>
-#if NET48
-        public ushort OH_MajorImageVersion => this.Model.OptionalHeader.MajorImageVersion;
-#else
-        public ushort? OH_MajorImageVersion => this.Model.OptionalHeader?.MajorImageVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorImageVersion"/>
-#if NET48
-        public ushort OH_MinorImageVersion => this.Model.OptionalHeader.MinorImageVersion;
-#else
-        public ushort? OH_MinorImageVersion => this.Model.OptionalHeader?.MinorImageVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MajorSubsystemVersion"/>
-#if NET48
-        public ushort OH_MajorSubsystemVersion => this.Model.OptionalHeader.MajorSubsystemVersion;
-#else
-        public ushort? OH_MajorSubsystemVersion => this.Model.OptionalHeader?.MajorSubsystemVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.MinorSubsystemVersion"/>
-#if NET48
-        public ushort OH_MinorSubsystemVersion => this.Model.OptionalHeader.MinorSubsystemVersion;
-#else
-        public ushort? OH_MinorSubsystemVersion => this.Model.OptionalHeader?.MinorSubsystemVersion;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Win32VersionValue"/>
-#if NET48
-        public uint OH_Win32VersionValue => this.Model.OptionalHeader.Win32VersionValue;
-#else
-        public uint? OH_Win32VersionValue => this.Model.OptionalHeader?.Win32VersionValue;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfImage"/>
-#if NET48
-        public uint OH_SizeOfImage => this.Model.OptionalHeader.SizeOfImage;
-#else
-        public uint? OH_SizeOfImage => this.Model.OptionalHeader?.SizeOfImage;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeaders"/>
-#if NET48
-        public uint OH_SizeOfHeaders => this.Model.OptionalHeader.SizeOfHeaders;
-#else
-        public uint? OH_SizeOfHeaders => this.Model.OptionalHeader?.SizeOfHeaders;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CheckSum"/>
-#if NET48
-        public uint OH_CheckSum => this.Model.OptionalHeader.CheckSum;
-#else
-        public uint? OH_CheckSum => this.Model.OptionalHeader?.CheckSum;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Subsystem"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.WindowsSubsystem OH_Subsystem => this.Model.OptionalHeader.Subsystem;
-#else
-        public SabreTools.Models.PortableExecutable.WindowsSubsystem? OH_Subsystem => this.Model.OptionalHeader?.Subsystem;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DllCharacteristics"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DllCharacteristics OH_DllCharacteristics => this.Model.OptionalHeader.DllCharacteristics;
-#else
-        public SabreTools.Models.PortableExecutable.DllCharacteristics? OH_DllCharacteristics => this.Model.OptionalHeader?.DllCharacteristics;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackReserve_PE32"/>
-        public ulong OH_SizeOfStackReserve => this.Model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? Model.OptionalHeader.SizeOfStackReserve_PE32
-            : Model.OptionalHeader?.SizeOfStackReserve_PE32Plus ?? 0;
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfStackCommit_PE32"/>
-        public ulong OH_SizeOfStackCommit => this.Model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? Model.OptionalHeader.SizeOfStackCommit_PE32
-            : Model.OptionalHeader?.SizeOfStackCommit_PE32Plus ?? 0;
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapReserve_PE32"/>
-        public ulong OH_SizeOfHeapReserve => this.Model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? Model.OptionalHeader.SizeOfHeapReserve_PE32
-            : Model.OptionalHeader?.SizeOfHeapReserve_PE32Plus ?? 0;
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.SizeOfHeapCommit_PE32"/>
-        public ulong OH_SizeOfHeapCommit => this.Model.OptionalHeader?.Magic == SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber.PE32
-            ? Model.OptionalHeader.SizeOfHeapCommit_PE32
-            : Model.OptionalHeader?.SizeOfHeapCommit_PE32Plus ?? 0;
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoaderFlags"/>
-#if NET48
-        public uint OH_LoaderFlags => this.Model.OptionalHeader.LoaderFlags;
-#else
-        public uint? OH_LoaderFlags => this.Model.OptionalHeader?.LoaderFlags;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.NumberOfRvaAndSizes"/>
-#if NET48
-        public uint OH_NumberOfRvaAndSizes => this.Model.OptionalHeader.NumberOfRvaAndSizes;
-#else
-        public uint? OH_NumberOfRvaAndSizes => this.Model.OptionalHeader?.NumberOfRvaAndSizes;
-#endif
-
-        #endregion
-
-        #region Data Directories
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExportTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExportTable => this.Model.OptionalHeader.ExportTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExportTable => this.Model.OptionalHeader?.ExportTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportTable => this.Model.OptionalHeader.ImportTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportTable => this.Model.OptionalHeader?.ImportTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ResourceTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ResourceTable => this.Model.OptionalHeader.ResourceTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ResourceTable => this.Model.OptionalHeader?.ResourceTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ExceptionTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ExceptionTable => this.Model.OptionalHeader.ExceptionTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ExceptionTable => this.Model.OptionalHeader?.ExceptionTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CertificateTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_CertificateTable => this.Model.OptionalHeader.CertificateTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CertificateTable => this.Model.OptionalHeader?.CertificateTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BaseRelocationTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_BaseRelocationTable => this.Model.OptionalHeader.BaseRelocationTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BaseRelocationTable => this.Model.OptionalHeader?.BaseRelocationTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Debug"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_Debug => this.Model.OptionalHeader.Debug;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_Debug => this.Model.OptionalHeader?.Debug;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Architecture"/>
-#if NET48
-        public ulong OH_Architecture => this.Model.OptionalHeader.Architecture;
-#else
-        public ulong? OH_Architecture => this.Model.OptionalHeader?.Architecture;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.GlobalPtr"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_GlobalPtr => this.Model.OptionalHeader.GlobalPtr;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_GlobalPtr => this.Model.OptionalHeader?.GlobalPtr;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ThreadLocalStorageTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ThreadLocalStorageTable => this.Model.OptionalHeader.ThreadLocalStorageTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ThreadLocalStorageTable => this.Model.OptionalHeader?.ThreadLocalStorageTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.LoadConfigTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_LoadConfigTable => this.Model.OptionalHeader.LoadConfigTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_LoadConfigTable => this.Model.OptionalHeader?.LoadConfigTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.BoundImport"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_BoundImport => this.Model.OptionalHeader.BoundImport;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_BoundImport => this.Model.OptionalHeader?.BoundImport;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.ImportAddressTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_ImportAddressTable => this.Model.OptionalHeader.ImportAddressTable;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_ImportAddressTable => this.Model.OptionalHeader?.ImportAddressTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.DelayImportDescriptor"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_DelayImportDescriptor => this.Model.OptionalHeader.DelayImportDescriptor;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_DelayImportDescriptor => this.Model.OptionalHeader?.DelayImportDescriptor;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.CLRRuntimeHeader"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DataDirectory OH_CLRRuntimeHeader => this.Model.OptionalHeader.CLRRuntimeHeader;
-#else
-        public SabreTools.Models.PortableExecutable.DataDirectory? OH_CLRRuntimeHeader => this.Model.OptionalHeader?.CLRRuntimeHeader;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.OptionalHeader.Reserved"/>
-#if NET48
-        public ulong OH_Reserved => this.Model.OptionalHeader.Reserved;
-#else
-        public ulong? OH_Reserved => this.Model.OptionalHeader?.Reserved;
-#endif
-
-        #endregion
-
-        #endregion
-
-        #region Tables
-
-        /// <inheritdoc cref="Models.PortableExecutable.SectionTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.SectionHeader[] SectionTable => this.Model.SectionTable;
-#else
-        public SabreTools.Models.PortableExecutable.SectionHeader?[]? SectionTable => this.Model.SectionTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFSymbolTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry[] COFFSymbolTable => this.Model.COFFSymbolTable;
-#else
-        public SabreTools.Models.PortableExecutable.COFFSymbolTableEntry?[]? COFFSymbolTable => this.Model.COFFSymbolTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.COFFStringTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.COFFStringTable COFFStringTable => this.Model.COFFStringTable;
-#else
-        public SabreTools.Models.PortableExecutable.COFFStringTable? COFFStringTable => this.Model.COFFStringTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.AttributeCertificateTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry[] AttributeCertificateTable => this.Model.AttributeCertificateTable;
-#else
-        public SabreTools.Models.PortableExecutable.AttributeCertificateTableEntry?[]? AttributeCertificateTable => this.Model.AttributeCertificateTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.DelayLoadDirectoryTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable DelayLoadDirectoryTable => this.Model.DelayLoadDirectoryTable;
-#else
-        public SabreTools.Models.PortableExecutable.DelayLoadDirectoryTable? DelayLoadDirectoryTable => this.Model.DelayLoadDirectoryTable;
-#endif
-
-        #endregion
-
-        #region Sections
-
-        /// <inheritdoc cref="Models.PortableExecutable.BaseRelocationTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.BaseRelocationBlock[] BaseRelocationTable => this.Model.BaseRelocationTable;
-#else
-        public SabreTools.Models.PortableExecutable.BaseRelocationBlock?[]? BaseRelocationTable => this.Model.BaseRelocationTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.DebugTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.DebugTable DebugTable => this.Model.DebugTable;
-#else
-        public SabreTools.Models.PortableExecutable.DebugTable? DebugTable => this.Model.DebugTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.ExportTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.ExportTable ExportTable => this.Model.ExportTable;
-#else
-        public SabreTools.Models.PortableExecutable.ExportTable? ExportTable => this.Model.ExportTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.ExportTable.ExportNameTable"/>
-#if NET48
-        public string[] ExportNameTable => this.Model.ExportTable?.ExportNameTable?.Strings;
-#else
-        public string[]? ExportNameTable => this.Model.ExportTable?.ExportNameTable?.Strings;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.ImportTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.ImportTable ImportTable => this.Model.ImportTable;
-#else
-        public SabreTools.Models.PortableExecutable.ImportTable? ImportTable => this.Model.ImportTable;
-#endif
-
-        /// <inheritdoc cref="Models.PortableExecutable.ImportTable.HintNameTable"/>
-#if NET48
-        public string[] ImportHintNameTable => this.Model.ImportTable?.HintNameTable != null
-#else
-        public string?[]? ImportHintNameTable => this.Model.ImportTable?.HintNameTable != null
-#endif
-            ? Model.ImportTable.HintNameTable.Select(entry => entry?.Name).ToArray()
-            : null;
-
-        /// <inheritdoc cref="Models.PortableExecutable.ResourceDirectoryTable"/>
-#if NET48
-        public SabreTools.Models.PortableExecutable.ResourceDirectoryTable ResourceDirectoryTable => this.Model.ResourceDirectoryTable;
-#else
-        public SabreTools.Models.PortableExecutable.ResourceDirectoryTable? ResourceDirectoryTable => this.Model.ResourceDirectoryTable;
-#endif
-
-        #endregion
-
-        #endregion
-
         #region Extension Properties
 
         /// <summary>
@@ -668,16 +39,12 @@ namespace BinaryObjectScanner.Wrappers
                     // TODO: Don't scan the known header data as well
 
                     // If the section table is missing
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return null;
 
                     // Populate the raw header padding data based on the source
-#if NET48
-                    uint headerStartAddress = Stub_NewExeHeaderAddr;
-#else
-                    uint headerStartAddress = Stub_NewExeHeaderAddr ?? 0;
-#endif
-                    uint firstSectionAddress = SectionTable
+                    uint headerStartAddress = this.Model.Stub?.Header?.NewExeHeaderAddr ?? 0;
+                    uint firstSectionAddress = this.Model.SectionTable
                         .Select(s => s?.PointerToRawData ?? 0)
                         .Where(s => s != 0)
                         .OrderBy(s => s)
@@ -711,16 +78,12 @@ namespace BinaryObjectScanner.Wrappers
                     // TODO: Don't scan the known header data as well
 
                     // If the section table is missing
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return null;
 
                     // Populate the raw header padding data based on the source
-#if NET48
-                    uint headerStartAddress = Stub_NewExeHeaderAddr;
-#else
-                    uint headerStartAddress = Stub_NewExeHeaderAddr ?? 0;
-#endif
-                    uint firstSectionAddress = SectionTable
+                    uint headerStartAddress = this.Model.Stub?.Header?.NewExeHeaderAddr ?? 0;
+                    uint firstSectionAddress = this.Model.SectionTable
                         .Select(s => s?.PointerToRawData ?? 0)
                         .Where(s => s != 0)
                         .OrderBy(s => s)
@@ -748,27 +111,21 @@ namespace BinaryObjectScanner.Wrappers
                 lock (_sourceDataLock)
                 {
                     // If the section table is missing
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return null;
 
-#if NET6_0_OR_GREATER
                     // If the address is missing
-                    if (OH_AddressOfEntryPoint == null)
+                    if (this.Model.OptionalHeader?.AddressOfEntryPoint == null)
                         return null;
-#endif
 
                     // If we have no entry point
-#if NET48
-                    int entryPointAddress = (int)OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable);
-#else
-                    int entryPointAddress = (int)OH_AddressOfEntryPoint.Value.ConvertVirtualAddress(SectionTable);
-#endif
+                    int entryPointAddress = (int)this.Model.OptionalHeader.AddressOfEntryPoint.ConvertVirtualAddress(this.Model.SectionTable);
                     if (entryPointAddress == 0)
                         return null;
 
                     // If the entry point matches with the start of a section, use that
                     int entryPointSection = FindEntryPointSectionIndex();
-                    if (entryPointSection >= 0 && OH_AddressOfEntryPoint == SectionTable[entryPointSection]?.VirtualAddress)
+                    if (entryPointSection >= 0 && this.Model.OptionalHeader.AddressOfEntryPoint == this.Model.SectionTable[entryPointSection]?.VirtualAddress)
                         return GetSectionData(entryPointSection);
 
                     // If we already have cached data, just use that immediately
@@ -804,27 +161,27 @@ namespace BinaryObjectScanner.Wrappers
                         return -1;
 
                     // If the section table is missing
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return -1;
 
                     // If we have certificate data, use that as the end
-                    if (OH_CertificateTable != null)
+                    if (this.Model.OptionalHeader?.CertificateTable != null)
                     {
-                        int certificateTableAddress = (int)OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int certificateTableAddress = (int)this.Model.OptionalHeader.CertificateTable.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in SectionTable)
+                    foreach (var section in this.Model.SectionTable)
                     {
                         // If we have an invalid section
                         if (section == null)
                             continue;
 
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -879,27 +236,27 @@ namespace BinaryObjectScanner.Wrappers
                         return null;
 
                     // If the section table is missing
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return null;
 
                     // If we have certificate data, use that as the end
-                    if (OH_CertificateTable != null)
+                    if (this.Model.OptionalHeader?.CertificateTable != null)
                     {
-                        int certificateTableAddress = (int)OH_CertificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int certificateTableAddress = (int)this.Model.OptionalHeader.CertificateTable.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in SectionTable)
+                    foreach (var section in this.Model.SectionTable)
                     {
                         // If we have an invalid section
                         if (section == null)
                             continue;
 
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -961,28 +318,27 @@ namespace BinaryObjectScanner.Wrappers
                         return null;
 
                     // If the section table is missing
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return null;
 
                     // If we have certificate data, use that as the end
-                    if (OH_CertificateTable != null)
+                    if (this.Model.OptionalHeader?.CertificateTable != null)
                     {
-                        var certificateTable = OH_CertificateTable;
-                        int certificateTableAddress = (int)certificateTable.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int certificateTableAddress = (int)this.Model.OptionalHeader.CertificateTable.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
                         if (certificateTableAddress != 0 && certificateTableAddress < endOfFile)
                             endOfFile = certificateTableAddress;
                     }
 
                     // Search through all sections and find the furthest a section goes
                     int endOfSectionData = -1;
-                    foreach (var section in SectionTable)
+                    foreach (var section in this.Model.SectionTable)
                     {
                         // If we have an invalid section
                         if (section == null)
                             continue;
 
                         // If we have an invalid section address
-                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+                        int sectionAddress = (int)section.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
                         if (sectionAddress == 0)
                             continue;
 
@@ -1039,14 +395,14 @@ namespace BinaryObjectScanner.Wrappers
                         return _sectionNames;
 
                     // If there are no sections
-                    if (SectionTable == null)
+                    if (this.Model.SectionTable == null)
                         return null;
 
                     // Otherwise, build and return the cached array
-                    _sectionNames = new string[SectionTable.Length];
+                    _sectionNames = new string[this.Model.SectionTable.Length];
                     for (int i = 0; i < _sectionNames.Length; i++)
                     {
-                        var section = SectionTable[i];
+                        var section = this.Model.SectionTable[i];
                         if (section == null)
                             continue;
 
@@ -1085,14 +441,12 @@ namespace BinaryObjectScanner.Wrappers
                     if (_stubExecutableData != null)
                         return _stubExecutableData;
 
-#if NET6_0_OR_GREATER
-                    if (Stub_NewExeHeaderAddr == null)
+                    if (this.Model.Stub?.Header?.NewExeHeaderAddr == null)
                         return null;
-#endif
 
                     // Populate the raw stub executable data based on the source
                     int endOfStubHeader = 0x40;
-                    int lengthOfStubExecutableData = (int)Stub_NewExeHeaderAddr - endOfStubHeader;
+                    int lengthOfStubExecutableData = (int)this.Model.Stub.Header.NewExeHeaderAddr - endOfStubHeader;
                     _stubExecutableData = ReadFromDataSource(endOfStubHeader, lengthOfStubExecutableData);
 
                     // Cache and return the stub executable data, even if null
@@ -1119,8 +473,8 @@ namespace BinaryObjectScanner.Wrappers
                         return _debugData;
 
                     // If we have no resource table, just return
-                    if (DebugTable?.DebugDirectoryTable == null
-                        || DebugTable.DebugDirectoryTable.Length == 0)
+                    if (this.Model.DebugTable?.DebugDirectoryTable == null
+                        || this.Model.DebugTable.DebugDirectoryTable.Length == 0)
                         return null;
 
                     // Otherwise, build and return the cached dictionary
@@ -1148,13 +502,13 @@ namespace BinaryObjectScanner.Wrappers
                         return _resourceData;
 
                     // If we have no resource table, just return
-                    if (OH_ResourceTable == null
-                        || OH_ResourceTable.VirtualAddress == 0
-                        || ResourceDirectoryTable == null)
+                    if (this.Model.OptionalHeader?.ResourceTable == null
+                        || this.Model.OptionalHeader.ResourceTable.VirtualAddress == 0
+                        || this.Model.ResourceDirectoryTable == null)
                         return null;
 
                     // Otherwise, build and return the cached dictionary
-                    ParseResourceDirectoryTable(ResourceDirectoryTable, types: new List<object>());
+                    ParseResourceDirectoryTable(this.Model.ResourceDirectoryTable, types: new List<object>());
                     return _resourceData;
                 }
             }
@@ -1826,13 +1180,13 @@ namespace BinaryObjectScanner.Wrappers
         private void ParseDebugTable()
         {
             // If there is no debug table
-            if (DebugTable?.DebugDirectoryTable == null)
+            if (this.Model.DebugTable?.DebugDirectoryTable == null)
                 return;
 
             // Loop through all debug table entries
-            for (int i = 0; i < DebugTable.DebugDirectoryTable.Length; i++)
+            for (int i = 0; i < this.Model.DebugTable.DebugDirectoryTable.Length; i++)
             {
-                var entry = DebugTable.DebugDirectoryTable[i];
+                var entry = this.Model.DebugTable.DebugDirectoryTable[i];
                 if (entry == null)
                     continue;
 
@@ -2270,28 +1624,23 @@ namespace BinaryObjectScanner.Wrappers
         public int FindEntryPointSectionIndex()
         {
             // If the section table is missing
-            if (SectionTable == null)
+            if (this.Model.SectionTable == null)
                 return -1;
 
-#if NET6_0_OR_GREATER
             // If the address is missing
-            if (OH_AddressOfEntryPoint == null)
+            if (this.Model.OptionalHeader?.AddressOfEntryPoint == null)
                 return -1;
-#endif
 
             // If we don't have an entry point
+            if (this.Model.OptionalHeader.AddressOfEntryPoint.ConvertVirtualAddress(this.Model.SectionTable) == 0)
+                return -1;
+
+            // Otherwise, find the section it exists within
 #if NET48
-            if (OH_AddressOfEntryPoint.ConvertVirtualAddress(SectionTable) == 0)
-                return -1;
-
-            // Otherwise, find the section it exists within
-            return OH_AddressOfEntryPoint.ContainingSectionIndex(SectionTable);
+            return this.Model.OptionalHeader.AddressOfEntryPoint.ContainingSectionIndex(this.Model.SectionTable);
 #else
-            if (OH_AddressOfEntryPoint.Value.ConvertVirtualAddress(SectionTable) == 0)
-                return -1;
-
             // Otherwise, find the section it exists within
-            return OH_AddressOfEntryPoint.Value.ContainingSectionIndex(SectionTable
+            return this.Model.OptionalHeader.AddressOfEntryPoint.ContainingSectionIndex(this.Model.SectionTable
                 .Where(sh => sh != null)
                 .Cast<SabreTools.Models.PortableExecutable.SectionHeader>()
                 .ToArray());
@@ -2311,7 +1660,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2324,7 +1673,7 @@ namespace BinaryObjectScanner.Wrappers
                 return null;
 
             // Return the section
-            return SectionTable[index];
+            return this.Model.SectionTable[index];
         }
 
         /// <summary>
@@ -2340,7 +1689,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2353,7 +1702,7 @@ namespace BinaryObjectScanner.Wrappers
                 return null;
 
             // Return the section
-            return SectionTable[index];
+            return this.Model.SectionTable[index];
         }
 
         /// <summary>
@@ -2368,15 +1717,15 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionTable == null || !SectionTable.Any())
+            if (this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
-            if (index < 0 || index >= SectionTable.Length)
+            if (index < 0 || index >= this.Model.SectionTable.Length)
                 return null;
 
             // Return the section
-            return SectionTable[index];
+            return this.Model.SectionTable[index];
         }
 
         /// <summary>
@@ -2392,7 +1741,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2417,7 +1766,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2441,19 +1790,19 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
-            if (index < 0 || index >= SectionTable.Length)
+            if (index < 0 || index >= this.Model.SectionTable.Length)
                 return null;
 
             // Get the section data from the table
-            var section = SectionTable[index];
+            var section = this.Model.SectionTable[index];
             if (section == null)
                 return null;
 
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+            uint address = section.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
             if (address == 0)
                 return null;
 
@@ -2495,7 +1844,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2520,7 +1869,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
@@ -2544,19 +1893,19 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If we have no sections
-            if (SectionNames == null || !SectionNames.Any() || SectionTable == null || !SectionTable.Any())
+            if (SectionNames == null || !SectionNames.Any() || this.Model.SectionTable == null || !this.Model.SectionTable.Any())
                 return null;
 
             // If the section doesn't exist
-            if (index < 0 || index >= SectionTable.Length)
+            if (index < 0 || index >= this.Model.SectionTable.Length)
                 return null;
 
             // Get the section data from the table
-            var section = SectionTable[index];
+            var section = this.Model.SectionTable[index];
             if (section == null)
                 return null;
 
-            uint address = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+            uint address = section.VirtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
             if (address == 0)
                 return null;
 
@@ -2601,7 +1950,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If the table doesn't exist
-            if (index < 0 || index > 16)
+            if (this.Model.OptionalHeader == null || index < 0 || index > 16)
                 return null;
 
             // Get the virtual address and size from the entries
@@ -2609,64 +1958,64 @@ namespace BinaryObjectScanner.Wrappers
             switch (index)
             {
                 case 1:
-                    virtualAddress = OH_ExportTable?.VirtualAddress ?? 0;
-                    size = OH_ExportTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ExportTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ExportTable?.Size ?? 0;
                     break;
                 case 2:
-                    virtualAddress = OH_ImportTable?.VirtualAddress ?? 0;
-                    size = OH_ImportTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ImportTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ImportTable?.Size ?? 0;
                     break;
                 case 3:
-                    virtualAddress = OH_ResourceTable?.VirtualAddress ?? 0;
-                    size = OH_ResourceTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ResourceTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ResourceTable?.Size ?? 0;
                     break;
                 case 4:
-                    virtualAddress = OH_ExceptionTable?.VirtualAddress ?? 0;
-                    size = OH_ExceptionTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ExceptionTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ExceptionTable?.Size ?? 0;
                     break;
                 case 5:
-                    virtualAddress = OH_CertificateTable?.VirtualAddress ?? 0;
-                    size = OH_CertificateTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.CertificateTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.CertificateTable?.Size ?? 0;
                     break;
                 case 6:
-                    virtualAddress = OH_BaseRelocationTable?.VirtualAddress ?? 0;
-                    size = OH_BaseRelocationTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.BaseRelocationTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.BaseRelocationTable?.Size ?? 0;
                     break;
                 case 7:
-                    virtualAddress = OH_Debug?.VirtualAddress ?? 0;
-                    size = OH_Debug?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.Debug?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.Debug?.Size ?? 0;
                     break;
                 case 8: // Architecture Table
                     virtualAddress = 0;
                     size = 0;
                     break;
                 case 9:
-                    virtualAddress = OH_GlobalPtr?.VirtualAddress ?? 0;
-                    size = OH_GlobalPtr?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.GlobalPtr?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.GlobalPtr?.Size ?? 0;
                     break;
                 case 10:
-                    virtualAddress = OH_ThreadLocalStorageTable?.VirtualAddress ?? 0;
-                    size = OH_ThreadLocalStorageTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ThreadLocalStorageTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ThreadLocalStorageTable?.Size ?? 0;
                     break;
                 case 11:
-                    virtualAddress = OH_LoadConfigTable?.VirtualAddress ?? 0;
-                    size = OH_LoadConfigTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.LoadConfigTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.LoadConfigTable?.Size ?? 0;
                     break;
                 case 12:
-                    virtualAddress = OH_BoundImport?.VirtualAddress ?? 0;
-                    size = OH_BoundImport?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.BoundImport?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.BoundImport?.Size ?? 0;
                     break;
                 case 13:
-                    virtualAddress = OH_ImportAddressTable?.VirtualAddress ?? 0;
-                    size = OH_ImportAddressTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ImportAddressTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ImportAddressTable?.Size ?? 0;
                     break;
                 case 14:
-                    virtualAddress = OH_DelayImportDescriptor?.VirtualAddress ?? 0;
-                    size = OH_DelayImportDescriptor?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.DelayImportDescriptor?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.DelayImportDescriptor?.Size ?? 0;
                     break;
                 case 15:
-                    virtualAddress = OH_CLRRuntimeHeader?.VirtualAddress ?? 0;
-                    size = OH_CLRRuntimeHeader?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.CLRRuntimeHeader?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.CLRRuntimeHeader?.Size ?? 0;
                     break;
                 case 16: // Reserved
                     virtualAddress = 0;
@@ -2675,11 +2024,11 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // If there is  no section table
-            if (SectionTable == null)
+            if (this.Model.SectionTable == null)
                 return null;
 
             // Get the physical address from the virtual one
-            uint address = virtualAddress.ConvertVirtualAddress(SectionTable);
+            uint address = virtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
             if (address == 0 || size == 0)
                 return null;
 
@@ -2718,7 +2067,7 @@ namespace BinaryObjectScanner.Wrappers
 #endif
         {
             // If the table doesn't exist
-            if (index < 0 || index > 16)
+            if (this.Model.OptionalHeader == null || index < 0 || index > 16)
                 return null;
 
             // Get the virtual address and size from the entries
@@ -2726,64 +2075,64 @@ namespace BinaryObjectScanner.Wrappers
             switch (index)
             {
                 case 1:
-                    virtualAddress = OH_ExportTable?.VirtualAddress ?? 0;
-                    size = OH_ExportTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ExportTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ExportTable?.Size ?? 0;
                     break;
                 case 2:
-                    virtualAddress = OH_ImportTable?.VirtualAddress ?? 0;
-                    size = OH_ImportTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ImportTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ImportTable?.Size ?? 0;
                     break;
                 case 3:
-                    virtualAddress = OH_ResourceTable?.VirtualAddress ?? 0;
-                    size = OH_ResourceTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ResourceTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ResourceTable?.Size ?? 0;
                     break;
                 case 4:
-                    virtualAddress = OH_ExceptionTable?.VirtualAddress ?? 0;
-                    size = OH_ExceptionTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ExceptionTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ExceptionTable?.Size ?? 0;
                     break;
                 case 5:
-                    virtualAddress = OH_CertificateTable?.VirtualAddress ?? 0;
-                    size = OH_CertificateTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.CertificateTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.CertificateTable?.Size ?? 0;
                     break;
                 case 6:
-                    virtualAddress = OH_BaseRelocationTable?.VirtualAddress ?? 0;
-                    size = OH_BaseRelocationTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.BaseRelocationTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.BaseRelocationTable?.Size ?? 0;
                     break;
                 case 7:
-                    virtualAddress = OH_Debug?.VirtualAddress ?? 0;
-                    size = OH_Debug?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.Debug?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.Debug?.Size ?? 0;
                     break;
                 case 8: // Architecture Table
                     virtualAddress = 0;
                     size = 0;
                     break;
                 case 9:
-                    virtualAddress = OH_GlobalPtr?.VirtualAddress ?? 0;
-                    size = OH_GlobalPtr?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.GlobalPtr?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.GlobalPtr?.Size ?? 0;
                     break;
                 case 10:
-                    virtualAddress = OH_ThreadLocalStorageTable?.VirtualAddress ?? 0;
-                    size = OH_ThreadLocalStorageTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ThreadLocalStorageTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ThreadLocalStorageTable?.Size ?? 0;
                     break;
                 case 11:
-                    virtualAddress = OH_LoadConfigTable?.VirtualAddress ?? 0;
-                    size = OH_LoadConfigTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.LoadConfigTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.LoadConfigTable?.Size ?? 0;
                     break;
                 case 12:
-                    virtualAddress = OH_BoundImport?.VirtualAddress ?? 0;
-                    size = OH_BoundImport?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.BoundImport?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.BoundImport?.Size ?? 0;
                     break;
                 case 13:
-                    virtualAddress = OH_ImportAddressTable?.VirtualAddress ?? 0;
-                    size = OH_ImportAddressTable?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.ImportAddressTable?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.ImportAddressTable?.Size ?? 0;
                     break;
                 case 14:
-                    virtualAddress = OH_DelayImportDescriptor?.VirtualAddress ?? 0;
-                    size = OH_DelayImportDescriptor?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.DelayImportDescriptor?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.DelayImportDescriptor?.Size ?? 0;
                     break;
                 case 15:
-                    virtualAddress = OH_CLRRuntimeHeader?.VirtualAddress ?? 0;
-                    size = OH_CLRRuntimeHeader?.Size ?? 0;
+                    virtualAddress = this.Model.OptionalHeader.CLRRuntimeHeader?.VirtualAddress ?? 0;
+                    size = this.Model.OptionalHeader.CLRRuntimeHeader?.Size ?? 0;
                     break;
                 case 16: // Reserved
                     virtualAddress = 0;
@@ -2792,11 +2141,11 @@ namespace BinaryObjectScanner.Wrappers
             }
 
             // If there is  no section table
-            if (SectionTable == null)
+            if (this.Model.SectionTable == null)
                 return null;
 
             // Get the physical address from the virtual one
-            uint address = virtualAddress.ConvertVirtualAddress(SectionTable);
+            uint address = virtualAddress.ConvertVirtualAddress(this.Model.SectionTable);
             if (address == 0 || size == 0)
                 return null;
 

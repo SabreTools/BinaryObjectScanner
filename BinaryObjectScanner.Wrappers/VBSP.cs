@@ -13,44 +13,6 @@ namespace BinaryObjectScanner.Wrappers
 
         #endregion
 
-        #region Pass-Through Properties
-
-        /// <inheritdoc cref="Models.VBSP.Header.Signature"/>
-#if NET48
-        public string Signature => this.Model.Header.Signature;
-#else
-        public string? Signature => this.Model.Header?.Signature;
-#endif
-
-        /// <inheritdoc cref="Models.VBSP.Header.Version"/>
-#if NET48
-        public int Version => this.Model.Header.Version;
-#else
-        public int? Version => this.Model.Header?.Version;
-#endif
-
-        /// <inheritdoc cref="Models.VBSP.File.Lumps"/>
-#if NET48
-        public SabreTools.Models.VBSP.Lump[] Lumps => this.Model.Header.Lumps;
-#else
-        public SabreTools.Models.VBSP.Lump?[]? Lumps => this.Model.Header?.Lumps;
-#endif
-
-        /// <inheritdoc cref="Models.VBSP.Header.MapRevision"/>
-#if NET48
-        public int MapRevision => this.Model.Header.MapRevision;
-#else
-        public int? MapRevision => this.Model.Header?.MapRevision;
-#endif
-
-        #endregion
-
-        #region Extension Properties
-
-        // TODO: Figure out what extension oroperties are needed
-
-        #endregion
-
         #region Constructors
 
         /// <inheritdoc/>
@@ -153,12 +115,12 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractAllLumps(string outputDirectory)
         {
             // If we have no lumps
-            if (Lumps == null || Lumps.Length == 0)
+            if (this.Model.Header?.Lumps == null || this.Model.Header.Lumps.Length == 0)
                 return false;
 
             // Loop through and extract all lumps to the output
             bool allExtracted = true;
-            for (int i = 0; i < Lumps.Length; i++)
+            for (int i = 0; i < this.Model.Header.Lumps.Length; i++)
             {
                 allExtracted &= ExtractLump(i, outputDirectory);
             }
@@ -175,15 +137,15 @@ namespace BinaryObjectScanner.Wrappers
         public bool ExtractLump(int index, string outputDirectory)
         {
             // If we have no lumps
-            if (Lumps == null || Lumps.Length == 0)
+            if (this.Model.Header?.Lumps == null || this.Model.Header.Lumps.Length == 0)
                 return false;
 
             // If the lumps index is invalid
-            if (index < 0 || index >= Lumps.Length)
+            if (index < 0 || index >= this.Model.Header.Lumps.Length)
                 return false;
 
             // Get the lump
-            var lump = Lumps[index];
+            var lump = this.Model.Header.Lumps[index];
             if (lump == null)
                 return false;
 

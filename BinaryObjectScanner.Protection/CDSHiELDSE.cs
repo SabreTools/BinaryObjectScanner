@@ -11,15 +11,15 @@ namespace BinaryObjectScanner.Protection
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.SectionTable;
+            var sections = pex?.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // TODO: Indicates Hypertech Crack Proof as well?
             //// Get the import directory table
-            //if (pex.ImportTable?.ImportDirectoryTable != null)
+            //if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             //{
-            //    bool match = pex.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "KeRnEl32.dLl");
+            //    bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "KeRnEl32.dLl");
             //    if (match)
             //        return "CDSHiELD SE";
             //}
