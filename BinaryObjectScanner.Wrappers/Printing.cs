@@ -51,7 +51,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this AACSMediaKeyBlock item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.AACSMediaKeyBlock.Print(builder, item.Model);
+            SabreTools.Printing.AACSMediaKeyBlock.Print(builder, item.Model);
             return builder;
         }
 
@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this BDPlusSVM item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.BDPlusSVM.Print(builder, item.Model);
+            SabreTools.Printing.BDPlusSVM.Print(builder, item.Model);
             return builder;
         }
 
@@ -71,7 +71,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this BFPK item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.BFPK.Print(builder, item.Model);
+            SabreTools.Printing.BFPK.Print(builder, item.Model);
             return builder;
         }
 
@@ -81,7 +81,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this BSP item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.BSP.Print(builder, item.Model);
+            SabreTools.Printing.BSP.Print(builder, item.Model);
             return builder;
         }
 
@@ -91,7 +91,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this CFB item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.CFB.Print(builder, item.Model);
+            SabreTools.Printing.CFB.Print(builder, item.Model);
             return builder;
         }
 
@@ -101,7 +101,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this CIA item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.CIA.Print(builder, item.Model);
+            SabreTools.Printing.CIA.Print(builder, item.Model);
             return builder;
         }
 
@@ -111,7 +111,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this GCF item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.GCF.Print(builder, item.Model);
+            SabreTools.Printing.GCF.Print(builder, item.Model);
             return builder;
         }
 
@@ -121,7 +121,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this InstallShieldCabinet item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.InstallShieldCabinet.Print(builder, item.Model);
+            SabreTools.Printing.InstallShieldCabinet.Print(builder, item.Model);
             return builder;
         }
 
@@ -131,7 +131,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this LinearExecutable item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.LinearExecutable.Print(builder, item.Model);
+            SabreTools.Printing.LinearExecutable.Print(builder, item.Model);
             return builder;
         }
 
@@ -141,7 +141,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this MicrosoftCabinet item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.MicrosoftCabinet.Print(builder, item.Model);
+            SabreTools.Printing.MicrosoftCabinet.Print(builder, item.Model);
             return builder;
         }
 
@@ -151,7 +151,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this MSDOS item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.MSDOS.Print(builder, item.Model);
+            SabreTools.Printing.MSDOS.Print(builder, item.Model);
             return builder;
         }
 
@@ -161,7 +161,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this N3DS item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.N3DS.Print(builder, item.Model);
+            SabreTools.Printing.N3DS.Print(builder, item.Model);
             return builder;
         }
 
@@ -171,7 +171,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this NCF item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.NCF.Print(builder, item.Model);
+            SabreTools.Printing.NCF.Print(builder, item.Model);
             return builder;
         }
 
@@ -181,7 +181,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this NewExecutable item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.NewExecutable.Print(builder, item.Model);
+            SabreTools.Printing.NewExecutable.Print(builder, item.Model);
             return builder;
         }
 
@@ -191,7 +191,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this Nitro item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.Nitro.Print(builder, item.Model);
+            SabreTools.Printing.Nitro.Print(builder, item.Model);
             return builder;
         }
 
@@ -201,7 +201,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this PAK item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PAK.Print(builder, item.Model);
+            SabreTools.Printing.PAK.Print(builder, item.Model);
             return builder;
         }
 
@@ -211,7 +211,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this PFF item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PFF.Print(builder, item.Model);
+            SabreTools.Printing.PFF.Print(builder, item.Model);
             return builder;
         }
 
@@ -221,7 +221,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this PlayJAudioFile item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PlayJAudioFile.Print(builder, item.Model);
+            SabreTools.Printing.PlayJAudioFile.Print(builder, item.Model);
             return builder;
         }
 
@@ -231,7 +231,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this PortableExecutable item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.PortableExecutable.Print(builder, item.Model);
+            SabreTools.Printing.PortableExecutable.Print(builder, item.Model);
             return builder;
         }
 
@@ -241,7 +241,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this Quantum item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.Quantum.Print(builder, item.Model);
+            SabreTools.Printing.Quantum.Print(builder, item.Model);
             return builder;
         }
 
@@ -251,7 +251,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this SGA item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.SGA.Print(builder, item.Model);
+            SabreTools.Printing.SGA.Print(builder, item.Model);
             return builder;
         }
 
@@ -261,7 +261,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this VBSP item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.VBSP.Print(builder, item.Model);
+            SabreTools.Printing.VBSP.Print(builder, item.Model);
             return builder;
         }
 
@@ -271,7 +271,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this VPK item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.VPK.Print(builder, item.Model);
+            SabreTools.Printing.VPK.Print(builder, item.Model);
             return builder;
         }
 
@@ -281,7 +281,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this WAD item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.WAD.Print(builder, item.Model);
+            SabreTools.Printing.WAD.Print(builder, item.Model);
             return builder;
         }
 
@@ -291,7 +291,7 @@ namespace BinaryObjectScanner.Wrappers
         private static StringBuilder PrettyPrint(this XZP item)
         {
             StringBuilder builder = new StringBuilder();
-            Printing.XZP.Print(builder, item.Model);
+            SabreTools.Printing.XZP.Print(builder, item.Model);
             return builder;
         }
     }
