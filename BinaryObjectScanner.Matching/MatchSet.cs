@@ -10,11 +10,19 @@ namespace BinaryObjectScanner.Matching
         /// <summary>
         /// Set of all matchers
         /// </summary>
+#if NET48
         public IEnumerable<T> Matchers { get; set; }
+#else
+        public IEnumerable<T>? Matchers { get; set; }
+#endif
 
         /// <summary>
         /// Name of the protection to show
         /// </summary>
+#if NET48
         public string ProtectionName { get; set; }
+#else
+        public string? ProtectionName { get; set; }
+#endif
     }
 }

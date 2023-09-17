@@ -33,16 +33,28 @@ namespace BinaryObjectScanner.Matching
         /// <summary>
         /// Find the first position of one array in another, if possible
         /// </summary>
+#if NET48
         public static bool FirstPosition(this byte[] stack, byte[] needle, out int position, int start = 0, int end = -1)
         {
             byte?[] nullableNeedle = needle != null ? needle.Select(b => (byte?)b).ToArray() : null;
             return stack.FirstPosition(nullableNeedle, out position, start, end);
         }
+#else
+        public static bool FirstPosition(this byte[] stack, byte[]? needle, out int position, int start = 0, int end = -1)
+        {
+            byte?[]? nullableNeedle = needle != null ? needle.Select(b => (byte?)b).ToArray() : null;
+            return stack.FirstPosition(nullableNeedle, out position, start, end);
+        }
+#endif
 
         /// <summary>
         /// Find the first position of one array in another, if possible
         /// </summary>
+#if NET48
         public static bool FirstPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
+#else
+        public static bool FirstPosition(this byte[] stack, byte?[]? needle, out int position, int start = 0, int end = -1)
+#endif
         {
             var matcher = new ContentMatch(needle, start, end);
             (bool found, int foundPosition) = matcher.Match(stack, false);
@@ -53,7 +65,11 @@ namespace BinaryObjectScanner.Matching
         /// <summary>
         /// Find the last position of one array in another, if possible
         /// </summary>
+#if NET48
         public static bool LastPosition(this byte[] stack, byte?[] needle, out int position, int start = 0, int end = -1)
+#else
+        public static bool LastPosition(this byte[] stack, byte?[]? needle, out int position, int start = 0, int end = -1)
+#endif
         {
             var matcher = new ContentMatch(needle, start, end);
             (bool found, int foundPosition) = matcher.Match(stack, true);

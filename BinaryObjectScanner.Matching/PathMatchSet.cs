@@ -18,7 +18,11 @@ namespace BinaryObjectScanner.Matching
         /// in which case it will be appended to the protection name, or `null`,
         /// in which case it will cause the protection to be omitted.
         /// </remarks>
-        public Func<string, IEnumerable<string>, string> GetVersion { get; set; }
+#if NET48
+        public Func<string, IEnumerable<string>, string> GetVersion { get; private set; }
+#else
+        public Func<string, IEnumerable<string>, string>? GetVersion { get; init; }
+#endif
 
         #region Constructors
 
@@ -28,11 +32,19 @@ namespace BinaryObjectScanner.Matching
         public PathMatchSet(List<string> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
+#if NET48
         public PathMatchSet(string needle, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
             : this(new List<string> { needle }, getVersion, protectionName) { }
 
         public PathMatchSet(List<string> needles, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
             : this(needles.Select(n => new PathMatch(n)).ToList(), getVersion, protectionName) { }
+#else
+        public PathMatchSet(string needle, Func<string, IEnumerable<string>, string>? getVersion, string protectionName)
+            : this(new List<string> { needle }, getVersion, protectionName) { }
+
+        public PathMatchSet(List<string> needles, Func<string, IEnumerable<string>, string>? getVersion, string protectionName)
+            : this(needles.Select(n => new PathMatch(n)).ToList(), getVersion, protectionName) { }
+#endif
 
         public PathMatchSet(PathMatch needle, string protectionName)
             : this(new List<PathMatch>() { needle }, null, protectionName) { }
@@ -40,6 +52,7 @@ namespace BinaryObjectScanner.Matching
         public PathMatchSet(List<PathMatch> needles, string protectionName)
             : this(needles, null, protectionName) { }
 
+#if NET48
         public PathMatchSet(PathMatch needle, Func<string, IEnumerable<string>, string> getVersion, string protectionName)
             : this(new List<PathMatch>() { needle }, getVersion, protectionName) { }
 
@@ -49,6 +62,17 @@ namespace BinaryObjectScanner.Matching
             GetVersion = getVersion;
             ProtectionName = protectionName;
         }
+#else
+        public PathMatchSet(PathMatch needle, Func<string, IEnumerable<string>, string>? getVersion, string protectionName)
+            : this(new List<PathMatch>() { needle }, getVersion, protectionName) { }
+
+        public PathMatchSet(List<PathMatch> needles, Func<string, IEnumerable<string>, string>? getVersion, string protectionName)
+        {
+            Matchers = needles;
+            GetVersion = getVersion;
+            ProtectionName = protectionName;
+        }
+#endif
 
         #endregion
 
@@ -58,7 +82,7 @@ namespace BinaryObjectScanner.Matching
         /// Determine whether all path matches pass
         /// </summary>
         /// <param name="stack">List of strings to try to match</param>
-        /// <returns>Tuple of passing status and matching values</returns>        
+        /// <returns>Tuple of passing status and matching values</returns>
         public (bool, List<string>) MatchesAll(IEnumerable<string> stack)
         {
             // If no path matches are defined, we fail out
@@ -71,8 +95,12 @@ namespace BinaryObjectScanner.Matching
             // Loop through all path matches and make sure all pass
             foreach (var pathMatch in Matchers)
             {
+#if NET48
                 (bool match, string value) = pathMatch.Match(stack);
-                if (!match)
+#else
+                (bool match, string? value) = pathMatch.Match(stack);
+#endif
+                if (!match || value == null)
                     return (false, new List<string>());
                 else
                     values.Add(value);
@@ -85,8 +113,12 @@ namespace BinaryObjectScanner.Matching
         /// Determine whether any path matches pass
         /// </summary>
         /// <param name="stack">List of strings to try to match</param>
-        /// <returns>Tuple of passing status and first matching value</returns>        
+        /// <returns>Tuple of passing status and first matching value</returns>
+#if NET48
         public (bool, string) MatchesAny(IEnumerable<string> stack)
+#else
+        public (bool, string?) MatchesAny(IEnumerable<string> stack)
+#endif
         {
             // If no path matches are defined, we fail out
             if (Matchers == null || !Matchers.Any())
@@ -95,7 +127,11 @@ namespace BinaryObjectScanner.Matching
             // Loop through all path matches and make sure all pass
             foreach (var pathMatch in Matchers)
             {
+#if NET48
                 (bool match, string value) = pathMatch.Match(stack);
+#else
+                (bool match, string? value) = pathMatch.Match(stack);
+#endif
                 if (match)
                     return (true, value);
             }
