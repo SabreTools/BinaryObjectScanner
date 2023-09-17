@@ -20,11 +20,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="SabreTools.IO" Version="1.1.1" />
+    <PackageReference Include="SabreTools.Matching" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

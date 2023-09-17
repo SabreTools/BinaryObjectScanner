@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BurnOutSharp\BurnOutSharp.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.FileType\BinaryObjectScanner.FileType.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
   </ItemGroup>
@@ -18,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
     <PackageReference Include="SabreTools.IO" Version="1.1.1" />
+    <PackageReference Include="SabreTools.Matching" Version="1.1.0" />
     <PackageReference Include="SabreTools.Models" Version="1.1.2" />
     <PackageReference Include="SabreTools.Serialization" Version="1.1.5" />
     <PackageReference Include="UnshieldSharp" Version="1.6.9" />

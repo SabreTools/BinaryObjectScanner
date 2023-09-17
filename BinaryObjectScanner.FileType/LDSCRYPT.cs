@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Matching;
+using SabreTools.Matching;
 
 namespace BinaryObjectScanner.FileType
 {

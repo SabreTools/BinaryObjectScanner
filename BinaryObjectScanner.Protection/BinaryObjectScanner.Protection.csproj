@@ -21,12 +21,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SabreTools.IO" Version="1.1.1" />
+    <PackageReference Include="SabreTools.Matching" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

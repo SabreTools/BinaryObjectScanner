@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Matching;
 using ICSharpCode.SharpZipLib.Zip.Compression;
+using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer

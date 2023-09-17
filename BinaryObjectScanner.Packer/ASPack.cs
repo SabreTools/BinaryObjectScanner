@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Matching;
+using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer

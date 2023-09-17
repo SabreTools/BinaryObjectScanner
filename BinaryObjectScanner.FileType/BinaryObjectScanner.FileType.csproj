@@ -23,7 +23,6 @@
     <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.GameEngine\BinaryObjectScanner.GameEngine.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Matching\BinaryObjectScanner.Matching.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Packer\BinaryObjectScanner.Packer.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Protection\BinaryObjectScanner.Protection.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
@@ -31,6 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
+    <PackageReference Include="SabreTools.Matching" Version="1.1.0" />
     <PackageReference Include="SharpCompress" Version="0.32.2" />
     <PackageReference Include="UnshieldSharp" Version="1.6.9" />
   </ItemGroup>

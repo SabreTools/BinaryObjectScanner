@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using BinaryObjectScanner.Matching;
 using BinaryObjectScanner.Utilities;
 using SabreTools.IO;
+using SabreTools.Matching;
 using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 

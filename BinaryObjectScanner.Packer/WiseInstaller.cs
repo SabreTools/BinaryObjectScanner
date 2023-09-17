@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Matching;
 using SabreTools.IO;
+using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 using Wise = WiseUnpacker.WiseUnpacker;
 
