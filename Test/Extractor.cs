@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Utilities;
-using BinaryObjectScanner.Wrappers;
 using OpenMcdf;
 using SabreTools.IO;
 using SabreTools.Serialization.Wrappers;
@@ -127,7 +126,7 @@ namespace Test
                     try
                     {
                         // Extract the BFPK contents to the directory
-                        bfpk.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.BFPK.ExtractAll(bfpk, outputDirectory);
                     }
                     catch (Exception ex)
                     {
@@ -154,8 +153,8 @@ namespace Test
                     try
                     {
                         // Extract the BSP contents to the directory
-                        bsp.ExtractAllLumps(outputDirectory);
-                        bsp.ExtractAllTextures(outputDirectory);
+                        BinaryObjectScanner.FileType.BSP.ExtractAllLumps(bsp, outputDirectory);
+                        BinaryObjectScanner.FileType.BSP.ExtractAllTextures(bsp, outputDirectory);
                     }
                     catch (Exception ex)
                     {
@@ -260,7 +259,7 @@ namespace Test
                     try
                     {
                         // Extract the GCF contents to the directory
-                        gcf.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.GCF.ExtractAll(gcf, outputDirectory);
                     }
                     catch (Exception ex)
                     {
@@ -404,7 +403,7 @@ namespace Test
                     try
                     {
                         // Extract the MS-CAB contents to the directory
-                        cabinet.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.MicrosoftCAB.ExtractAll(cabinet, outputDirectory);
                     }
                     catch (Exception ex)
                     {
@@ -529,7 +528,7 @@ namespace Test
                     try
                     {
                         // Extract the PAK contents to the directory
-                        pak.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.PAK.ExtractAll(pak, outputDirectory);
                     }
                     catch (Exception ex)
                     {
@@ -556,7 +555,7 @@ namespace Test
                     try
                     {
                         // Extract the PFF contents to the directory
-                        pff.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.PFF.ExtractAll(pff, outputDirectory);
                     }
                     catch (Exception ex)
                     {
@@ -601,6 +600,33 @@ namespace Test
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Something went wrong extracting PKZIP: {ex}");
+                        Console.WriteLine();
+                    }
+                }
+
+                // Quantum
+                else if (ft == SupportedFileType.Quantum)
+                {
+                    // Build the archive information
+                    Console.WriteLine("Extracting Quantum contents");
+                    Console.WriteLine();
+
+                    var quantum = Quantum.Create(stream);
+                    if (quantum == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing Quantum");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    try
+                    {
+                        // Extract the Quantum contents to the directory
+                        BinaryObjectScanner.FileType.Quantum.ExtractAll(quantum, outputDirectory);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Something went wrong extracting Quantum: {ex}");
                         Console.WriteLine();
                     }
                 }
@@ -662,11 +688,11 @@ namespace Test
                     try
                     {
                         // Extract the SGA contents to the directory
-                        sga.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.SGA.ExtractAll(sga, outputDirectory);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                        Console.WriteLine($"Something went wrong extracting SGA: {ex}");
                         Console.WriteLine();
                     }
                 }
@@ -728,11 +754,11 @@ namespace Test
                     try
                     {
                         // Extract the VBSP contents to the directory
-                        vbsp.ExtractAllLumps(outputDirectory);
+                        BinaryObjectScanner.FileType.VBSP.ExtractAllLumps(vbsp, outputDirectory);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                        Console.WriteLine($"Something went wrong extracting VBSP: {ex}");
                         Console.WriteLine();
                     }
                 }
@@ -755,11 +781,11 @@ namespace Test
                     try
                     {
                         // Extract the VPK contents to the directory
-                        vpk.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.VPK.ExtractAll(vpk, outputDirectory);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                        Console.WriteLine($"Something went wrong extracting VPK: {ex}");
                         Console.WriteLine();
                     }
                 }
@@ -782,11 +808,11 @@ namespace Test
                     try
                     {
                         // Extract the WAD contents to the directory
-                        wad.ExtractAllLumps(outputDirectory);
+                        BinaryObjectScanner.FileType.WAD.ExtractAllLumps(wad, outputDirectory);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                        Console.WriteLine($"Something went wrong extracting WAD: {ex}");
                         Console.WriteLine();
                     }
                 }
@@ -835,11 +861,11 @@ namespace Test
                     try
                     {
                         // Extract the XZP contents to the directory
-                        xzp.ExtractAll(outputDirectory);
+                        BinaryObjectScanner.FileType.XZP.ExtractAll(xzp, outputDirectory);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                        Console.WriteLine($"Something went wrong extracting XZP: {ex}");
                         Console.WriteLine();
                     }
                 }

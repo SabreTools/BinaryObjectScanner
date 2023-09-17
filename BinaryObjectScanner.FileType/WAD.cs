@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -37,7 +36,7 @@ namespace BinaryObjectScanner.FileType
                 Directory.CreateDirectory(tempPath);
 
                 // Loop through and extract all files
-                wad.ExtractAllLumps(tempPath);
+                ExtractAllLumps(wad, tempPath);
 
                 return tempPath;
             }
@@ -46,6 +45,93 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Extract all lumps from the WAD to an output directory
+        /// </summary>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <returns>True if all lumps extracted, false otherwise</returns>
+        public static bool ExtractAllLumps(SabreTools.Serialization.Wrappers.WAD item, string outputDirectory)
+        {
+            // If we have no lumps
+            if (item.Model.Lumps == null || item.Model.Lumps.Length == 0)
+                return false;
+
+            // Loop through and extract all lumps to the output
+            bool allExtracted = true;
+            for (int i = 0; i < item.Model.Lumps.Length; i++)
+            {
+                allExtracted &= ExtractLump(item, i, outputDirectory);
+            }
+
+            return allExtracted;
+        }
+
+        /// <summary>
+        /// Extract a lump from the WAD to an output directory by index
+        /// </summary>
+        /// <param name="index">Lump index to extract</param>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <returns>True if the lump extracted, false otherwise</returns>
+        public static bool ExtractLump(SabreTools.Serialization.Wrappers.WAD item, int index, string outputDirectory)
+        {
+            // If we have no lumps
+            if (item.Model.Lumps == null || item.Model.Lumps.Length == 0)
+                return false;
+
+            // If the lumps index is invalid
+            if (index < 0 || index >= item.Model.Lumps.Length)
+                return false;
+
+            // Get the lump
+            var lump = item.Model.Lumps[index];
+            if (lump == null)
+                return false;
+
+            // Read the data -- TODO: Handle uncompressed lumps (see BSP.ExtractTexture)
+#if NET48
+            byte[] data = item.ReadFromDataSource((int)lump.Offset, (int)lump.Length);
+#else
+            byte[]? data = item.ReadFromDataSource((int)lump.Offset, (int)lump.Length);
+#endif
+            if (data == null)
+                return false;
+
+            // Create the filename
+            string filename = $"{lump.Name}.lmp";
+
+            // If we have an invalid output directory
+            if (string.IsNullOrWhiteSpace(outputDirectory))
+                return false;
+
+            // Create the full output path
+            filename = Path.Combine(outputDirectory, filename);
+
+            // Ensure the output directory is created
+#if NET48
+            string directoryName = Path.GetDirectoryName(filename);
+#else
+            string? directoryName = Path.GetDirectoryName(filename);
+#endif
+            if (directoryName != null)
+                Directory.CreateDirectory(directoryName);
+
+            // Try to write the data
+            try
+            {
+                // Open the output file for writing
+                using (Stream fs = File.OpenWrite(filename))
+                {
+                    fs.Write(data, 0, data.Length);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
