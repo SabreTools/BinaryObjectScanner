@@ -10,7 +10,11 @@ namespace BinaryObjectScanner.FileType
     public class BDPlusSVM : IDetectable
     {
         /// <inheritdoc/>
+#if NET48
         public string Detect(string file, bool includeDebug)
+#else
+        public string? Detect(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -22,13 +26,17 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Detect(Stream stream, string file, bool includeDebug)
+#else
+        public string? Detect(Stream stream, string file, bool includeDebug)
+#endif
         {
             // If the BD+ file itself fails
             try
             {
                 // Create the wrapper
-                SabreTools.Serialization.Wrappers.BDPlusSVM svm = SabreTools.Serialization.Wrappers.BDPlusSVM.Create(stream);
+                var svm = SabreTools.Serialization.Wrappers.BDPlusSVM.Create(stream);
                 if (svm == null)
                     return null;
 

@@ -65,7 +65,11 @@ namespace BinaryObjectScanner.Packer
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
 
         /// <inheritdoc/>
+#if NET48
         public string Extract(string file, bool includeDebug)
+#else
+        public string? Extract(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -77,7 +81,11 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
+#else
+        public string? Extract(Stream stream, string file, bool includeDebug)
+#endif
         {
             try
             {

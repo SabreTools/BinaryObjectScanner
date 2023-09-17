@@ -13,7 +13,11 @@ namespace BinaryObjectScanner.FileType
     public class MPQ : IExtractable
     {
         /// <inheritdoc/>
+#if NET48
         public string Extract(string file, bool includeDebug)
+#else
+        public string? Extract(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -26,7 +30,11 @@ namespace BinaryObjectScanner.FileType
 
         // TODO: Add stream opening support
         /// <inheritdoc/>
+#if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
+#else
+        public string? Extract(Stream stream, string file, bool includeDebug)
+#endif
         {
 #if NET6_0_OR_GREATER
             // Not supported for .NET 6.0 due to Windows DLL requirements

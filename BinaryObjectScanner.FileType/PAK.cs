@@ -10,7 +10,11 @@ namespace BinaryObjectScanner.FileType
     public class PAK : IExtractable
     {
         /// <inheritdoc/>
+#if NET48
         public string Extract(string file, bool includeDebug)
+#else
+        public string? Extract(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -22,12 +26,16 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
+#else
+        public string? Extract(Stream stream, string file, bool includeDebug)
+#endif
         {
             try
             {
                 // Create the wrapper
-                SabreTools.Serialization.Wrappers.PAK pak = SabreTools.Serialization.Wrappers.PAK.Create(stream);
+                var pak = SabreTools.Serialization.Wrappers.PAK.Create(stream);
                 if (pak == null)
                     return null;
 

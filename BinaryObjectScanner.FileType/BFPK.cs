@@ -12,7 +12,11 @@ namespace BinaryObjectScanner.FileType
     public class BFPK : IExtractable
     {
         /// <inheritdoc/>
+#if NET48
         public string Extract(string file, bool includeDebug)
+#else
+        public string? Extract(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -24,12 +28,16 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
+#else
+        public string? Extract(Stream stream, string file, bool includeDebug)
+#endif
         {
             try
             {
                 // Create the wrapper
-                SabreTools.Serialization.Wrappers.BFPK bfpk = SabreTools.Serialization.Wrappers.BFPK.Create(stream);
+                var bfpk = SabreTools.Serialization.Wrappers.BFPK.Create(stream);
                 if (bfpk == null)
                     return null;
 

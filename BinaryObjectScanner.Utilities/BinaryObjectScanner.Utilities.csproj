@@ -19,9 +19,14 @@
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'!='net48'">
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="SabreTools.IO" Version="1.1.1" />
     <PackageReference Include="SabreTools.Matching" Version="1.1.0" />
+    <PackageReference Include="SabreTools.Serialization" Version="1.1.5" />
   </ItemGroup>
 
 </Project>

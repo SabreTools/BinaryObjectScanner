@@ -11,7 +11,6 @@
     <ProjectReference Include="..\BurnOutSharp\BurnOutSharp.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.FileType\BinaryObjectScanner.FileType.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

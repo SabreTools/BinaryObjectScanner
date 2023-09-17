@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
-using BinaryObjectScanner.Wrappers;
 using SabreTools.Serialization.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 

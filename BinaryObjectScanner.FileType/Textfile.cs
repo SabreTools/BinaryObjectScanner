@@ -12,7 +12,11 @@ namespace BinaryObjectScanner.FileType
     public class Textfile : IDetectable
     {
         /// <inheritdoc/>
+#if NET48
         public string Detect(string file, bool includeDebug)
+#else
+        public string? Detect(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -24,7 +28,11 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Detect(Stream stream, string file, bool includeDebug)
+#else
+        public string? Detect(Stream stream, string file, bool includeDebug)
+#endif
         {
             // Files can be protected in multiple ways
             var protections = new List<string>();
@@ -32,7 +40,11 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Load the current file content
+#if NET48
                 string fileContent = null;
+#else
+                string? fileContent = null;
+#endif
                 using (var sr = new StreamReader(stream, Encoding.Default, true, 1024 * 1024, true))
                 {
                     fileContent = sr.ReadToEnd();

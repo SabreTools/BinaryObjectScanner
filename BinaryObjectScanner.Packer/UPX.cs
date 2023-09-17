@@ -64,7 +64,11 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Extract(string file, bool includeDebug)
+#else
+        public string? Extract(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -76,7 +80,11 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
+#else
+        public string? Extract(Stream stream, string file, bool includeDebug)
+#endif
         {
             return null;
         }

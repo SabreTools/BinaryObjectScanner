@@ -11,7 +11,11 @@ namespace BinaryObjectScanner.FileType
     public class AACSMediaKeyBlock : IDetectable
     {
         /// <inheritdoc/>
+#if NET48
         public string Detect(string file, bool includeDebug)
+#else
+        public string? Detect(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -23,22 +27,26 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Detect(Stream stream, string file, bool includeDebug)
+#else
+        public string? Detect(Stream stream, string file, bool includeDebug)
+#endif
         {
             // If the MKB file itself fails
             try
             {
                 // Create the wrapper
-                SabreTools.Serialization.Wrappers.AACSMediaKeyBlock mkb = SabreTools.Serialization.Wrappers.AACSMediaKeyBlock.Create(stream);
+                var mkb = SabreTools.Serialization.Wrappers.AACSMediaKeyBlock.Create(stream);
                 if (mkb == null)
                     return null;
 
                 // Derive the version, if possible
-                var typeAndVersion = mkb.Model.Records.FirstOrDefault(r => r.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
+                var typeAndVersion = mkb.Model.Records?.FirstOrDefault(r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
                 if (typeAndVersion == null)
                     return "AACS (Unknown Version)";
                 else
-                    return $"AACS {(typeAndVersion as SabreTools.Models.AACS.TypeAndVersionRecord).VersionNumber}";
+                    return $"AACS {(typeAndVersion as SabreTools.Models.AACS.TypeAndVersionRecord)?.VersionNumber}";
             }
             catch (Exception ex)
             {

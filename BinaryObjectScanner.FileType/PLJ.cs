@@ -11,7 +11,11 @@ namespace BinaryObjectScanner.FileType
     public class PLJ : IDetectable
     {
         /// <inheritdoc/>
+#if NET48
         public string Detect(string file, bool includeDebug)
+#else
+        public string? Detect(string file, bool includeDebug)
+#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -23,7 +27,11 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string Detect(Stream stream, string file, bool includeDebug)
+#else
+        public string? Detect(Stream stream, string file, bool includeDebug)
+#endif
         {
             try
             {

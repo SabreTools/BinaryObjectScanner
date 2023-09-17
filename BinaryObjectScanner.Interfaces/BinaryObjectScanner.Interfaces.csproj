@@ -19,8 +19,12 @@
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'!='net48'">
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\BinaryObjectScanner.Wrappers\BinaryObjectScanner.Wrappers.csproj" />
+    <PackageReference Include="SabreTools.Serialization" Version="1.1.5" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-using BinaryObjectScanner.Utilities;
+﻿using System.IO;
 using SabreTools.IO;
 using SabreTools.Matching;
 using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner.Wrappers
+namespace BinaryObjectScanner.Utilities
 {
     public static class WrapperFactory
     {
@@ -34,7 +32,7 @@ namespace BinaryObjectScanner.Wrappers
                 //case SupportedFileType.IniFile: return IniFile.Create(data);
                 //case SupportedFileType.InstallShieldArchiveV3: return InstallShieldArchiveV3.Create(data);
                 case SupportedFileType.InstallShieldCAB: return InstallShieldCabinet.Create(data);
-                //case SupportedFileType.LDSCRYPT: return BinaryObjectScanner.Wrappers.LDSCRYPT.Create(data);
+                //case SupportedFileType.LDSCRYPT: return LDSCRYPT.Create(data);
                 case SupportedFileType.MicrosoftCAB: return MicrosoftCabinet.Create(data);
                 //case SupportedFileType.MicrosoftLZ: return MicrosoftLZ.Create(data);
                 //case SupportedFileType.MPQ: return MoPaQ.Create(data);
