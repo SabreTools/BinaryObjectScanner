@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("DvdCrypt.pdb", useEndsWith: true), "DVD Crypt (Unconfirmed - Please report to us on Github)"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

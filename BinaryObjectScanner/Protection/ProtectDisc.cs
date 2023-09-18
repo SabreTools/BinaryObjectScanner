@@ -117,8 +117,16 @@ namespace BinaryObjectScanner.Protection
             return matchedStringArray[2].TrimStart('V');
         }
 
+#if NET48
         public static string GetVersion3till6(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetVersion3till6(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             string version = GetVOBVersion(fileContent, positions[0]);
             if (version.Length > 0)
                 return version;
@@ -126,8 +134,16 @@ namespace BinaryObjectScanner.Protection
             return $"5.9-6.0 {GetVOBBuild(fileContent, positions[0])}";
         }
 
+#if NET48
         public static string GetVersion6till8(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetVersion6till8(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             string version, strBuild = string.Empty;
             int index = positions[0] - 12;
 
@@ -178,8 +194,16 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
+#if NET48
         public static string GetVersion76till10(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetVersion76till10(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             int index = positions[0] + 37;
             byte subversion = fileContent[index];
             index += 2;

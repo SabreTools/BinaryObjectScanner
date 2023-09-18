@@ -95,7 +95,7 @@ namespace BinaryObjectScanner.Protection
                 }, "OpenMG"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc/>

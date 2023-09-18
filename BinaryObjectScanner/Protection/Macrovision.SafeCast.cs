@@ -191,7 +191,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("CDAC13BA.EXE", useEndsWith: true), "SafeCast"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>

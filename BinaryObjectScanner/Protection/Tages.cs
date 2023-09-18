@@ -158,7 +158,7 @@ namespace BurnOutSharp.ProtectionType
                 new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc/>
@@ -232,8 +232,16 @@ namespace BurnOutSharp.ProtectionType
             return "(Unknown Version)";
         }
 
+#if NET48
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             // TODO: Determine difference between API and BASIC
             byte typeByte = fileContent[positions[0] + 6];
             byte versionByte = fileContent[positions[0] + 7];

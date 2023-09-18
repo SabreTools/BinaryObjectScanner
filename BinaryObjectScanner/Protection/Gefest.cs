@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Protection
                 // Possibly related file "31AD0095.fil" that appears to contain intentional errors found in Redump entry 93700.
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

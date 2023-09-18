@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("WinLock.PSX", useEndsWith: true), "WinLock"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("OriginSetup.exe", useEndsWith: true), "Origin"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

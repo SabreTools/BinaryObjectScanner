@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("HCPSMng.exe", useEndsWith: true), "HexaLock AutoLock 4.5"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc/>

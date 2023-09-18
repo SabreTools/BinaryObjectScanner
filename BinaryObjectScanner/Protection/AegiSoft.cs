@@ -88,7 +88,7 @@ namespace BinaryObjectScanner.Protection
                 // These files are "Asc001.dll", "Asc002.dll", "Asc003.dll", "Asc005.dll", and "Asc006.exe" (Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA").
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

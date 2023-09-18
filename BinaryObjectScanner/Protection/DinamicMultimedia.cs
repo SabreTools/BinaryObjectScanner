@@ -22,7 +22,11 @@ namespace BinaryObjectScanner.Protection
         // https://www.gamecopyworld.com/games/pc_pc_calcio_2000.shtml
         // https://www.gamecopyworld.com/games/pc_pc_futbol_2000.shtml
 
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -38,7 +42,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch(Path.Combine("XCONTROL", "COMPSCO._01").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

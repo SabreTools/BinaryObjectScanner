@@ -68,7 +68,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET48
         internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
@@ -91,7 +95,7 @@ namespace BinaryObjectScanner.Protection
                 // Due to this file being used in both protections, this file is detected within the general Macrovision checks.
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
@@ -124,8 +128,16 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
+#if NET48
         public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string> files)
+#else
+        public static string? GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string>? files)
+#endif
         {
+            // If we have no files
+            if (files == null)
+                return null;
+
             // Find the version.txt file first
             var versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(versionPath))

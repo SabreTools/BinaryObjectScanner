@@ -56,6 +56,8 @@ namespace BinaryObjectScanner.Protection
 #endif
         {
             var protections = new ConcurrentQueue<string>();
+            if (files == null)
+                return protections;
 
             // TODO: Verify if these are OR or AND
             if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))

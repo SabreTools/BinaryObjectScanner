@@ -195,7 +195,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("CDILLA16.EXE", useEndsWith: true), "C-Dilla License Management System"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>

@@ -133,7 +133,7 @@ namespace BurnOutSharp.ProtectionType
             };
 
             // TODO: Verify if these are OR or AND
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -154,8 +154,16 @@ namespace BurnOutSharp.ProtectionType
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
+#if NET48
         public static string GetExeWrapperVersion(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetExeWrapperVersion(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             int position = positions[0];
             var id1 = new ArraySegment<byte>(fileContent, position + 5, 3);
             var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
@@ -168,8 +176,16 @@ namespace BurnOutSharp.ProtectionType
             return string.Empty;
         }
 
+#if NET48
         public static string GetVersionPlusTages(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetVersionPlusTages(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             int position = positions[0];
             var id1 = new ArraySegment<byte>(fileContent, position + 4, 3);
             var id2 = new ArraySegment<byte>(fileContent, position + 15, 4);

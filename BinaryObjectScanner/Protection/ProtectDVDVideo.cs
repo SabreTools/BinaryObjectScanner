@@ -17,6 +17,8 @@ namespace BinaryObjectScanner.Protection
 #endif
         {
             var protections = new ConcurrentQueue<string>();
+            if (files == null)
+                return protections;
 
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
             {

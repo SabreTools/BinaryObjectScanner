@@ -90,7 +90,11 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
+#if NET48
         public ConcurrentDictionary<string, ConcurrentQueue<string>> GetProtections(string path)
+#else
+        public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(string path)
+#endif
         {
             return GetProtections(new List<string> { path });
         }
@@ -172,7 +176,7 @@ namespace BinaryObjectScanner
 
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
-                        string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
+                        var fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
                         this._fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
@@ -210,7 +214,7 @@ namespace BinaryObjectScanner
 
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
-                    string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
+                    var fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
                     this._fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 
@@ -340,7 +344,7 @@ namespace BinaryObjectScanner
                             AppendToDictionary(protections, fileName, subProtections);
                     }
 
-                    string subProtection = detectable.Detect(stream, fileName, IncludeDebug);
+                    var subProtection = detectable.Detect(stream, fileName, IncludeDebug);
                     if (!string.IsNullOrWhiteSpace(subProtection))
                     {
                         // If we have an indicator of multiple protections
@@ -505,6 +509,10 @@ namespace BinaryObjectScanner
             var extractables = classes.Where(c => c is IExtractable).Select(c => c as IExtractable);
             Parallel.ForEach(extractables, extractable =>
             {
+                // If we have an invalid extractable somehow
+                if (extractable == null)
+                    return;
+
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
                 if (extractedProtections != null)

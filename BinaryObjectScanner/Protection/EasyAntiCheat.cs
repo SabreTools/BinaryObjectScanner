@@ -131,7 +131,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("easyanticheat_x64.so", useEndsWith: true), "Easy Anti-Cheat"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

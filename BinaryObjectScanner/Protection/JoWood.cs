@@ -70,8 +70,16 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
+#if NET48
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             int position = positions[0];
             char[] version = new ArraySegment<byte>(fileContent, position + 67, 8).Select(b => (char)b).ToArray();
             return new string(version);

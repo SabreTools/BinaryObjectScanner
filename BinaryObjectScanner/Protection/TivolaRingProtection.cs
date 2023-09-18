@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(Path.Combine("ZDAT", "webmast.dxx").Replace("\\", "/"), "Tivola Ring Protection [Check disc for physical ring]"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

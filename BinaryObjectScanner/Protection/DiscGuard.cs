@@ -171,7 +171,7 @@ namespace BinaryObjectScanner.Protection
                 }, "DiscGuard"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc/>
@@ -206,8 +206,16 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         private string GetVersion(string file, byte[] fileContent, List<int> positions)
+#else
+        private string? GetVersion(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             // Check the internal versions
             string version = GetInternalVersion(file, Array.Empty<string>());
             if (!string.IsNullOrEmpty(version))

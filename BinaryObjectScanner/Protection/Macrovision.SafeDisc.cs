@@ -218,7 +218,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>

@@ -108,7 +108,7 @@ namespace BinaryObjectScanner
 #if NET48
         public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractable(IExtractable impl, string fileName, Stream stream, Scanner scanner)
 #else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream stream, Scanner scanner)
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream? stream, Scanner scanner)
 #endif
         {
             // If the extractable file itself fails
@@ -154,7 +154,7 @@ namespace BinaryObjectScanner
 #if NET48
         private static ConcurrentQueue<string> PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
 #else
-        private static ConcurrentQueue<string>? PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
+        private static ConcurrentQueue<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
 #endif
         {
             // If we have an invalid path

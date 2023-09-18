@@ -138,7 +138,7 @@ namespace BinaryObjectScanner.Protection
                 }, "SecuROM 7.01"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -192,8 +192,16 @@ namespace BinaryObjectScanner.Protection
             return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
         }
 
+#if NET48
         public static string GetV5Version(string file, byte[] fileContent, List<int> positions)
+#else
+        public static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             int index = positions[0] + 8; // Begin reading after "ÊÝÝ¬"
             byte version = (byte)(fileContent[index] & 0x0F);
             index += 2;

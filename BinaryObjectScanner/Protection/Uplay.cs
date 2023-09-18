@@ -67,7 +67,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new FilePathMatch("UplayWebCore.exe"), "Uplay / Ubisoft Connect"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
         }
 
         /// <inheritdoc/>

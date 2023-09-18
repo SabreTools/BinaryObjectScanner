@@ -260,7 +260,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET48
         internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -268,7 +272,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc cref="IPathCheck.CheckFilePath(string)"/>
@@ -470,8 +474,16 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
+#if NET48
         internal static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
+#else
+        internal static string? GetMacrovisionVersion(string file, byte[]? fileContent, List<int> positions)
+#endif
         {
+            // If we have no content
+            if (fileContent == null)
+                return null;
+
             // Begin reading 2 bytes after "BoG_ *90.0&!!  Yy>" for older versions
             int index = positions[0] + 18 + 2;
             int version = fileContent.ReadInt32(ref index);

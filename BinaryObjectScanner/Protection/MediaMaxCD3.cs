@@ -94,7 +94,7 @@ namespace BinaryObjectScanner.Protection
                 }, "MediaMax CD-3"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc/>
