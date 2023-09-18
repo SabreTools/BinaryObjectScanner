@@ -9,14 +9,13 @@
   
     <!-- Package Properties -->
     <Authors>Matt Nadareski</Authors>
-    <Product>BinaryObjectScanner</Product>
+    <Description>Protection scanning library</Description>
     <Copyright>Copyright (c)2018-2023 Matt Nadareski</Copyright>
     <PackageProjectUrl>https://github.com/SabreTools/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageTags>protection copy-protection scanning packer</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <IncludeSource>true</IncludeSource>
-    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'!='net48'">
@@ -33,6 +32,15 @@
     </DefaultItemExcludes>
   </PropertyGroup>
 
+  <!-- These are needed for dealing with native Windows DLLs -->
+  <ItemGroup>
+    <None Include="*.dll" Pack="true" Condition="'$(TargetFramework)' == 'net48'">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
     <PackageReference Include="SabreTools.Compression" Version="0.1.0" />
@@ -41,6 +49,7 @@
     <PackageReference Include="SabreTools.Serialization" Version="1.1.5" />
     <PackageReference Include="SharpCompress" Version="0.32.2" />
     <PackageReference Include="SharpZipLib" Version="1.4.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
     <PackageReference Include="UnshieldSharp" Version="1.6.9" />
     <PackageReference Include="WiseUnpacker" Version="1.0.4" />
   </ItemGroup>

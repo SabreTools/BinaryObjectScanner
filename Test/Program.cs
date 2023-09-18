@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using BinaryObjectScanner;
-using BurnOutSharp;
 
 namespace Test
 {
@@ -47,10 +46,10 @@ namespace Test
 
                 // Information printing
                 if (options.EnableInformation)
-#if NET6_0_OR_GREATER
-                    Printer.PrintPathInfo(inputPath, options.Json, options.Debug);
-#else
+#if NET48
                     Printer.PrintPathInfo(inputPath, false, options.Debug);
+#else
+                    Printer.PrintPathInfo(inputPath, options.Json, options.Debug);
 #endif
 
                 // Scanning

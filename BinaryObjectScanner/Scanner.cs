@@ -5,14 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BinaryObjectScanner;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using SabreTools.Serialization.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
-namespace BurnOutSharp
+namespace BinaryObjectScanner
 {
     public class Scanner
     {

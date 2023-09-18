@@ -9,7 +9,7 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
-namespace BurnOutSharp
+namespace BinaryObjectScanner
 {
     internal static class Handler
     {

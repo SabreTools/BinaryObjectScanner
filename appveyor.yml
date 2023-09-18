@@ -28,28 +28,28 @@ build_script:
   - cmd: dotnet publish Test\Test.csproj --framework net7.0 --runtime win-x64 --self-contained true -p:PublishSingleFile=true
   - cmd: dotnet publish Test\Test.csproj --framework net7.0 --runtime linux-x64 --self-contained true -p:PublishSingleFile=true
   - cmd: dotnet publish Test\Test.csproj --framework net7.0 --runtime osx-x64 --self-contained true -p:PublishSingleFile=true
-  - cmd: dotnet pack BurnOutSharp\BurnOutSharp.csproj --output %APPVEYOR_BUILD_FOLDER%
+  - cmd: dotnet pack BinaryObjectScanner\BinaryObjectScanner.csproj --output %APPVEYOR_BUILD_FOLDER%
 
 # post-build script
 after_build:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net48
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net48.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net48.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\win-x86\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_win-x86.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_win-x86.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\win-x64\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_win-x64.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_win-x64.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\linux-x64\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_linux-x64.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_linux-x64.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net6.0\osx-x64\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_osx-x64.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_osx-x64.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net7.0\win-x86\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_win-x86.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_win-x86.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net7.0\win-x64\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_win-x64.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_win-x64.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net7.0\linux-x64\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_linux-x64.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_linux-x64.zip *
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\Test\bin\Debug\net7.0\osx-x64\publish\
-  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_osx-x64.zip *
+  - cmd: 7z a -tzip %APPVEYOR_BUILD_FOLDER%\BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_osx-x64.zip *
 
 # success/failure tracking
 on_success:
@@ -61,23 +61,23 @@ on_failure:
 
 # artifact linking
 artifacts:
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net48.zip
-  name: BurnOutSharp (.NET Framework 4.8)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_win-x86.zip
-  name: BurnOutSharp (.NET 6.0, Windows x86)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_win-x64.zip
-  name: BurnOutSharp (.NET 6.0, Windows x64)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_linux-x64.zip
-  name: BurnOutSharp (.NET 6.0, Linux x64)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net6.0_osx-x64.zip
-  name: BurnOutSharp (.NET 6.0, OSX x64)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_win-x86.zip
-  name: BurnOutSharp (.NET 7.0, Windows x86)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_win-x64.zip
-  name: BurnOutSharp (.NET 7.0, Windows x64)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_linux-x64.zip
-  name: BurnOutSharp (.NET 7.0, Linux x64)
-- path: BurnOutSharp-%APPVEYOR_REPO_COMMIT%_net7.0_osx-x64.zip
-  name: BurnOutSharp (.NET 7.0, OSX x64)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net48.zip
+  name: BinaryObjectScanner (.NET Framework 4.8)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_win-x86.zip
+  name: BinaryObjectScanner (.NET 6.0, Windows x86)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_win-x64.zip
+  name: BinaryObjectScanner (.NET 6.0, Windows x64)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_linux-x64.zip
+  name: BinaryObjectScanner (.NET 6.0, Linux x64)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net6.0_osx-x64.zip
+  name: BinaryObjectScanner (.NET 6.0, OSX x64)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_win-x86.zip
+  name: BinaryObjectScanner (.NET 7.0, Windows x86)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_win-x64.zip
+  name: BinaryObjectScanner (.NET 7.0, Windows x64)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_linux-x64.zip
+  name: BinaryObjectScanner (.NET 7.0, Linux x64)
+- path: BinaryObjectScanner-%APPVEYOR_REPO_COMMIT%_net7.0_osx-x64.zip
+  name: BinaryObjectScanner (.NET 7.0, OSX x64)
 - path: '*.nupkg'
   name: Nuget Packages
