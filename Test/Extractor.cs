@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Utilities;
 using OpenMcdf;
 using SabreTools.IO;
@@ -421,13 +420,13 @@ namespace Test
                     // If the LZ file itself fails
                     try
                     {
-                        byte[] data = LZ.Decompress(stream);
+                        byte[] data = SabreTools.Compression.LZ.Decompressor.Decompress(stream);
 
                         // Create the temp filename
                         string tempFile = "temp.bin";
                         if (!string.IsNullOrEmpty(file))
                         {
-                            string expandedFilePath = LZ.GetExpandedName(file, out _);
+                            string expandedFilePath = SabreTools.Compression.LZ.Decompressor.GetExpandedName(file, out _);
                             tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
                             if (tempFile.EndsWith(".ex"))
                                 tempFile += "e";

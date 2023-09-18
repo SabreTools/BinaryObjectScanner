@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Interfaces;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using SabreTools.Matching;
@@ -121,7 +120,7 @@ namespace BinaryObjectScanner.Packer
                 {
                     try
                     {
-                        data = LZ.Decompress(payload);
+                        data = SabreTools.Compression.LZ.Decompressor.Decompress(payload);
                     }
                     catch
                     {

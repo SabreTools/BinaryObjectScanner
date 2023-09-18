@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using BinaryObjectScanner.Compression;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Compression.LZ;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -40,14 +40,17 @@ namespace BinaryObjectScanner.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                byte[] data = LZ.Decompress(stream);
+                var data = Decompressor.Decompress(stream);
+                if (data == null)
+                    return null;
 
                 // Create the temp filename
                 string tempFile = "temp.bin";
                 if (!string.IsNullOrEmpty(file))
                 {
-                    string expandedFilePath = LZ.GetExpandedName(file, out _);
-                    tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
+                    var expandedFilePath = Decompressor.GetExpandedName(file, out _);
+                    if (expandedFilePath != null)
+                        tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
                     if (tempFile.EndsWith(".ex"))
                         tempFile += "e";
                     else if (tempFile.EndsWith(".dl"))
