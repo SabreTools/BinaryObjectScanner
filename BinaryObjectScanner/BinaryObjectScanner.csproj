@@ -9,8 +9,8 @@
   
     <!-- Package Properties -->
     <Authors>Matt Nadareski</Authors>
-    <Product>BurnOutSharp</Product>
-    <Copyright>Copyright (c)2022-2023 Matt Nadareski</Copyright>
+    <Product>BinaryObjectScanner</Product>
+    <Copyright>Copyright (c)2018-2023 Matt Nadareski</Copyright>
     <PackageProjectUrl>https://github.com/SabreTools/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mnadareski/BurnOutSharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,10 @@
     <PackageReference Include="SharpCompress" Version="0.32.2" />
     <PackageReference Include="SharpZipLib" Version="1.4.1" />
     <PackageReference Include="WiseUnpacker" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+    <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
 </Project>

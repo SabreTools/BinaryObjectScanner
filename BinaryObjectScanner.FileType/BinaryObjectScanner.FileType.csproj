@@ -26,7 +26,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Protection\BinaryObjectScanner.Protection.csproj" />
   </ItemGroup>
 
   <ItemGroup>
