@@ -402,8 +402,7 @@ namespace Test
 
                     try
                     {
-                        // Extract the MS-CAB contents to the directory
-                        BinaryObjectScanner.FileType.MicrosoftCAB.ExtractAll(cabinet, outputDirectory);
+                        Console.WriteLine("MS-CAB extraction is disabled");
                     }
                     catch (Exception ex)
                     {
