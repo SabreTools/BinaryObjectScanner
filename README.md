@@ -7,7 +7,6 @@ C# protection, packer, and archive scanning library. This currently compiles as 
 The following libraries (or ports thereof) are used for file handling:
 
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
-- [psxt001z](https://github.com/Dremora/psxt001z) - PS1 LibCrypt detection [Ported to C#]
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
 - [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - zlib-based extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
