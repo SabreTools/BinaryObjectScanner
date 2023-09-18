@@ -34,11 +34,16 @@
 
   <!-- These are needed for dealing with native Windows DLLs -->
   <ItemGroup>
-    <None Include="*.dll" Pack="true" Condition="'$(TargetFramework)' == 'net48'">
+    <Content Include="*.dll">
+      <Pack>true</Pack>
+      <PackagePath>contentFiles;content</PackagePath>
+      <IncludeInPackage>true</IncludeInPackage>
+      <CopyToOutput>true</CopyToOutput>
+      <BuildAction>Content</BuildAction>
+      <copyToOutput>true</copyToOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-      <PackageCopyToOutput>true</PackageCopyToOutput>
-    </None>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
