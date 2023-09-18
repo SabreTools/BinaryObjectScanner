@@ -23,9 +23,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
-  </ItemGroup>
+  <!-- These are needed for dealing with submodules -->
+  <PropertyGroup>
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);
+      **\AssemblyInfo.cs;
+      _EXTERNAL\stormlibsharp\lib\**;
+      _EXTERNAL\stormlibsharp\src\TestConsole\**
+    </DefaultItemExcludes>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.2.1.12" />
