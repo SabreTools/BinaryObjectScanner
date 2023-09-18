@@ -1,3 +1,0 @@
-[submodule "BinaryObjectScanner.Compression/_EXTERNAL/stormlibsharp"]
-	path = BinaryObjectScanner.Compression/_EXTERNAL/stormlibsharp
-	url = https://github.com/robpaveza/stormlibsharp.git
