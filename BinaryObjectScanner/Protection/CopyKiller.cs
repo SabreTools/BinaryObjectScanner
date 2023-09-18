@@ -34,7 +34,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // TODO: The following checks are overly broad and should be refined
             // TODO: Look into .PFF files as an indicator. At least one disc has those oversized files

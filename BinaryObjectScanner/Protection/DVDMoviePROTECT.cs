@@ -10,7 +10,11 @@ namespace BinaryObjectScanner.Protection
     public class DVDMoviePROTECT : IPathCheck
     {
         /// <inheritdoc/>
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var protections = new ConcurrentQueue<string>();
 

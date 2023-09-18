@@ -36,7 +36,11 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
+#if NET48
         private static IEnumerable<IPathCheck> pathCheckClasses;
+#else
+        private static IEnumerable<IPathCheck>? pathCheckClasses;
+#endif
 
         #endregion
 
@@ -48,7 +52,11 @@ namespace BinaryObjectScanner
         /// <param name="path">Path of the file or directory to check</param>
         /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET48
         public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathChecks(string path, IEnumerable<string> files)
+#else
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathChecks(string path, IEnumerable<string>? files)
+#endif
         {
             // Create the output dictionary
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
@@ -79,9 +87,13 @@ namespace BinaryObjectScanner
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET48
         public static ConcurrentQueue<string> HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
+#else
+        public static ConcurrentQueue<string>? HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
+#endif
         {
-            string protection = impl.Detect(stream, fileName, includeDebug);
+            var protection = impl.Detect(stream, fileName, includeDebug);
             return ProcessProtectionString(protection);
         }
 
@@ -93,13 +105,17 @@ namespace BinaryObjectScanner
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET48
         public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractable(IExtractable impl, string fileName, Stream stream, Scanner scanner)
+#else
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream stream, Scanner scanner)
+#endif
         {
             // If the extractable file itself fails
             try
             {
                 // Extract and get the output path
-                string tempPath = impl.Extract(stream, fileName, scanner.IncludeDebug);
+                var tempPath = impl.Extract(stream, fileName, scanner.IncludeDebug);
                 if (tempPath == null)
                     return null;
 
@@ -135,7 +151,11 @@ namespace BinaryObjectScanner
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, null on error</returns>
+#if NET48
         private static ConcurrentQueue<string> PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
+#else
+        private static ConcurrentQueue<string>? PerformCheck(this IPathCheck impl, string path, IEnumerable<string> files)
+#endif
         {
             // If we have an invalid path
             if (string.IsNullOrWhiteSpace(path))
@@ -147,7 +167,7 @@ namespace BinaryObjectScanner
             // If we have a file path
             if (File.Exists(path))
             {
-                string protection = impl.CheckFilePath(path);
+                var protection = impl.CheckFilePath(path);
                 var subProtections = ProcessProtectionString(protection);
                 if (subProtections != null)
                     protections.AddRange(subProtections);
@@ -180,9 +200,9 @@ namespace BinaryObjectScanner
         /// </summary>
         private static IEnumerable<T> InitCheckClasses<T>(Assembly assembly)
         {
-            return assembly.GetTypes()
-                .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)
-                .Select(t => (T)Activator.CreateInstance(t));
+            return assembly.GetTypes()?
+                .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
+                .Select(t => (T)Activator.CreateInstance(t)) ?? Array.Empty<T>();
         }
 
         #endregion
@@ -194,7 +214,11 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="protection">Protection string to process</param>
         /// <returns>Set of protections parsed, null on error</returns>
+#if NET48
         private static ConcurrentQueue<string> ProcessProtectionString(string protection)
+#else
+        private static ConcurrentQueue<string>? ProcessProtectionString(string? protection)
+#endif
         {
             // If we have an invalid protection string
             if (string.IsNullOrWhiteSpace(protection))

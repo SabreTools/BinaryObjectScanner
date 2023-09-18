@@ -84,7 +84,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // TODO: Search for the presence of the folder "EasyAntiCheat" specifically, which is present in every checked version so far.
             var matchers = new List<PathMatchSet>

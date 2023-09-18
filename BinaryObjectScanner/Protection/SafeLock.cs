@@ -20,7 +20,11 @@ namespace BinaryObjectScanner.Protection
     public class SafeLock : IPathCheck
     {
         /// <inheritdoc/>
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // Technically all need to exist but some might be renamed
             var matchers = new List<PathMatchSet>

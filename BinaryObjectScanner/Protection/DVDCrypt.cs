@@ -8,7 +8,11 @@ namespace BinaryObjectScanner.Protection
     public class DVDCrypt : IPathCheck
     {
         /// <inheritdoc/>
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

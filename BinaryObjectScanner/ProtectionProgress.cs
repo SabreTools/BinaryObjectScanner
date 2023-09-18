@@ -11,7 +11,7 @@
 #if NET48
         public string Filename { get; private set; }
 #else
-        public string Filename { get; init; }
+        public string? Filename { get; init; }
 #endif
 
         /// <summary>
@@ -29,10 +29,14 @@
 #if NET48
         public string Protection { get; private set; }
 #else
-        public string Protection { get; init; }
+        public string? Protection { get; init; }
 #endif
 
+#if NET48
         public ProtectionProgress(string filename, float percentage, string protection)
+#else
+        public ProtectionProgress(string? filename, float percentage, string? protection)
+#endif
         {
             this.Filename = filename;
             this.Percentage = percentage;

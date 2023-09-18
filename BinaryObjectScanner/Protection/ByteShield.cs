@@ -134,7 +134,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // TODO: Investigate reference to "bbz650.tmp" in "Byteshield.dll" (Redump entry 6236)
             // Files with the ".bbz" extension are associated with ByteShield, but the extenstion is known to be used in other places as well.

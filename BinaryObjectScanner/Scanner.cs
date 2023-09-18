@@ -18,34 +18,38 @@ namespace BinaryObjectScanner
         #region Options
 
         /// <inheritdoc cref="Options.ScanArchives"/>
-        public bool ScanArchives => options?.ScanArchives ?? false;
+        public bool ScanArchives => _options?.ScanArchives ?? false;
 
         /// <inheritdoc cref="Options.ScanContents"/>
-        public bool ScanContents => options?.ScanContents ?? false;
+        public bool ScanContents => _options?.ScanContents ?? false;
 
         /// <inheritdoc cref="Options.ScanGameEngines"/>
-        public bool ScanGameEngines => options?.ScanGameEngines ?? false;
+        public bool ScanGameEngines => _options?.ScanGameEngines ?? false;
 
         /// <inheritdoc cref="Options.ScanPackers"/>
-        public bool ScanPackers => options?.ScanPackers ?? false;
+        public bool ScanPackers => _options?.ScanPackers ?? false;
 
         /// <inheritdoc cref="Options.ScanPaths"/>
-        public bool ScanPaths => options?.ScanPaths ?? false;
+        public bool ScanPaths => _options?.ScanPaths ?? false;
 
         /// <inheritdoc cref="Options.IncludeDebug"/>
-        public bool IncludeDebug => options?.IncludeDebug ?? false;
+        public bool IncludeDebug => _options?.IncludeDebug ?? false;
 
         /// <summary>
         /// Options object for configuration
         /// </summary>
-        private readonly Options options;
+        private readonly Options _options;
 
         #endregion
 
         /// <summary>
         /// Optional progress callback during scanning
         /// </summary>
-        private readonly IProgress<ProtectionProgress> fileProgress;
+#if NET48
+        private readonly IProgress<ProtectionProgress> _fileProgress;
+#else
+        private readonly IProgress<ProtectionProgress>? _fileProgress;
+#endif
 
         /// <summary>
         /// Constructor
@@ -57,9 +61,13 @@ namespace BinaryObjectScanner
         /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
+#if NET48
         public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
+#else
+        public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress>? fileProgress = null)
+#endif
         {
-            this.options = new Options
+            this._options = new Options
             {
                 ScanArchives = scanArchives,
                 ScanContents = scanContents,
@@ -69,7 +77,7 @@ namespace BinaryObjectScanner
                 IncludeDebug = includeDebug,
             };
 
-            this.fileProgress = fileProgress;
+            this._fileProgress = fileProgress;
 
             // Register the codepages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -91,7 +99,11 @@ namespace BinaryObjectScanner
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
+#if NET48
         public ConcurrentDictionary<string, ConcurrentQueue<string>> GetProtections(List<string> paths)
+#else
+        public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(List<string>? paths)
+#endif
         {
             // If we have no paths, we can't scan
             if (paths == null || !paths.Any())
@@ -101,7 +113,7 @@ namespace BinaryObjectScanner
             DateTime startTime = DateTime.UtcNow;
 
             // Checkpoint
-            this.fileProgress?.Report(new ProtectionProgress(null, 0, null));
+            this._fileProgress?.Report(new ProtectionProgress(null, 0, null));
 
             // Temp variables for reporting
             string tempFilePath = Path.GetTempPath();
@@ -136,7 +148,7 @@ namespace BinaryObjectScanner
                             reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                         // Checkpoint
-                        this.fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
+                        this._fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
                         if (ScanPaths)
@@ -159,9 +171,9 @@ namespace BinaryObjectScanner
                         }
 
                         // Checkpoint
-                        protections.TryGetValue(file, out ConcurrentQueue<string> fullProtectionList);
+                        protections.TryGetValue(file, out var fullProtectionList);
                         string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
-                        this.fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
+                        this._fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
 
@@ -174,7 +186,7 @@ namespace BinaryObjectScanner
                         reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                     // Checkpoint
-                    this.fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
+                    this._fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
                     if (ScanPaths)
@@ -197,9 +209,9 @@ namespace BinaryObjectScanner
                     }
 
                     // Checkpoint
-                    protections.TryGetValue(path, out ConcurrentQueue<string> fullProtectionList);
+                    protections.TryGetValue(path, out var fullProtectionList);
                     string fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList) : null);
-                    this.fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
+                    this._fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 
                 // Throw on an invalid path
@@ -225,7 +237,11 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
+#if NET48
         private ConcurrentDictionary<string, ConcurrentQueue<string>> GetInternalProtections(string file)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? GetInternalProtections(string file)
+#endif
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
@@ -256,7 +272,11 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
+#if NET48
         private ConcurrentDictionary<string, ConcurrentQueue<string>> GetInternalProtections(string fileName, Stream stream)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? GetInternalProtections(string fileName, Stream stream)
+#endif
         {
             // Quick sanity check before continuing
             if (stream == null || !stream.CanRead || !stream.CanSeek)
@@ -379,7 +399,11 @@ namespace BinaryObjectScanner
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
+#if NET48
         private ConcurrentDictionary<string, ConcurrentQueue<string>> ProcessExecutable(Executable executable, string fileName, Stream stream)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? ProcessExecutable(Executable executable, string fileName, Stream stream)
+#endif
         {
             // Try to create a wrapper for the proper executable type
             var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
@@ -464,10 +488,14 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
+#if NET48
         private ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractableProtections(IEnumerable<object> classes, string fileName, Stream stream)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, Stream stream)
+#endif
         {
             // If we have an invalid set of classes
-            if (classes?.Any() != true)
+            if (classes == null || !classes.Any())
                 return null;
 
             // Create the output dictionary
