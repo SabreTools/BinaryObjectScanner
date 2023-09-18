@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj" />
     <ProjectReference Include="..\BurnOutSharp\BurnOutSharp.csproj" />
   </ItemGroup>
 

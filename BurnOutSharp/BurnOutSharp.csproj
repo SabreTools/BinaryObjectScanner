@@ -46,10 +46,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\BinaryObjectScanner.Utilities\BinaryObjectScanner.Utilities.csproj">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
     <ProjectReference Include="..\psxt001z\psxt001z.csproj">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
