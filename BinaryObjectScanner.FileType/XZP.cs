@@ -108,20 +108,12 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Load the item data
-#if NET48
-            byte[] data = item.ReadFromDataSource((int)directoryEntry.EntryOffset, (int)directoryEntry.EntryLength);
-#else
-            byte[]? data = item.ReadFromDataSource((int)directoryEntry.EntryOffset, (int)directoryEntry.EntryLength);
-#endif
+            var data = item.ReadFromDataSource((int)directoryEntry.EntryOffset, (int)directoryEntry.EntryLength);
             if (data == null)
                 return false;
 
             // Create the filename
-#if NET48
-            string filename = directoryItem.Name;
-#else
-            string? filename = directoryItem.Name;
-#endif
+            var filename = directoryItem.Name;
 
             // If we have an invalid output directory
             if (string.IsNullOrWhiteSpace(outputDirectory))
@@ -131,11 +123,7 @@ namespace BinaryObjectScanner.FileType
             filename = Path.Combine(outputDirectory, filename ?? $"file{index}");
 
             // Ensure the output directory is created
-#if NET48
-            string directoryName = Path.GetDirectoryName(filename);
-#else
-            string? directoryName = Path.GetDirectoryName(filename);
-#endif
+            var directoryName = Path.GetDirectoryName(filename);
             if (directoryName != null)
                 Directory.CreateDirectory(directoryName);
 

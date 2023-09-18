@@ -136,11 +136,7 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Create the filename
-#if NET48
-            string filename;
-#else
-            string? filename;
-#endif
+            var filename = string.Empty;
             switch (item.Model.Header?.MajorVersion)
             {
                 case 4:
@@ -158,11 +154,7 @@ namespace BinaryObjectScanner.FileType
 #endif
 
             // Get the parent directory
-#if NET48
-            object folder;
-#else
-            object? folder;
-#endif
+            var folder = default(object);
             switch (item.Model.Header?.MajorVersion)
             {
 #if NET48
@@ -240,11 +232,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Read the compressed data directly
-#if NET48
-            byte[] compressedData = item.ReadFromDataSource((int)fileOffset, (int)fileSize);
-#else
-            byte[]? compressedData = item.ReadFromDataSource((int)fileOffset, (int)fileSize);
-#endif
+            var compressedData = item.ReadFromDataSource((int)fileOffset, (int)fileSize);
             if (compressedData == null)
                 return false;
 
@@ -271,11 +259,7 @@ namespace BinaryObjectScanner.FileType
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-#if NET48
-            string directoryName = Path.GetDirectoryName(filename);
-#else
-            string? directoryName = Path.GetDirectoryName(filename);
-#endif
+            var directoryName = Path.GetDirectoryName(filename);
             if (directoryName != null)
                 Directory.CreateDirectory(directoryName);
 

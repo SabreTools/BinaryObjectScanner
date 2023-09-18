@@ -40,11 +40,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Load the current file content
-#if NET48
-                string fileContent = null;
-#else
-                string? fileContent = null;
-#endif
+                var fileContent = string.Empty;
                 using (var sr = new StreamReader(stream, Encoding.Default, true, 1024 * 1024, true))
                 {
                     fileContent = sr.ReadToEnd();

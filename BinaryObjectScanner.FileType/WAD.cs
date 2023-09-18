@@ -98,11 +98,7 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Read the data -- TODO: Handle uncompressed lumps (see BSP.ExtractTexture)
-#if NET48
-            byte[] data = item.ReadFromDataSource((int)lump.Offset, (int)lump.Length);
-#else
-            byte[]? data = item.ReadFromDataSource((int)lump.Offset, (int)lump.Length);
-#endif
+            var data = item.ReadFromDataSource((int)lump.Offset, (int)lump.Length);
             if (data == null)
                 return false;
 
@@ -117,11 +113,7 @@ namespace BinaryObjectScanner.FileType
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-#if NET48
-            string directoryName = Path.GetDirectoryName(filename);
-#else
-            string? directoryName = Path.GetDirectoryName(filename);
-#endif
+            var directoryName = Path.GetDirectoryName(filename);
             if (directoryName != null)
                 Directory.CreateDirectory(directoryName);
 

@@ -30,20 +30,12 @@ namespace BinaryObjectScanner.Protection
             var resultsList = new List<string>();
 
             // Run C-Dilla NE checks
-#if NET48
-            string cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
-#else
-            string? cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
-#endif
+            var cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
             if (!string.IsNullOrWhiteSpace(cDilla))
                 resultsList.Add(cDilla);
 
             // Run SafeCast NE checks
-#if NET48
-            string safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
-#else
-            string? safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
-#endif
+            var safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
             if (!string.IsNullOrWhiteSpace(safeCast))
                 resultsList.Add(safeCast);
 
@@ -88,11 +80,7 @@ namespace BinaryObjectScanner.Protection
             if (stxt371Section || stxt774Section)
             {
                 // Check the header padding for protected sections.
-#if NET48
-                string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
-#else
-                string? sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
-#endif
+                var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
                 if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
                     resultsList.Add(sectionMatch);
@@ -106,11 +94,7 @@ namespace BinaryObjectScanner.Protection
                 }
 
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
-#if NET48
-                string entryPointSectionName = pex.SectionNames[entryPointIndex];
-#else
-                string? entryPointSectionName = pex.SectionNames?[entryPointIndex];
-#endif
+                var entryPointSectionName = pex.SectionNames?[entryPointIndex];
 
                 switch (entryPointSectionName)
                 {
@@ -133,11 +117,7 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 // Check the header padding for protected sections.
-#if NET48
-                string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
-#else
-                string? sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
-#endif
+                var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
                 if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
                     resultsList.Add(sectionMatch);
@@ -152,11 +132,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Run Cactus Data Shield PE checks
-#if NET48
-            string match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
-#else
-            string? match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
-#endif
+            var match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
                 resultsList.Add(match);
 
@@ -244,56 +220,32 @@ namespace BinaryObjectScanner.Protection
             List<string> resultsList = new List<string>();
 
             // Run Macrovision file checks
-#if NET48
-            string macrovision = MacrovisionCheckFilePath(path);
-#else
-            string? macrovision = MacrovisionCheckFilePath(path);
-#endif
+            var macrovision = MacrovisionCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(macrovision))
                 resultsList.Add(macrovision);
 
             // Run Cactus Data Shield file checks
-#if NET48
-            string cactusDataShield = CactusDataShieldCheckFilePath(path);
-#else
-            string? cactusDataShield = CactusDataShieldCheckFilePath(path);
-#endif
+            var cactusDataShield = CactusDataShieldCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(cactusDataShield))
                 resultsList.Add(cactusDataShield);
 
             // Run C-Dilla file checks
-#if NET48
-            string cDilla = CDillaCheckFilePath(path);
-#else
-            string? cDilla = CDillaCheckFilePath(path);
-#endif
+            var cDilla = CDillaCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(cDilla))
                 resultsList.Add(cDilla);
 
             // Run RipGuard file checks
-#if NET48
-            string ripGuard = RipGuardCheckFilePath(path);
-#else
-            string? ripGuard = RipGuardCheckFilePath(path);
-#endif
+            var ripGuard = RipGuardCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(ripGuard))
                 resultsList.Add(ripGuard);
 
             // Run SafeCast file checks
-#if NET48
-            string safeCast = SafeCastCheckFilePath(path);
-#else
-            string? safeCast = SafeCastCheckFilePath(path);
-#endif
+            var safeCast = SafeCastCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeCast))
                 resultsList.Add(safeCast);
 
             // Run SafeDisc file checks
-#if NET48
-            string safeDisc = SafeDiscCheckFilePath(path);
-#else
-            string? safeDisc = SafeDiscCheckFilePath(path);
-#endif
+            var safeDisc = SafeDiscCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeDisc))
                 resultsList.Add(safeDisc);
 
@@ -437,11 +389,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Different versions of this driver correspond to different SafeDisc versions.
             // TODO: Check if earlier versions of this driver contain the version string in a less obvious place. 
-#if NET48
-            string version = pex.FileVersion;
-#else
-            string? version = pex.FileVersion;
-#endif
+            var version = pex.FileVersion;
             if (!string.IsNullOrEmpty(version))
             {
                 switch (version)

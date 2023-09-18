@@ -51,11 +51,7 @@ namespace BinaryObjectScanner.FileType
                                 continue;
 
                             string tempFile = Path.Combine(tempPath, entry.Key);
-#if NET48
-                            string directoryName = Path.GetDirectoryName(tempFile);
-#else
-                            string? directoryName = Path.GetDirectoryName(tempFile);
-#endif
+                            var directoryName = Path.GetDirectoryName(tempFile);
                             if (directoryName != null && !Directory.Exists(directoryName))
                                 Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);

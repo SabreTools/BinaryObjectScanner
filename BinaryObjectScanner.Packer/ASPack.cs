@@ -39,13 +39,9 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .adata* section, if it exists
             var adataSection = pex.GetFirstSection(".adata", exact: false);
-            if (adataSection != null)
+            if (adataSection?.Name != null)
             {
-#if NET48
                 var adataSectionRaw = pex.GetFirstSectionData(Encoding.UTF8.GetString(adataSection.Name));
-#else
-                var adataSectionRaw = pex.GetFirstSectionData(Encoding.UTF8.GetString(adataSection.Name!));
-#endif
                 if (adataSectionRaw != null)
                 {
                     var matchers = GenerateMatchers();

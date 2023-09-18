@@ -66,11 +66,7 @@ namespace BinaryObjectScanner.Packer
         private string GetVersion(PortableExecutable pex)
         {
             // Check the product version explicitly
-#if NET48
-            string version = pex.ProductVersion;
-#else
-            string? version = pex.ProductVersion;
-#endif
+            var version = pex.ProductVersion;
             if (!string.IsNullOrEmpty(version))
                 return version;
 

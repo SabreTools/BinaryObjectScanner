@@ -98,11 +98,7 @@ namespace BinaryObjectScanner.FileType
             // Read the entire compressed data
             int compressedDataOffset = (int)item.Model.CompressedDataOffset;
             int compressedDataLength = item.GetEndOfFile() - compressedDataOffset;
-#if NET48
-            byte[] compressedData = item.ReadFromDataSource(compressedDataOffset, compressedDataLength);
-#else
-            byte[]? compressedData = item.ReadFromDataSource(compressedDataOffset, compressedDataLength);
-#endif
+            var compressedData = item.ReadFromDataSource(compressedDataOffset, compressedDataLength);
 
             // TODO: Figure out decompression
             // - Single-file archives seem to work

@@ -121,11 +121,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Create the filename
-#if NET48
-            string filename = file.Path;
-#else
-            string? filename = file.Path;
-#endif
+            var filename = file.Path;
 
             // If we have an invalid output directory
             if (string.IsNullOrWhiteSpace(outputDirectory))
@@ -135,11 +131,7 @@ namespace BinaryObjectScanner.FileType
             filename = Path.Combine(outputDirectory, filename ?? $"file{index}");
 
             // Ensure the output directory is created
-#if NET48
-            string directoryName = Path.GetDirectoryName(filename);
-#else
-            string? directoryName = Path.GetDirectoryName(filename);
-#endif
+            var directoryName = Path.GetDirectoryName(filename);
             if (directoryName != null)
                 Directory.CreateDirectory(directoryName);
 
@@ -154,11 +146,7 @@ namespace BinaryObjectScanner.FileType
                     for (int i = 0; i < dataBlockOffsets.Count; i++)
                     {
                         int readSize = (int)Math.Min(item.Model.DataBlockHeader?.BlockSize ?? 0, fileSize);
-#if NET48
-                        byte[] data = item.ReadFromDataSource((int)dataBlockOffsets[i], readSize);
-#else
-                        byte[]? data = item.ReadFromDataSource((int)dataBlockOffsets[i], readSize);
-#endif
+                        var data = item.ReadFromDataSource((int)dataBlockOffsets[i], readSize);
                         if (data == null)
                             return false;
 

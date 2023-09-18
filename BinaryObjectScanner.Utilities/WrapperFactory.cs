@@ -89,11 +89,7 @@ namespace BinaryObjectScanner.Utilities
 
             // Try to read the executable info
             stream.Seek(msdos.Model.Header.NewExeHeaderAddr, SeekOrigin.Begin);
-#if NET48
-            byte[] magic = stream.ReadBytes(4);
-#else
-            byte[]? magic = stream.ReadBytes(4);
-#endif
+            var magic = stream.ReadBytes(4);
 
             // If we didn't get valid data at the offset
             if (magic == null)

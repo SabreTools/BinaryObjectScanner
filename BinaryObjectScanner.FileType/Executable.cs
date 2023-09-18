@@ -243,11 +243,7 @@ namespace BinaryObjectScanner.FileType
                 return null;
 
             // Read the file contents
-#if NET48
-            byte[] fileContent = null;
-#else
-            byte[]? fileContent = null;
-#endif
+            byte[] fileContent = new byte[0];
             try
             {
                 using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
@@ -270,11 +266,7 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(ContentCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-#if NET48
-                string protection = checkClass.CheckContents(file, fileContent, includeDebug);
-#else
-                string? protection = checkClass.CheckContents(file, fileContent, includeDebug);
-#endif
+                var protection = checkClass.CheckContents(file, fileContent, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -308,11 +300,7 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(LinearExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-#if NET48
-                string protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
-#else
-                string? protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
-#endif
+                var protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -346,11 +334,7 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(MSDOSExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-#if NET48
-                string protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
-#else
-                string? protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
-#endif
+                var protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -384,11 +368,7 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(NewExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-#if NET48
-                string protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
-#else
-                string? protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
-#endif
+                var protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -422,11 +402,7 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(PortableExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-#if NET48
-                string protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
-#else
-                string? protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
-#endif
+                var protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 

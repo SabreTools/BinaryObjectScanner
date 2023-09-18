@@ -127,18 +127,10 @@ namespace BinaryObjectScanner.Protection
         public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string> files)
         {
             // Find the version.txt file first
-#if NET48
-            string versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
-#else
-            string? versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
-#endif
+            var versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
             if (!string.IsNullOrWhiteSpace(versionPath))
             {
-#if NET48
-                string version = GetCactusDataShieldInternalVersion(versionPath);
-#else
-                string? version = GetCactusDataShieldInternalVersion(versionPath);
-#endif
+                var version = GetCactusDataShieldInternalVersion(versionPath);
                 if (!string.IsNullOrWhiteSpace(version))
                     return version;
             }
@@ -159,11 +151,7 @@ namespace BinaryObjectScanner.Protection
             {
                 using (var sr = new StreamReader(path, Encoding.Default))
                 {
-#if NET48
-                    string line = sr.ReadLine();
-#else
-                    string? line = sr.ReadLine();
-#endif
+                    var line = sr.ReadLine();
                     if (line == null)
                         return null;
 

@@ -111,11 +111,7 @@ namespace BinaryObjectScanner.FileType
                 using (FileStream fs = File.OpenWrite(filePath))
                 {
                     // Read the data block
-#if NET48
-                    byte[] data = item.ReadFromDataSource(offset, size);
-#else
-                    byte[]? data = item.ReadFromDataSource(offset, size);
-#endif
+                    var data = item.ReadFromDataSource(offset, size);
                     if (data == null)
                         return false;
 

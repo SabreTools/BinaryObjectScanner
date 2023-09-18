@@ -308,11 +308,7 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             // The hash of the file CLCD16.dll is able to provide a broad version range that appears to be consistent, but it seems it was rarely updated so these checks are quite broad.
-#if NET48
-            string sha1 = GetFileSHA1(firstMatchedString);
-#else
-            string? sha1 = GetFileSHA1(firstMatchedString);
-#endif
+            var sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entries 61731 and 66005.
@@ -336,11 +332,7 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike its counterpart, CLCD16.dll.
-#if NET48
-            string sha1 = GetFileSHA1(firstMatchedString);
-#else
-            string? sha1 = GetFileSHA1(firstMatchedString);
-#endif
+            var sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entry 66005.
@@ -440,11 +432,7 @@ namespace BinaryObjectScanner.Protection
 
 
             // The hash of every "CLOKSPL.EXE" correlates directly to a specific SafeDisc version.
-#if NET48
-            string sha1 = GetFileSHA1(firstMatchedString);
-#else
-            string? sha1 = GetFileSHA1(firstMatchedString);
-#endif
+            var sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entry 66005.
@@ -592,11 +580,7 @@ namespace BinaryObjectScanner.Protection
             // There are occasionaly inconsistencies, even within the well detected version range. This seems to me to mostly happen with later (3.20+) games, and seems to me to be an example of the SafeDisc distribution becoming more disorganized with time.
             // Particularly interesting inconsistencies will be noted below:
             // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe with a version of 4.60.000, and a copy of drvmgt.dll belonging to version 3.10.020. This seems like an accidental(?) distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
-#if NET48
-            string sha1 = GetFileSHA1(firstMatchedString);
-#else
-            string? sha1 = GetFileSHA1(firstMatchedString);
-#endif
+            var sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
                 // Found in Redump entry 102979.
@@ -800,11 +784,7 @@ namespace BinaryObjectScanner.Protection
         private string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
         {
             // Different versions of this executable correspond to different SafeDisc versions.
-#if NET48
-            string version = pex.FileVersion;
-#else
-            string? version = pex.FileVersion;
-#endif
+            var version = pex.FileVersion;
             if (!string.IsNullOrEmpty(version))
             {
                 switch (version)

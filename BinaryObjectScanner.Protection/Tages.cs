@@ -221,11 +221,7 @@ namespace BurnOutSharp.ProtectionType
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
-#if NET48
-            string version = pex.GetInternalVersion();
-#else
-            string? version = pex.GetInternalVersion();
-#endif
+            var version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version;
 

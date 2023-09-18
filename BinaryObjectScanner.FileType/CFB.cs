@@ -57,11 +57,7 @@ namespace BinaryObjectScanner.FileType
                             if (strData == null)
                                 return;
 
-#if NET48
-                            string decoded = DecodeStreamName(e.Name).TrimEnd('\0');
-#else
-                            string? decoded = DecodeStreamName(e.Name)?.TrimEnd('\0');
-#endif
+                            var decoded = DecodeStreamName(e.Name)?.TrimEnd('\0');
                             if (decoded == null)
                                 return;
 

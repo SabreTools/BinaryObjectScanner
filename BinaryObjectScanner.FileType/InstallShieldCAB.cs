@@ -35,11 +35,7 @@ namespace BinaryObjectScanner.FileType
 #endif
         {
             // Get the name of the first cabinet file or header
-#if NET48
-            string directory = Path.GetDirectoryName(file);
-#else
-            string? directory = Path.GetDirectoryName(file);
-#endif
+            var directory = Path.GetDirectoryName(file);
             string noExtension = Path.GetFileNameWithoutExtension(file);
 
             bool shouldScanCabinet;

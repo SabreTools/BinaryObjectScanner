@@ -100,11 +100,7 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // If we have an item with no archive
-#if NET48
-            byte[] data;
-#else
-            byte[]? data;
-#endif
+            var data = new byte[0];
             if (directoryItem.DirectoryEntry.ArchiveIndex == SabreTools.Models.VPK.Constants.HL_VPK_NO_ARCHIVE)
             {
                 if (directoryItem.PreloadData == null)
@@ -132,11 +128,7 @@ namespace BinaryObjectScanner.FileType
                     return false;
 
                 // Try to open the archive
-#if NET48
-                Stream archiveStream = null;
-#else
-                Stream? archiveStream = null;
-#endif
+                var archiveStream = default(Stream);
                 try
                 {
                     // Open the archive
@@ -179,11 +171,7 @@ namespace BinaryObjectScanner.FileType
             filename = Path.Combine(outputDirectory, filename);
 
             // Ensure the output directory is created
-#if NET48
-            string directoryName = Path.GetDirectoryName(filename);
-#else
-            string? directoryName = Path.GetDirectoryName(filename);
-#endif
+            var directoryName = Path.GetDirectoryName(filename);
             if (directoryName != null)
                 Directory.CreateDirectory(directoryName);
 

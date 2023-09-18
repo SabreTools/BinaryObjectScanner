@@ -34,11 +34,7 @@ namespace BinaryObjectScanner.Protection
             // Get the header padding strings, if it exists
             if (pex.HeaderPaddingStrings != null)
             {
-#if NET48
-                string match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
-#else
-                string? match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
-#endif
+                var match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
                 if (match != null)
                     return $"Gefest Protection System {GetVersion(match)}";
             }

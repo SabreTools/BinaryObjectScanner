@@ -49,11 +49,7 @@ namespace BinaryObjectScanner.Protection
                     // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
                     if (fi.Length == 49_152)
                     {
-#if NET48
-                        string sha1 = GetFileSHA1(file);
-#else
-                        string? sha1 = GetFileSHA1(file);
-#endif
+                        var sha1 = GetFileSHA1(file);
                         if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
                             return "RipGuard";
                     }

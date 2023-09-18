@@ -107,11 +107,7 @@ namespace BinaryObjectScanner.FileType
                 if (dataBlock == null)
                     continue;
 
-#if NET48
-                byte[] decompressed = new byte[dataBlock.UncompressedSize];
-#else
-                byte[]? decompressed = new byte[dataBlock.UncompressedSize];
-#endif
+                var decompressed = new byte[dataBlock.UncompressedSize];
                 switch (folder.CompressionType & SabreTools.Models.MicrosoftCabinet.CompressionType.MASK_TYPE)
                 {
                     case SabreTools.Models.MicrosoftCabinet.CompressionType.TYPE_NONE:
@@ -192,11 +188,7 @@ namespace BinaryObjectScanner.FileType
             string fileName = Path.Combine(outputDirectory, file.Name ?? $"file{index}");
 
             // Get the file data, if possible
-#if NET48
-            byte[] fileData = GetFileData(item, index);
-#else
-            byte[]? fileData = GetFileData(item, index);
-#endif
+            var fileData = GetFileData(item, index);
             if (fileData == null)
                 return false;
 

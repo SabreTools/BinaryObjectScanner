@@ -87,11 +87,7 @@ namespace BurnOutSharp.ProtectionType
                 var strs = pex.GetSectionStrings(i);
                 if (strs != null)
                 {
-#if NET48
-                    string str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
-#else
-                    string? str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
-#endif
+                    var str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
                     if (str != null)
                         return $"SolidShield EXE Wrapper {str.Substring("Solidshield ".Length)}";
                 }
@@ -207,11 +203,7 @@ namespace BurnOutSharp.ProtectionType
 
         private static string GetInternalVersion(PortableExecutable pex)
         {
-#if NET48
-            string companyName = pex.CompanyName?.ToLowerInvariant();
-#else
-            string? companyName = pex.CompanyName?.ToLowerInvariant();
-#endif
+            var companyName = pex.CompanyName?.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
                 return pex.GetInternalVersion() ?? string.Empty;
 

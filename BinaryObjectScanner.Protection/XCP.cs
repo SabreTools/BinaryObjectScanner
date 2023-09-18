@@ -57,18 +57,10 @@ namespace BinaryObjectScanner.Protection
             if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
                 || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)))
             {
-#if NET48
-                string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
-#else
-                string? versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
-#endif
+                var versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrWhiteSpace(versionDatPath))
                 {
-#if NET48
-                    string xcpVersion = GetDatVersion(versionDatPath);
-#else
-                    string? xcpVersion = GetDatVersion(versionDatPath);
-#endif
+                    var xcpVersion = GetDatVersion(versionDatPath);
                     if (!string.IsNullOrWhiteSpace(xcpVersion))
                         protections.Enqueue(xcpVersion);
                 }

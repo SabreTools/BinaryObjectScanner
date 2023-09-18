@@ -33,11 +33,7 @@ namespace BinaryObjectScanner.Utilities
         {
             while (!values.IsEmpty)
             {
-#if NET48
-                if (!values.TryDequeue(out string value))
-#else
-                if (!values.TryDequeue(out string? value))
-#endif
+                if (!values.TryDequeue(out var value))
                     return;
 
                 original.Enqueue(value);

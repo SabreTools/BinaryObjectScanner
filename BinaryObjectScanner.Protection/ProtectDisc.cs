@@ -62,11 +62,7 @@ namespace BinaryObjectScanner.Protection
                 var strs = pex.GetSectionStrings(sections.Length - 2);
                 if (strs != null)
                 {
-#if NET48
-                    string str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
-#else
-                    string? str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
-#endif
+                    var str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
                     if (str != null)
                         return $"VOB ProtectCD {GetOldVersion(str)}";
                 }

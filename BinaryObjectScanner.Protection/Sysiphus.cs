@@ -23,11 +23,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-#if NET48
-                string str = strs.FirstOrDefault(s => s.Contains("V SUHPISYS"));
-#else
-                string? str = strs.FirstOrDefault(s => s.Contains("V SUHPISYS"));
-#endif
+                var str = strs.FirstOrDefault(s => s.Contains("V SUHPISYS"));
                 if (str != null)
                     return $"Sysiphus {GetVersion(str)}";
             }
