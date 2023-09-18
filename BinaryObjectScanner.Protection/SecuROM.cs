@@ -13,14 +13,18 @@ namespace BinaryObjectScanner.Protection
     public class SecuROM : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Contains("SecuROM PA") == true)
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
@@ -62,27 +66,30 @@ namespace BinaryObjectScanner.Protection
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];
-                string nthSectionName = Encoding.UTF8.GetString(nthSection.Name).TrimEnd('\0');
-                if (nthSection != null && nthSectionName != ".idata" && nthSectionName != ".rsrc")
+                if (nthSection == null)
+                    continue;
+
+                string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? Array.Empty<byte>()).TrimEnd('\0');
+                if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
                     var nthSectionData = pex.GetFirstSectionData(nthSectionName);
-                    if (nthSectionData != null)
-                    {
-                        var matchers = new List<ContentMatchSet>
-                        {
-                            // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
-                            new ContentMatchSet(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
-                        };
+                    if (nthSectionData == null)
+                        continue;
 
-                        string match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
-                        if (!string.IsNullOrWhiteSpace(match))
-                            return match;
-                    }
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
+                        new ContentMatchSet(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
+                    };
+
+                    var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
                 }
             }
 
             // Get the .rdata section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`
@@ -131,7 +138,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -156,7 +167,11 @@ namespace BinaryObjectScanner.Protection
         private static string GetV4Version(PortableExecutable pex)
         {
             int index = 8; // Begin reading after "AddD"
+#if NET48
             char version = (char)pex.OverlayData[index];
+#else
+            char version = (char)pex.OverlayData![index];
+#endif
             index += 2;
 
             string subVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
@@ -229,9 +244,9 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetV8WhiteLabelVersion(PortableExecutable pex)
         {
-           // Get the .data/DATA section, if it exists
+            // Get the .data/DATA section, if it exists
             var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            if (dataSectionRaw == null)
                 return "8";
 
             // Search .data for the version indicator

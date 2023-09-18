@@ -13,15 +13,23 @@ namespace BinaryObjectScanner.Protection
     public class XCP : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .rdata section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+#if NET48
+            var strs = pex.GetFirstSectionStrings(".rdata");
+#else
+            List<string>? strs = pex.GetFirstSectionStrings(".rdata");
+#endif
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("XCP.DAT")))
@@ -49,10 +57,18 @@ namespace BinaryObjectScanner.Protection
             if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
                 || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)))
             {
+#if NET48
                 string versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
+#else
+                string? versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
+#endif
                 if (!string.IsNullOrWhiteSpace(versionDatPath))
                 {
+#if NET48
                     string xcpVersion = GetDatVersion(versionDatPath);
+#else
+                    string? xcpVersion = GetDatVersion(versionDatPath);
+#endif
                     if (!string.IsNullOrWhiteSpace(xcpVersion))
                         protections.Enqueue(xcpVersion);
                 }
@@ -66,7 +82,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             if (Path.GetFileName(path).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase)
                 || Path.GetFileName(path).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase))
@@ -77,7 +97,11 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
+#if NET48
         private static string GetDatVersion(string path)
+#else
+        private static string? GetDatVersion(string path)
+#endif
         {
             try
             {
@@ -86,7 +110,7 @@ namespace BinaryObjectScanner.Protection
             }
             catch
             {
-               return null;
+                return null;
             }
         }
     }

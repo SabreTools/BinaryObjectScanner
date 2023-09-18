@@ -41,26 +41,30 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+#if NET48
         internal string SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        internal string? SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in Redump entry 57986.
-            bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable?.Any(ihne => ihne.Name == "LTDLL_Authenticate") ?? false;
+            bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable?.Any(ihne => ihne?.Name == "LTDLL_Authenticate") ?? false;
             if (hintNameTableMatch)
                 return "SafeDisc Lite";
 
             // Found in Redump entry 57986.
-            bool importTableMatch = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "ltdll.dll") ?? false);
+            bool importTableMatch = pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "ltdll.dll") ?? false;
             if (importTableMatch)
                 return "SafeDisc Lite";
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in Redump entries 14928, 25579, 32751.
@@ -72,7 +76,7 @@ namespace BinaryObjectScanner.Protection
                     return "SafeDisc Lite";
             }
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             // Present in "Diag.exe" files from SafeDisc 4.50.000+.
             if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
@@ -109,7 +113,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -217,8 +221,12 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+#if NET48
         internal string SafeDiscCheckFilePath(string path)
+#else
+        internal string? SafeDiscCheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -300,7 +308,11 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             // The hash of the file CLCD16.dll is able to provide a broad version range that appears to be consistent, but it seems it was rarely updated so these checks are quite broad.
+#if NET48
             string sha1 = GetFileSHA1(firstMatchedString);
+#else
+            string? sha1 = GetFileSHA1(firstMatchedString);
+#endif
             switch (sha1)
             {
                 // Found in Redump entries 61731 and 66005.
@@ -324,7 +336,11 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike its counterpart, CLCD16.dll.
+#if NET48
             string sha1 = GetFileSHA1(firstMatchedString);
+#else
+            string? sha1 = GetFileSHA1(firstMatchedString);
+#endif
             switch (sha1)
             {
                 // Found in Redump entry 66005.
@@ -424,7 +440,11 @@ namespace BinaryObjectScanner.Protection
 
 
             // The hash of every "CLOKSPL.EXE" correlates directly to a specific SafeDisc version.
+#if NET48
             string sha1 = GetFileSHA1(firstMatchedString);
+#else
+            string? sha1 = GetFileSHA1(firstMatchedString);
+#endif
             switch (sha1)
             {
                 // Found in Redump entry 66005.
@@ -572,7 +592,11 @@ namespace BinaryObjectScanner.Protection
             // There are occasionaly inconsistencies, even within the well detected version range. This seems to me to mostly happen with later (3.20+) games, and seems to me to be an example of the SafeDisc distribution becoming more disorganized with time.
             // Particularly interesting inconsistencies will be noted below:
             // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe with a version of 4.60.000, and a copy of drvmgt.dll belonging to version 3.10.020. This seems like an accidental(?) distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
+#if NET48
             string sha1 = GetFileSHA1(firstMatchedString);
+#else
+            string? sha1 = GetFileSHA1(firstMatchedString);
+#endif
             switch (sha1)
             {
                 // Found in Redump entry 102979.
@@ -721,7 +745,11 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
+#if NET48
         private string GetVersionFromSHA1Hash(string sha1Hash)
+#else
+        private string? GetVersionFromSHA1Hash(string sha1Hash)
+#endif
         {
             switch (sha1Hash.ToLowerInvariant())
             {
@@ -772,7 +800,11 @@ namespace BinaryObjectScanner.Protection
         private string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
         {
             // Different versions of this executable correspond to different SafeDisc versions.
+#if NET48
             string version = pex.FileVersion;
+#else
+            string? version = pex.FileVersion;
+#endif
             if (!string.IsNullOrEmpty(version))
             {
                 switch (version)

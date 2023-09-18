@@ -20,17 +20,25 @@ namespace BinaryObjectScanner.Protection
     public class Gefest : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the header padding strings, if it exists
             if (pex.HeaderPaddingStrings != null)
             {
+#if NET48
                 string match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
+#else
+                string? match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
+#endif
                 if (match != null)
                     return $"Gefest Protection System {GetVersion(match)}";
             }
@@ -50,7 +58,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

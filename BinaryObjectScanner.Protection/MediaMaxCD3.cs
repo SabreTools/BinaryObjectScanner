@@ -17,15 +17,19 @@ namespace BinaryObjectScanner.Protection
     public class MediaMaxCD3 : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Used to detect "LicGen.exe", found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaMax CD-3";
 
@@ -36,7 +40,7 @@ namespace BinaryObjectScanner.Protection
             var cd3CtrlResources = pex.FindGenericResource("Cd3Ctl");
             if (cd3CtrlResources.Any())
                 return $"MediaMax CD-3";
-            
+
             var limitedProductionResources = pex.FindDialogBoxByItemTitle("This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players.");
             if (limitedProductionResources.Any())
                 return $"MediaMax CD-3";
@@ -45,7 +49,7 @@ namespace BinaryObjectScanner.Protection
             // "This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players."
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("CD3 Launch Error")))
@@ -90,7 +94,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

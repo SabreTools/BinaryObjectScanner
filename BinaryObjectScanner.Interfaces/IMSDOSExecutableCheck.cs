@@ -14,6 +14,10 @@ namespace BinaryObjectScanner.Interfaces
         /// <param name="mz">MSDOS representing the read-in file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
+#if NET48
         string CheckMSDOSExecutable(string file, MSDOS mz, bool includeDebug);
+#else
+        string? CheckMSDOSExecutable(string file, MSDOS mz, bool includeDebug);
+#endif
     }
 }

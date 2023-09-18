@@ -11,15 +11,19 @@ namespace BinaryObjectScanner.Packer
     public class AdvancedInstaller : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .rdata section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("Software\\Caphyon\\Advanced Installer")))

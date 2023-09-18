@@ -34,13 +34,13 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
+#if NET48
         internal string CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        internal string? CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            // Check we have a valid executable
-            if (nex == null)
-                return null;
-
             // TODO: Implement NE checks for "CDILLA05", "CDILLA10", "CDILLA16", and "CDILLA40".
 
             // TODO: Implement the following NE checks:
@@ -64,15 +64,19 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+#if NET48
         internal string CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-        { 
+#else
+        internal string? CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
+        {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
 
             // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.
             if (name?.Equals("32-bit C-Dilla DLL", StringComparison.OrdinalIgnoreCase) == true)
@@ -138,7 +142,7 @@ namespace BinaryObjectScanner.Protection
                 return $"C-Dilla License Management System";
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
@@ -151,7 +155,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> CDillaCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -194,8 +198,12 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+#if NET48
         internal string CDillaCheckFilePath(string path)
+#else
+        internal string? CDillaCheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

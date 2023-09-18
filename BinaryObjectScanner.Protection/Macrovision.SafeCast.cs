@@ -37,20 +37,23 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
+#if NET48
         internal string SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        internal string? SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            // Check we have a valid executable.
-            if (nex == null)
-                return null;
-
             // Check for the CDAC01AA name string.
-            bool cdac01aaNameFound = nex.Model.ResidentNameTable.Where(rnte => rnte?.NameString != null)
-                .Select(rnte => Encoding.ASCII.GetString(rnte.NameString))
+            if (nex.Model.ResidentNameTable != null)
+            {
+                bool cdac01aaNameFound = nex.Model.ResidentNameTable
+                .Select(rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString))
                 .Any(s => s.Contains("CDAC01AA"));
-            
-            if (cdac01aaNameFound)
-                return "SafeCast";
+
+                if (cdac01aaNameFound)
+                    return "SafeCast";
+            }
 
             // TODO: Don't read entire file
             var data = nex.ReadArbitraryRange();
@@ -61,17 +64,21 @@ namespace BinaryObjectScanner.Protection
             {
                 // SafeCast
                 // Found as the Product Name in "cdac01aa.dll" from IA item "ejay_nestle_trial". Windows 10 appears to incorrectly truncate this to "SafeCas" in File Explorer.
-                new ContentMatchSet(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x43, 0x61, 0x73, 0x74 }, "SafeCast"), 
+                new ContentMatchSet(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x43, 0x61, 0x73, 0x74 }, "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+#if NET48
         internal string SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        internal string? SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -81,7 +88,7 @@ namespace BinaryObjectScanner.Protection
             // Get the import directory table, if it exists
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase) == true))
+                if (pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
                     return "SafeCast";
             }
 
@@ -92,7 +99,7 @@ namespace BinaryObjectScanner.Protection
                 return "SafeCast";
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
@@ -101,7 +108,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Found in "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
                 return "SafeCast";
 
@@ -144,7 +151,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> SafeCastCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -187,8 +194,12 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+#if NET48
         internal string SafeCastCheckFilePath(string path)
+#else
+        internal string? SafeCastCheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

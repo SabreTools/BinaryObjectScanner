@@ -11,10 +11,14 @@ namespace BinaryObjectScanner.Packer
     public class ASPack : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -28,7 +32,7 @@ namespace BinaryObjectScanner.Packer
             // if (pex.EntryPointRaw != null)
             // {
             //     var matchers = GenerateMatchers();
-            //     string match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
+            //     var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
             //     if (!string.IsNullOrWhiteSpace(match))
             //         return match;
             // }
@@ -37,11 +41,15 @@ namespace BinaryObjectScanner.Packer
             var adataSection = pex.GetFirstSection(".adata", exact: false);
             if (adataSection != null)
             {
+#if NET48
                 var adataSectionRaw = pex.GetFirstSectionData(Encoding.UTF8.GetString(adataSection.Name));
+#else
+                var adataSectionRaw = pex.GetFirstSectionData(Encoding.UTF8.GetString(adataSection.Name!));
+#endif
                 if (adataSectionRaw != null)
                 {
                     var matchers = GenerateMatchers();
-                    string match = MatchUtil.GetFirstMatch(file, adataSectionRaw, matchers, includeDebug);
+                    var match = MatchUtil.GetFirstMatch(file, adataSectionRaw, matchers, includeDebug);
                     if (!string.IsNullOrWhiteSpace(match))
                         return match;
                 }

@@ -11,7 +11,11 @@ namespace BinaryObjectScanner.Protection
     public class ActiveMARK : IContentCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
+#else
+        public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
+#endif
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -34,10 +38,14 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -78,7 +86,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .data section strings, if they exist
-            List<string> strs = pex.GetLastSectionStrings(".data");
+            var strs = pex.GetLastSectionStrings(".data");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("MPRMMGVA"))
@@ -92,8 +100,8 @@ namespace BinaryObjectScanner.Protection
             var resources = pex.FindResourceByNamedType("REGISTRY, AMINTERNETPROTOCOL");
             if (resources.Any())
             {
-                bool match = resources.Where(r => r != null)
-                    .Select(r => Encoding.ASCII.GetString(r))
+                bool match = resources
+                    .Select(r => r == null ? string.Empty : Encoding.ASCII.GetString(r))
                     .Any(r => r.Contains("ActiveMARK"));
                 if (match)
                     return "ActiveMARK";

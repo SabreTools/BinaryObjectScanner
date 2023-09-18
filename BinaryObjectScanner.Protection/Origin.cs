@@ -10,14 +10,18 @@ namespace BinaryObjectScanner.Protection
     public class Origin : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Equals("Origin", StringComparison.OrdinalIgnoreCase) == true)
                 return "Origin";
 
@@ -40,7 +44,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

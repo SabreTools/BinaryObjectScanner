@@ -11,10 +11,14 @@ namespace BurnOutSharp.ProtectionType
     public class TAGES : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -28,7 +32,7 @@ namespace BurnOutSharp.ProtectionType
             // - TagesClient.exe
             // - TagesClient.dat (Does not always exist)
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.StartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase) == true)
                 return $"TAGES Driver Setup {GetVersion(pex)}";
             else if (name?.StartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase) == true)
@@ -53,7 +57,7 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8, null, null, 0xFF, 0xFF, 0x68 }, GetVersion, "TAGES"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -154,7 +158,11 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -213,7 +221,11 @@ namespace BurnOutSharp.ProtectionType
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
+#if NET48
             string version = pex.GetInternalVersion();
+#else
+            string? version = pex.GetInternalVersion();
+#endif
             if (!string.IsNullOrEmpty(version))
                 return version;
 

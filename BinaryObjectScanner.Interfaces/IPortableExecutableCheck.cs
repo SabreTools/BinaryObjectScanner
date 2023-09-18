@@ -14,6 +14,10 @@ namespace BinaryObjectScanner.Interfaces
         /// <param name="pex">PortableExecutable representing the read-in file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
+#if NET48
         string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug);
+#else
+        string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug);
+#endif
     }
 }

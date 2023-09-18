@@ -12,19 +12,19 @@ namespace BinaryObjectScanner.Packer
     public class WinZipSFX : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            // Check we have a valid executable
-            if (nex == null)
-                return null;
-
             // If the resident-name table doesnt exist
             if (nex.Model.ResidentNameTable == null)
                 return null;
 
             // Check for the WinZip name string
-            bool winZipNameFound = nex.Model.ResidentNameTable.Where(rnte => rnte?.NameString != null)
-                .Select(rnte => Encoding.ASCII.GetString(rnte.NameString))
+            bool winZipNameFound = nex.Model.ResidentNameTable
+                .Select(rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString))
                 .Any(s => s.Contains("WZ-SE-01"));
 
             // If we didn't find it
@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Try to get a known version
-            string version = GetNEHeaderVersion(nex);
+            var version = GetNEHeaderVersion(nex);
             if (!string.IsNullOrWhiteSpace(version))
                 return $"WinZip SFX {version}";
 
@@ -40,17 +40,21 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Check the export directory table, if it exists
             if (pex.Model.ExportTable?.ExportDirectoryTable != null)
             {
-                string version = GetPEExportDirectoryVersion(pex);
+                var version = GetPEExportDirectoryVersion(pex);
                 if (!string.IsNullOrWhiteSpace(version))
                     return $"WinZip SFX {version}";
             }
@@ -130,7 +134,11 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// TODO: Reduce the checks to only the ones that differ between versions
         /// TODO: Research to see if the versions are embedded elsewhere in these files
+#if NET48
         private string GetNEHeaderVersion(NewExecutable nex)
+#else
+        private string? GetNEHeaderVersion(NewExecutable nex)
+#endif
         {
             #region 2.0 Variants
 
@@ -688,10 +696,14 @@ namespace BinaryObjectScanner.Packer
         /// Get the version from the PE export directory table value combinations
         /// </summary>
         /// TODO: Research to see if the versions are embedded elsewhere in these files
+#if NET48
         private string GetPEExportDirectoryVersion(PortableExecutable pex)
+#else
+        private string? GetPEExportDirectoryVersion(PortableExecutable pex)
+#endif
         {
-            string sfxFileName = pex.Model.ExportTable.ExportDirectoryTable.Name;
-            uint sfxTimeDateStamp = pex.Model.ExportTable.ExportDirectoryTable.TimeDateStamp;
+            string sfxFileName = pex.Model.ExportTable?.ExportDirectoryTable?.Name ?? string.Empty;
+            uint sfxTimeDateStamp = pex.Model.ExportTable?.ExportDirectoryTable?.TimeDateStamp ?? uint.MaxValue;
             string assemblyVersion = pex.AssemblyVersion ?? "Unknown Version";
 
             // Standard

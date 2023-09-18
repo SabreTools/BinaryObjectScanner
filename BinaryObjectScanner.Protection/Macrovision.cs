@@ -21,21 +21,29 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            // Check we have a valid executable
-            if (nex == null)
-                return null;
-
-            List<string> resultsList = new List<string>();
+            var resultsList = new List<string>();
 
             // Run C-Dilla NE checks
+#if NET48
             string cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
+#else
+            string? cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
+#endif
             if (!string.IsNullOrWhiteSpace(cDilla))
                 resultsList.Add(cDilla);
 
             // Run SafeCast NE checks
+#if NET48
             string safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
+#else
+            string? safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
+#endif
             if (!string.IsNullOrWhiteSpace(safeCast))
                 resultsList.Add(safeCast);
 
@@ -46,18 +54,22 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Check for specific indications for individual Macrovision protections.
-            List<string> resultsList = new List<string>();
+            var resultsList = new List<string>();
 
             // Check for generic indications of Macrovision protections first.
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
 
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
@@ -76,7 +88,11 @@ namespace BinaryObjectScanner.Protection
             if (stxt371Section || stxt774Section)
             {
                 // Check the header padding for protected sections.
+#if NET48
                 string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
+#else
+                string? sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
+#endif
                 if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
                     resultsList.Add(sectionMatch);
@@ -90,7 +106,11 @@ namespace BinaryObjectScanner.Protection
                 }
 
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
+#if NET48
                 string entryPointSectionName = pex.SectionNames[entryPointIndex];
+#else
+                string? entryPointSectionName = pex.SectionNames?[entryPointIndex];
+#endif
 
                 switch (entryPointSectionName)
                 {
@@ -113,7 +133,11 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 // Check the header padding for protected sections.
+#if NET48
                 string sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
+#else
+                string? sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
+#endif
                 if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
                     resultsList.Add(sectionMatch);
@@ -128,7 +152,11 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Run Cactus Data Shield PE checks
+#if NET48
             string match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
+#else
+            string? match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
+#endif
             if (!string.IsNullOrWhiteSpace(match))
                 resultsList.Add(match);
 
@@ -168,7 +196,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
-            ConcurrentQueue<string> results = new ConcurrentQueue<string>();
+            var results = new ConcurrentQueue<string>();
 
             // Run Macrovision directory checks
             var macrovision = MacrovisionCheckDirectoryPath(path, files);
@@ -203,41 +231,69 @@ namespace BinaryObjectScanner.Protection
             if (results != null && results.Count > 0)
                 return results;
 
-            return null;
+            return new ConcurrentQueue<string>();
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             List<string> resultsList = new List<string>();
 
             // Run Macrovision file checks
+#if NET48
             string macrovision = MacrovisionCheckFilePath(path);
+#else
+            string? macrovision = MacrovisionCheckFilePath(path);
+#endif
             if (!string.IsNullOrWhiteSpace(macrovision))
                 resultsList.Add(macrovision);
 
             // Run Cactus Data Shield file checks
+#if NET48
             string cactusDataShield = CactusDataShieldCheckFilePath(path);
+#else
+            string? cactusDataShield = CactusDataShieldCheckFilePath(path);
+#endif
             if (!string.IsNullOrWhiteSpace(cactusDataShield))
                 resultsList.Add(cactusDataShield);
 
             // Run C-Dilla file checks
+#if NET48
             string cDilla = CDillaCheckFilePath(path);
+#else
+            string? cDilla = CDillaCheckFilePath(path);
+#endif
             if (!string.IsNullOrWhiteSpace(cDilla))
                 resultsList.Add(cDilla);
 
             // Run RipGuard file checks
+#if NET48
             string ripGuard = RipGuardCheckFilePath(path);
+#else
+            string? ripGuard = RipGuardCheckFilePath(path);
+#endif
             if (!string.IsNullOrWhiteSpace(ripGuard))
                 resultsList.Add(ripGuard);
 
             // Run SafeCast file checks
+#if NET48
             string safeCast = SafeCastCheckFilePath(path);
+#else
+            string? safeCast = SafeCastCheckFilePath(path);
+#endif
             if (!string.IsNullOrWhiteSpace(safeCast))
                 resultsList.Add(safeCast);
 
             // Run SafeDisc file checks
+#if NET48
             string safeDisc = SafeDiscCheckFilePath(path);
+#else
+            string? safeDisc = SafeDiscCheckFilePath(path);
+#endif
             if (!string.IsNullOrWhiteSpace(safeDisc))
                 resultsList.Add(safeDisc);
 
@@ -260,7 +316,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckFilePath(string)"/>
+#if NET48
         internal string MacrovisionCheckFilePath(string path)
+#else
+        internal string? MacrovisionCheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -377,7 +437,11 @@ namespace BinaryObjectScanner.Protection
         {
             // Different versions of this driver correspond to different SafeDisc versions.
             // TODO: Check if earlier versions of this driver contain the version string in a less obvious place. 
+#if NET48
             string version = pex.FileVersion;
+#else
+            string? version = pex.FileVersion;
+#endif
             if (!string.IsNullOrEmpty(version))
             {
                 switch (version)
@@ -415,33 +479,43 @@ namespace BinaryObjectScanner.Protection
             return "Unknown Version (Report this to us on GitHub)";
         }
 
+#if NET48
         private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw, bool newVersion)
+#else
+        private string? CheckSectionForProtection(string file, bool includeDebug, List<string>? sectionStrings, byte[]? sectionRaw, bool newVersion)
+#endif
         {
             // Get the section strings, if they exist
-            if (sectionStrings == null)
-                return null;
-
-            // If we don't have the "BoG_" string, the section isn't protected.
-            if (!sectionStrings.Any(s => s.Contains("BoG_")))
-                return null;
-
-            // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
-            if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
-                return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
-
-            // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
-            var matchers = new List<ContentMatchSet>
+            if (sectionStrings != null)
             {
-                // BoG_ *90.0&!!  Yy>
-                new ContentMatchSet(new byte?[]
-                {
-                    0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
-                    0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
-                    0x79, 0x3E
-                }, GetMacrovisionVersion, string.Empty),
-            };
+                // If we don't have the "BoG_" string, the section isn't protected.
+                if (!sectionStrings.Any(s => s.Contains("BoG_")))
+                    return null;
 
-            return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
+                // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
+                if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+                    return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
+            }
+
+            // Get the section data, if it exists
+            if (sectionRaw != null)
+            {
+                // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
+                var matchers = new List<ContentMatchSet>
+                {
+                    // BoG_ *90.0&!!  Yy>
+                    new ContentMatchSet(new byte?[]
+                    {
+                        0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
+                        0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
+                        0x79, 0x3E
+                    }, GetMacrovisionVersion, string.Empty),
+                };
+
+                return MatchUtil.GetFirstMatch(file, sectionRaw, matchers, includeDebug);
+            }
+
+            return null;
         }
 
         internal static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
@@ -573,7 +647,11 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
+#if NET48
         private List<string> CleanResultList(List<string> resultsList)
+#else
+        private List<string>? CleanResultList(List<string>? resultsList)
+#endif
         {
             // If we have an invalid result list
             if (resultsList == null || resultsList.Count == 0)

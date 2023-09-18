@@ -9,14 +9,18 @@ namespace BinaryObjectScanner.Protection
     public class ElectronicArts : IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Contains("EReg MFC Application") == true)
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
             else if (name?.Contains("Registration code installer program") == true)
@@ -31,10 +35,10 @@ namespace BinaryObjectScanner.Protection
             if (pex.FindDialogByTitle("About CDKey").Any())
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
             else if (pex.FindGenericResource("About CDKey").Any())
-                    return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
+                return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("EReg Config Form")))

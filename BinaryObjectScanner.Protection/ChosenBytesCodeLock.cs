@@ -23,21 +23,25 @@ namespace BinaryObjectScanner.Protection
     public class ChosenBytesCodeLock : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in "Code-Lock.ocx" in Code-Lock version 2.35.
             // Also worth noting is the File Description for this file, which is "A future for you, a challenge for the rest.".
-            string name = pex.ProductName;
+            var name = pex.ProductName;
             if (name?.StartsWith("Code-Lock", StringComparison.OrdinalIgnoreCase) == true)
                 return $"ChosenBytes Code-Lock {pex.ProductVersion}";
 
             // Get the .text section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".text");
+            var strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("CODE-LOCK.OCX")))
@@ -69,7 +73,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

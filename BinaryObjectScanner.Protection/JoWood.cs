@@ -13,23 +13,30 @@ namespace BinaryObjectScanner.Protection
     public class JoWood : IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .ext     section, if it exists
             if (pex.ContainsSection(".ext    ", exact: true))
             {
-                bool importTableMatches = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte.Name == "kernel32.dll") ?? false)
-                    && (pex.Model.ImportTable?.HintNameTable?.Any(s => s.Name == "VirtualProtect") ?? false);
+                bool importTableMatches = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "kernel32.dll") ?? false)
+                    && (pex.Model.ImportTable?.HintNameTable?.Any(s => s?.Name == "VirtualProtect") ?? false);
 
                 // Get the .dcrtext section, if it exists
                 if (pex.ContainsSection(".dcrtext") && importTableMatches)
                 {
-                    var matchers = new List<ContentMatchSet>
+                    var dcrtextData = pex.GetFirstSectionData(".dcrtext");
+                    if (dcrtextData != null)
+                    {
+                        var matchers = new List<ContentMatchSet>
                     {
                         // kernel32.dll + (char)0x00 + (char)0x00 + (char)0x00 + VirtualProtect
                         new ContentMatchSet(new byte?[]
@@ -41,9 +48,10 @@ namespace BinaryObjectScanner.Protection
                         }, GetVersion, "JoWood X-Prot"),
                     };
 
-                    string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".dcrtext"), matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
-                        return match;
+                        var match = MatchUtil.GetFirstMatch(file, dcrtextData, matchers, includeDebug);
+                        if (!string.IsNullOrWhiteSpace(match))
+                            return match;
+                    }
                 }
 
                 return "JoWood X-Prot v1.0-v1.3";

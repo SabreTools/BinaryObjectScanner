@@ -29,16 +29,20 @@ namespace BinaryObjectScanner.Protection
         // TODO: Add text check for the string mentioned in https://github.com/mnadareski/BurnOutSharp/issues/154.
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // TODO: Investigate if there are any viable checks for the game EXE itself.
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598.
             if (name?.Contains("nProtect GameGuard Launcher") == true)
@@ -97,7 +101,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

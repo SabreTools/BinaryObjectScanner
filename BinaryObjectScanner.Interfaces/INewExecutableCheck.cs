@@ -14,6 +14,10 @@ namespace BinaryObjectScanner.Interfaces
         /// <param name="nex">NewExecutable representing the read-in file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
+#if NET48
         string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug);
+#else
+        string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug);
+#endif
     }
 }

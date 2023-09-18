@@ -22,14 +22,18 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Add support for detecting older versions, especially versions made before Easy Anti-Cheat was purchased by Epic Games.
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             // Found in "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam).
             if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";
@@ -127,7 +131,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             // TODO: Search for the presence of the folder "EasyAntiCheat" specifically, which is present in every checked version so far.
             var matchers = new List<PathMatchSet>

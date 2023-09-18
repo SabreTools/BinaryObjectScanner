@@ -31,17 +31,21 @@ namespace BinaryObjectScanner.Protection
         // https://www.pcgamingwiki.com/wiki/Denuvo#Redeem.exe
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // All current checks for Denuvo Anti-Cheat come from Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
             // Found in "denuvo-anti-cheat.sys".
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Equals("Denuvo Anti-Cheat Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Denuvo Anti-Cheat";
 
@@ -157,7 +161,7 @@ namespace BinaryObjectScanner.Protection
             //             "Denuvo v3.0b (x64)"),
             //         };
 
-            //         string match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
+            //         var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
             //         if (!string.IsNullOrWhiteSpace(match))
             //             return match;
 
@@ -223,7 +227,7 @@ namespace BinaryObjectScanner.Protection
             //             "Denuvo v2.0 (x86)"),
             //         };
 
-            //         string match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
+            //         var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
             //         if (!string.IsNullOrWhiteSpace(match))
             //             return match;
 
@@ -253,7 +257,7 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
-        
+
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
@@ -274,7 +278,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

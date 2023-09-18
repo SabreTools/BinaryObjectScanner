@@ -22,11 +22,15 @@ namespace BinaryObjectScanner.Protection
     public class NEACProtect : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Most of the relevant executables are highly obfuscated, making executable detection mostly impractical.
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -39,7 +43,7 @@ namespace BinaryObjectScanner.Protection
             if (neac0Section || neac1Section)
                 return "NEAC Protect";
 
-            string name = pex.ProductName;
+            var name = pex.ProductName;
 
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
             // TODO: Fix Product Name not being properly grabbed from the file.
@@ -69,7 +73,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

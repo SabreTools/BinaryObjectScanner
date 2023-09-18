@@ -10,10 +10,14 @@ namespace BinaryObjectScanner.Protection
     public class CrypKey : IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -21,7 +25,7 @@ namespace BinaryObjectScanner.Protection
             string version = pex.GetVersionInfoString("CrypKey Version") ?? string.Empty;
 
             // Found in 'cki32k.dll'
-            string name = pex.CompanyName;
+            var name = pex.CompanyName;
             if (name?.StartsWith("CrypKey") == true)
                 return $"CrypKey {version}".TrimEnd();
 

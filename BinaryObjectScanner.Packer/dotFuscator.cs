@@ -10,15 +10,19 @@ namespace BinaryObjectScanner.Packer
     public class dotFuscator : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .text section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".text");
+            var strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("DotfuscatorAttribute")))

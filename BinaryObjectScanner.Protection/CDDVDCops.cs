@@ -43,7 +43,11 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
         /// <inheritdoc/>
+#if NET48
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
+#else
+        public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
+#endif
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -73,12 +77,12 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            // Check we have a valid executable
-            if (nex == null)
-                return null;
-
             // TODO: Don't read entire file
             var data = nex.ReadArbitraryRange();
             if (data == null)
@@ -96,7 +100,7 @@ namespace BinaryObjectScanner.Protection
                 }, GetVersion, "CD-Cops"),
             };
 
-            string match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
+            var match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 return match;
 
@@ -104,8 +108,7 @@ namespace BinaryObjectScanner.Protection
             // Found in "h3blade.exe" in Redump entry 85077.
             bool importedNameTableEntries = nex.Model.ImportedNameTable?
                 .Select(kvp => kvp.Value)
-                .Where(inte => inte.NameString != null)
-                .Select(inte => Encoding.ASCII.GetString(inte.NameString))
+                .Select(inte => inte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(inte.NameString))
                 .Any(s => s.Contains("CDCOPS")) ?? false;
             if (importedNameTableEntries)
                 return "CD-Cops";
@@ -113,8 +116,7 @@ namespace BinaryObjectScanner.Protection
             // Check the nonresident-name table
             // Found in "CDCOPS.DLL" in Redump entry 85077.
             bool nonresidentNameTableEntries = nex.Model.NonResidentNameTable?
-                .Where(nrnte => nrnte.NameString != null)
-                .Select(nrnte => Encoding.ASCII.GetString(nrnte.NameString))
+                .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
                 .Any(s => s.Contains("CDcops assembly-language DLL")) ?? false;
             if (nonresidentNameTableEntries)
                 return "CD-Cops";
@@ -123,10 +125,14 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -161,7 +167,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

@@ -13,22 +13,26 @@ namespace BurnOutSharp.ProtectionType
     public class SolidShield : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield {pex.GetInternalVersion()}";
-            
+
             else if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {pex.GetInternalVersion()}";
-            
+
             else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
@@ -39,10 +43,10 @@ namespace BurnOutSharp.ProtectionType
             name = pex.ProductName;
             if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {pex.GetInternalVersion()}";
-            
+
             else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Core.dll {pex.GetInternalVersion()}";
-            
+
             else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
@@ -53,7 +57,10 @@ namespace BurnOutSharp.ProtectionType
             // Get the .init section, if it exists
             if (pex.ContainsSection(".init"))
             {
-                var matchers = new List<ContentMatchSet>
+                var initData = pex.GetFirstSectionData(".init");
+                if (initData != null)
+                {
+                    var matchers = new List<ContentMatchSet>
                 {
                     // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
                     new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
@@ -62,24 +69,29 @@ namespace BurnOutSharp.ProtectionType
                     new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield EXE Wrapper"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.GetFirstSectionData(".init"), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    var match = MatchUtil.GetFirstMatch(file, initData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the wrapper resource, if it exists
             var wrapperResources = pex.FindResourceByNamedType("BIN, IDR_SGT");
-            if (wrapperResources.Any())
+            if (wrapperResources != null && wrapperResources.Any())
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
-            for (int i = (pex.SectionNames.Length >= 2 ? pex.SectionNames.Length - 2 : 0); i < pex.SectionNames.Length; i++)
+            for (int i = (pex.SectionNames != null && pex.SectionNames.Length >= 2 ? pex.SectionNames.Length - 2 : 0); i < (pex.SectionNames?.Length ?? 0); i++)
             {
                 // Get the nth section strings, if they exist
-                List<string> strs = pex.GetSectionStrings(i);
+                var strs = pex.GetSectionStrings(i);
                 if (strs != null)
                 {
+#if NET48
                     string str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
+#else
+                    string? str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
+#endif
                     if (str != null)
                         return $"SolidShield EXE Wrapper {str.Substring("Solidshield ".Length)}";
                 }
@@ -88,15 +100,15 @@ namespace BurnOutSharp.ProtectionType
             // Get the import directory table, if it exists
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "dvm.dll");
+                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "dvm.dll");
                 if (match)
                     return "SolidShield EXE Wrapper v1";
 
-                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x86.dll");
+                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "activation.x86.dll");
                 if (match)
                     return "SolidShield EXE Wrapper v2";
 
-                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "activation.x64.dll");
+                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "activation.x64.dll");
                 if (match)
                     return "SolidShield EXE Wrapper v2";
             }
@@ -125,7 +137,11 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -149,7 +165,7 @@ namespace BurnOutSharp.ProtectionType
             else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }
                 return "v2"; // TODO: Verify against other SolidShield 2 discs
 
-            return null;
+            return string.Empty;
         }
 
         public static string GetVersionPlusTages(string file, byte[] fileContent, List<int> positions)
@@ -186,16 +202,20 @@ namespace BurnOutSharp.ProtectionType
                 }
             }
 
-            return null;
+            return string.Empty;
         }
 
         private static string GetInternalVersion(PortableExecutable pex)
         {
+#if NET48
             string companyName = pex.CompanyName?.ToLowerInvariant();
+#else
+            string? companyName = pex.CompanyName?.ToLowerInvariant();
+#endif
             if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
-                return pex.GetInternalVersion();
+                return pex.GetInternalVersion() ?? string.Empty;
 
-            return null;
+            return string.Empty;
         }
     }
 }

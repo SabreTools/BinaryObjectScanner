@@ -13,14 +13,18 @@ namespace BinaryObjectScanner.Protection
     public class ImpulseReactor : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
                 return $"Impulse Reactor Core Module {pex.GetInternalVersion()}";
 
@@ -37,7 +41,7 @@ namespace BinaryObjectScanner.Protection
             bool containsCheck2 = false;
 
             // Get the .rdata section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 containsCheck2 = strs.Any(s => s.EndsWith("ATTLIST"))
@@ -66,7 +70,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -84,7 +92,7 @@ namespace BinaryObjectScanner.Protection
                 using (Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     var pex = PortableExecutable.Create(fileStream);
-                    return pex.GetInternalVersion();
+                    return pex?.GetInternalVersion() ?? string.Empty;
                 }
             }
             catch

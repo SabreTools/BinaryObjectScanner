@@ -270,7 +270,11 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(ContentCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
+#if NET48
                 string protection = checkClass.CheckContents(file, fileContent, includeDebug);
+#else
+                string? protection = checkClass.CheckContents(file, fileContent, includeDebug);
+#endif
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -304,7 +308,11 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(LinearExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
+#if NET48
                 string protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
+#else
+                string? protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
+#endif
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -338,7 +346,11 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(MSDOSExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
+#if NET48
                 string protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
+#else
+                string? protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
+#endif
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -372,7 +384,11 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(NewExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
+#if NET48
                 string protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
+#else
+                string? protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
+#endif
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -406,7 +422,11 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(PortableExecutableCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
+#if NET48
                 string protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
+#else
+                string? protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
+#endif
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -449,9 +469,10 @@ namespace BinaryObjectScanner.FileType
         private static IEnumerable<T>? InitCheckClasses<T>(Assembly assembly)
 #endif
         {
-            return assembly.GetTypes()
-                .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)
-                .Select(t => (T)Activator.CreateInstance(t));
+            return assembly.GetTypes()?
+                .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
+                .Select(t => (T)Activator.CreateInstance(t))
+                .Cast<T>() ?? Array.Empty<T>();
         }
 
         #endregion
@@ -464,7 +485,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="impl">Implementation that was last used to check</param>
         private static bool CheckIfGameEngine(object impl)
         {
-            return impl.GetType().Namespace.ToLowerInvariant().Contains("gameengine");
+            return impl?.GetType()?.Namespace?.ToLowerInvariant()?.Contains("gameengine") ?? false;
         }
 
         /// <summary>
@@ -473,7 +494,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="impl">Implementation that was last used to check</param>
         private static bool CheckIfPacker(object impl)
         {
-            return impl.GetType().Namespace.ToLowerInvariant().Contains("packer");
+            return impl.GetType()?.Namespace?.ToLowerInvariant()?.Contains("packer") ?? false;
         }
 
         #endregion

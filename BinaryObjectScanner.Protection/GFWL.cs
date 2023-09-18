@@ -11,14 +11,18 @@ namespace BurnOutSharp.ProtectionType
     public class GFWL : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.StartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Games for Windows LIVE - Zero Day Piracy Protection Module {pex.GetInternalVersion()}";
             else if (name?.StartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase) == true)
@@ -27,7 +31,7 @@ namespace BurnOutSharp.ProtectionType
             // Get the import directory table
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "xlive.dll");
+                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "xlive.dll");
                 if (match)
                     return "Games for Windows LIVE";
             }
@@ -50,7 +54,11 @@ namespace BurnOutSharp.ProtectionType
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

@@ -8,7 +8,11 @@ namespace BinaryObjectScanner.Protection
     public class CopyKiller : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
+#else
+        public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
+#endif
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -43,7 +47,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             // TODO: The following checks are overly broad and should be refined
             // TODO: Look into .PFF files as an indicator. At least one disc has those oversized files

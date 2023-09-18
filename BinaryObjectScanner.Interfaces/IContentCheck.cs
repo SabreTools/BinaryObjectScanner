@@ -12,6 +12,10 @@
         /// <param name="fileContent">Byte array representing the file contents</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
+#if NET48
         string CheckContents(string file, byte[] fileContent, bool includeDebug);
+#else
+        string? CheckContents(string file, byte[] fileContent, bool includeDebug);
+#endif
     }
 }

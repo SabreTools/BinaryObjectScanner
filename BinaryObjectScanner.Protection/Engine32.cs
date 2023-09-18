@@ -16,10 +16,14 @@ namespace BinaryObjectScanner.Protection
     public class Engine32 : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -28,8 +32,8 @@ namespace BinaryObjectScanner.Protection
             // Detects Engine32 within the game executables that contain it.
             if (pex.Model.ImportTable?.ImportDirectoryTable != null && pex.Model.ImportTable?.HintNameTable != null)
             {
-                bool importDirectoryTableMatch = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase) == true);
-                bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable.Any(ihne => ihne.Name == "InitEngine") ?? false;
+                bool importDirectoryTableMatch = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
+                bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable.Any(ihne => ihne?.Name == "InitEngine") ?? false;
 
                 // The Hint/Name Table Entry "DeinitEngine" is present in every tested sample, aside from TOCA Race Driver 2 (Redump entries 104593-104596).
 
@@ -62,7 +66,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

@@ -14,12 +14,12 @@ namespace BinaryObjectScanner.Packer
     public class WiseInstaller : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            /// Check we have a valid executable
-            if (nex == null)
-                return null;
-
             // If we match a known header
             if (MatchesNEVersion(nex) != null)
                 return "Wise Installation Wizard Module";
@@ -44,10 +44,14 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -58,7 +62,7 @@ namespace BinaryObjectScanner.Packer
             // TODO: Investigate STUB32.EXE in export directory table
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("WiseMain")))
@@ -102,12 +106,12 @@ namespace BinaryObjectScanner.Packer
             try
             {
                 // Try to parse as a New Executable
-                NewExecutable nex = NewExecutable.Create(stream);
+                var nex = NewExecutable.Create(stream);
                 if (nex != null)
                     return ExtractNewExecutable(nex, file, includeDebug);
 
                 // Try to parse as a Portable Executable
-                PortableExecutable pex = PortableExecutable.Create(stream);
+                var pex = PortableExecutable.Create(stream);
                 if (pex != null)
                     return ExtractPortableExecutable(pex, file, includeDebug);
 
@@ -125,7 +129,11 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// <param name="nex">New executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
+#if NET48
         private FormatProperty MatchesNEVersion(NewExecutable nex)
+#else
+        private FormatProperty? MatchesNEVersion(NewExecutable nex)
+#endif
         {
             // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
             switch (nex.Model.Stub?.Header?.NewExeHeaderAddr)
@@ -182,7 +190,11 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// <param name="pex">Portable executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
+#if NET48
         private FormatProperty GetPEFormat(PortableExecutable pex)
+#else
+        private FormatProperty? GetPEFormat(PortableExecutable pex)
+#endif
         {
             if (pex.OverlayAddress == 0x6e00
                 && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
@@ -229,7 +241,11 @@ namespace BinaryObjectScanner.Packer
         /// <param name="file">Path to the input file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
+#if NET48
         private string ExtractNewExecutable(NewExecutable nex, string file, bool includeDebug)
+#else
+        private string? ExtractNewExecutable(NewExecutable nex, string file, bool includeDebug)
+#endif
         {
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempPath);
@@ -268,7 +284,11 @@ namespace BinaryObjectScanner.Packer
         /// <param name="file">Path to the input file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
+#if NET48
         private string ExtractPortableExecutable(PortableExecutable pex, string file, bool includeDebug)
+#else
+        private string? ExtractPortableExecutable(PortableExecutable pex, string file, bool includeDebug)
+#endif
         {
             try
             {
@@ -279,7 +299,7 @@ namespace BinaryObjectScanner.Packer
 
                 // Get the overlay data for easier reading
                 int overlayOffset = 0, dataStart = 0;
-                byte[] overlayData = pex.OverlayData;
+                var overlayData = pex.OverlayData;
                 if (overlayData == null)
                     return null;
 
@@ -333,8 +353,8 @@ namespace BinaryObjectScanner.Packer
                 int offsetReal = overlayOffset;
 
                 // If the first entry is PKZIP, we assume it's an embedded zipfile
-                byte[] magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
-                bool pkzip = magic.StartsWith(new byte?[] { (byte)'P', (byte)'K' });
+                var magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
+                bool pkzip = magic?.StartsWith(new byte?[] { (byte)'P', (byte)'K' }) ?? false;
 
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);

@@ -23,17 +23,21 @@ namespace BinaryObjectScanner.Protection
     public class CopyLok : IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // If there are more than 2 icd-prefixed sections, then we have a match
             // Though this is the same name that SafeDisc uses for protected executables, this seems to be a coincidence.
             // Found in Redump entries 31557, 31674, 31675, 31708, 38239, 44210, and 53929.
-            int icdSectionCount = pex.SectionNames.Count(s => s.StartsWith("icd"));
+            int icdSectionCount = pex.SectionNames?.Count(s => s.StartsWith("icd")) ?? 0;
             if (icdSectionCount >= 2)
                 return "CopyLok / CodeLok";
 

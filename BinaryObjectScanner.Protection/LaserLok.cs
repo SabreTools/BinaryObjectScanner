@@ -12,7 +12,11 @@ namespace BinaryObjectScanner.Protection
     public class LaserLok : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Laserlok.2.sg
@@ -49,7 +53,7 @@ namespace BinaryObjectScanner.Protection
             // }, "LaserLok 5"),
 
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -64,13 +68,14 @@ namespace BinaryObjectScanner.Protection
                 0x2E, 0x50, 0x45
             };
             int endDosStub = (int)(pex.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
-            bool containsCheck = pex.StubExecutableData.FirstPosition(check, out int position);
+            int position = -1;
+            bool containsCheck = pex.StubExecutableData?.FirstPosition(check, out position) ?? false;
 
             // Check the executable tables
-            bool containsCheck2 = (pex.Model.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetModuleHandleA") ?? false)
-                && (pex.Model.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "GetProcAddress") ?? false)
-                && (pex.Model.ImportTable?.HintNameTable.Any(hnte => hnte.Name == "LoadLibraryA") ?? false)
-                && (pex.Model.ImportTable?.ImportDirectoryTable.Any(idte => idte.Name == "KERNEL32.dll") ?? false);
+            bool containsCheck2 = (pex.Model.ImportTable?.HintNameTable?.Any(hnte => hnte?.Name == "GetModuleHandleA") ?? false)
+                && (pex.Model.ImportTable?.HintNameTable?.Any(hnte => hnte?.Name == "GetProcAddress") ?? false)
+                && (pex.Model.ImportTable?.HintNameTable?.Any(hnte => hnte?.Name == "LoadLibraryA") ?? false)
+                && (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "KERNEL32.dll") ?? false);
 
             int position2 = -1;
 
@@ -90,7 +95,7 @@ namespace BinaryObjectScanner.Protection
                     0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C,
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 };
-                containsCheck2 = pex.GetFirstSectionData(".text").FirstPosition(check2, out position2);
+                containsCheck2 = pex.GetFirstSectionData(".text")?.FirstPosition(check2, out position2) ?? false;
             }
             else
             {
@@ -131,7 +136,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -150,7 +159,11 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
+#if NET48
         private static string GetBuild(byte[] sectionContent, bool versionTwo)
+#else
+        private static string GetBuild(byte[]? sectionContent, bool versionTwo)
+#endif
         {
             if (sectionContent == null)
                 return "(Build unknown)";
@@ -187,7 +200,11 @@ namespace BinaryObjectScanner.Protection
             return $"(Build {year}-{month}-{day})";
         }
 
+#if NET48
         private static string GetVersion(byte[] sectionContent, int position)
+#else
+        private static string? GetVersion(byte[]? sectionContent, int position)
+#endif
         {
             // If we have invalid data
             if (sectionContent == null)

@@ -8,7 +8,11 @@ namespace BinaryObjectScanner.Protection
     public class CactusDataShield : IContentCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
+#else
+        public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
+#endif
         {
             // TODO: Limit these checks to Mac binaries
             // TODO: Obtain a sample to find where this string is in a typical executable

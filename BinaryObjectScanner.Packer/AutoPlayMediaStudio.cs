@@ -11,15 +11,19 @@ namespace BinaryObjectScanner.Packer
     public class AutoPlayMediaStudio : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Known to detect versions 5.0.0.3 - 8.1.0.0
-            string name = pex.ProductName;
+            var name = pex.ProductName;
             if (name?.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase) == true)
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
 
@@ -58,11 +62,15 @@ namespace BinaryObjectScanner.Packer
         {
             return null;
         }
-    
+
         private string GetVersion(PortableExecutable pex)
         {
             // Check the product version explicitly
+#if NET48
             string version = pex.ProductVersion;
+#else
+            string? version = pex.ProductVersion;
+#endif
             if (!string.IsNullOrEmpty(version))
                 return version;
 

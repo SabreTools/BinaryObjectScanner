@@ -10,7 +10,11 @@ namespace BinaryObjectScanner.Protection
         // For now, this means that the CheckContents check is redundant for external
         // use through other programs
         /// <inheritdoc/>
+#if NET48
         public string CheckContents(string file, byte[] fileContent, bool includeDebug)
+#else
+        public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
+#endif
         {
             // TODO: Detect Red Hand protection
             var contentMatchSets = new List<ContentMatchSet>

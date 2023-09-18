@@ -24,10 +24,14 @@ namespace BinaryObjectScanner.Protection
     public class CDGuard : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -46,7 +50,7 @@ namespace BinaryObjectScanner.Protection
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
                 // Found in "Randevu.exe" in Redump entry 97142.
-                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true);
+                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name != null && idte.Name.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase));
                 if (match)
                       return "CD-Guard Copy Protection System";
             }
@@ -67,7 +71,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

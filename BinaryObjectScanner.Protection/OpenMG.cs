@@ -17,15 +17,19 @@ namespace BinaryObjectScanner.Protection
     public class OpenMG : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in many different OpenMG related files ("Touch" by Amerie).
-            string name = pex.LegalTrademarks;
+            var name = pex.LegalTrademarks;
             if (name?.StartsWith("OpenMG", StringComparison.OrdinalIgnoreCase) == true)
                 return $"OpenMG";
 
@@ -91,7 +95,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

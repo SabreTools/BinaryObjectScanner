@@ -9,14 +9,18 @@ namespace BinaryObjectScanner.Packer
     public class IntelInstallationFramework : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name= pex.FileDescription;
             if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
                 || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
             {

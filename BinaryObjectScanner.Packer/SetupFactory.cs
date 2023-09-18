@@ -11,15 +11,19 @@ namespace BinaryObjectScanner.Packer
     public class SetupFactory : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Known to detect versions 7.0.5.1 - 9.1.0.0
-            string name = pex.LegalCopyright;
+            var name = pex.LegalCopyright;
             if (name?.StartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Setup Factory {GetVersion(pex)}";
 
@@ -67,7 +71,7 @@ namespace BinaryObjectScanner.Packer
         private string GetVersion(PortableExecutable pex)
         {
             // Check the product version explicitly
-            string version = pex.ProductVersion;
+            var version = pex.ProductVersion;
             if (!string.IsNullOrEmpty(version))
                 return version;
 

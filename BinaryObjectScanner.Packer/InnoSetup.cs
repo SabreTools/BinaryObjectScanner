@@ -12,14 +12,14 @@ namespace BinaryObjectScanner.Packer
     public class InnoSetup : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#else
+        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+#endif
         {
-            // Check we have a valid executable
-            if (nex == null)
-                return null;
-            
             // Check for "Inno" in the reserved words
-            if (nex.Model.Stub?.Header?.Reserved2[4] == 0x6E49 && nex.Model.Stub?.Header?.Reserved2[5] == 0x6F6E)
+            if (nex.Model.Stub?.Header?.Reserved2?[4] == 0x6E49 && nex.Model.Stub?.Header?.Reserved2?[5] == 0x6F6E)
             {
                 string version = GetOldVersion(file, nex);
                 if (!string.IsNullOrWhiteSpace(version))
@@ -32,18 +32,22 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                string str = strs.FirstOrDefault(s => s.StartsWith("Inno Setup Setup Data"));
+                var str = strs.FirstOrDefault(s => s.StartsWith("Inno Setup Setup Data"));
                 if (str != null)
                 {
                     return str.Replace("Inno Setup Setup Data", "Inno Setup")

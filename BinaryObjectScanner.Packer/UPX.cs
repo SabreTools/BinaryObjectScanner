@@ -17,17 +17,21 @@ namespace BinaryObjectScanner.Packer
         private static readonly Regex _upxVersionMatch = new Regex(@"^([0-9]\.[0-9]{2})$", RegexOptions.Compiled);
 
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Check header padding strings
             if (pex.HeaderPaddingStrings?.Any() == true)
             {
-                string match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("UPX!"));
+                var match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("UPX!"));
                 //if (match != null)
                 //    return "UPX";
 
@@ -42,7 +46,7 @@ namespace BinaryObjectScanner.Packer
                 }
 
                 match = pex.HeaderPaddingStrings.FirstOrDefault(s => _upxVersionMatch.IsMatch(s));
-                if (pex.HeaderPaddingStrings.Any(s => s == "UPX!" && match != null))
+                if (match != null && pex.HeaderPaddingStrings.Any(s => s == "UPX!"))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)
@@ -50,7 +54,7 @@ namespace BinaryObjectScanner.Packer
                     else
                         return "UPX (Unknown Version)";
                 }
-                else if (pex.HeaderPaddingStrings.Any(s => s == "NOS " && match != null))
+                else if (match != null && pex.HeaderPaddingStrings.Any(s => s == "NOS "))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)

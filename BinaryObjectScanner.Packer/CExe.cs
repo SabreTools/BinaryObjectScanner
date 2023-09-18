@@ -16,10 +16,14 @@ namespace BinaryObjectScanner.Packer
     public class CExe : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -27,7 +31,9 @@ namespace BinaryObjectScanner.Packer
             if (pex.FindResourceByNamedType("99, ").Count() == 2)
                 return "CExe";
 
-            var matchers = new List<ContentMatchSet>
+            if (pex.StubExecutableData != null)
+            {
+                var matchers = new List<ContentMatchSet>
             {
                 new ContentMatchSet(new byte?[]
                 {
@@ -40,9 +46,10 @@ namespace BinaryObjectScanner.Packer
                 }, "CExe")
             };
 
-            string match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
-                return match;
+                var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
 
             return null;
         }
@@ -73,12 +80,12 @@ namespace BinaryObjectScanner.Packer
             try
             {
                 // Parse into an executable again for easier extraction
-                PortableExecutable pex = PortableExecutable.Create(stream);
+                var pex = PortableExecutable.Create(stream);
                 if (pex == null)
                     return null;
 
                 // Get the first resource of type 99 with index 2
-                byte[] payload = pex.FindResourceByNamedType("99, 2").FirstOrDefault();
+                var payload = pex.FindResourceByNamedType("99, 2").FirstOrDefault();
                 if (payload == null || payload.Length == 0)
                     return null;
 
@@ -86,7 +93,7 @@ namespace BinaryObjectScanner.Packer
                 bool zlib = pex.FindResourceByNamedType("99, 1").Any();
 
                 // Create the output data buffer
-                byte[] data;
+                var data = new byte[0];
 
                 // If we had the decompression DLL included, it's zlib
                 if (zlib)

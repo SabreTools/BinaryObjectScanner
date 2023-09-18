@@ -15,15 +15,19 @@ namespace BinaryObjectScanner.Protection
     public class SoftLock : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            string name = pex.InternalName;
+            var name = pex.InternalName;
             if (name?.Equals("Softlock Protected Application") == true)
                 return "SoftLock";
 
@@ -97,7 +101,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

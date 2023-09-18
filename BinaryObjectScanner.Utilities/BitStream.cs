@@ -19,7 +19,11 @@ namespace BinaryObjectScanner.Utilities
         /// <summary>
         /// Bit array representing the current byte in the stream
         /// </summary>
+#if NET48
         private BitArray _bitBuffer;
+#else
+        private BitArray? _bitBuffer;
+#endif
 
         /// <summary>
         /// Next bit position to read from in the buffer
@@ -49,7 +53,11 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="bitCount">Number of bits to read</param>
         /// <returns>Array representing the read bits, null on error</returns>
+#if NET48
         public BitArray ReadBits(int bitCount)
+#else
+        public BitArray? ReadBits(int bitCount)
+#endif
         {
             // If we have an invalid bit count
             if (bitCount <= 0)
@@ -60,7 +68,7 @@ namespace BinaryObjectScanner.Utilities
                 RefreshBuffer();
 
             // Create an array to hold the bits
-            BitArray bits = new BitArray(bitCount);
+            var bits = new BitArray(bitCount);
 
             // Loop through and populate the bits
             for (int i = 0; i < bitCount; i++)
@@ -103,14 +111,18 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="byteCount">Number of bytes to read</param>
         /// <returns>Array representing the read bytes, null on error</returns>
+#if NET48
         public byte[] ReadAlignedBytes(int byteCount)
+#else
+        public byte[]? ReadAlignedBytes(int byteCount)
+#endif
         {
             // Read back a single byte
             if (_stream.Position > 0)
                 _stream.Seek(-1, SeekOrigin.Current);
 
             // Read the value and refreah the buffer
-            byte[] value = _stream.ReadBytes(byteCount);
+            var value = _stream.ReadBytes(byteCount);
             RefreshBuffer();
             return value;
         }

@@ -14,10 +14,14 @@ namespace BinaryObjectScanner.Packer
     public class EmbeddedExecutable : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -54,14 +58,15 @@ namespace BinaryObjectScanner.Packer
             try
             {
                 // Parse into an executable again for easier extraction
-                PortableExecutable pex = PortableExecutable.Create(stream);
+                var pex = PortableExecutable.Create(stream);
                 if (pex?.ResourceData == null)
                     return null;
 
                 // Get the resources that have an executable signature
                 var resources = pex.ResourceData
                     .Where(kvp => kvp.Value != null && kvp.Value is byte[])
-                    .Where(kvp => (kvp.Value as byte[]).StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
+                    .Select(kvp => kvp.Value as byte[])
+                    .Where(b => b != null && b.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
                     .ToList();
 
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -72,17 +77,19 @@ namespace BinaryObjectScanner.Packer
                     try
                     {
                         // Get the resource data
-                        var resource = resources[i];
-                        byte[] data = resource.Value as byte[];
+                        var data = resources[i];
+                        if (data == null)
+                            continue;
 
                         // Create the temp filename
                         string tempFile = $"embedded_resource_{i}.bin";
                         tempFile = Path.Combine(tempPath, tempFile);
 
                         // Write the resource data to a temp file
-                        using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+                        using (var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
                         {
-                            tempStream.Write(data, 0, data.Length);
+                            if (tempStream != null)
+                                tempStream.Write(data, 0, data.Length);
                         }
                     }
                     catch (Exception ex)

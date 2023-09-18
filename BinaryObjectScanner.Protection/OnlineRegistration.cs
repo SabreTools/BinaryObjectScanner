@@ -7,15 +7,19 @@ namespace BurnOutSharp.ProtectionType
     public class OnlineRegistration : IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // TODO: Is this too broad in general?
-            string name = pex.InternalName;
+            var name = pex.InternalName;
             if (name?.StartsWith("EReg", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Executable-Based Online Registration {pex.GetInternalVersion()}";
 

@@ -33,16 +33,20 @@ namespace BinaryObjectScanner.Protection
     public class HexalockAutoLock : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // TODO: Fix the following checks, as this information is visible via Windows Explorer but isn't currently being seen by BOS.
             // Found in "HCPSMng.exe".
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.StartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Hexalock AutoLock 4.5";
 
@@ -56,7 +60,7 @@ namespace BinaryObjectScanner.Protection
                 return $"Hexalock AutoLock 4.5";
 
             // Get the .text section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".text");
+            var strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 // Found in "The Sudoku Challenge Collection.exe" in "The Sudoku Challenge! Collection" by Play at Joe's.
@@ -103,7 +107,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

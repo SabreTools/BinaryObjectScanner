@@ -10,14 +10,18 @@ namespace BinaryObjectScanner.Packer
     public class InstallAnywhere : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.FileDescription;
+            var name= pex.FileDescription;
             if (name?.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase) == true)
                 return $"InstallAnywhere {GetVersion(pex)}";
 
@@ -57,7 +61,7 @@ namespace BinaryObjectScanner.Packer
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
-            string version = pex.GetInternalVersion();
+            var version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version;
 

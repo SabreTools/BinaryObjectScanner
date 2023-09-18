@@ -12,14 +12,18 @@ namespace BinaryObjectScanner.Packer
     public class MicrosoftCABSFX : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
-            string name = pex.InternalName;
+            var name= pex.InternalName;
             if (name?.Equals("Wextract", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
@@ -28,7 +32,7 @@ namespace BinaryObjectScanner.Packer
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("wextract_cleanup")))
@@ -77,7 +81,7 @@ namespace BinaryObjectScanner.Packer
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
-            string version = pex.GetInternalVersion();
+            var version = pex.GetInternalVersion();
             if (!string.IsNullOrWhiteSpace(version))
                 return $"v{version}";
 

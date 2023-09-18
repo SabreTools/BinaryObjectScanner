@@ -11,10 +11,14 @@ namespace BinaryObjectScanner.Protection
     public class ProtectDISC : IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -31,7 +35,7 @@ namespace BinaryObjectScanner.Protection
                     new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -46,7 +50,7 @@ namespace BinaryObjectScanner.Protection
                     new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
                 if (!string.IsNullOrWhiteSpace(match))
                     return match;
             }
@@ -55,10 +59,14 @@ namespace BinaryObjectScanner.Protection
             if (sections.Length > 1)
             {
                 // Get the n - 1 section strings, if they exist
-                List<string> strs = pex.GetSectionStrings(sections.Length - 2);
+                var strs = pex.GetSectionStrings(sections.Length - 2);
                 if (strs != null)
                 {
+#if NET48
                     string str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
+#else
+                    string? str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
+#endif
                     if (str != null)
                         return $"VOB ProtectCD {GetOldVersion(str)}";
                 }
@@ -67,7 +75,10 @@ namespace BinaryObjectScanner.Protection
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
             if (sections.Length > 0)
             {
-                var matchers = new List<ContentMatchSet>
+                var lastSectionData = pex.GetSectionData(sections.Length - 1);
+                if (lastSectionData != null)
+                {
+                    var matchers = new List<ContentMatchSet>
                 {
                     // HúMETINF
                     new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
@@ -76,9 +87,10 @@ namespace BinaryObjectScanner.Protection
                     new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
-                string match = MatchUtil.GetFirstMatch(file, pex.GetSectionData(sections.Length - 1), matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
-                    return match;
+                    var match = MatchUtil.GetFirstMatch(file, lastSectionData, matchers, includeDebug);
+                    if (!string.IsNullOrWhiteSpace(match))
+                        return match;
+                }
             }
 
             // Get the .vob.pcd section, if it exists

@@ -20,6 +20,9 @@ namespace BinaryObjectScanner.Protection
                 for (int i = 0; i < bupfiles.Length; i++)
                 {
                     FileInfo bupfile = new FileInfo(bupfiles[i]);
+                    if (bupfile.DirectoryName == null)
+                        continue;
+
                     FileInfo ifofile = new FileInfo(Path.Combine(bupfile.DirectoryName, bupfile.Name.Substring(0, bupfile.Name.Length - bupfile.Extension.Length) + ".ifo"));
                     if (bupfile.Length != ifofile.Length)
                     {
@@ -33,7 +36,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             return null;
         }

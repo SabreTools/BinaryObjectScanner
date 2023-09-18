@@ -41,15 +41,19 @@ namespace BinaryObjectScanner.Protection
     public class ByteShield : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Equals("ByteShield Client") == true)
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
@@ -91,7 +95,7 @@ namespace BinaryObjectScanner.Protection
                 return "ByteShield";
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "LineRider2.exe" in Redump entry 6236
@@ -128,7 +132,7 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
-        
+
         /// <inheritdoc/>
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
         {
@@ -144,7 +148,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             // TODO: Investigate reference to "bbz650.tmp" in "Byteshield.dll" (Redump entry 6236)
             // Files with the ".bbz" extension are associated with ByteShield, but the extenstion is known to be used in other places as well.

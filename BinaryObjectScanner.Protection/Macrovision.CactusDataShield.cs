@@ -30,16 +30,20 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+#if NET48
         internal string CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        internal string? CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Get the .data/DATA section strings, if they exist
-            List<string> strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Any(s => s.Contains("\\*.CDS")))
@@ -52,18 +56,18 @@ namespace BinaryObjectScanner.Protection
             // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
             // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
             var resources = pex.FindGenericResource("CactusPJ");
-            if (resources.Any())
+            if (resources != null && resources.Any())
                 return "PlayJ Music Player (Cactus Data Shield 200)";
 
             // Found in various files in "Les Paul & Friends" (Barcode 4 98806 834170).
-            string name = pex.ProductName;
+            var name = pex.ProductName;
             if (name?.Equals("CDS300", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Cactus Data Shield 300";
 
             return null;
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             // TODO: Verify if these are OR or AND
@@ -90,8 +94,12 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+#if NET48
         internal string CactusDataShieldCheckFilePath(string path)
+#else
+        internal string? CactusDataShieldCheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -119,10 +127,18 @@ namespace BinaryObjectScanner.Protection
         public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string> files)
         {
             // Find the version.txt file first
+#if NET48
             string versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
+#else
+            string? versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
+#endif
             if (!string.IsNullOrWhiteSpace(versionPath))
             {
+#if NET48
                 string version = GetCactusDataShieldInternalVersion(versionPath);
+#else
+                string? version = GetCactusDataShieldInternalVersion(versionPath);
+#endif
                 if (!string.IsNullOrWhiteSpace(version))
                     return version;
             }
@@ -130,7 +146,11 @@ namespace BinaryObjectScanner.Protection
             return "200";
         }
 
+#if NET48
         private static string GetCactusDataShieldInternalVersion(string path)
+#else
+        private static string? GetCactusDataShieldInternalVersion(string path)
+#endif
         {
             if (!File.Exists(path))
                 return null;
@@ -139,7 +159,15 @@ namespace BinaryObjectScanner.Protection
             {
                 using (var sr = new StreamReader(path, Encoding.Default))
                 {
-                    return $"{sr.ReadLine().Substring(3)} ({sr.ReadLine()})";
+#if NET48
+                    string line = sr.ReadLine();
+#else
+                    string? line = sr.ReadLine();
+#endif
+                    if (line == null)
+                        return null;
+
+                    return $"{line.Substring(3)} ({sr.ReadLine()})";
                 }
             }
             catch

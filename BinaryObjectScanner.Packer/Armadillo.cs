@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -12,10 +11,14 @@ namespace BinaryObjectScanner.Packer
     public class Armadillo : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
@@ -25,14 +28,17 @@ namespace BinaryObjectScanner.Packer
                 return "Armadillo";
 
             // Loop through all "extension" sections -- usually .data1 or .text1
-            foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
+            if (pex.SectionNames != null)
             {
-                // Get the section strings, if they exist
-                List<string> strs = pex.GetFirstSectionStrings(sectionName);
-                if (strs != null)
+                foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
                 {
-                    if (strs.Any(s => s.Contains("ARMDEBUG")))
-                        return "Armadillo";
+                    // Get the section strings, if they exist
+                    var strs = pex.GetFirstSectionStrings(sectionName);
+                    if (strs != null)
+                    {
+                        if (strs.Any(s => s.Contains("ARMDEBUG")))
+                            return "Armadillo";
+                    }
                 }
             }
 

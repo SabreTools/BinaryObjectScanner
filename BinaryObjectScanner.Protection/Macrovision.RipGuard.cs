@@ -18,16 +18,20 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
+#if NET48
         internal string RipGuardCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        internal string? RipGuardCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.Equals("rgasdev", StringComparison.OrdinalIgnoreCase) == true)
                 return "RipGuard";
 
@@ -45,7 +49,11 @@ namespace BinaryObjectScanner.Protection
                     // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
                     if (fi.Length == 49_152)
                     {
+#if NET48
                         string sha1 = GetFileSHA1(file);
+#else
+                        string? sha1 = GetFileSHA1(file);
+#endif
                         if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
                             return "RipGuard";
                     }
@@ -58,7 +66,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
         internal ConcurrentQueue<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string> files)
         {
             var matchers = new List<PathMatchSet>
@@ -74,8 +82,12 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
-        /// <inheritdoc cref="BinaryObjectScanner.Interfaces.IPathCheck.CheckFilePath(string)"/>
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+#if NET48
         internal string RipGuardCheckFilePath(string path)
+#else
+        internal string? RipGuardCheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

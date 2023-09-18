@@ -14,23 +14,27 @@ namespace BinaryObjectScanner.Protection
     public class PlayJ : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
+#if NET48
         public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#else
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Get the sections from the executable, if possible
-            var sections = pex?.Model.SectionTable;
+            var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
 
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
-            string name = pex.FileDescription;
+            var name = pex.FileDescription;
             if (name?.StartsWith("PlayJ Music Player", StringComparison.OrdinalIgnoreCase) == true)
                 return $"PlayJ Music Player";
-            
+
             // Found in "PJSTREAM.DLL" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             name = pex.FileDescription;
             if (name?.StartsWith("EVAUX32 Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"PlayJ Music Player Component";
-            
+
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             name = pex.ProductName;
             if (name?.StartsWith("PlayJ", StringComparison.OrdinalIgnoreCase) == true)
@@ -57,7 +61,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET48
         public string CheckFilePath(string path)
+#else
+        public string? CheckFilePath(string path)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
