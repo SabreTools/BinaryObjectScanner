@@ -1,4 +1,4 @@
-﻿namespace BurnOutSharp
+﻿namespace BinaryObjectScanner
 {
     /// <summary>
     /// Scanning options

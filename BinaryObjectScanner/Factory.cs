@@ -1,14 +1,18 @@
 ﻿using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 
-namespace BurnOutSharp
+namespace BinaryObjectScanner
 {
-    internal static class Factory
+    public static class Factory
     {
         /// <summary>
         /// Create an instance of a detectable based on file type
         /// </summary>
+#if NET48
         public static IDetectable CreateDetectable(SupportedFileType fileType)
+#else
+        public static IDetectable? CreateDetectable(SupportedFileType fileType)
+#endif
         {
             switch (fileType)
             {
@@ -29,7 +33,11 @@ namespace BurnOutSharp
         /// <summary>
         /// Create an instance of an extractable based on file type
         /// </summary>
+#if NET48
         public static IExtractable CreateExtractable(SupportedFileType fileType)
+#else
+        public static IExtractable? CreateExtractable(SupportedFileType fileType)
+#endif
         {
             switch (fileType)
             {
