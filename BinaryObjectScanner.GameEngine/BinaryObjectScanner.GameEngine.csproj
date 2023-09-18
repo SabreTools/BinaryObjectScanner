@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
+    <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
   </ItemGroup>
 
   <ItemGroup>

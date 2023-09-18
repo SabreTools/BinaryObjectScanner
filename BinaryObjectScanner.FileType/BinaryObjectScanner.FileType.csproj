@@ -24,9 +24,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Compression\BinaryObjectScanner.Compression.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.GameEngine\BinaryObjectScanner.GameEngine.csproj" />
-    <ProjectReference Include="..\BinaryObjectScanner.Interfaces\BinaryObjectScanner.Interfaces.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Packer\BinaryObjectScanner.Packer.csproj" />
     <ProjectReference Include="..\BinaryObjectScanner.Protection\BinaryObjectScanner.Protection.csproj" />
   </ItemGroup>
