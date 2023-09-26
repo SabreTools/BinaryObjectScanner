@@ -63,26 +63,10 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-        internal ConcurrentQueue<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string> files)
-        {
-            var matchers = new List<PathMatchSet>
-            {
-                // Found in the Black Lagoon Season 1 DVD steelbook box set (Geneon ID 12970).
-                new PathMatchSet(new PathMatch("G23YHWO1.EXE", useEndsWith: true), "RipGuard"),
-                new PathMatchSet(new PathMatch("RGASDEV.SYS", useEndsWith: true), "RipGuard"),
-
-                // Mentioned online in https://forum.redfox.bz/threads/resolved-one-on-one-with-tony-horton-vol2-disc3.33901/.
-                new PathMatchSet(new PathMatch("9KMJ9G4I.EXE", useEndsWith: true), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
-            };
-
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
-        }
-
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
 #if NET48
-        internal string RipGuardCheckFilePath(string path)
+        internal ConcurrentQueue<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string> files)
 #else
-        internal string? RipGuardCheckFilePath(string path)
+        internal ConcurrentQueue<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string>? files)
 #endif
         {
             var matchers = new List<PathMatchSet>
@@ -95,7 +79,27 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("9KMJ9G4I.EXE", useEndsWith: true), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
             };
 
-            return MatchUtil.GetFirstMatch(path, matchers, any: true);
+            return MatchUtil.GetAllMatches(files ?? Array.Empty<string>(), matchers, any: false);
         }
+
+    /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
+#if NET48
+        internal string RipGuardCheckFilePath(string path)
+#else
+    internal string? RipGuardCheckFilePath(string path)
+#endif
+    {
+        var matchers = new List<PathMatchSet>
+            {
+                // Found in the Black Lagoon Season 1 DVD steelbook box set (Geneon ID 12970).
+                new PathMatchSet(new PathMatch("G23YHWO1.EXE", useEndsWith: true), "RipGuard"),
+                new PathMatchSet(new PathMatch("RGASDEV.SYS", useEndsWith: true), "RipGuard"),
+
+                // Mentioned online in https://forum.redfox.bz/threads/resolved-one-on-one-with-tony-horton-vol2-disc3.33901/.
+                new PathMatchSet(new PathMatch("9KMJ9G4I.EXE", useEndsWith: true), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
+            };
+
+        return MatchUtil.GetFirstMatch(path, matchers, any: true);
     }
+}
 }

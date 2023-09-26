@@ -131,12 +131,12 @@ namespace BinaryObjectScanner.Protection
 #if NET48
         public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string> files)
 #else
-        public static string? GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string>? files)
+        public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string>? files)
 #endif
         {
             // If we have no files
             if (files == null)
-                return null;
+                return string.Empty;
 
             // Find the version.txt file first
             var versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));

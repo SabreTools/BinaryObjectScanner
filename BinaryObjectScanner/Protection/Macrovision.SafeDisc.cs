@@ -114,7 +114,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET48
         internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string> files)
+#else
+        internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -218,7 +222,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files ?? Array.Empty<string>(), matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
