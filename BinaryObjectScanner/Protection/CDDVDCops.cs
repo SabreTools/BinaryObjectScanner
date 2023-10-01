@@ -19,13 +19,24 @@ namespace BinaryObjectScanner.Protection
     ///      `WINCOPS.INI`
     ///      
     /// TODO: Investigate if "DVD-Cops" is a separate product, or simply what CD-Cops is referred to when used on a DVD.
+    /// 
     /// Known versions of CD-Cops:
     /// * 1.08 (Unconfirmed) (Redump entry 84517).
+    /// * 1,13[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20040307124358/http://www.caprino.no:80/download/fgpgold_upd4.exe).
     /// * 1.21 (Unconfirmed) (Redump entry 91713).
+    /// * 1,22[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20030430194917/http://www.caprino.no:80/download/fgpgold_upd2.exe).
     /// * 1,28[sic] (Confirmed) ("RunMenu.exe" in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes").
-    /// * 1.31 (Unconfirmed) (Redump entry 19479).
+    /// * 1,31[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168).
+    /// * 1.31 (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with Patch 11).
+    /// * 1.46 (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20210103064517/http://www.caprino.no/download/FGPGOLD_UPD12.exe)
+    /// * 1,63[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20060926082522/http://www.caprino.no:80/download/fgpgold_upd7.exe).
     /// * 1.72 (Confirmed) ("h3blade.exe" in Redump entry 85077).
-    /// * 1.73 (Confirmed) ("WETFLIPPER.EXE" in IA item "LULA_Erotic_Pinball_-_Windows95_Eng").
+    /// * 1.73 (Confirmed) ("WETFLIPPER.EXE" in IA item "LULA_Erotic_Pinball_-_Windows95_Eng).
+    /// * 1,81[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20030308040529/http://www.caprino.no:80/download/fgpgold_upd1.exe).
+    /// * 2.03 (Confirmed) ("HyperBowl.exe" in IA item "hyperbowl_20190626").
+    /// 
+    /// Known versions of DVD-Cops:
+    /// * 1.69 (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169).
     ///      
     /// Known samples of CD-Cops include:
     /// * IA item "der-brockhaus-multimedial-2002-premium".
@@ -34,9 +45,19 @@ namespace BinaryObjectScanner.Protection
     /// * IA item "SCIENCESENCYCLOPEDIAV2.0ARISSCD2".
     /// * IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
     /// * IA item "LULA_Erotic_Pinball_-_Windows95_Eng".
+    /// * IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168.
+    /// * Patches for "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168, found at https://web.archive.org/web/*/http://www.caprino.no/download/* (FGPGOLD_UPD files).
+    /// * IA item "hyperbowl_20190626"/"hyperbowl-arcade-edition".
     /// * Redump entries 51403(?), 84517, and 85077.
     /// 
+    /// Demo that may contain WEB-Cops: https://web.archive.org/web/20040602210926/http://games.tucows.com/preview/266462.html
+    /// 
+    /// Known samples of DVD-Cops include:
+    /// * IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
+    /// 
     /// A sample of CD-Cops that makes use of encrypted PDFs (LDSCRYPT) can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
+    /// 
+    /// List of applications that have CD/DVD/WEB-Cops relating to a Windows update: https://www.betaarchive.com/wiki/index.php/Microsoft_KB_Archive/924867
     /// </summary>
 
     public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
@@ -136,11 +157,17 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            // Get the .grand section, if it exists -- TODO: Confirm is this is in DVD-Cops as well
+            // Get the .grand section, if it exists
             // Found in "AGENTHUG.QZ_" in Redump entry 84517 and "h3blade.QZ_" in Redump entry 85077.
             bool grandSection = pex.ContainsSection(".grand", exact: true);
             if (grandSection)
-                return "CD-Cops";
+                return "CD/DVD-Cops";
+
+            // Get the UNICops section, if it exists
+            // Found in "FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
+            bool UNICopsSection = pex.ContainsSection("UNICops", exact: true);
+            if (UNICopsSection)
+                return "CD/DVD-Cops Obfuscated Executable";
 
             return null;
         }
@@ -160,8 +187,8 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 84517.
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
 
                 new PathMatchSet(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
                 new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
@@ -184,8 +211,8 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 84517.
                 new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD-Cops"),
+                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
 
                 new PathMatchSet(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
                 new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
