@@ -66,7 +66,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-                new PathMatchSet(new PathMatch("DecryptWrap.exe", useEndsWith: true), "DigiGuard"),
+                new PathMatchSet(new FilePathMatch("DecryptWrap.exe"), "DigiGuard"),
 
                 // There are at least two additional specifically named DecryptWrap files, "DecryptWrapTW2000.exe" and "DecryptWrapTW2KCode.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             };
@@ -84,7 +84,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-                new PathMatchSet(new PathMatch("DecryptWrap.exe", useEndsWith: true), "DigiGuard"),
+                new PathMatchSet(new FilePathMatch("DecryptWrap.exe"), "DigiGuard"),
 
                 // There are at least two additional specifically named DecryptWrap files, "DecryptWrapTW2000.exe" and "DecryptWrapTW2KCode.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             };
