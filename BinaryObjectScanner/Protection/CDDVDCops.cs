@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Models.PortableExecutable;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>
     /// TODO: Investigate "Cops Copylock II" (https://www.cbmstuff.com/forum/showthread.php?tid=488).
+    /// TODO: Investigate additional products mentioned on the Link Data Security website (https://www.linkdatasecurity.com/index.htm#/protection-products/overview).
     /// `AgentHugo.exe`
     ///      Embedded PE executable in one of the NE sections
     /// `AgentHugo.exe` / `NE.EXE` (1.46) / `NETINST.EXE` (1.48) / `NETINST.QZ_`
@@ -50,10 +52,11 @@ namespace BinaryObjectScanner.Protection
     /// * IA item "hyperbowl_20190626"/"hyperbowl-arcade-edition".
     /// * Redump entries 51403(?), 84517, and 85077.
     /// 
-    /// Demo that may contain WEB-Cops: https://web.archive.org/web/20040602210926/http://games.tucows.com/preview/266462.html
-    /// 
     /// Known samples of DVD-Cops include:
     /// * IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
+    /// 
+    /// Known samples of WEB-Cops include: 
+    /// * https://web.archive.org/web/20120616074941/http://icm.games.tucows.com/files2/HyperDemo-109a.exe
     /// 
     /// A sample of CD-Cops that makes use of encrypted PDFs (LDSCRYPT) can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
     /// 
@@ -157,17 +160,35 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
+            // Get the stub executable data, if it exists
+            if (pex.StubExecutableData != null)
+            {
+                var matchers = new List<ContentMatchSet>
+            {
+                // WEBCOPS
+                // Found in "HyperBowl.C_S" in https://web.archive.org/web/20120616074941/http://icm.games.tucows.com/files2/HyperDemo-109a.exe.
+                new ContentMatchSet(new byte?[]
+                {
+                    0x57, 0x45, 0x42, 0x43, 0x4F, 0x50, 0x53
+                }, "WEB-Cops")
+            };
+
+                var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
+                if (!string.IsNullOrWhiteSpace(match))
+                    return match;
+            }
+
             // Get the .grand section, if it exists
             // Found in "AGENTHUG.QZ_" in Redump entry 84517 and "h3blade.QZ_" in Redump entry 85077.
             bool grandSection = pex.ContainsSection(".grand", exact: true);
             if (grandSection)
-                return "CD/DVD-Cops";
+                return "CD/DVD/WEB-Cops";
 
             // Get the UNICops section, if it exists
             // Found in "FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
             bool UNICopsSection = pex.ContainsSection("UNICops", exact: true);
             if (UNICopsSection)
-                return "CD/DVD-Cops Obfuscated Executable";
+                return "UNI-Cops";
 
             return null;
         }
