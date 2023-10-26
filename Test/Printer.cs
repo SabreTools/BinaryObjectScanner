@@ -123,6 +123,7 @@ namespace Test
                 case CIA item: return item.PrettyPrint();
                 case GCF item: return item.PrettyPrint();
                 case InstallShieldCabinet item: return item.PrettyPrint();
+                case IRD item: return item.PrettyPrint();
                 case LinearExecutable item: return item.PrettyPrint();
                 case MicrosoftCabinet item: return item.PrettyPrint();
                 case MSDOS item: return item.PrettyPrint();
@@ -139,6 +140,8 @@ namespace Test
                 case VBSP item: return item.PrettyPrint();
                 case VPK item: return item.PrettyPrint();
                 case WAD item: return item.PrettyPrint();
+                case XMID item: return item.PrettyPrint();
+                case XeMID item: return item.PrettyPrint();
                 case XZP item: return item.PrettyPrint();
                 default: return new StringBuilder();
             }
@@ -221,6 +224,16 @@ namespace Test
         {
             StringBuilder builder = new StringBuilder();
             SabreTools.Printing.InstallShieldCabinet.Print(builder, item.Model);
+            return builder;
+        }
+
+        /// <summary>
+        /// Export the item information as pretty-printed text
+        /// </summary>
+        private static StringBuilder PrettyPrint(this IRD item)
+        {
+            StringBuilder builder = new StringBuilder();
+            SabreTools.Printing.IRD.Print(builder, item.Model);
             return builder;
         }
 
@@ -381,6 +394,26 @@ namespace Test
         {
             StringBuilder builder = new StringBuilder();
             SabreTools.Printing.WAD.Print(builder, item.Model);
+            return builder;
+        }
+
+        /// <summary>
+        /// Export the item information as pretty-printed text
+        /// </summary>
+        private static StringBuilder PrettyPrint(this XMID item)
+        {
+            StringBuilder builder = new StringBuilder();
+            SabreTools.Printing.XMID.Print(builder, item.Model);
+            return builder;
+        }
+
+        /// <summary>
+        /// Export the item information as pretty-printed text
+        /// </summary>
+        private static StringBuilder PrettyPrint(this XeMID item)
+        {
+            StringBuilder builder = new StringBuilder();
+            SabreTools.Printing.XeMID.Print(builder, item.Model);
             return builder;
         }
 
