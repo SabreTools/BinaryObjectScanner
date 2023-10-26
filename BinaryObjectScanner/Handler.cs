@@ -18,7 +18,11 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
+#if NET48
         public static IEnumerable<IPathCheck> PathCheckClasses
+#else
+        public static IEnumerable<IPathCheck?> PathCheckClasses
+#endif
         {
             get
             {
@@ -39,7 +43,7 @@ namespace BinaryObjectScanner
 #if NET48
         private static IEnumerable<IPathCheck> pathCheckClasses;
 #else
-        private static IEnumerable<IPathCheck>? pathCheckClasses;
+        private static IEnumerable<IPathCheck?>? pathCheckClasses;
 #endif
 
         #endregion
@@ -67,7 +71,7 @@ namespace BinaryObjectScanner
             // Iterate through all checks
             Parallel.ForEach(PathCheckClasses, checkClass =>
             {
-                var subProtections = checkClass.PerformCheck(path, files);
+                var subProtections = checkClass?.PerformCheck(path, files);
                 if (subProtections != null)
                     AppendToDictionary(protections, path, subProtections);
             });
@@ -162,7 +166,7 @@ namespace BinaryObjectScanner
                 return null;
 
             // Setup the output dictionary
-            var protections =  new ConcurrentQueue<string>();
+            var protections = new ConcurrentQueue<string>();
 
             // If we have a file path
             if (File.Exists(path))
@@ -191,18 +195,33 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
+#if NET48
         private static IEnumerable<T> InitCheckClasses<T>()
-            => InitCheckClasses<T>(typeof(BinaryObjectScanner.Packer._DUMMY).Assembly)
-                .Concat(InitCheckClasses<T>(typeof(BinaryObjectScanner.Protection._DUMMY).Assembly));
+#else
+        private static IEnumerable<T?> InitCheckClasses<T>()
+#endif
+        {
+            return InitCheckClasses<T>(typeof(GameEngine._DUMMY).Assembly)
+                .Concat(InitCheckClasses<T>(typeof(Packer._DUMMY).Assembly))
+                .Concat(InitCheckClasses<T>(typeof(Protection._DUMMY).Assembly));
+        }
 
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
+#if NET48
         private static IEnumerable<T> InitCheckClasses<T>(Assembly assembly)
+#else
+        private static IEnumerable<T?> InitCheckClasses<T>(Assembly assembly)
+#endif
         {
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
+#if NET48
                 .Select(t => (T)Activator.CreateInstance(t)) ?? Array.Empty<T>();
+#else
+                .Select(t => (T?)Activator.CreateInstance(t)) ?? Array.Empty<T>();
+#endif
         }
 
         #endregion

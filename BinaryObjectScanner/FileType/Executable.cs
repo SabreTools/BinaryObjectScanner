@@ -447,11 +447,15 @@ namespace BinaryObjectScanner.FileType
         {
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
+#if NET48
                 .Select(t => (T)Activator.CreateInstance(t))
+#else
+                .Select(t => (T?)Activator.CreateInstance(t))
+#endif
                 .Cast<T>() ?? Array.Empty<T>();
         }
 
-        #endregion
+#endregion
 
         #region Helpers
 
