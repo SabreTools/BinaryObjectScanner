@@ -8,6 +8,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   
     <!-- Package Properties -->
+    <PackageId>BurnOutSharp</PackageId> <!-- Temporary until official renaming -->
     <Authors>Matt Nadareski</Authors>
     <Description>Protection scanning library</Description>
     <Copyright>Copyright (c)2018-2023 Matt Nadareski</Copyright>
