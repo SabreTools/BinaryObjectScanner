@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Interfaces
 #if NET48
         string Extract(Stream stream, string file, bool includeDebug);
 #else
-        string? Extract(Stream stream, string file, bool includeDebug);
+        string? Extract(Stream? stream, string file, bool includeDebug);
 #endif
     }
 }

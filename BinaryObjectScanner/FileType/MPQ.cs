@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.FileType
 #if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
 #else
-        public string? Extract(Stream stream, string file, bool includeDebug)
+        public string? Extract(Stream? stream, string file, bool includeDebug)
 #endif
         {
 #if NET6_0_OR_GREATER

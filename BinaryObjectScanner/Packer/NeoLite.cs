@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Packer
 #if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
 #else
-        public string? Extract(Stream stream, string file, bool includeDebug)
+        public string? Extract(Stream? stream, string file, bool includeDebug)
 #endif
         {
             return null;

@@ -116,7 +116,11 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="original">Dictionary to strip values from</param>
         /// <param name="pathToPrepend">Path to strip from the keys</param>
+#if NET48
         public static void PrependToKeys(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string pathToPrepend)
+#else
+        public static void PrependToKeys(ConcurrentDictionary<string, ConcurrentQueue<string>>? original, string pathToPrepend)
+#endif
         {
             // If the dictionary is missing, we can't do anything
             if (original == null)
@@ -146,7 +150,11 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="original">Dictionary to strip values from</param>
         /// <param name="pathToStrip">Path to strip from the keys</param>
+#if NET48
         public static void StripFromKeys(ConcurrentDictionary<string, ConcurrentQueue<string>> original, string pathToStrip)
+#else
+        public static void StripFromKeys(ConcurrentDictionary<string, ConcurrentQueue<string>>? original, string? pathToStrip)
+#endif
         {
             // If either is missing, we can't do anything
             if (original == null || string.IsNullOrEmpty(pathToStrip))

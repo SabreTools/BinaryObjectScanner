@@ -31,9 +31,12 @@ namespace BinaryObjectScanner.FileType
 #if NET48
         public string Extract(Stream stream, string file, bool includeDebug)
 #else
-        public string? Extract(Stream stream, string file, bool includeDebug)
+        public string? Extract(Stream? stream, string file, bool includeDebug)
 #endif
         {
+            if (stream == null)
+                return null;
+
             try
             {
                 // Create a temp output directory
