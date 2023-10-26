@@ -140,8 +140,8 @@ namespace Test
                 case VBSP item: return item.PrettyPrint();
                 case VPK item: return item.PrettyPrint();
                 case WAD item: return item.PrettyPrint();
-                case XMID item: return item.PrettyPrint();
                 case XeMID item: return item.PrettyPrint();
+                case XMID item: return item.PrettyPrint();
                 case XZP item: return item.PrettyPrint();
                 default: return new StringBuilder();
             }
@@ -400,20 +400,20 @@ namespace Test
         /// <summary>
         /// Export the item information as pretty-printed text
         /// </summary>
-        private static StringBuilder PrettyPrint(this XMID item)
+        private static StringBuilder PrettyPrint(this XeMID item)
         {
             StringBuilder builder = new StringBuilder();
-            SabreTools.Printing.XMID.Print(builder, item.Model);
+            SabreTools.Printing.XeMID.Print(builder, item.Model);
             return builder;
         }
 
         /// <summary>
         /// Export the item information as pretty-printed text
         /// </summary>
-        private static StringBuilder PrettyPrint(this XeMID item)
+        private static StringBuilder PrettyPrint(this XMID item)
         {
             StringBuilder builder = new StringBuilder();
-            SabreTools.Printing.XeMID.Print(builder, item.Model);
+            SabreTools.Printing.XMID.Print(builder, item.Model);
             return builder;
         }
 
