@@ -34,7 +34,7 @@
   </PropertyGroup>
 
   <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <Content Include="*.dll">
       <Pack>true</Pack>
       <PackagePath>contentFiles;content</PackagePath>
