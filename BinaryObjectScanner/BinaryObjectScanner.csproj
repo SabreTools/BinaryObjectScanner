@@ -23,13 +23,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- These are needed for dealing with submodules -->
-  <PropertyGroup>
+  <!-- Exclude certain parts of external modules for .NET Framework 4.8 -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net48'">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       **\AssemblyInfo.cs;
       _EXTERNAL\stormlibsharp\lib\**;
       _EXTERNAL\stormlibsharp\src\TestConsole\**
+    </DefaultItemExcludes>
+  </PropertyGroup>
+
+  <!-- Exclude all external modules for .NET 6 and .NET 7 -->
+  <PropertyGroup Condition="'$(TargetFramework)'!='net48'">
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);
+      _EXTERNAL\**;
     </DefaultItemExcludes>
   </PropertyGroup>
 
