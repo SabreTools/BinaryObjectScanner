@@ -1,6 +1,6 @@
 # Coding Guide
 
-This document serves as the official code standards guide for `BurnOutSharp` internal development. Please note that this is a work in progress and may not encapsulate all standards expected of new or existing code.
+This document serves as the official code standards guide for `BinaryObjectScanner` internal development. Please note that this is a work in progress and may not encapsulate all standards expected of new or existing code.
 
 ## General Code Guidelines
 
@@ -317,10 +317,10 @@ This section contains information on project and class organization principles t
 
 | Project | Description |
 | --- | --- |
-| `BurnOutSharp` | One file per class. See below for details on subdirectories. |
-| `BurnOutSharp/External` | One directory per external project. |
-| `BurnOutSharp/FileType` | One file per file type. |
-| `BurnOutSharp/Tools` | Two files - one for extension methods and one for utilities. |
+| `BinaryObjectScanner` | One file per class. See below for details on subdirectories. |
+| `BinaryObjectScanner/External` | One directory per external project. |
+| `BinaryObjectScanner/FileType` | One file per file type. |
+| `BinaryObjectScanner/Tools` | Two files - one for extension methods and one for utilities. |
 | `BinaryObjectScanner.ASN1` | Flat directory structure. |
 | `BinaryObjectScanner.Builders` | One file per executable type. |
 | `BinaryObjectScanner.Compression` | One directory per compression type. |
@@ -344,8 +344,8 @@ This section contains information on in-code organization principles that depend
 
 | Project | Description |
 | --- | --- |
-| `BurnOutSharp` | Varies from file to file. |
-| `BurnOutSharp/Tools` | Methods grouped by function. Regions ordered alphabetically. |
+| `BinaryObjectScanner` | Varies from file to file. |
+| `BinaryObjectScanner/Tools` | Methods grouped by function. Regions ordered alphabetically. |
 | `BinaryObjectScanner.ASN1` | Partial classes suggested for different implmentations. |
 | `BinaryObjectScanner.Builders` | Two copies of each non-generic method: one for byte arrays and one for Streams. |
 | `BinaryObjectScanner.Compression` | Varies from file to file. |

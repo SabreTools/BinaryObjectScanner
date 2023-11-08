@@ -1,21 +1,21 @@
 # Developer Guide
 
-This is a guide for any developers who wish to research protections, implement new protections in `BurnOutSharp`, or fix/update existing protection checks. Below you will find numerous sections about how to use the tools and specialized methods included in the `BurnOutSharp` project.
+This is a guide for any developers who wish to research protections, implement new protections in `BinaryObjectScanner`, or fix/update existing protection checks. Below you will find numerous sections about how to use the tools and specialized methods included in the `BinaryObjectScanner` project.
 
 ## Getting Started
 
-`BurnOutSharp` contains multiple custom-built and external projects that allow for detecting copy protections, packers, and file formats. At the time of writing, below is the list of projects and what they do:
+`BinaryObjectScanner` contains multiple custom-built and external projects that allow for detecting copy protections, packers, and file formats. At the time of writing, below is the list of projects and what they do:
 
 | Project | Description |
 | --- | --- |
-| `BurnOutSharp` | Main library that contains all supported file formats. It also houses most of the utilities and structures needed when `BurnOutSharp` is used by another project. Some code additions will happen here. |
+| `BinaryObjectScanner` | Main library that contains all supported file formats. It also houses most of the utilities and structures needed when `BinaryObjectScanner` is used by another project. Some code additions will happen here. |
 | `BinaryObjectScanner.ASN1` | Library containing classes and methods associated with Abstract Syntax Notation One and OID parsing. |
 | `BinaryObjectScanner.Builder` | Library containing classes that assist in populating the various object models defined in `BinaryObjectScanner.Models`. Builders can work with either byte arrays or streams for input. At the time of writing, the following executable types have builders: **MS-DOS**, **New Executable**, **Portable Executable**. |
 | `BinaryObjectScanner.Compression` | Library containing classes that deal with different compression formats. This library is used extensively by the wrappers in `BinaryObjectScanner.Wrappers`. |
 | `BinaryObjectScanner.FileType` | Library containing file type definitions specific to scanning. |
 | `BinaryObjectScanner.GameEngine` | Library containing game engine scanning definitions. |
 | `BinaryObjectScanner.Interfaces` | Library containing interface definitions for scanning and detection. |
-| `BinaryObjectScanner.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BurnOutSharp`. |
+| `BinaryObjectScanner.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BinaryObjectScanner`. |
 | `BinaryObjectScanner.Models` | Library containing object models that represent various pieces of known executable formats. At the time of writing, the following executable types have models: **MS-DOS**, **New Executable**, **Linear Executable (partial)**, **Portable Executable**. |
 | `BinaryObjectScanner.Packer` | Library containing packer scanning definitions. |
 | `BinaryObjectScanner.Protection` | Library containing protection scanning definitions. |
@@ -26,7 +26,7 @@ This is a guide for any developers who wish to research protections, implement n
 
 ## Researching Protections
 
-Researching copy protections and packers can be a massive undertaking. Some can be as easy as looking for a single string in the file description while others may include searching multiple sections for bytecode that represents the right instructions or an encoded value. Thankfully for researchers, `BurnOutSharp` contains multiple tools to make this process of finding this information much easier than just poking around with a hex editor.
+Researching copy protections and packers can be a massive undertaking. Some can be as easy as looking for a single string in the file description while others may include searching multiple sections for bytecode that represents the right instructions or an encoded value. Thankfully for researchers, `BinaryObjectScanner` contains multiple tools to make this process of finding this information much easier than just poking around with a hex editor.
 
 | Tool / Method | Description |
 | --- | --- |
@@ -35,7 +35,7 @@ Researching copy protections and packers can be a massive undertaking. Some can 
 | **Add and debug** | This starts getting into more serious territory. Creating a skeleton for the packer or protection that you want to add and then messing around in code is a great way to start seeing what sort of stuff the library can see that's not normally output. See the table below for extension properties and methods that you may use in addition to the models defined in `BinaryObjectScanner.Models`. |
 | **Hex Editor / External Programs** | As an advanced port of call, using a hex editor and external protection scanning programs (sometimes in conjunction) can help you get a better idea of the protection you're looking into. For example, **TheRogueArchivist** used that combination to narrow down the exact check for a very stubborn protection. |
 
-As noted above, `BurnOutSharp` has a few tricks up its sleeve, mainly in the form of `BinaryObjectScanner.Wrappers`. This library was written explicitly to make research and implementation as easy as possible, and as such, allows for a lot of very creative ways of finding protections.
+As noted above, `BinaryObjectScanner` has a few tricks up its sleeve, mainly in the form of `BinaryObjectScanner.Wrappers`. This library was written explicitly to make research and implementation as easy as possible, and as such, allows for a lot of very creative ways of finding protections.
 
 Below are all current extension properties along with a brief description.
 
@@ -90,7 +90,7 @@ Adding a new checker or format should happen in a few distinct steps:
 
 1. Create a skeleton class representing the new checker or format
 
-    - If it is a new supported file type (such as an archive format), create the file in `BinaryObjectScanner.FileType`. By default, you will need to implement `BurnOutSharp.Interfaces.IDetectable` or `BinaryObjectScanner.Interfaces.IExtractable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
+    - If it is a new supported file type (such as an archive format), create the file in `BinaryObjectScanner.FileType`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IDetectable` or `BinaryObjectScanner.Interfaces.IExtractable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
 
     - If it is a new supported game engine or standard library, create the file in `BinaryObjectScanner.GameEngine`. By default, you will need to implement at least one of: `BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
     

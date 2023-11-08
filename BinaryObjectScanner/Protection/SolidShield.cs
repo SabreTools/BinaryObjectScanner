@@ -6,7 +6,7 @@ using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 
-namespace BurnOutSharp.ProtectionType
+namespace BinaryObjectScanner.ProtectionType
 {
     // TODO: Not matching all SolidShield Wrapper v1 (See JackKeane)
     // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)

@@ -1,6 +1,6 @@
-# BurnOutSharp
+# BinaryObjectScanner
 
-[![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/burnoutsharp)
+[![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/BinaryObjectScanner)
 
 C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. A reference application called `Test` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
 
@@ -25,7 +25,7 @@ Please visit our sibling project, [DRML](https://github.com/TheRogueArchivist/DR
 
 ## Protections Detected
 
-Below is a list of protections detected by BurnOutSharp. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
+Below is a list of protections detected by BinaryObjectScanner. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
 
 | Protection Name | Content Check | Path Check | Notes |
 | --------------- | ------------- | ---------- | ----- |
@@ -120,7 +120,7 @@ Below is a list of protections detected by BurnOutSharp. The two columns explain
 
 ## Executable Packers Detected
 
-Below is a list of executable packers detected by BurnOutSharp. The three columns explain what sort of checks are performed to determine how the protection is detected as well as if the contents can be extracted.
+Below is a list of executable packers detected by BinaryObjectScanner. The three columns explain what sort of checks are performed to determine how the protection is detected as well as if the contents can be extracted.
 
 | Protection Name | Content Check | Path Check | Extractable | Notes |
 | --------------- | ------------- | ---------- | ----------- | ----- |
@@ -153,7 +153,7 @@ Below is a list of executable packers detected by BurnOutSharp. The three column
 
 ## Game Engines Detected
 
-Below is a list of game engines detected by BurnOutSharp. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
+Below is a list of game engines detected by BinaryObjectScanner. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
 
 | Protection Name | Content Check | Path Check | Notes |
 | --------------- | ------------- | ---------- | ----- |

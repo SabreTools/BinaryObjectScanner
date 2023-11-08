@@ -235,7 +235,7 @@ namespace Test
         /// </summary>
         public static void DisplayHelp()
         {
-            Console.WriteLine("BurnOutSharp Test Program");
+            Console.WriteLine("BinaryObjectScanner Test Program");
             Console.WriteLine();
             Console.WriteLine("test.exe <features> <options> file|directory ...");
             Console.WriteLine();

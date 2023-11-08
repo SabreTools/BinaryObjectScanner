@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
     public class nProtect : IPathCheck, IPortableExecutableCheck
     {
         // TODO: Add LE checks for "npkcrypt.vxd" in Redump entry 90526.
-        // TODO: Add text check for the string mentioned in https://github.com/mnadareski/BurnOutSharp/issues/154.
+        // TODO: Add text check for the string mentioned in https://github.com/mnadareski/BinaryObjectScanner/issues/154.
 
         /// <inheritdoc/>
 #if NET48

@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
     /// At least one disc with CopyLok appears to contain an excerpt of the poem "Jabberwocky" by Lewis Carroll in the raw sector data (http://forum.redump.org/post/54050/#p54050).
     /// According to the Readme for poxylok (https://gf.wiretarget.com/copylok.htm), some version of Gangsters 2 may have this protection.
     /// 
-    /// Previous versions of BurnOutSharp incorrectly reported this DRM as "CodeLock / CodeLok / CopyLok". It was later discovered that due to the similar names, two entirely different DRM were erroneously lumped together.
+    /// Previous versions of BinaryObjectScanner incorrectly reported this DRM as "CodeLock / CodeLok / CopyLok". It was later discovered that due to the similar names, two entirely different DRM were erroneously lumped together.
     /// "CodeLock" (in this case actually referring to "Code-Lock") is an entirely separate form of DRM, with the existing check now getting used separately.
     /// Also not to be confused with https://en.wikipedia.org/wiki/Rob_Northen_copylock.
     /// 
