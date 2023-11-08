@@ -4,24 +4,17 @@ This is a guide for any developers who wish to research protections, implement n
 
 ## Getting Started
 
-`BinaryObjectScanner` contains multiple custom-built and external projects that allow for detecting copy protections, packers, and file formats. At the time of writing, below is the list of projects and what they do:
+`BinaryObjectScanner` contains multiple namespaces and external projects that allow for detecting copy protections, packers, and file formats. At the time of writing, below is the list of projects and what they do:
 
 | Project | Description |
 | --- | --- |
 | `BinaryObjectScanner` | Main library that contains all supported file formats. It also houses most of the utilities and structures needed when `BinaryObjectScanner` is used by another project. Some code additions will happen here. |
-| `BinaryObjectScanner.ASN1` | Library containing classes and methods associated with Abstract Syntax Notation One and OID parsing. |
-| `BinaryObjectScanner.Builder` | Library containing classes that assist in populating the various object models defined in `BinaryObjectScanner.Models`. Builders can work with either byte arrays or streams for input. At the time of writing, the following executable types have builders: **MS-DOS**, **New Executable**, **Portable Executable**. |
-| `BinaryObjectScanner.Compression` | Library containing classes that deal with different compression formats. This library is used extensively by the wrappers in `BinaryObjectScanner.Wrappers`. |
-| `BinaryObjectScanner.FileType` | Library containing file type definitions specific to scanning. |
-| `BinaryObjectScanner.GameEngine` | Library containing game engine scanning definitions. |
-| `BinaryObjectScanner.Interfaces` | Library containing interface definitions for scanning and detection. |
-| `BinaryObjectScanner.Matching` | Library containing models and logic for generic searching and matching. This library is used extensively by the packer and protection checks in `BinaryObjectScanner`. |
-| `BinaryObjectScanner.Models` | Library containing object models that represent various pieces of known executable formats. At the time of writing, the following executable types have models: **MS-DOS**, **New Executable**, **Linear Executable (partial)**, **Portable Executable**. |
-| `BinaryObjectScanner.Packer` | Library containing packer scanning definitions. |
-| `BinaryObjectScanner.Protection` | Library containing protection scanning definitions. |
+| `BinaryObjectScanner.FileType` | Namespace containing file type definitions specific to scanning. |
+| `BinaryObjectScanner.GameEngine` | Namespace containing game engine scanning definitions. |
+| `BinaryObjectScanner.Interfaces` | Namespace containing interface definitions for scanning and detection. |
+| `BinaryObjectScanner.Packer` | Namespace containing packer scanning definitions. |
+| `BinaryObjectScanner.Protection` | Namespace containing protection scanning definitions. |
 | `BinaryObjectScanner.Utilities` | Library containing helper and extension methods that don't rely on any other libraries. |
-| `BinaryObjectScanner.Wrappers` | Library that acts as a custom wrapper around both `BinaryObjectScanner.Builder` and `BinaryObjectScanner.Models` that allows for easier access to executable information. Each of the wrappers may also include additional functionality that would not otherwise be found in the models, e.g. Data and string reading from sections. |
-| `psxt001z` | **Ported External Library** Handles detection of PS1 protections. See the README for a link to the repository. |
 | `Test` | Testing executable that allows for standalone testing of the library. Includes the ability to scan files for protection as well as output executable information. |
 
 ## Researching Protections
@@ -35,55 +28,6 @@ Researching copy protections and packers can be a massive undertaking. Some can 
 | **Add and debug** | This starts getting into more serious territory. Creating a skeleton for the packer or protection that you want to add and then messing around in code is a great way to start seeing what sort of stuff the library can see that's not normally output. See the table below for extension properties and methods that you may use in addition to the models defined in `BinaryObjectScanner.Models`. |
 | **Hex Editor / External Programs** | As an advanced port of call, using a hex editor and external protection scanning programs (sometimes in conjunction) can help you get a better idea of the protection you're looking into. For example, **TheRogueArchivist** used that combination to narrow down the exact check for a very stubborn protection. |
 
-As noted above, `BinaryObjectScanner` has a few tricks up its sleeve, mainly in the form of `BinaryObjectScanner.Wrappers`. This library was written explicitly to make research and implementation as easy as possible, and as such, allows for a lot of very creative ways of finding protections.
-
-Below are all current extension properties along with a brief description.
-
-| Executable Type | Property | Description |
-| --- | --- | --- |
-| **MS-DOS** | N/A | MS-DOS executables currently do not have any extension properties. |
-| **New Executable (NE)** | N/A | New Executables currently do not have any extension properties. |
-| **Portable Executable (PE)** | `HeaderPaddingData` | The data between the end of the PE header and the start of the first section. |
-|  | `HeaderPaddingStrings` | All found ASCII and Unicode wide character strings (length >= 3) between the end of the PE header and the start of the first section. |
-|  | `OverlayData` | The data between the end of the last section and either the start of the certificate table or the end of the file. |
-|  | `OverlayStrings` | All found ASCII and Unicode wide character strings (length >= 3) between the end of the last section and either the start of the certificate table or the end of the file. |
-|  | `SectionNames` | The ordered set of section names converted to UTF-8 strings with trailing nulls trimmed. |
-|  | `StubExecutableData` | The data representing the MS-DOS executable stub code. For most programs, the stub would only print a message saying it needs Windows. |
-|  | `DebugData` | Dictionary containing mappings from debug directory number to either an object representing the data (if parsed) or a byte array (if unparsed). |
-|  | `ResourceData` | Dictionary containing mappings from ID to either an object representing the resource (if parsed) or a byte array (if unparsed). |
-|  | `BuildGuid`, `BuildSignature`, `Comments`, `CompanyName`, `DebugVersion`, `FileDescription`, `FileVersion`, `InternalName`, `LegalCopyright`, `LegalTrademarks`, `OriginalFilename`, `PrivateBuild`, `ProductGuid`, `ProductName`, `ProductVersion`, `SpecialBuild`, `TradeName` | Version information strings, some of which are not visible in the Windows file property tab. Not all will be available for all files. |
-|  | `AssemblyDescription`, `AssemblyVersion` | Assembly manifest (XML) description and version. May not be available for all files. |
-
-Below are all current helper methods along with a brief description.
-
-| Executable Type | Method | Description |
-| --- | --- | --- |
-| **MS-DOS** | N/A | MS-DOS executables currently do not have any helper methods. |
-| **New Executable (NE)** | `ReadArbitraryRange(int, int)` | Reads an arbitrary range of bytes out of the new executable. **This method will be replaced in the future as proper extension properties and methods are created.** |
-| **Portable Executable (PE)** | `GetVersionInfoString(string)` | Get a field from the version info string table based on the key, if the version info, string table, and key exist. Most common fields are already accessible as extension properties. See the table above for details. |
-|  | `GetInternalVersion()` | Get the executable version from either the file version, product version, or assembly version, in that order, if possible. |
-|  | `GetAssemblyManifest()` | Get the parsed XML assembly manifest, if it exists. Some common fields are already accessible as extension properties. See the table above for details. |
-|  | `FindCodeViewDebugTableByPath(string)` | Find all CodeView-formatted debug tables that match a given path/filename, if they exist. |
-|  | `FindGenericDebugTableByValue(string)` | Find an unparsed or custom debug table where the ASCII, Unicode, or UTF-8 representations contain a given value, if they exist. |
-|  | `FindDialogByTitle(string)` | Find all dialog box resources that match a given title, if they exist. |
-|  | `FindDialogBoxByItemTitle(string)` | Find all dialog box reaources that contain a dialog item that matches a given title, if they exist. |
-|  | `FindStringTableByEntry(string)` | Find all string table resources that contain a given value, if they exist. |
-|  | `FindResourceByNamedType(string)` | Find all resources whose type heirarchy contains a given value, if they exist. |
-|  | `FindGenericResource(string)` | Find an unparsed or custom resource where the ASCII, Unicode, or UTF-8 representations contain a given value, if they exist. |
-|  | `ContainsSection(string, bool)` | Checks if a given section name exists at least once in the table. |
-|  | `GetFirstSection(string, bool)` | Get the first section header whose name matches the provided value, if it exists. |
-|  | `GetLastSection(string, bool)` | Get the last section header whose name matches the provided value, if it exists. |
-|  | `GetSection(int)` | Get the section header whose index matches the provided value, if it exists. |
-|  | `GetFirstSectionData(string, bool)` | Get the first section raw data whose name matches the provided value, if it exists. |
-|  | `GetLastSectionData(string, bool)` | Get the last section raw data whose name matches the provided value, if it exists. |
-|  | `GetSectionData(int)` | Get the section raw data whose index matches the provided value, if it exists. |
-|  | `GetFirstSectionStrings(string, bool)` | Get the first section found ASCII and Unicode wide character strings (length >= 5) whose name matches the provided value, if it exists. |
-|  | `GetLastSectionStrings(string, bool)` | Get the last section found ASCII and Unicode wide character strings (length >= 5) whose name matches the provided value, if it exists. |
-|  | `GetSectionStrings(int)` | Get the section found ASCII and Unicode wide character strings (length >= 5) whose index matches the provided value, if it exists. |
-|  | `FindEntryPointSectionIndex()` | Get the section header index for the section that contains the entry point, if it exists. |
-|  | `GetTableData(int)` | Get the table raw data whose index matches the provided value, if it exists. |
-|  | `GetTableStrings(int)` | Get the table found ASCII and Unicode wide character strings (length >= 5) whose index matches the provided value, if it exists. |
-
 ## Adding a New Checker / Format
 
 Adding a new checker or format should happen in a few distinct steps:
@@ -93,7 +37,7 @@ Adding a new checker or format should happen in a few distinct steps:
     - If it is a new supported file type (such as an archive format), create the file in `BinaryObjectScanner.FileType`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IDetectable` or `BinaryObjectScanner.Interfaces.IExtractable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
 
     - If it is a new supported game engine or standard library, create the file in `BinaryObjectScanner.GameEngine`. By default, you will need to implement at least one of: `BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
-    
+
     - If it is a new supported executable packer, compressor, or installer format, create the file in `BinaryObjectScanner.Packer`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IExtractable` as well as at least one of: `BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
 
     - If it is a new supported DRM scheme, copy protection, or obfuscator, create the file in `BinaryObjectScanner.Protection`. By default, you will need to implement at least one of:`BinaryObjectScanner.Interfaces.ILinearExecutableCheck`, `BinaryObjectScanner.Interfaces.INewExecutableCheck`, `BinaryObjectScanner.Interfaces.IPortableExecutableCheck`, and `BinaryObjectScanner.Interfaces.IPathCheck`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.Extractable`.

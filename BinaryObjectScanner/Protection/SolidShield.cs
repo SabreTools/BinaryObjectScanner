@@ -13,11 +13,7 @@ namespace BinaryObjectScanner.ProtectionType
     public class SolidShield : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
@@ -113,11 +109,7 @@ namespace BinaryObjectScanner.ProtectionType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -137,11 +129,7 @@ namespace BinaryObjectScanner.ProtectionType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -154,11 +142,7 @@ namespace BinaryObjectScanner.ProtectionType
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-#if NET48
-        public static string GetExeWrapperVersion(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetExeWrapperVersion(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)
@@ -176,11 +160,7 @@ namespace BinaryObjectScanner.ProtectionType
             return string.Empty;
         }
 
-#if NET48
-        public static string GetVersionPlusTages(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersionPlusTages(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)
@@ -224,7 +204,7 @@ namespace BinaryObjectScanner.ProtectionType
         private static string GetInternalVersion(PortableExecutable pex)
         {
             var companyName = pex.CompanyName?.ToLowerInvariant();
-            if (!string.IsNullOrWhiteSpace(companyName) && (companyName.Contains("solidshield") || companyName.Contains("tages")))
+            if (!string.IsNullOrWhiteSpace(companyName) && (companyName!.Contains("solidshield") || companyName.Contains("tages")))
                 return pex.GetInternalVersion() ?? string.Empty;
 
             return string.Empty;

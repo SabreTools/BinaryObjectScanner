@@ -12,11 +12,7 @@ namespace BinaryObjectScanner.Protection
     public class LaserLok : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Laserlok.2.sg
@@ -115,11 +111,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -140,11 +132,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -163,11 +151,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-#if NET48
-        private static string GetBuild(byte[] sectionContent, bool versionTwo)
-#else
         private static string GetBuild(byte[]? sectionContent, bool versionTwo)
-#endif
         {
             if (sectionContent == null)
                 return "(Build unknown)";
@@ -204,11 +188,7 @@ namespace BinaryObjectScanner.Protection
             return $"(Build {year}-{month}-{day})";
         }
 
-#if NET48
-        private static string GetVersion(byte[] sectionContent, int position)
-#else
         private static string? GetVersion(byte[]? sectionContent, int position)
-#endif
         {
             // If we have invalid data
             if (sectionContent == null)

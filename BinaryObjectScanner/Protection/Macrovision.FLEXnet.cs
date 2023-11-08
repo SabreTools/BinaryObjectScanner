@@ -9,11 +9,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-#if NET48
-        internal string FLEXnetCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         internal string? FLEXnetCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

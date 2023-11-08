@@ -35,11 +35,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
-#if NET48
-        internal string CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#else
         internal string? CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#endif
         {
             // TODO: Implement NE checks for "CDILLA05", "CDILLA10", "CDILLA16", and "CDILLA40".
 
@@ -65,11 +61,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-#if NET48
-        internal string CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         internal string? CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -156,11 +148,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-#if NET48
-        internal ConcurrentQueue<string> CDillaCheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         internal ConcurrentQueue<string> CDillaCheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -203,11 +191,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
-#if NET48
-        internal string CDillaCheckFilePath(string path)
-#else
         internal string? CDillaCheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {

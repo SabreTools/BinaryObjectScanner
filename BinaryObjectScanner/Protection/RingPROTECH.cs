@@ -10,11 +10,7 @@ namespace BinaryObjectScanner.Protection
     public class RingPROTECH : IContentCheck, IPathCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
-#else
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
-#endif
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -38,11 +34,7 @@ namespace BinaryObjectScanner.Protection
         // TODO: Confirm if these checks are only for ProRing or if they are also for older Ring PROTECH
 
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -54,11 +46,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {

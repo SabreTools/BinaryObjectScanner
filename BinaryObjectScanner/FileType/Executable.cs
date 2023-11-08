@@ -110,56 +110,32 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-#if NET48
-        private static IEnumerable<IContentCheck> contentCheckClasses;
-#else
         private static IEnumerable<IContentCheck>? contentCheckClasses;
-#endif
 
         /// <summary>
         /// Cache for all ILinearExecutableCheck types
         /// </summary>
-#if NET48
-        private static IEnumerable<ILinearExecutableCheck> linearExecutableCheckClasses;
-#else
         private static IEnumerable<ILinearExecutableCheck>? linearExecutableCheckClasses;
-#endif
 
         /// <summary>
         /// Cache for all IMSDOSExecutableCheck types
         /// </summary>
-#if NET48
-        private static IEnumerable<IMSDOSExecutableCheck> msdosExecutableCheckClasses;
-#else
         private static IEnumerable<IMSDOSExecutableCheck>? msdosExecutableCheckClasses;
-#endif
 
         /// <summary>
         /// Cache for all INewExecutableCheck types
         /// </summary>
-#if NET48
-        private static IEnumerable<INewExecutableCheck> newExecutableCheckClasses;
-#else
         private static IEnumerable<INewExecutableCheck>? newExecutableCheckClasses;
-#endif
 
         /// <summary>
         /// Cache for all IPortableExecutableCheck types
         /// </summary>
-#if NET48
-        private static IEnumerable<IPortableExecutableCheck> portableExecutableCheckClasses;
-#else
         private static IEnumerable<IPortableExecutableCheck>? portableExecutableCheckClasses;
-#endif
 
         #endregion
 
         /// <inheritdoc/>
-#if NET48
-        public string Detect(string file, bool includeDebug)
-#else
         public string? Detect(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -171,11 +147,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Detect(Stream stream, string file, bool includeDebug)
-#else
         public string? Detect(Stream stream, string file, bool includeDebug)
-#endif
         {
             // Try to create a wrapper for the proper executable type
             var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
@@ -230,11 +202,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET48
-        public ConcurrentDictionary<IContentCheck, string> RunContentChecks(string file, Stream stream, bool includeDebug)
-#else
         public ConcurrentDictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
-#endif
         {
             // If we have an invalid file
             if (string.IsNullOrWhiteSpace(file))
@@ -266,7 +234,7 @@ namespace BinaryObjectScanner.FileType
             Parallel.ForEach(ContentCheckClasses, checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckContents(file, fileContent, includeDebug);
+                var protection = checkClass.CheckContents(file!, fileContent, includeDebug);
                 if (string.IsNullOrWhiteSpace(protection))
                     return;
 
@@ -278,7 +246,7 @@ namespace BinaryObjectScanner.FileType
                 if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
-                protections.TryAdd(checkClass, protection);
+                protections.TryAdd(checkClass, protection!);
             });
 
             return protections;
@@ -312,7 +280,7 @@ namespace BinaryObjectScanner.FileType
                 if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
-                protections.TryAdd(checkClass, protection);
+                protections.TryAdd(checkClass, protection!);
             });
 
             return protections;
@@ -346,7 +314,7 @@ namespace BinaryObjectScanner.FileType
                 if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
-                protections.TryAdd(checkClass, protection);
+                protections.TryAdd(checkClass, protection!);
             });
 
             return protections;
@@ -380,7 +348,7 @@ namespace BinaryObjectScanner.FileType
                 if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
-                protections.TryAdd(checkClass, protection);
+                protections.TryAdd(checkClass, protection!);
             });
 
             return protections;
@@ -414,7 +382,7 @@ namespace BinaryObjectScanner.FileType
                 if (CheckIfPacker(checkClass) && !IncludePackers)
                     return;
 
-                protections.TryAdd(checkClass, protection);
+                protections.TryAdd(checkClass, protection!);
             });
 
             return protections;
@@ -427,11 +395,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-#if NET48
-        private static IEnumerable<T> InitCheckClasses<T>()
-#else
         private static IEnumerable<T>? InitCheckClasses<T>()
-#endif
             => InitCheckClasses<T>(typeof(GameEngine._DUMMY).Assembly) ?? Enumerable.Empty<T>()
                 .Concat(InitCheckClasses<T>(typeof(Packer._DUMMY).Assembly) ?? Enumerable.Empty<T>())
                 .Concat(InitCheckClasses<T>(typeof(Protection._DUMMY).Assembly) ?? Enumerable.Empty<T>());
@@ -439,19 +403,11 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-#if NET48
-        private static IEnumerable<T> InitCheckClasses<T>(Assembly assembly)
-#else
         private static IEnumerable<T>? InitCheckClasses<T>(Assembly assembly)
-#endif
         {
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
-#if NET48
-                .Select(t => (T)Activator.CreateInstance(t))
-#else
                 .Select(t => (T?)Activator.CreateInstance(t))
-#endif
                 .Cast<T>() ?? Array.Empty<T>();
         }
 

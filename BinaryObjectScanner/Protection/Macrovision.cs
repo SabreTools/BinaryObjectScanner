@@ -21,23 +21,19 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#else
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#endif
         {
             var resultsList = new List<string>();
 
             // Run C-Dilla NE checks
             var cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
             if (!string.IsNullOrWhiteSpace(cDilla))
-                resultsList.Add(cDilla);
+                resultsList.Add(cDilla!);
 
             // Run SafeCast NE checks
             var safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
             if (!string.IsNullOrWhiteSpace(safeCast))
-                resultsList.Add(safeCast);
+                resultsList.Add(safeCast!);
 
             if (resultsList != null && resultsList.Count > 0)
                 return string.Join(", ", resultsList);
@@ -46,11 +42,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -83,14 +75,14 @@ namespace BinaryObjectScanner.Protection
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
                 if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
-                    resultsList.Add(sectionMatch);
+                    resultsList.Add(sectionMatch!);
                 }
                 else
                 {
                     // Get the .data section, if it exists, for protected sections.
                     sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
                     if (!string.IsNullOrWhiteSpace(sectionMatch))
-                        resultsList.Add(sectionMatch);
+                        resultsList.Add(sectionMatch!);
                 }
 
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
@@ -120,46 +112,46 @@ namespace BinaryObjectScanner.Protection
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
                 if (!string.IsNullOrWhiteSpace(sectionMatch))
                 {
-                    resultsList.Add(sectionMatch);
+                    resultsList.Add(sectionMatch!);
                 }
                 else
                 {
                     // Check the .data section, if it exists, for protected sections.
                     sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
                     if (!string.IsNullOrWhiteSpace(sectionMatch))
-                        resultsList.Add(sectionMatch);
+                        resultsList.Add(sectionMatch!);
                 }
             }
 
             // Run Cactus Data Shield PE checks
             var match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
-                resultsList.Add(match);
+                resultsList.Add(match!);
 
             // Run C-Dilla PE checks
             match = CDillaCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
-                resultsList.Add(match);
+                resultsList.Add(match!);
 
             // Run RipGuard PE checks
             match = RipGuardCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
-                resultsList.Add(match);
+                resultsList.Add(match!);
 
             // Run SafeCast PE checks
             match = SafeCastCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
-                resultsList.Add(match);
+                resultsList.Add(match!);
 
             // Run SafeDisc PE checks
             match = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
-                resultsList.Add(match);
+                resultsList.Add(match!);
 
             // Run FLEXnet PE checks
             match = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
             if (!string.IsNullOrWhiteSpace(match))
-                resultsList.Add(match);
+                resultsList.Add(match!);
 
             // Clean the result list
             resultsList = CleanResultList(resultsList);
@@ -170,11 +162,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var results = new ConcurrentQueue<string>();
 
@@ -215,43 +203,39 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             List<string> resultsList = new List<string>();
 
             // Run Macrovision file checks
             var macrovision = MacrovisionCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(macrovision))
-                resultsList.Add(macrovision);
+                resultsList.Add(macrovision!);
 
             // Run Cactus Data Shield file checks
             var cactusDataShield = CactusDataShieldCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(cactusDataShield))
-                resultsList.Add(cactusDataShield);
+                resultsList.Add(cactusDataShield!);
 
             // Run C-Dilla file checks
             var cDilla = CDillaCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(cDilla))
-                resultsList.Add(cDilla);
+                resultsList.Add(cDilla!);
 
             // Run RipGuard file checks
             var ripGuard = RipGuardCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(ripGuard))
-                resultsList.Add(ripGuard);
+                resultsList.Add(ripGuard!);
 
             // Run SafeCast file checks
             var safeCast = SafeCastCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeCast))
-                resultsList.Add(safeCast);
+                resultsList.Add(safeCast!);
 
             // Run SafeDisc file checks
             var safeDisc = SafeDiscCheckFilePath(path);
             if (!string.IsNullOrWhiteSpace(safeDisc))
-                resultsList.Add(safeDisc);
+                resultsList.Add(safeDisc!);
 
             if (resultsList != null && resultsList.Count > 0)
                 return string.Join(", ", resultsList);
@@ -260,11 +244,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-#if NET48
-        internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -276,11 +256,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckFilePath(string)"/>
-#if NET48
-        internal string MacrovisionCheckFilePath(string path)
-#else
         internal string? MacrovisionCheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -435,11 +411,7 @@ namespace BinaryObjectScanner.Protection
             return "Unknown Version (Report this to us on GitHub)";
         }
 
-#if NET48
-        private string CheckSectionForProtection(string file, bool includeDebug, List<string> sectionStrings, byte[] sectionRaw, bool newVersion)
-#else
         private string? CheckSectionForProtection(string file, bool includeDebug, List<string>? sectionStrings, byte[]? sectionRaw, bool newVersion)
-#endif
         {
             // Get the section strings, if they exist
             if (sectionStrings != null)
@@ -474,11 +446,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-#if NET48
-        internal static string GetMacrovisionVersion(string file, byte[] fileContent, List<int> positions)
-#else
         internal static string? GetMacrovisionVersion(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)
@@ -611,11 +579,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-#if NET48
-        private List<string> CleanResultList(List<string> resultsList)
-#else
         private List<string>? CleanResultList(List<string>? resultsList)
-#endif
         {
             // If we have an invalid result list
             if (resultsList == null || resultsList.Count == 0)

@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner;
-using BinaryObjectScanner;
 
 namespace Test
 {

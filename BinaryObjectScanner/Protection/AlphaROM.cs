@@ -44,11 +44,7 @@ namespace BinaryObjectScanner.Protection
     public class AlphaROM : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // TODO: Add support for detecting Alpha-ROM found in older games made with the RealLive engine. 
             // TODO: Add version detection for Alpha-ROM.

@@ -12,11 +12,7 @@ namespace BinaryObjectScanner.FileType
     public class CFB : IExtractable
     {
         /// <inheritdoc/>
-#if NET48
-        public string Extract(string file, bool includeDebug)
-#else
         public string? Extract(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -28,11 +24,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(Stream stream, string file, bool includeDebug)
-#else
         public string? Extract(Stream? stream, string file, bool includeDebug)
-#endif
         {
             try
             {
@@ -95,11 +87,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
-#if NET48
-        public static string DecodeStreamName(string input)
-#else
         public static string? DecodeStreamName(string input)
-#endif
         {
             if (input == null)
                 return null;

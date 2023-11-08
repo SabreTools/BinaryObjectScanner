@@ -42,11 +42,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-#if NET48
-        internal string SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         internal string? SafeDiscCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -114,11 +110,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-#if NET48
-        internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         internal ConcurrentQueue<string> SafeDiscCheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -226,11 +218,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
-#if NET48
-        internal string SafeDiscCheckFilePath(string path)
-#else
         internal string? SafeDiscCheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -733,11 +721,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-#if NET48
-        private string GetVersionFromSHA1Hash(string sha1Hash)
-#else
         private string? GetVersionFromSHA1Hash(string sha1Hash)
-#endif
         {
             switch (sha1Hash.ToLowerInvariant())
             {

@@ -14,11 +14,7 @@ namespace BinaryObjectScanner.Packer
     public class WiseInstaller : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#else
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#endif
         {
             // If we match a known header
             if (MatchesNEVersion(nex) != null)
@@ -44,11 +40,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -81,11 +73,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(string file, bool includeDebug)
-#else
         public string? Extract(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -97,11 +85,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(Stream stream, string file, bool includeDebug)
-#else
         public string? Extract(Stream? stream, string file, bool includeDebug)
-#endif
         {
             try
             {
@@ -129,11 +113,7 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// <param name="nex">New executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-#if NET48
-        private FormatProperty MatchesNEVersion(NewExecutable nex)
-#else
         private FormatProperty? MatchesNEVersion(NewExecutable nex)
-#endif
         {
             // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
             switch (nex.Model.Stub?.Header?.NewExeHeaderAddr)
@@ -190,11 +170,7 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// <param name="pex">Portable executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-#if NET48
-        private FormatProperty GetPEFormat(PortableExecutable pex)
-#else
         private FormatProperty? GetPEFormat(PortableExecutable pex)
-#endif
         {
             if (pex.OverlayAddress == 0x6e00
                 && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
@@ -241,11 +217,7 @@ namespace BinaryObjectScanner.Packer
         /// <param name="file">Path to the input file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-#if NET48
-        private string ExtractNewExecutable(NewExecutable nex, string file, bool includeDebug)
-#else
         private string? ExtractNewExecutable(NewExecutable nex, string file, bool includeDebug)
-#endif
         {
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(tempPath);
@@ -284,11 +256,7 @@ namespace BinaryObjectScanner.Packer
         /// <param name="file">Path to the input file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-#if NET48
-        private string ExtractPortableExecutable(PortableExecutable pex, string file, bool includeDebug)
-#else
         private string? ExtractPortableExecutable(PortableExecutable pex, string file, bool includeDebug)
-#endif
         {
             try
             {

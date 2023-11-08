@@ -13,11 +13,7 @@ namespace BinaryObjectScanner.Protection
     public class JoWood : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -70,11 +66,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-#if NET48
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)

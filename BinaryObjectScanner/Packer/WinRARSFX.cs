@@ -12,11 +12,7 @@ namespace BinaryObjectScanner.Packer
     public class WinRARSFX : IExtractable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -35,11 +31,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(string file, bool includeDebug)
-#else
         public string? Extract(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -51,11 +43,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(Stream stream, string file, bool includeDebug)
-#else
         public string? Extract(Stream? stream, string file, bool includeDebug)
-#endif
         {
             try
             {

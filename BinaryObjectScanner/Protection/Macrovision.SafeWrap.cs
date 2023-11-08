@@ -35,11 +35,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-#if NET48
-        internal string SafeWrapCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         internal string? SafeWrapCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // TODO: Figure out what SafeWrap is exactly, and add checks.
 

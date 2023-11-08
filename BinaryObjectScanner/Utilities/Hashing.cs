@@ -14,11 +14,7 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="path">Path to the file to be hashed</param>
         /// <returns>SHA1 hash as a string on success, null on error</returns>
-#if NET48
-        public static string GetFileSHA1(string path)
-#else
         public static string? GetFileSHA1(string? path)
-#endif
         {
             if (string.IsNullOrWhiteSpace(path))
                 return null;
@@ -44,11 +40,7 @@ namespace BinaryObjectScanner.Utilities
                     }
                 }
 
-#if NET48
-                string hash = BitConverter.ToString(sha1.Hash);
-#else
                 string hash = BitConverter.ToString(sha1.Hash!);
-#endif
                 hash = hash.Replace("-", string.Empty);
                 return hash;
             }

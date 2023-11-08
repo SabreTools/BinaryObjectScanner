@@ -14,10 +14,6 @@ namespace BinaryObjectScanner.Interfaces
         /// <param name="lex">LinearExecutable representing the read-in file</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>String containing any protections found in the file</returns>
-#if NET48
-        string CheckLinearExecutable(string file, LinearExecutable lex, bool includeDebug);
-#else
         string? CheckLinearExecutable(string file, LinearExecutable lex, bool includeDebug);
-#endif
     }
 }

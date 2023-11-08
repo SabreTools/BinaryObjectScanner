@@ -67,11 +67,7 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
         /// <inheritdoc/>
-#if NET48
-        public string CheckContents(string file, byte[] fileContent, bool includeDebug)
-#else
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
-#endif
         {
             // TODO: Obtain a sample to find where this string is in a typical executable
             if (includeDebug)
@@ -101,11 +97,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#else
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#endif
         {
             // TODO: Don't read entire file
             var data = nex.ReadArbitraryRange();
@@ -149,11 +141,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -194,11 +182,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
             var matchers = new List<PathMatchSet>
@@ -219,11 +203,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -242,11 +222,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-#if NET48
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)

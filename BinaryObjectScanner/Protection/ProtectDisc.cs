@@ -11,11 +11,7 @@ namespace BinaryObjectScanner.Protection
     public class ProtectDISC : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -117,11 +113,7 @@ namespace BinaryObjectScanner.Protection
             return matchedStringArray[2].TrimStart('V');
         }
 
-#if NET48
-        public static string GetVersion3till6(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersion3till6(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)
@@ -134,11 +126,7 @@ namespace BinaryObjectScanner.Protection
             return $"5.9-6.0 {GetVOBBuild(fileContent, positions[0])}";
         }
 
-#if NET48
-        public static string GetVersion6till8(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersion6till8(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)
@@ -194,11 +182,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-#if NET48
-        public static string GetVersion76till10(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersion76till10(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)

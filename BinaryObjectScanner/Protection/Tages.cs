@@ -11,11 +11,7 @@ namespace BinaryObjectScanner.ProtectionType
     public class TAGES : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -66,11 +62,7 @@ namespace BinaryObjectScanner.ProtectionType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -162,11 +154,7 @@ namespace BinaryObjectScanner.ProtectionType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -232,11 +220,7 @@ namespace BinaryObjectScanner.ProtectionType
             return "(Unknown Version)";
         }
 
-#if NET48
-        public static string GetVersion(string file, byte[] fileContent, List<int> positions)
-#else
         public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
-#endif
         {
             // If we have no content
             if (fileContent == null)

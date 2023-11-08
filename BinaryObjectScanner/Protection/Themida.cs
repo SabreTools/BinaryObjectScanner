@@ -26,11 +26,7 @@ namespace BinaryObjectScanner.Protection
     public class Themida : IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -38,11 +34,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Get the "Arcsoft " section strings, if they exist
-#if NET48
-            var strs = pex.GetFirstSectionStrings("Arcsoft ");
-#else
             List<string>? strs = pex.GetFirstSectionStrings("Arcsoft ");
-#endif
             if (strs != null)
             {
                 // Found in "uDigital Theatre.exe" in http://downloads.fyxm.net/ArcSoft-TotalMedia-23085.html (https://web.archive.org/web/20221114042838/http://files.fyxm.net/23/23085/totalmediatheatre3platinum_retail_tbyb_all.exe).

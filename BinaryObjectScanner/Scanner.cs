@@ -45,11 +45,7 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Optional progress callback during scanning
         /// </summary>
-#if NET48
-        private readonly IProgress<ProtectionProgress> _fileProgress;
-#else
         private readonly IProgress<ProtectionProgress>? _fileProgress;
-#endif
 
         /// <summary>
         /// Constructor
@@ -61,11 +57,7 @@ namespace BinaryObjectScanner
         /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
-#if NET48
-        public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress> fileProgress = null)
-#else
         public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress>? fileProgress = null)
-#endif
         {
             this._options = new Options
             {
@@ -90,11 +82,7 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET48
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> GetProtections(string path)
-#else
         public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(string path)
-#endif
         {
             return GetProtections(new List<string> { path });
         }
@@ -103,11 +91,7 @@ namespace BinaryObjectScanner
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET48
-        public ConcurrentDictionary<string, ConcurrentQueue<string>> GetProtections(List<string> paths)
-#else
         public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(List<string>? paths)
-#endif
         {
             // If we have no paths, we can't scan
             if (paths == null || !paths.Any())
@@ -241,11 +225,7 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET48
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetInternalProtections(string file)
-#else
         private ConcurrentDictionary<string, ConcurrentQueue<string>>? GetInternalProtections(string file)
-#endif
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
@@ -276,11 +256,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET48
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> GetInternalProtections(string fileName, Stream stream)
-#else
         private ConcurrentDictionary<string, ConcurrentQueue<string>>? GetInternalProtections(string fileName, Stream stream)
-#endif
         {
             // Quick sanity check before continuing
             if (stream == null || !stream.CanRead || !stream.CanSeek)
@@ -350,12 +326,12 @@ namespace BinaryObjectScanner
                         // If we have an indicator of multiple protections
                         if (subProtection.Contains(';'))
                         {
-                            var splitProtections = subProtection.Split(';');
+                            var splitProtections = subProtection!.Split(';');
                             AppendToDictionary(protections, fileName, splitProtections);
                         }
                         else
                         {
-                            AppendToDictionary(protections, fileName, subProtection);
+                            AppendToDictionary(protections, fileName, subProtection!);
                         }
                     }
                 }
@@ -403,11 +379,7 @@ namespace BinaryObjectScanner
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
-#if NET48
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> ProcessExecutable(Executable executable, string fileName, Stream stream)
-#else
         private ConcurrentDictionary<string, ConcurrentQueue<string>>? ProcessExecutable(Executable executable, string fileName, Stream stream)
-#endif
         {
             // Try to create a wrapper for the proper executable type
             var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
@@ -492,11 +464,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-#if NET48
-        private ConcurrentDictionary<string, ConcurrentQueue<string>> HandleExtractableProtections(IEnumerable<object> classes, string fileName, Stream stream)
-#else
         private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, Stream stream)
-#endif
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())

@@ -11,11 +11,7 @@ namespace BinaryObjectScanner.Utilities
         /// <summary>
         /// Create an instance of a wrapper based on file type
         /// </summary>
-#if NET48
-        public static IWrapper CreateWrapper(SupportedFileType fileType, Stream data)
-#else
         public static IWrapper? CreateWrapper(SupportedFileType fileType, Stream? data)
-#endif
         {
             switch (fileType)
             {
@@ -64,22 +60,14 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="stream">Stream data to parse</param>
         /// <returns>IWrapper representing the executable, null on error</returns>
-#if NET48
-        public static IWrapper CreateExecutableWrapper(Stream stream)
-#else
         public static IWrapper? CreateExecutableWrapper(Stream? stream)
-#endif
         {
             // If we have no stream
             if (stream == null)
                 return null;
 
             // Try to get an MS-DOS wrapper first
-#if NET48
-            IWrapper wrapper = MSDOS.Create(stream);
-#else
             IWrapper? wrapper = MSDOS.Create(stream);
-#endif
             if (wrapper == null || !(wrapper is MSDOS msdos))
                 return null;
 

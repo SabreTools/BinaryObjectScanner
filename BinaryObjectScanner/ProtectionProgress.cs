@@ -8,8 +8,8 @@
         /// <summary>
         /// Filename to report progress for
         /// </summary>
-#if NET48
-        public string Filename { get; private set; }
+#if NETFRAMEWORK
+        public string? Filename { get; private set; }
 #else
         public string? Filename { get; init; }
 #endif
@@ -17,7 +17,7 @@
         /// <summary>
         /// Value between 0 and 1 representign the percentage completed
         /// </summary>
-#if NET48
+#if NETFRAMEWORK
         public float Percentage { get; private set; }
 #else
         public float Percentage { get; init; }
@@ -26,17 +26,13 @@
         /// <summary>
         /// Protection information to report
         /// </summary>
-#if NET48
-        public string Protection { get; private set; }
+#if NETFRAMEWORK
+        public string? Protection { get; private set; }
 #else
         public string? Protection { get; init; }
 #endif
 
-#if NET48
-        public ProtectionProgress(string filename, float percentage, string protection)
-#else
         public ProtectionProgress(string? filename, float percentage, string? protection)
-#endif
         {
             this.Filename = filename;
             this.Percentage = percentage;

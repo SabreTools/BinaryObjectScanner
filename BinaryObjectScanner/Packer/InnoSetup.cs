@@ -12,11 +12,7 @@ namespace BinaryObjectScanner.Packer
     public class InnoSetup : IExtractable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public string CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#else
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
-#endif
         {
             // Check for "Inno" in the reserved words
             if (nex.Model.Stub?.Header?.Reserved2?[4] == 0x6E49 && nex.Model.Stub?.Header?.Reserved2?[5] == 0x6F6E)
@@ -32,11 +28,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -62,11 +54,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(string file, bool includeDebug)
-#else
         public string? Extract(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -78,11 +66,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(Stream stream, string file, bool includeDebug)
-#else
         public string? Extract(Stream? stream, string file, bool includeDebug)
-#endif
         {
             return null;
         }

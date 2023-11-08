@@ -12,11 +12,7 @@ namespace BinaryObjectScanner.Protection
     public class IndyVCD : IPathCheck
     {
         /// <inheritdoc/>
-#if NET48
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
@@ -29,11 +25,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string CheckFilePath(string path)
-#else
         public string? CheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {

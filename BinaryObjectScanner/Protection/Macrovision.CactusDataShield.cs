@@ -31,11 +31,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-#if NET48
-        internal string CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#else
         internal string? CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
-#endif
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -68,11 +64,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-#if NET48
-        internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string> files)
-#else
         internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
@@ -99,11 +91,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
-#if NET48
-        internal string CactusDataShieldCheckFilePath(string path)
-#else
         internal string? CactusDataShieldCheckFilePath(string path)
-#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -128,11 +116,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-#if NET48
-        public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string> files)
-#else
         public static string GetCactusDataShieldVersion(string firstMatchedString, IEnumerable<string>? files)
-#endif
         {
             // If we have no files
             if (files == null)
@@ -144,17 +128,13 @@ namespace BinaryObjectScanner.Protection
             {
                 var version = GetCactusDataShieldInternalVersion(versionPath);
                 if (!string.IsNullOrWhiteSpace(version))
-                    return version;
+                    return version!;
             }
 
             return "200";
         }
 
-#if NET48
-        private static string GetCactusDataShieldInternalVersion(string path)
-#else
         private static string? GetCactusDataShieldInternalVersion(string path)
-#endif
         {
             if (!File.Exists(path))
                 return null;

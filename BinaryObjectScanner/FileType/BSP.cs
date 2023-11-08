@@ -11,11 +11,7 @@ namespace BinaryObjectScanner.FileType
     public class BSP : IExtractable
     {
         /// <inheritdoc/>
-#if NET48
-        public string Extract(string file, bool includeDebug)
-#else
         public string? Extract(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -27,11 +23,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(Stream stream, string file, bool includeDebug)
-#else
         public string? Extract(Stream? stream, string file, bool includeDebug)
-#endif
         {
             try
             {
@@ -229,11 +221,7 @@ namespace BinaryObjectScanner.FileType
         /// </summary>
         /// <param name="texture">Texture object to format</param>
         /// <returns>Byte array representing the texture as a bitmap</returns>
-#if NET48
-        private static byte[] CreateTextureData(SabreTools.Models.BSP.Texture texture)
-#else
         private static byte[]? CreateTextureData(SabreTools.Models.BSP.Texture texture)
-#endif
         {
             // If there's no palette data
             if (texture.PaletteData == null || texture.PaletteData.Length == 0)

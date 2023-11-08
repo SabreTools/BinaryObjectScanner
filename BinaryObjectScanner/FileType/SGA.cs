@@ -13,11 +13,7 @@ namespace BinaryObjectScanner.FileType
     public class SGA : IExtractable
     {
         /// <inheritdoc/>
-#if NET48
-        public string Extract(string file, bool includeDebug)
-#else
         public string? Extract(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -29,11 +25,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Extract(Stream stream, string file, bool includeDebug)
-#else
         public string? Extract(Stream? stream, string file, bool includeDebug)
-#endif
         {
             try
             {
@@ -118,11 +110,7 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Get the files
-#if NET48
-            object file;
-#else
             object? file;
-#endif
             switch (item.Model.Header?.MajorVersion)
             {
                 case 4: file = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?[index]; break;
@@ -147,11 +135,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Loop through and get all parent directories
-#if NET48
-            var parentNames = new List<string> { filename };
-#else
             var parentNames = new List<string?> { filename };
-#endif
 
             // Get the parent directory
             var folder = default(object);

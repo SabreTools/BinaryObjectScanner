@@ -12,11 +12,7 @@ namespace BinaryObjectScanner.FileType
     public class Textfile : IDetectable
     {
         /// <inheritdoc/>
-#if NET48
-        public string Detect(string file, bool includeDebug)
-#else
         public string? Detect(string file, bool includeDebug)
-#endif
         {
             if (!File.Exists(file))
                 return null;
@@ -28,11 +24,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-#if NET48
-        public string Detect(Stream stream, string file, bool includeDebug)
-#else
         public string? Detect(Stream stream, string file, bool includeDebug)
-#endif
         {
             // Files can be protected in multiple ways
             var protections = new List<string>();

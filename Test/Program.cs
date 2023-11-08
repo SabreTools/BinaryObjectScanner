@@ -46,7 +46,7 @@ namespace Test
 
                 // Information printing
                 if (options.EnableInformation)
-#if NET48
+#if NETFRAMEWORK
                     Printer.PrintPathInfo(inputPath, false, options.Debug);
 #else
                     Printer.PrintPathInfo(inputPath, options.Json, options.Debug);

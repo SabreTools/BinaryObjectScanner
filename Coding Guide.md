@@ -11,16 +11,16 @@ This section contains information on code standards regardless of which part of 
 - Prefer `System` namespaces for supporting operations before external ones.
 
 - Ordering of `using` statements goes:
-    - `using System.*`
-    - `using <Alphabetical>`
-    - `using static <Alphabetical>`
-    - `using X <Alphabetical> = Y`
+  - `using System.*`
+  - `using <Alphabetical>`
+  - `using static <Alphabetical>`
+  - `using X <Alphabetical> = Y`
 
 - Use 4 spaces for `tab`.
 
 - Curly braces should generally start on the line after but inline with the start of the previous statement, even if multiline.
 
-    ```
+    ```c#
     if (flag)
     {
         DoSomething();
@@ -34,7 +34,7 @@ This section contains information on code standards regardless of which part of 
 
 - Multi-line statements need to have following lines indented by one step at minimum.
 
-    ```
+    ```c#
     if (flag)
     {
         DoSomething();
@@ -64,7 +64,7 @@ This section contains information on code standards regardless of which part of 
 
 - Null-coalescing and null-checking operators can be used to make more readable statements and better get across what a statement or string of statements is doing.
 
-    ```
+    ```c#
     if (obj?.Parameter != null) { ... }
 
     bool value = DoSomething() ?? false;
@@ -72,7 +72,7 @@ This section contains information on code standards regardless of which part of 
 
 - `#region` tags, including nested ones, can be used to both segment methods within a class and statements within a method. Indentation follows the surrounding code.
 
-    ```
+    ```c#
     #region This is the first region
 
     public static void Method()
@@ -93,13 +93,13 @@ This section contains information on code standards regardless of which part of 
 
 - Interfaces should be listed in alphabetical order
 
-    ```
+    ```c#
     public class Example : IBindable, IComparable, IEquatable
     ```
 
 - Use the `<inheritdoc/>` tag when possible to avoid out-of-date information.
 
-    ```
+    ```c#
     public interface IInterface
     {
         /// <summary>
@@ -125,7 +125,7 @@ This section contains information on code standards regardless of which part of 
 
 - Use method overloading to avoid unnecessary complexity in a single method.
 
-    ```
+    ```c#
     Instead of:
 
     Print(string idString, byte[] idArray, int idInt) { ... }
@@ -141,7 +141,7 @@ This section contains information on code standards regardless of which part of 
 
 - Use optional parameters when the default value is the most common.
 
-    ```
+    ```c#
     Print(string id, bool toLower = false) { ... }
     ```
 
@@ -149,7 +149,7 @@ This section contains information on code standards regardless of which part of 
 
 - If all statements in the block are single-line, do not include curly braces.
 
-    ```
+    ```c#
     if (flag)
         DoSomething();
     else if (flag2)
@@ -160,7 +160,7 @@ This section contains information on code standards regardless of which part of 
 
 - If any of the statements is multi-line _or_ the `if-else` statement is multi-line, include curly braces.
 
-    ```
+    ```c#
     if (flag)
     {
         DoSomething();
@@ -180,7 +180,7 @@ This section contains information on code standards regardless of which part of 
 
 - If comparing against values, try to use a `switch` statement instead.
 
-    ```
+    ```c#
     As an if-else statement:
     
     if (value == 1)
@@ -213,7 +213,7 @@ This section contains information on code standards regardless of which part of 
 
 - When using a `switch` statement, if all switch cases are single-expression, they can be written in-line.  You can also add newlines between cases for segmentation or clarity.If the expressions are too complex, they should not be.
 
-    ```
+    ```c#
     switch (value)
     {
         case 1: DoValue1(); break;
@@ -226,7 +226,7 @@ This section contains information on code standards regardless of which part of 
 
 - If any of the switch cases are multi-expression, write all on separate lines. You can also add newlines between cases for segmentation or clarity.
 
-    ```
+    ```c#
     switch (value)
     {
         case 1:
@@ -250,7 +250,7 @@ This section contains information on code standards regardless of which part of 
 
 - All classes and methods should contain a `summary` block at bare minimum to explain the purpose. For methods, it is highly recommended to also include `param` tags for each parameter and a `return` tag if the method returns a value. Do not hesitate to use `remarks` as well to include additional information.
 
-    ```
+    ```c#
     /// <summary>
     /// This class is an example
     /// </summary>
@@ -279,7 +279,7 @@ This section contains information on code standards regardless of which part of 
 
 - In-code comments should use the `//` syntax and not the `/* */` syntax, even for multiple lines.
 
-    ```
+    ```c#
     // This code block does something important
     var x = SetXFromInputs(y, z);
 
@@ -293,14 +293,14 @@ This section contains information on code standards regardless of which part of 
 
 - If comments include links, they can either be included as-is or using the `<see href="value"/>` tag
 
-    ```
+    ```c#
     // This information can be found from the following site:
     // <see href="www.regex101.com"/>
     ```
 
 - Try to avoid using multiple, distinct comment blocks next to each other.
 
-    ```
+    ```c#
     // We want to try to avoid this situation where
     // we have multiple things to say.
 

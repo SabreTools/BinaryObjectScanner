@@ -4,8 +4,11 @@
     <!-- Assembly Properties -->
     <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
-    <Version>2.9.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- Can't be enabled because of external code -->
+    <Version>2.9.0</Version>
   
     <!-- Package Properties -->
     <Authors>Matt Nadareski</Authors>
@@ -18,12 +21,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'!='net48'">
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <!-- Exclude certain parts of external modules for .NET Framework 4.8 -->
-  <PropertyGroup Condition="'$(TargetFramework)'=='net48'">
+  <!-- Exclude certain parts of external modules for .NET Framework -->
+  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net4`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       **\AssemblyInfo.cs;
@@ -33,7 +32,7 @@
   </PropertyGroup>
 
   <!-- Exclude all external modules for .NET 6 and .NET 7 -->
-  <PropertyGroup Condition="'$(TargetFramework)'!='net48'">
+  <PropertyGroup Condition="!$(TargetFramework.StartsWith(`net4`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       _EXTERNAL\**;
@@ -41,7 +40,7 @@
   </PropertyGroup>
 
   <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`))">
     <Content Include="*.dll">
       <Pack>true</Pack>
       <PackagePath>contentFiles;content</PackagePath>
@@ -68,7 +67,7 @@
     <PackageReference Include="WiseUnpacker" Version="1.0.4" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`))">
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
