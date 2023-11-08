@@ -31,7 +31,7 @@
     </DefaultItemExcludes>
   </PropertyGroup>
 
-  <!-- Exclude all external modules for .NET 6 and .NET 7 -->
+  <!-- Exclude all external modules for .NET Core and modern .NET -->
   <PropertyGroup Condition="!$(TargetFramework.StartsWith(`net4`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
