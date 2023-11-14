@@ -128,7 +128,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -169,20 +169,44 @@ namespace BinaryObjectScanner.Protection
             if (versionTwo)
             {
                 int index = position + 14;
+#if NET40
+                byte[] temp = new byte[2];
+                Array.Copy(sectionContent, index, temp, 0, 2);
+                day = new string(temp.Select(b => (char)b).ToArray());
+                index += 3;
+                Array.Copy(sectionContent, index, temp, 0, 2);
+                month = new string(temp.Select(b => (char)b).ToArray());
+                index += 3;
+                Array.Copy(sectionContent, index, temp, 0, 2);
+                year = "20" + new string(temp.Select(b => (char)b).ToArray());
+#else
                 day = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
                 month = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
                 year = "20" + new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
+#endif
             }
             else
             {
                 int index = position + 13;
+#if NET40
+                byte[] temp = new byte[2];
+                Array.Copy(sectionContent, index, temp, 0, 2);
+                day = new string(temp.Select(b => (char)b).ToArray());
+                index += 3;
+                Array.Copy(sectionContent, index, temp, 0, 2);
+                month = new string(temp.Select(b => (char)b).ToArray());
+                index += 3;
+                Array.Copy(sectionContent, index, temp, 0, 2);
+                year = "20" + new string(temp.Select(b => (char)b).ToArray());
+#else
                 day = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
                 month = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
                 year = "20" + new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
+#endif
             }
 
             return $"(Build {year}-{month}-{day})";
@@ -194,10 +218,16 @@ namespace BinaryObjectScanner.Protection
             if (sectionContent == null)
                 return null;
 
+#if NET40
+            byte[] temp = new byte[4];
+            Array.Copy(sectionContent, position + 76, temp, 0, 4);
+            return new string(temp.Select(b => (char)b).ToArray());
+#else
             return new string(new ArraySegment<byte>(sectionContent, position + 76, 4).Select(b => (char)b).ToArray());
+#endif
         }
 
-        public static string GetVersion16Bit(string firstMatchedString, IEnumerable<string> files)
+        public static string? GetVersion16Bit(string firstMatchedString, IEnumerable<string>? files)
         {
             if (!File.Exists(firstMatchedString))
                 return string.Empty;
@@ -211,7 +241,13 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetVersion16Bit(byte[] fileContent)
         {
+#if NET40
+            byte[] temp = new byte[7];
+            Array.Copy(fileContent, 71, temp, 0, 7);
+            char[] version = temp.Select(b => (char)b).ToArray();
+#else
             char[] version = new ArraySegment<byte>(fileContent, 71, 7).Select(b => (char)b).ToArray();
+#endif
             if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
             {
                 if (char.IsNumber(version[5]) && char.IsNumber(version[6]))

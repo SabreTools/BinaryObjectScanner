@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+#if NET462_OR_GREATER
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
+#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -29,6 +31,7 @@ namespace BinaryObjectScanner.FileType
             if (stream == null)
                 return null;
 
+#if NET462_OR_GREATER
             try
             {
                 // Create a temp output directory
@@ -62,6 +65,9 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
+#else
+            return null;
+#endif
         }
     }
 }

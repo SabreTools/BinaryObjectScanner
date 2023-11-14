@@ -150,7 +150,7 @@ namespace BinaryObjectScanner.ProtectionType
                 new PathMatchSet(new PathMatch("GAME.KWN", useEndsWith: true), "TAGES (BASIC?)"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
@@ -215,7 +215,7 @@ namespace BinaryObjectScanner.ProtectionType
             // Check the internal versions
             var version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
-                return version;
+                return version!;
 
             return "(Unknown Version)";
         }

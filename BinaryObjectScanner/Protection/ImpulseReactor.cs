@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), GetInternalVersion, "Stardock Product Activation"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -77,7 +77,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private string GetInternalVersion(string firstMatchedString, IEnumerable<string> files)
+        private string? GetInternalVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             try
             {

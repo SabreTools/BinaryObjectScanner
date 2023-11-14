@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("SafeLock.256", useEndsWith: true), "SafeLock"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

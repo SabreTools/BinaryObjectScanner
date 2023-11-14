@@ -136,12 +136,24 @@ namespace BinaryObjectScanner.Protection
             int index = positions[0] - 12;
 
             // Version 6-7 with Build Number in plain text
+#if NET40
+            byte[] temp = new byte[4];
+            Array.Copy(fileContent, index, temp, 0, 4);
+            if (temp.SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D }))
+#else
             if (new ArraySegment<byte>(fileContent, index, 4).SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D }))
+#endif
             {
                 index = positions[0] - 12 - 6;
 
                 // Version 7
+#if NET40
+                temp = new byte[6];
+                Array.Copy(fileContent, index, temp, 0, 6);
+                if (new string(temp.Select(b => (char)b).ToArray()) == "Henrik")
+#else
                 if (new string(new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray()) == "Henrik")
+#endif
                 {
                     version = "7.1-7.5";
                     index = positions[0] - 12 - 6 - 6;
@@ -164,7 +176,13 @@ namespace BinaryObjectScanner.Protection
                     index -= 5;
                 }
 
+#if NET40
+                temp = new byte[6];
+                Array.Copy(fileContent, index, temp, 0, 6);
+                char[] arrBuild = temp.Select(b => (char)b).ToArray();
+#else
                 char[] arrBuild = new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray();
+#endif
                 if (!Int32.TryParse(new string(arrBuild), out int intBuild))
                     strBuild = $"[Build {new string(arrBuild).Trim()}]";
                 else

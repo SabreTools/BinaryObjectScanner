@@ -58,7 +58,7 @@ namespace BinaryObjectScanner.Protection
                 // The file "engine32.dll" is present in every known instance of this DRM, but isn't being checked for currently due to the generic file name.
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

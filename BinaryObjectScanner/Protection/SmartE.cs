@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Protection
                  }, "SmartE"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

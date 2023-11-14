@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+#if NET462_OR_GREATER
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
+#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -48,7 +50,7 @@ namespace BinaryObjectScanner.FileType
                 return null;
             }
         }
-    
+
         /// <summary>
         /// Extract all files from the BFPK to an output directory
         /// </summary>
@@ -121,12 +123,14 @@ namespace BinaryObjectScanner.FileType
                     {
                         fs.Write(data, 0, compressedSize);
                     }
+#if NET462_OR_GREATER
                     else
                     {
                         MemoryStream ms = new MemoryStream(data);
                         ZlibStream zs = new ZlibStream(ms, CompressionMode.Decompress);
                         zs.CopyTo(fs);
                     }
+#endif
                 }
 
                 return true;

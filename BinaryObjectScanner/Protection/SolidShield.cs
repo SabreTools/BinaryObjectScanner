@@ -125,7 +125,7 @@ namespace BinaryObjectScanner.ProtectionType
             };
 
             // TODO: Verify if these are OR or AND
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -149,8 +149,21 @@ namespace BinaryObjectScanner.ProtectionType
                 return null;
 
             int position = positions[0];
+
+#if NET40
+            byte[] id1 = new byte[3];
+            Array.Copy(fileContent, position + 5, id1, 0, 3);
+            byte[] id2 = new byte[4];
+            Array.Copy(fileContent, position + 16, id2, 0, 3);
+#else
             var id1 = new ArraySegment<byte>(fileContent, position + 5, 3);
             var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
+#endif
+
+            if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
+                return "v1";
+            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }
+                return "v2"; // TODO: Verify against other SolidShield 2 discs
 
             if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
                 return "v1";
@@ -167,8 +180,15 @@ namespace BinaryObjectScanner.ProtectionType
                 return null;
 
             int position = positions[0];
+#if NET40
+            byte[] id1 = new byte[3];
+            Array.Copy(fileContent, position + 4, id1, 0, 3);
+            byte[] id2 = new byte[4];
+            Array.Copy(fileContent, position + 15, id2, 0, 3);
+#else
             var id1 = new ArraySegment<byte>(fileContent, position + 4, 3);
             var id2 = new ArraySegment<byte>(fileContent, position + 15, 4);
+#endif
 
             if ((fileContent[position + 3] == 0x04 || fileContent[position + 3] == 0x05)
                 && id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })

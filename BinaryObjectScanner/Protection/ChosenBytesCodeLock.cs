@@ -65,7 +65,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("Code-Lock Wizard.exe", useEndsWith: true), "ChosenBytes Code-Lock"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

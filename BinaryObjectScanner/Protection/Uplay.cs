@@ -18,26 +18,26 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect Installer"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect Installer"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect Service"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect Service"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect WebCore"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect WebCore"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Crash Reporter"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Crash Reporter"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Game Launcher"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Game Launcher"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Uplay Installer"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Uplay Installer"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Uplay launcher"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Uplay launcher"))
                 return "Uplay / Ubisoft Connect";
 
             // There's also a variant that looks like "Uplay <version> installer"
             name = pex.ProductName;
-            if (!string.IsNullOrEmpty(name) && name.Contains("Ubisoft Connect"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect"))
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Uplay"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Uplay"))
                 return "Uplay / Ubisoft Connect";
 
             return null;
@@ -59,7 +59,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new FilePathMatch("UplayWebCore.exe"), "Uplay / Ubisoft Connect"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

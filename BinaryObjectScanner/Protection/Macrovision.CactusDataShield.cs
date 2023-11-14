@@ -87,7 +87,7 @@ namespace BinaryObjectScanner.Protection
                 // Due to this file being used in both protections, this file is detected within the general Macrovision checks.
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>

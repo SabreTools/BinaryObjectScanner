@@ -65,7 +65,11 @@ namespace BinaryObjectScanner.Protection
                 if (nthSection == null)
                     continue;
 
+#if NET40 || NET452
+                string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? []).TrimEnd('\0');
+#else
                 string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? Array.Empty<byte>()).TrimEnd('\0');
+#endif
                 if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
                     var nthSectionData = pex.GetFirstSectionData(nthSectionName);
@@ -130,7 +134,7 @@ namespace BinaryObjectScanner.Protection
                 }, "SecuROM 7.01"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -217,7 +221,12 @@ namespace BinaryObjectScanner.Protection
         private static string GetV7Version(PortableExecutable pex)
         {
             int index = 172; // 64 bytes for DOS stub, 236 bytes in total
+#if NETFRAMEWORK
+            byte[] bytes = new byte[4];
+            Array.Copy(pex.StubExecutableData, index, bytes, 0, 4);
+#else
             byte[] bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 4).ToArray();
+#endif
 
             //SecuROM 7 new and 8
             if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
@@ -229,7 +238,12 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 index = 58; // 64 bytes for DOS stub, 122 bytes in total
+#if NETFRAMEWORK
+                bytes = new byte[2];
+                Array.Copy(pex.StubExecutableData, index, bytes, 0, 2);
+#else
                 bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 2).ToArray();
+#endif
                 return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
             }
         }
@@ -258,7 +272,13 @@ namespace BinaryObjectScanner.Protection
             if (!success)
                 return "8";
 
-            byte[] bytes = new ReadOnlySpan<byte>(dataSectionRaw, position + 0xAC, 3).ToArray();
+#if NETFRAMEWORK
+                byte[] bytes = new byte[3];
+                Array.Copy(dataSectionRaw, position + 0xAC, bytes, 0, 3);
+#else
+                byte[] bytes = new ReadOnlySpan<byte>(dataSectionRaw, position + 0xAC, 3).ToArray();
+#endif
+
             return $"{bytes[0] ^ 0xCA}.{bytes[1] ^ 0x39:00}.{bytes[2] ^ 0x51:0000}";
         }
     }

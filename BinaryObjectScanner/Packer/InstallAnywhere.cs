@@ -51,7 +51,7 @@ namespace BinaryObjectScanner.Packer
             // Check the internal versions
             var version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
-                return version;
+                return version!;
 
             return "(Unknown Version)";
         }

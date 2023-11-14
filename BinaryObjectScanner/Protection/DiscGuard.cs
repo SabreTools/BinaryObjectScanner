@@ -163,7 +163,7 @@ namespace BinaryObjectScanner.Protection
                 }, "DiscGuard"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
@@ -188,7 +188,7 @@ namespace BinaryObjectScanner.Protection
             // Check the internal versions
             var version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
-                return version;
+                return version!;
 
             return "(Unknown Version)";
         }
@@ -201,14 +201,14 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Check the internal versions
-            string version = GetInternalVersion(file, Array.Empty<string>());
+            string version = GetInternalVersion(file);
             if (!string.IsNullOrEmpty(version))
                 return version;
 
             return string.Empty;
         }
 
-        private string GetInternalVersion(string firstMatchedString, IEnumerable<string> files)
+        private string GetInternalVersion(string firstMatchedString)
         {
             try
             {

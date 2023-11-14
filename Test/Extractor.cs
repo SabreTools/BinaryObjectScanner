@@ -6,6 +6,7 @@ using BinaryObjectScanner.Utilities;
 using OpenMcdf;
 using SabreTools.IO;
 using SabreTools.Serialization.Wrappers;
+#if NET462_OR_GREATER
 using SharpCompress.Archives;
 using SharpCompress.Archives.GZip;
 using SharpCompress.Archives.Rar;
@@ -15,6 +16,7 @@ using SharpCompress.Archives.Zip;
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Xz;
+#endif
 using UnshieldSharp.Archive;
 using UnshieldSharp.Cabinet;
 
@@ -76,6 +78,7 @@ namespace Test
                     Console.WriteLine();
 
                     // If the 7-zip file itself fails
+#if NET462_OR_GREATER
                     try
                     {
                         using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
@@ -105,6 +108,10 @@ namespace Test
                         Console.WriteLine($"Something went wrong extracting 7-zip: {ex}");
                         Console.WriteLine();
                     }
+#else
+                    Console.WriteLine($"Extracting 7-zip not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // BFPK archive
@@ -169,6 +176,7 @@ namespace Test
                     Console.WriteLine("Extracting bzip2 contents");
                     Console.WriteLine();
 
+#if NET462_OR_GREATER
                     using (var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
                     {
                         // If an individual entry fails
@@ -186,6 +194,10 @@ namespace Test
                             Console.WriteLine();
                         }
                     }
+#else
+                    Console.WriteLine($"Extracting bzip2 not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // CFB
@@ -274,6 +286,7 @@ namespace Test
                     Console.WriteLine("Extracting gzip contents");
                     Console.WriteLine();
 
+#if NET462_OR_GREATER
                     using (var zipFile = GZipArchive.Open(stream))
                     {
                         foreach (var entry in zipFile.Entries)
@@ -296,6 +309,10 @@ namespace Test
                             }
                         }
                     }
+#else
+                    Console.WriteLine($"Extracting gzip not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // InstallShield Archive V3 (Z)
@@ -449,7 +466,7 @@ namespace Test
                     }
                 }
 
-#if NET48
+#if NETFRAMEWORK && !NET40
                 // MoPaQ (MPQ) archive
                 else if (ft == SupportedFileType.MPQ)
                 {
@@ -570,6 +587,7 @@ namespace Test
                     Console.WriteLine();
 
                     // If the zip file itself fails
+#if NET462_OR_GREATER
                     try
                     {
                         using (ZipArchive zipFile = ZipArchive.Open(stream))
@@ -600,6 +618,10 @@ namespace Test
                         Console.WriteLine($"Something went wrong extracting PKZIP: {ex}");
                         Console.WriteLine();
                     }
+#else
+                    Console.WriteLine($"Extracting PKZIP not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // Quantum
@@ -637,6 +659,7 @@ namespace Test
                     Console.WriteLine();
 
                     // If the rar file itself fails
+#if NET462_OR_GREATER
                     try
                     {
                         using (RarArchive rarFile = RarArchive.Open(stream))
@@ -666,6 +689,10 @@ namespace Test
                         Console.WriteLine($"Something went wrong extracting RAR: {ex}");
                         Console.WriteLine();
                     }
+#else
+                    Console.WriteLine($"Extracting RAR not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // SGA
@@ -702,7 +729,8 @@ namespace Test
                     Console.WriteLine("Extracting Tape Archive contents");
                     Console.WriteLine();
 
-                    // If the rar file itself fails
+                    // If the tar file itself fails
+#if NET462_OR_GREATER
                     try
                     {
                         using (TarArchive tarFile = TarArchive.Open(stream))
@@ -732,6 +760,10 @@ namespace Test
                         Console.WriteLine($"Something went wrong extracting Tape Archive: {ex}");
                         Console.WriteLine();
                     }
+#else
+                    Console.WriteLine($"Extracting Tape Archive not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // VBSP
@@ -822,6 +854,7 @@ namespace Test
                     Console.WriteLine("Extracting xz contents");
                     Console.WriteLine();
 
+#if NET462_OR_GREATER
                     using (var xzFile = new XZStream(stream))
                     {
                         // If an individual entry fails
@@ -839,6 +872,10 @@ namespace Test
                             Console.WriteLine();
                         }
                     }
+#else
+                    Console.WriteLine($"Extracting xz not supported on this .NET version");
+                    Console.WriteLine();
+#endif
                 }
 
                 // XZP

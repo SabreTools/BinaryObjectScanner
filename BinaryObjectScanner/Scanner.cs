@@ -71,8 +71,10 @@ namespace BinaryObjectScanner
 
             this._fileProgress = fileProgress;
 
+#if NET462_OR_GREATER
             // Register the codepages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
         }
 
         #region Scanning

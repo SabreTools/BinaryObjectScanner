@@ -60,7 +60,10 @@ namespace BinaryObjectScanner.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                InstallShieldCabinet cabfile = InstallShieldCabinet.Open(file);
+                var cabfile = InstallShieldCabinet.Open(file);
+                if (cabfile == null)
+                    return null;
+
                 for (int i = 0; i < cabfile.FileCount; i++)
                 {
                     try
@@ -72,8 +75,8 @@ namespace BinaryObjectScanner.FileType
                         string tempFile;
                         try
                         {
-                            string filename = cabfile.FileName(i);
-                            tempFile = Path.Combine(tempPath, filename);
+                            string? filename = cabfile.FileName(i);
+                            tempFile = Path.Combine(tempPath, filename ?? string.Empty);
                         }
                         catch
                         {

@@ -185,7 +185,11 @@ namespace BinaryObjectScanner
         {
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
+#if NET40 || NET452
+                .Select(t => (T?)Activator.CreateInstance(t)) ?? [];
+#else
                 .Select(t => (T?)Activator.CreateInstance(t)) ?? Array.Empty<T>();
+#endif
         }
 
         #endregion

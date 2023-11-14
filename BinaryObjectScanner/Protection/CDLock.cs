@@ -73,7 +73,7 @@ namespace BinaryObjectScanner.Protection
                 // There is also a "$$$$$$$$.$$$" file present on some discs, but it isn't known if this is directly related to CD-Lock (Redump entries 37788 and 43221).
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

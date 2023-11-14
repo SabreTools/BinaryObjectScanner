@@ -252,7 +252,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc cref="IPathCheck.CheckFilePath(string)"/>
@@ -267,7 +267,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        internal static string Get00000001TMPVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string? Get00000001TMPVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -293,7 +293,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
-        internal static string GetSecdrvFileSizeVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string? GetSecdrvFileSizeVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;

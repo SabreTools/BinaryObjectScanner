@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch(Path.Combine("XCONTROL", "COMPSCO._01").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

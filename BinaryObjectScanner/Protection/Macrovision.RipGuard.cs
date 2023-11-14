@@ -71,7 +71,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("9KMJ9G4I.EXE", useEndsWith: true), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
     /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>

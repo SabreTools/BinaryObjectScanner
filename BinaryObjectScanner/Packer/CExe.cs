@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
+#if NET462_OR_GREATER
 using ICSharpCode.SharpZipLib.Zip.Compression;
+#endif
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 
@@ -88,6 +90,7 @@ namespace BinaryObjectScanner.Packer
                     try
                     {
                         // Inflate the data into the buffer
+#if NET462_OR_GREATER
                         Inflater inflater = new Inflater();
                         inflater.SetInput(payload);
                         data = new byte[payload.Length * 4];
@@ -95,6 +98,9 @@ namespace BinaryObjectScanner.Packer
 
                         // Trim the buffer to the proper size
                         data = new ReadOnlySpan<byte>(data, 0, read).ToArray();
+#else
+                        data = null;
+#endif
                     }
                     catch
                     {

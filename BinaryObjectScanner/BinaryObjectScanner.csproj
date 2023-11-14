@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <!-- Assembly Properties -->
-    <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <!-- Exclude all external modules for .NET Core and modern .NET -->
-  <PropertyGroup Condition="!$(TargetFramework.StartsWith(`net4`))">
+  <PropertyGroup Condition="!$(TargetFramework.StartsWith(`net4`)) OR $(TargetFramework.StartsWith(`net40`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       _EXTERNAL\**;
@@ -40,7 +40,7 @@
   </PropertyGroup>
 
   <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`))">
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
     <Content Include="*.dll">
       <Pack>true</Pack>
       <PackagePath>contentFiles;content</PackagePath>
@@ -55,19 +55,22 @@
 
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.3.0" />
-    <PackageReference Include="SabreTools.Compression" Version="0.1.1" />
-    <PackageReference Include="SabreTools.IO" Version="1.1.1" />
-    <PackageReference Include="SabreTools.Matching" Version="1.1.1" />
-    <PackageReference Include="SabreTools.Models" Version="1.1.5" />
-    <PackageReference Include="SabreTools.Serialization" Version="1.1.7" />
+    <PackageReference Include="SabreTools.Compression" Version="0.2.0" />
+    <PackageReference Include="SabreTools.IO" Version="1.2.0" />
+    <PackageReference Include="SabreTools.Matching" Version="1.2.0" />
+    <PackageReference Include="SabreTools.Models" Version="1.2.0" />
+    <PackageReference Include="SabreTools.Serialization" Version="1.2.0" />
+    <PackageReference Include="UnshieldSharp" Version="1.7.0" />
+    <PackageReference Include="WiseUnpacker" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
     <PackageReference Include="SharpCompress" Version="0.34.1" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
-    <PackageReference Include="UnshieldSharp" Version="1.6.9" />
-    <PackageReference Include="WiseUnpacker" Version="1.0.4" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`))">
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 

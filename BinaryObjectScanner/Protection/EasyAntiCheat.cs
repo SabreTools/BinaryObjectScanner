@@ -31,17 +31,17 @@ namespace BinaryObjectScanner.Protection
 
             var name = pex.FileDescription;
             // Found in "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam).
-            if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";
 
             // Found in "EasyAntiCheat_EOS_Setup.exe" ("Video Horror Society", Patch 1.0.70309, Steam) and "EasyAntiCheat_EOS.exe", which is found installed in "Program Files (x86)\EasyAntiCheat_EOS".
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat Service (EOS)"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Service (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";
 
             // These two generic checks are both general enough to detect the majority of files known to contain Easy Anti-Cheat, as well as specific enough to avoid false positives.
-            else if (!string.IsNullOrEmpty(name) && name.Contains("EasyAntiCheat"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("EasyAntiCheat"))
                 return "Easy Anti-Cheat";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat"))
                 return "Easy Anti-Cheat";
 
             // For documentation, known exact File Descriptions and their associated files are listed below:
@@ -57,17 +57,17 @@ namespace BinaryObjectScanner.Protection
 
             name = pex.ProductName;
             // Found in multiple files, including "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam) and "start_protected_game.exe" ("VRChat", Version 2022.2.2p2, Oculus).
-            if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";
 
             // Found in multiple files, including "EasyAntiCheat_EOS_Setup.exe" ("Video Horror Society", Patch 1.0.70309, Steam; "VRChat", Version 2022.2.2p2, Oculus) and "EasyAntiCheat.exe", which is found installed in "Program Files (x86)\EasyAntiCheat_EOS".
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat Service (EOS)"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Service (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";
 
             // These two generic checks are both general enough to detect the majority of files known to contain Easy Anti-Cheat, as well as specific enough to avoid false positives.
-            else if (!string.IsNullOrEmpty(name) && name.Contains("EasyAntiCheat"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("EasyAntiCheat"))
                 return "Easy Anti-Cheat";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Easy Anti-Cheat"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat"))
                 return "Easy Anti-Cheat";
 
             // For documentation, known exact Product Names and their associated files are listed below:
@@ -123,7 +123,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("easyanticheat_x64.so", useEndsWith: true), "Easy Anti-Cheat"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

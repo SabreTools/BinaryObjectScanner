@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
             // TODO: Fix Product Name not being properly grabbed from the file.
-            if (!string.IsNullOrEmpty(name) && name.Contains("neacsafe"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("neacsafe"))
                 return "NEAC Protect";
 
             return null;
@@ -65,7 +65,7 @@ namespace BinaryObjectScanner.Protection
                 // Known associated log files: "NeacSafe.log", "Neac.log", "NeacDll.log", "NeacLoader.log", and "NeacBak.log".
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

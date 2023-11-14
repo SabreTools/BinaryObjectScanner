@@ -42,7 +42,7 @@ namespace Test
         /// </summary>
         public bool EnableInformation { get; private set; } = false;
 
-#if NET6_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
         /// <summary>
         /// Enable JSON output
         /// </summary>

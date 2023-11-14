@@ -61,12 +61,12 @@ namespace BinaryObjectScanner.Packer
             // Check the product version explicitly
             var version = pex.ProductVersion;
             if (!string.IsNullOrEmpty(version))
-                return version;
+                return version!;
 
             // Check the internal versions
             version = pex.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
-                return version;
+                return version!;
 
             return "(Unknown Version)";
         }

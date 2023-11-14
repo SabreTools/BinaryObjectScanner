@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
+#if NET462_OR_GREATER
 using ICSharpCode.SharpZipLib.Zip.Compression;
+#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -141,17 +143,10 @@ namespace BinaryObjectScanner.FileType
             var folder = default(object);
             switch (item.Model.Header?.MajorVersion)
             {
-#if NET48
-                case 4: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 5: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 6: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 7: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders?.FirstOrDefault(f => index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-#else
                 case 4: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
                 case 5: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
                 case 6: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
                 case 7: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-#endif
                 default: return false;
             }
 
@@ -229,10 +224,14 @@ namespace BinaryObjectScanner.FileType
             else
             {
                 // Decompress the data
+#if NET462_OR_GREATER
                 data = new byte[outputFileSize];
                 Inflater inflater = new Inflater();
                 inflater.SetInput(compressedData);
                 inflater.Inflate(data);
+#else
+                data = new byte[outputFileSize];
+#endif
             }
 
             // If we have an invalid output directory

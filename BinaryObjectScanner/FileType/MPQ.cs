@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET48
+#if NETFRAMEWORK && !NET40
 using StormLibSharp;
 #endif
 
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NETCOREAPP || NET5_0_OR_GREATER
+#if NET40 || NETCOREAPP || NET5_0_OR_GREATER
             // Not supported for .NET Core and modern .NET due to Windows DLL requirements
             return null;
 #else

@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
+#if NET462_OR_GREATER
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
+#endif
 
 namespace BinaryObjectScanner.Packer
 {
@@ -75,6 +77,7 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
+#if NET462_OR_GREATER
             try
             {
                 // Should be using stream instead of file, but stream fails to extract anything. My guess is that the executable portion of the archive is causing stream to fail, but not file.
@@ -111,6 +114,9 @@ namespace BinaryObjectScanner.Packer
                 if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
+#else
+            return null;
+#endif
         }
 
         /// <summary>

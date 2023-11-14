@@ -53,7 +53,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), "PlayJ Music Player Component"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>

@@ -214,7 +214,11 @@ namespace BinaryObjectScanner.FileType
             byte[] fileContent = new byte[0];
             try
             {
+#if NET40
+                using (BinaryReader br = new BinaryReader(stream, Encoding.Default))
+#else
                 using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+#endif
                 {
                     fileContent = br.ReadBytes((int)stream.Length);
                     if (fileContent == null)
@@ -408,10 +412,14 @@ namespace BinaryObjectScanner.FileType
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
                 .Select(t => (T?)Activator.CreateInstance(t))
+#if NET40 || NET452
+                .Cast<T>() ?? [];
+#else
                 .Cast<T>() ?? Array.Empty<T>();
+#endif
         }
 
-#endregion
+        #endregion
 
         #region Helpers
 

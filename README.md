@@ -9,7 +9,7 @@ The following libraries (or ports thereof) are used for file handling:
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
 - [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - zlib-based extraction
-- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET 6.0 builds due to Windows-specific libraries]
+- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET 6, .NET 7, or .NET 8 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 

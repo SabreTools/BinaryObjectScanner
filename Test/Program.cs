@@ -8,8 +8,10 @@ namespace Test
     {
         static void Main(string[] args)
         {
+#if NET462_OR_GREATER
             // Register the codepages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
 
             // Create progress indicator
             var fileProgress = new Progress<ProtectionProgress>();

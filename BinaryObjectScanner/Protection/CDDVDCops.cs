@@ -199,7 +199,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
@@ -228,7 +228,13 @@ namespace BinaryObjectScanner.Protection
             if (fileContent == null)
                 return null;
 
+#if NET40
+            byte[] versionBytes = new byte[4];
+            Array.Copy(fileContent, positions[0] + 15, versionBytes, 0, 4);
+            char[] version = versionBytes.Select(b => (char)b).ToArray();
+#else
             char[] version = new ArraySegment<byte>(fileContent, positions[0] + 15, 4).Select(b => (char)b).ToArray();
+#endif
             if (version[0] == 0x00)
                 return string.Empty;
 

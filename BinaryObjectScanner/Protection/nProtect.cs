@@ -93,7 +93,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("npkpdb.dll", useEndsWith: true), "nProtect KeyCrypt"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

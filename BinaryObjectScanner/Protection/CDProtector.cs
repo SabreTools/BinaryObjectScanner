@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("Track#1 - Track#2 Cd-Protector.wav", useEndsWith: true), "CD-Protector"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

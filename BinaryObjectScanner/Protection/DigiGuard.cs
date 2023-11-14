@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
                 // There are at least two additional specifically named DecryptWrap files, "DecryptWrapTW2000.exe" and "DecryptWrapTW2KCode.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

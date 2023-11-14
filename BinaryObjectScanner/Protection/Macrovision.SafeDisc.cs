@@ -214,7 +214,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
@@ -294,7 +294,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -318,7 +318,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        internal static string GetSafeDiscCLCD32Version(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscCLCD32Version(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -407,7 +407,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        internal static string GetSafeDiscCLOKSPLVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscCLOKSPLVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -501,7 +501,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        internal static string GetSafeDiscDPlayerXVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscDPlayerXVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -563,7 +563,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        internal static string GetSafeDiscDrvmgtVersion(string firstMatchedString, IEnumerable<string> files)
+        internal static string GetSafeDiscDrvmgtVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;

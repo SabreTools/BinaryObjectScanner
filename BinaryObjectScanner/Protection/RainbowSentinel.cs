@@ -126,7 +126,7 @@ namespace BinaryObjectScanner.Protection
                  new PathMatchSet(new PathMatch("SX32W.DLL", useEndsWith: true), "Rainbow Sentinel"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>

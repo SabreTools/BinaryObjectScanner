@@ -270,7 +270,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: false);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>

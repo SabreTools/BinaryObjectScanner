@@ -17,21 +17,21 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (!string.IsNullOrEmpty(name) && name.Contains("Steam Autorun Setup"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Autorun Setup"))
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client API"))
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Engine"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client Engine"))
                 return $"Steam Client Engine {pex.GetInternalVersion()}";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client Service"))
                 return "Steam";
 
             name = pex.ProductName;
-            if (!string.IsNullOrEmpty(name) && name.Contains("Steam Autorun Setup"))
+            if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Autorun Setup"))
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client API"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client API"))
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name.Contains("Steam Client Service"))
+            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client Service"))
                 return "Steam";
 
             /// TODO: Add entry point checks
@@ -83,7 +83,7 @@ namespace BinaryObjectScanner.Protection
                 new PathMatchSet(new PathMatch("steamxboxutil64.exe", useEndsWith: true), "Steam"),
             };
 
-            return MatchUtil.GetAllMatches(files ?? System.Array.Empty<string>(), matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
         }
 
         /// <inheritdoc/>
