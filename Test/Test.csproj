@@ -22,6 +22,10 @@
     <PackageReference Include="UnshieldSharp" Version="1.7.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net40`))">
+    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="App.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

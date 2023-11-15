@@ -65,6 +65,10 @@
     <PackageReference Include="WiseUnpacker" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net40`))">
+    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
+  </ItemGroup>
+
   <ItemGroup Condition="!$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
     <PackageReference Include="SharpCompress" Version="0.34.1" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
