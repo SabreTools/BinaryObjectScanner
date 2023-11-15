@@ -7,6 +7,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <!-- <TreatWarningsAsErrors>true</TreatWarningsAsErrors> --> <!-- Can't be enabled because of external code -->
     <Version>3.0.0</Version>
   
