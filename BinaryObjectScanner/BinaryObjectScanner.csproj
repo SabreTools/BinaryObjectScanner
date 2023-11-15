@@ -22,8 +22,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <!-- Exclude certain parts of external modules for .NET Framework -->
-  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net4`))">
+  <!-- Exclude certain parts of external modules for .NET Framework 4.5.2 and above -->
+  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       **\AssemblyInfo.cs;
@@ -32,7 +32,7 @@
     </DefaultItemExcludes>
   </PropertyGroup>
 
-  <!-- Exclude all external modules for .NET Core and modern .NET -->
+  <!-- Exclude all external modules for .NET Framework 4.0, .NET Core and modern .NET -->
   <PropertyGroup Condition="!$(TargetFramework.StartsWith(`net4`)) OR $(TargetFramework.StartsWith(`net40`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
