@@ -399,10 +399,8 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-        private static IEnumerable<T>? InitCheckClasses<T>()
-            => InitCheckClasses<T>(typeof(GameEngine._DUMMY).Assembly) ?? Enumerable.Empty<T>()
-                .Concat(InitCheckClasses<T>(typeof(Packer._DUMMY).Assembly) ?? Enumerable.Empty<T>())
-                .Concat(InitCheckClasses<T>(typeof(Protection._DUMMY).Assembly) ?? Enumerable.Empty<T>());
+        private static IEnumerable<T>? InitCheckClasses<T>() =>
+            InitCheckClasses<T>(typeof(Handler).Assembly) ?? Enumerable.Empty<T>();
 
         /// <summary>
         /// Initialize all implementations of a type
@@ -412,11 +410,7 @@ namespace BinaryObjectScanner.FileType
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
                 .Select(t => (T?)Activator.CreateInstance(t))
-#if NET40 || NET452
                 .Cast<T>() ?? [];
-#else
-                .Cast<T>() ?? Array.Empty<T>();
-#endif
         }
 
         #endregion

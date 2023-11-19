@@ -171,12 +171,8 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-        private static IEnumerable<T?> InitCheckClasses<T>()
-        {
-            return InitCheckClasses<T>(typeof(GameEngine._DUMMY).Assembly)
-                .Concat(InitCheckClasses<T>(typeof(Packer._DUMMY).Assembly))
-                .Concat(InitCheckClasses<T>(typeof(Protection._DUMMY).Assembly));
-        }
+        private static IEnumerable<T?> InitCheckClasses<T>() =>
+            InitCheckClasses<T>(typeof(Handler).Assembly);
 
         /// <summary>
         /// Initialize all implementations of a type
@@ -185,11 +181,7 @@ namespace BinaryObjectScanner
         {
             return assembly.GetTypes()?
                 .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
-#if NET40 || NET452
                 .Select(t => (T?)Activator.CreateInstance(t)) ?? [];
-#else
-                .Select(t => (T?)Activator.CreateInstance(t)) ?? Array.Empty<T>();
-#endif
         }
 
         #endregion

@@ -146,7 +146,6 @@ namespace BinaryObjectScanner.Protection
                     new PathMatch("drvmgt.dll", useEndsWith: true),
                     new PathMatch("mcp.dll", useEndsWith: true),
                     new PathMatch("secdrv.sys", useEndsWith: true),
-
                 }, "SafeDisc 1.45.011-1.50.020"),
 
                 // TODO: Research "splash16.bmp" and "splash256.bmp".
