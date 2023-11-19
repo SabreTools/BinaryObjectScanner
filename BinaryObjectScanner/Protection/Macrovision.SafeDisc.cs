@@ -122,6 +122,14 @@ namespace BinaryObjectScanner.Protection
                     new PathMatch(".icd", useEndsWith: true),
                 }, "SafeDisc 1/Lite"),
 
+                // Check for the original filename used for the SafeDisc splash-screens, new file names are used in later versions.
+                new PathMatchSet(new List<PathMatch>
+                {
+                    new PathMatch("00000001.TMP", useEndsWith: true),
+                    new PathMatch("SPLSH16.BMP", useEndsWith: true),
+                    new PathMatch("SPLSH256.BMP", useEndsWith: true),
+                }, "SafeDisc 1.00.025-1.01.044"),
+
                 new PathMatchSet(new List<PathMatch>
                 {
                     new PathMatch("00000001.TMP", useEndsWith: true),
@@ -148,7 +156,15 @@ namespace BinaryObjectScanner.Protection
                     new PathMatch("secdrv.sys", useEndsWith: true),
                 }, "SafeDisc 1.45.011-1.50.020"),
 
-                // TODO: Research "splash16.bmp" and "splash256.bmp".
+                // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
+                new PathMatchSet(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
                 //new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), GetSafeDisc00000001TMPVersion, "SafeDisc"),
@@ -228,7 +244,15 @@ namespace BinaryObjectScanner.Protection
                 //new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), GetSafeDisc00000001TMPVersion, "SafeDisc"),
                 new PathMatchSet(new PathMatch("00000002.TMP", useEndsWith: true), "SafeDisc 2+"),
 
-                // TODO: Research "splash16.bmp" and "splash256.bmp".
+                // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
+                new PathMatchSet(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
 
                 new PathMatchSet(new FilePathMatch("DPLAYERX.DLL"), GetSafeDiscDPlayerXVersion, "SafeDisc"),
                 new PathMatchSet(new FilePathMatch("drvmgt.dll"), GetSafeDiscDrvmgtVersion, "SafeDisc"),
@@ -718,6 +742,63 @@ namespace BinaryObjectScanner.Protection
                     // 41,472 bytes corresponds to SafeDisc 2.90-3.10
                     // 24,064 bytes corresponds to SafeDisc 3.15-3.20;
             }
+        }
+
+        internal static string GetSafeDiscSplshVersion(string firstMatchedString, IEnumerable<string>? files)
+        {
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            var sha1 = GetFileSHA1(firstMatchedString);
+            switch (sha1)
+            {
+                // First known generic SafeDisc splash-screen.
+                // 16-bit depth version, found in Redump entries 43321, and 79272.
+                case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
+                    return "1.30.010-1.45.011";
+                // 256-bit depth version, found in Redump entries 43321, and 79272.
+                case "0C9E45BF3EBE1382A3593994328C22BCB9A55456":
+                    return "1.30.010-1.45.011";
+
+                default:
+                    return string.Empty;
+            }
+
+            // Known SafeDisc splash-screen file names (case-insensitive):
+            // "00000404.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000404.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000407.016": Found in SafeDisc versions 1.07.000-1.50.020 (Redump entries 43321, 46756, 66586, 44350, and 49552, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000407.256": Found in SafeDisc versions 1.07.000-1.50.020 (Redump entries 43321, 46756, 66586, 44350, and 49552, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000409.016": Found in SafeDisc versions 1.06.000-1.50.020 (Redump entries 2595, 9718, 12885, 29073, 30555, 31526, 37832, 37920, 37982, 49552, 62935, and 63323).
+            // "00000409.256": Found in SafeDisc versions 1.06.000-1.50.020 (Redump entries 2595, 9718, 12885, 29073, 30555, 31526, 37982, 37920, 37832, 49552, 62935, and 63323).
+            // "0000040A.016": Found in SafeDisc versions 1.06.000-1.35.000 (Redump entries 29073, 43321, and 49552).
+            // "0000040A.256": Found in SafeDisc versions 1.06.000-1.35.000 (Redump entries 29073, 43321, and 49552).
+            // "0000040c.016": Found in SafeDisc versions 1.30.010-1.50.020 (Redump entries 43321 and 49552 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000040c.256": Found in SafeDisc versions 1.30.010-1.50.020 (Redump entries 43321 and 49552 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000410.016": Found in SafeDisc versions 1.35.000-1.50.020 (Redump entries 49552 and 9617, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000410.256": Found in SafeDisc versions 1.35.000-1.50.020 (Redump entries 49552 and 9617, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000411.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000411.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000412.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000412.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000413.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000413.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000415.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000415.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000416.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000416.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000041d.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000041d.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000041e.016": Found in SafeDisc versions 1.40.004- (IA item the-sims-thai-english-electronic-arts-2000).
+            // "0000041e.256": Found in SafeDisc versions 1.40.004- (IA item the-sims-thai-english-electronic-arts-2000).
+            // "00000804.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000804.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000809.016": Found in SafeDisc versions 1.06.000-1.50.020 (Redump entries 9617, 31149, 37523, 37832, and 43321, and IA items the-sims-thai-english-electronic-arts-2000, the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000, and "primal-3d-interactive-series-professional-edition-2002-english/Interactive Hip CD").
+            // "00000809.256": Found in SafeDisc versions 1.06.000-1.50.020 (Redump entries 9617, 31149, 37523, 37832, and 43321, and IA items the-sims-thai-english-electronic-arts-2000, the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000, and "primal-3d-interactive-series-professional-edition-2002-english/Interactive Hip CD").
+            // "00000c0a.016": Found in SafeDisc versions 1.30.010-1.50.020 (Redump entry 55078, 55080 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000c0a.256": Found in SafeDisc versions 1.30.010-1.50.020 (Redump entry 55078, 55080 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "SPLSH16.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
+            // "SPLSH256.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
         }
 
         private string? GetVersionFromSHA1Hash(string sha1Hash)
