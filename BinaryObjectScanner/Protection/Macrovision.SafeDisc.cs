@@ -777,8 +777,16 @@ namespace BinaryObjectScanner.Protection
                 case "827AE9A32906CBE9098C9101184E0BE74CEA2744":
                     return "2.70.030-2.80.010";
 
+                // Third known generic SafeDisc splash-screen.
+                // 16-bit depth version, found in Redump entries 74338, 75782, 84985, and 91552.
+                case "814ED63FD619655650E271D1B8B46BBE39C3655A":
+                    return "3.15.010-3.20.022";
+                // 256-bit depth version, found in Redump entries 74338, 75782, 84985, and 91552.
+                case "40C7ACEDB6C41AB067285090373E886EFB4F4AC4":
+                    return "3.15.010-3.20.022";
+
                 default:
-                    return string.Empty;
+                    return null;
             }
 
             // There appear to be a few distinct generations of file names used for SafeDisc splash-screens.
@@ -789,10 +797,10 @@ namespace BinaryObjectScanner.Protection
             // The files "00000409.016" and "00000409.256" are present in Redump entry 39273, despite it being SafeDisc 2.80.011. This may be because this disc contains some form of SafeDisc Lite as well, which tends to more closely resemble SafeDisc 1.
 
             // Known SafeDisc splash-screen file names (case-insensitive):
-            // "00000000.016": Found in SafeDisc version 2.60.052-2.90.040 (Redump entries 2064, 9621, 11639, 32783, 35385, 39273, and 52606).
-            // "00000000.256": Found in SafeDisc version 2.60.052-2.90.040 (Redump entries 2064, 9621, 11639, 32783, 35385, 39273, and 52606).
-            // "00000001.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
-            // "00000001.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000000.016": Found in SafeDisc version 2.60.052-3.20.024 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 63813, 74338, 76775, and 84586).
+            // "00000000.256": Found in SafeDisc version 2.60.052-3.20.024 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 63813, 74338, 76775, and 84586).
+            // "00000001.016": Found in SafeDisc version 2.72.000-3.20.024 (Redump entries 9621, 76775, and 86177).
+            // "00000001.256": Found in SafeDisc version 2.72.000-3.20.024 (Redump entries 9621, 76775, and 86177).
             // "00000002.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000002.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000003.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
