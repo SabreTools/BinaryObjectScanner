@@ -793,14 +793,16 @@ namespace BinaryObjectScanner.Protection
             // The first are the files named "SPLSH16.BMP"/"SPLSH256.BMP", which were typically used in SafeDisc versions 1.00.025-1.01.044.
             // The next are the files named "000004XX", "000008XX", "00000cXX", and "00001XXX". When one of these is present, they seemingly always come in pairs of 2 with the extensions ".016" and ".256". They're typically present in SafeDisc versions 1.06.000-2.51.021.
             // Next come the files simply named "0000000X", which still come in pairs with the extensions ".016" and ".256", starting in SafeDisc version 2.60.052.
+            // Starting SafeDisc version 4.00.000, the files with the ".016" extension seem to mostly disappear, with the ".256" files still being present.
             // Exceptions: 
             // The files "00000409.016" and "00000409.256" are present in Redump entry 39273, despite it being SafeDisc 2.80.011. This may be because this disc contains some form of SafeDisc Lite as well, which tends to more closely resemble SafeDisc 1.
+            // Redump entry 51597 contains "00000000.016" and "00000000.256", breaking the trend of SafeDisc 4 not having any files with the ".016" extension. This may be due to this being a rerelease, so the splash-screen may have already been present in the original game files and carried over.
 
             // Known SafeDisc splash-screen file names (case-insensitive):
-            // "00000000.016": Found in SafeDisc version 2.60.052-3.20.024 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 63813, 74338, 76775, and 84586).
-            // "00000000.256": Found in SafeDisc version 2.60.052-3.20.024 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 63813, 74338, 76775, and 84586).
+            // "00000000.016": Found in SafeDisc version 2.60.052-4.00.003 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 51597, 63813, 74338, 76775, and 84586).
+            // "00000000.256": Found in SafeDisc version 2.60.052-4.00.003 (Redump entries 2064, 9621, 11639, 13230, 32783, 35382, 35385, 35512, 39273, 52606, 51597, 63813, 68551, 71646, 74338, 76775, 83017, and 84586).
             // "00000001.016": Found in SafeDisc version 2.72.000-3.20.024 (Redump entries 9621, 76775, and 86177).
-            // "00000001.256": Found in SafeDisc version 2.72.000-3.20.024 (Redump entries 9621, 76775, and 86177).
+            // "00000001.256": Found in SafeDisc version 2.72.000-4.00.002 (Redump entries 9621, 71646, 76775, and 86177).
             // "00000002.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000002.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000003.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
