@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using BinaryObjectScanner;
 
 namespace Test
@@ -8,9 +7,9 @@ namespace Test
     {
         static void Main(string[] args)
         {
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
             // Register the codepages
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
 
             // Create progress indicator

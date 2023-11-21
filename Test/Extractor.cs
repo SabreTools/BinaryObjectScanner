@@ -57,27 +57,26 @@ namespace Test
         private static void ExtractFile(string file, string outputDirectory)
         {
             Console.WriteLine($"Attempting to extract all files from {file}");
+            using Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
 
-            using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            // Read the first 8 bytes
+            byte[]? magic = stream.ReadBytes(8);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            // Get the file type
+            SupportedFileType ft = FileTypes.GetFileType(magic ?? []);
+
+            // Executables technically can be "extracted", but let's ignore that
+            // TODO: Support executables that include other stuff
+
+            // 7-zip
+            if (ft == SupportedFileType.SevenZip)
             {
-                // Read the first 8 bytes
-                byte[] magic = stream.ReadBytes(8);
-                stream.Seek(0, SeekOrigin.Begin);
+                // Build the archive information
+                Console.WriteLine("Extracting 7-zip contents");
+                Console.WriteLine();
 
-                // Get the file type
-                SupportedFileType ft = FileTypes.GetFileType(magic);
-
-                // Executables technically can be "extracted", but let's ignore that
-                // TODO: Support executables that include other stuff
-
-                // 7-zip
-                if (ft == SupportedFileType.SevenZip)
-                {
-                    // Build the archive information
-                    Console.WriteLine("Extracting 7-zip contents");
-                    Console.WriteLine();
-
-                    // If the 7-zip file itself fails
+                // If the 7-zip file itself fails
 #if NET462_OR_GREATER
                     try
                     {
@@ -109,72 +108,72 @@ namespace Test
                         Console.WriteLine();
                     }
 #else
-                    Console.WriteLine($"Extracting 7-zip not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting 7-zip not supported on this .NET version");
+                Console.WriteLine();
 #endif
+            }
+
+            // BFPK archive
+            else if (ft == SupportedFileType.BFPK)
+            {
+                // Build the BFPK information
+                Console.WriteLine("Extracting BFPK contents");
+                Console.WriteLine();
+
+                var bfpk = BFPK.Create(stream);
+                if (bfpk == null)
+                {
+                    Console.WriteLine("Something went wrong parsing BFPK archive");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // BFPK archive
-                else if (ft == SupportedFileType.BFPK)
+                try
                 {
-                    // Build the BFPK information
-                    Console.WriteLine("Extracting BFPK contents");
+                    // Extract the BFPK contents to the directory
+                    BinaryObjectScanner.FileType.BFPK.ExtractAll(bfpk, outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting BFPK archive: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    var bfpk = BFPK.Create(stream);
-                    if (bfpk == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing BFPK archive");
-                        Console.WriteLine();
-                        return;
-                    }
+            // BSP
+            else if (ft == SupportedFileType.BSP)
+            {
+                // Build the BSP information
+                Console.WriteLine("Extracting BSP contents");
+                Console.WriteLine();
 
-                    try
-                    {
-                        // Extract the BFPK contents to the directory
-                        BinaryObjectScanner.FileType.BFPK.ExtractAll(bfpk, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting BFPK archive: {ex}");
-                        Console.WriteLine();
-                    }
+                var bsp = BSP.Create(stream);
+                if (bsp == null)
+                {
+                    Console.WriteLine("Something went wrong parsing BSP");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // BSP
-                else if (ft == SupportedFileType.BSP)
+                try
                 {
-                    // Build the BSP information
-                    Console.WriteLine("Extracting BSP contents");
-                    Console.WriteLine();
-
-                    var bsp = BSP.Create(stream);
-                    if (bsp == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing BSP");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the BSP contents to the directory
-                        BinaryObjectScanner.FileType.BSP.ExtractAllLumps(bsp, outputDirectory);
-                        BinaryObjectScanner.FileType.BSP.ExtractAllTextures(bsp, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting BSP: {ex}");
-                        Console.WriteLine();
-                    }
+                    // Extract the BSP contents to the directory
+                    BinaryObjectScanner.FileType.BSP.ExtractAllLumps(bsp, outputDirectory);
+                    BinaryObjectScanner.FileType.BSP.ExtractAllTextures(bsp, outputDirectory);
                 }
-
-                // bzip2
-                else if (ft == SupportedFileType.BZip2)
+                catch (Exception ex)
                 {
-                    // Build the bzip2 information
-                    Console.WriteLine("Extracting bzip2 contents");
+                    Console.WriteLine($"Something went wrong extracting BSP: {ex}");
                     Console.WriteLine();
+                }
+            }
+
+            // bzip2
+            else if (ft == SupportedFileType.BZip2)
+            {
+                // Build the bzip2 information
+                Console.WriteLine("Extracting bzip2 contents");
+                Console.WriteLine();
 
 #if NET462_OR_GREATER
                     using (var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
@@ -195,96 +194,92 @@ namespace Test
                         }
                     }
 #else
-                    Console.WriteLine($"Extracting bzip2 not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting bzip2 not supported on this .NET version");
+                Console.WriteLine();
 #endif
-                }
+            }
 
-                // CFB
-                else if (ft == SupportedFileType.CFB)
+            // CFB
+            else if (ft == SupportedFileType.CFB)
+            {
+                // Build the installer information
+                Console.WriteLine("Extracting CFB contents");
+                Console.WriteLine();
+
+                // If the CFB file itself fails
+                try
                 {
-                    // Build the installer information
-                    Console.WriteLine("Extracting CFB contents");
-                    Console.WriteLine();
-
-                    // If the CFB file itself fails
-                    try
+                    using var cf = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default);
+                    cf.RootStorage.VisitEntries((e) =>
                     {
-                        using (CompoundFile cf = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
+                        if (!e.IsStream)
+                            return;
+
+                        var str = cf.RootStorage.GetStream(e.Name);
+                        if (str == null)
+                            return;
+
+                        byte[] strData = str.GetData();
+                        if (strData == null)
+                            return;
+
+                        string decoded = BinaryObjectScanner.FileType.CFB.DecodeStreamName(e.Name)?.TrimEnd('\0') ?? string.Empty;
+                        byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
+
+                        // UTF-8 encoding of 0x4840.
+                        if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
+                            decoded = decoded.Substring(3);
+
+                        foreach (char c in Path.GetInvalidFileNameChars())
                         {
-                            cf.RootStorage.VisitEntries((e) =>
-                            {
-                                if (!e.IsStream)
-                                    return;
-
-                                var str = cf.RootStorage.GetStream(e.Name);
-                                if (str == null)
-                                    return;
-
-                                byte[] strData = str.GetData();
-                                if (strData == null)
-                                    return;
-
-                                string decoded = BinaryObjectScanner.FileType.CFB.DecodeStreamName(e.Name).TrimEnd('\0');
-                                byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
-
-                                // UTF-8 encoding of 0x4840.
-                                if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
-                                    decoded = decoded.Substring(3);
-
-                                foreach (char c in Path.GetInvalidFileNameChars())
-                                {
-                                    decoded = decoded.Replace(c, '_');
-                                }
-
-                                string filename = Path.Combine(outputDirectory, decoded);
-                                using (Stream fs = File.OpenWrite(filename))
-                                {
-                                    fs.Write(strData, 0, strData.Length);
-                                }
-                            }, recursive: true);
+                            decoded = decoded.Replace(c, '_');
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting CFB: {ex}");
-                        Console.WriteLine();
-                    }
+
+                        string filename = Path.Combine(outputDirectory, decoded);
+                        using Stream fs = File.OpenWrite(filename);
+                        fs.Write(strData, 0, strData.Length);
+                    }, recursive: true);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting CFB: {ex}");
+                    Console.WriteLine();
+                }
+            }
+
+            // GCF
+            else if (ft == SupportedFileType.GCF)
+            {
+                // Build the GCF information
+                Console.WriteLine("Extracting GCF contents");
+                Console.WriteLine();
+
+                var gcf = GCF.Create(stream);
+                if (gcf == null)
+                {
+                    Console.WriteLine("Something went wrong parsing GCF");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // GCF
-                else if (ft == SupportedFileType.GCF)
+                try
                 {
-                    // Build the GCF information
-                    Console.WriteLine("Extracting GCF contents");
-                    Console.WriteLine();
-
-                    var gcf = GCF.Create(stream);
-                    if (gcf == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing GCF");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the GCF contents to the directory
-                        BinaryObjectScanner.FileType.GCF.ExtractAll(gcf, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting GCF: {ex}");
-                        Console.WriteLine();
-                    }
+                    // Extract the GCF contents to the directory
+                    BinaryObjectScanner.FileType.GCF.ExtractAll(gcf, outputDirectory);
                 }
-
-                // gzip
-                else if (ft == SupportedFileType.GZIP)
+                catch (Exception ex)
                 {
-                    // Build the gzip information
-                    Console.WriteLine("Extracting gzip contents");
+                    Console.WriteLine($"Something went wrong extracting GCF: {ex}");
                     Console.WriteLine();
+                }
+            }
+
+            // gzip
+            else if (ft == SupportedFileType.GZIP)
+            {
+                // Build the gzip information
+                Console.WriteLine("Extracting gzip contents");
+                Console.WriteLine();
 
 #if NET462_OR_GREATER
                     using (var zipFile = GZipArchive.Open(stream))
@@ -310,161 +305,164 @@ namespace Test
                         }
                     }
 #else
-                    Console.WriteLine($"Extracting gzip not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting gzip not supported on this .NET version");
+                Console.WriteLine();
 #endif
-                }
+            }
 
-                // InstallShield Archive V3 (Z)
-                else if (ft == SupportedFileType.InstallShieldArchiveV3)
+            // InstallShield Archive V3 (Z)
+            else if (ft == SupportedFileType.InstallShieldArchiveV3)
+            {
+                // Build the InstallShield Archive V3 information
+                Console.WriteLine("Extracting InstallShield Archive V3 contents");
+                Console.WriteLine();
+
+                // If the cab file itself fails
+                try
                 {
-                    // Build the InstallShield Archive V3 information
-                    Console.WriteLine("Extracting InstallShield Archive V3 contents");
-                    Console.WriteLine();
-
-                    // If the cab file itself fails
-                    try
+                    var archive = new InstallShieldArchiveV3(file);
+                    foreach (var cfile in archive.Files.Select(kvp => kvp.Value))
                     {
-                        var archive = new InstallShieldArchiveV3(file);
-                        foreach (var cfile in archive.Files.Select(kvp => kvp.Value))
+                        // If an individual entry fails
+                        try
                         {
-                            // If an individual entry fails
+                            string tempFile = Path.Combine(outputDirectory, cfile.FullPath ?? string.Empty);
+                            string? directoryName = Path.GetDirectoryName(tempFile);
+                            if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
+
+                            (byte[]? fileContents, string? error) = archive.Extract(cfile.FullPath ?? string.Empty);
+                            if (!string.IsNullOrWhiteSpace(error))
+                                continue;
+
+                            if (fileContents != null && fileContents.Length > 0)
+                            {
+                                using FileStream fs = File.OpenWrite(tempFile);
+                                fs.Write(fileContents, 0, fileContents.Length);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting InstallShield Archive V3 entry {cfile.Name}: {ex}");
+                            Console.WriteLine();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting InstallShield Archive V3: {ex}");
+                    Console.WriteLine();
+                }
+            }
+
+            // IS-CAB archive
+            else if (ft == SupportedFileType.InstallShieldCAB)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting IS-CAB contents");
+                Console.WriteLine();
+
+                // If the cab file itself fails
+                try
+                {
+                    var cabfile = UnshieldSharp.Cabinet.InstallShieldCabinet.Open(file);
+                    for (int i = 0; i < (cabfile?.FileCount ?? 0); i++)
+                    {
+                        // If an individual entry fails
+                        try
+                        {
+                            string? filename = cabfile?.FileName(i);
+                            string tempFile;
                             try
                             {
-                                string tempFile = Path.Combine(outputDirectory, cfile.FullPath);
-                                if (!Directory.Exists(Path.GetDirectoryName(tempFile)))
-                                    Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-
-                                (byte[] fileContents, string error) = archive.Extract(cfile.FullPath);
-                                if (!string.IsNullOrWhiteSpace(error))
-                                    continue;
-
-                                using (FileStream fs = File.OpenWrite(tempFile))
-                                {
-                                    fs.Write(fileContents, 0, fileContents.Length);
-                                }
+                                tempFile = Path.Combine(outputDirectory, filename ?? $"BAD_FILENAME{i}");
                             }
-                            catch (Exception ex)
+                            catch
                             {
-                                Console.WriteLine($"Something went wrong extracting InstallShield Archive V3 entry {cfile.Name}: {ex}");
-                                Console.WriteLine();
+                                tempFile = Path.Combine(outputDirectory, $"BAD_FILENAME{i}");
                             }
+
+                            cabfile?.FileSave(i, tempFile);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting InstallShield Archive V3: {ex}");
-                        Console.WriteLine();
-                    }
-                }
-
-                // IS-CAB archive
-                else if (ft == SupportedFileType.InstallShieldCAB)
-                {
-                    // Build the archive information
-                    Console.WriteLine("Extracting IS-CAB contents");
-                    Console.WriteLine();
-
-                    // If the cab file itself fails
-                    try
-                    {
-                        var cabfile = UnshieldSharp.Cabinet.InstallShieldCabinet.Open(file);
-                        for (int i = 0; i < cabfile.FileCount; i++)
+                        catch (Exception ex)
                         {
-                            // If an individual entry fails
-                            try
-                            {
-                                string filename = cabfile.FileName(i);
-                                string tempFile;
-                                try
-                                {
-                                    tempFile = Path.Combine(outputDirectory, filename);
-                                }
-                                catch
-                                {
-                                    tempFile = Path.Combine(outputDirectory, $"BAD_FILENAME{i}");
-                                }
-
-                                cabfile.FileSave(i, tempFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting IS-CAB entry {i}: {ex}");
-                                Console.WriteLine();
-                            }
+                            Console.WriteLine($"Something went wrong extracting IS-CAB entry {i}: {ex}");
+                            Console.WriteLine();
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting IS-CAB: {ex}");
-                        Console.WriteLine();
-                    }
                 }
-
-                // Microsoft Cabinet archive
-                else if (ft == SupportedFileType.MicrosoftCAB)
+                catch (Exception ex)
                 {
-                    // Build the cabinet information
-                    Console.WriteLine("Extracting MS-CAB contents");
+                    Console.WriteLine($"Something went wrong extracting IS-CAB: {ex}");
                     Console.WriteLine();
-
-                    var cabinet = MicrosoftCabinet.Create(stream);
-                    if (cabinet == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing MS-CAB archive");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        Console.WriteLine("MS-CAB extraction is disabled");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
-                        Console.WriteLine();
-                    }
                 }
+            }
 
-                // Microsoft LZ / LZ32
-                else if (ft == SupportedFileType.MicrosoftLZ)
+            // Microsoft Cabinet archive
+            else if (ft == SupportedFileType.MicrosoftCAB)
+            {
+                // Build the cabinet information
+                Console.WriteLine("Extracting MS-CAB contents");
+                Console.WriteLine();
+
+                var cabinet = MicrosoftCabinet.Create(stream);
+                if (cabinet == null)
                 {
-                    // Build the Microsoft LZ / LZ32 information
-                    Console.WriteLine("Extracting Microsoft LZ / LZ32 contents");
+                    Console.WriteLine("Something went wrong parsing MS-CAB archive");
                     Console.WriteLine();
+                    return;
+                }
 
-                    // If the LZ file itself fails
-                    try
+                try
+                {
+                    Console.WriteLine("MS-CAB extraction is disabled");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting MS-CAB: {ex}");
+                    Console.WriteLine();
+                }
+            }
+
+            // Microsoft LZ / LZ32
+            else if (ft == SupportedFileType.MicrosoftLZ)
+            {
+                // Build the Microsoft LZ / LZ32 information
+                Console.WriteLine("Extracting Microsoft LZ / LZ32 contents");
+                Console.WriteLine();
+
+                // If the LZ file itself fails
+                try
+                {
+                    byte[]? data = SabreTools.Compression.LZ.Decompressor.Decompress(stream);
+
+                    // Create the temp filename
+                    string tempFile = "temp.bin";
+                    if (!string.IsNullOrEmpty(file))
                     {
-                        byte[] data = SabreTools.Compression.LZ.Decompressor.Decompress(stream);
-
-                        // Create the temp filename
-                        string tempFile = "temp.bin";
-                        if (!string.IsNullOrEmpty(file))
-                        {
-                            string expandedFilePath = SabreTools.Compression.LZ.Decompressor.GetExpandedName(file, out _);
-                            tempFile = Path.GetFileName(expandedFilePath).TrimEnd('\0');
-                            if (tempFile.EndsWith(".ex"))
-                                tempFile += "e";
-                            else if (tempFile.EndsWith(".dl"))
-                                tempFile += "l";
-                        }
-
-                        tempFile = Path.Combine(outputDirectory, tempFile);
-
-                        // Write the file data to a temp file
-                        using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                        {
-                            tempStream.Write(data, 0, data.Length);
-                        }
+                        string? expandedFilePath = SabreTools.Compression.LZ.Decompressor.GetExpandedName(file, out _);
+                        tempFile = Path.GetFileName(expandedFilePath)?.TrimEnd('\0') ?? string.Empty;
+                        if (tempFile.EndsWith(".ex"))
+                            tempFile += "e";
+                        else if (tempFile.EndsWith(".dl"))
+                            tempFile += "l";
                     }
-                    catch (Exception ex)
+
+                    tempFile = Path.Combine(outputDirectory, tempFile);
+
+                    // Write the file data to a temp file
+                    if (data != null && data.Length > 0)
                     {
-                        Console.WriteLine($"Something went wrong extracting Microsoft LZ / LZ32: {ex}");
-                        Console.WriteLine();
+                        using Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                        tempStream.Write(data, 0, data.Length);
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting Microsoft LZ / LZ32: {ex}");
+                    Console.WriteLine();
+                }
+            }
 
 #if NETFRAMEWORK && !NET40
                 // MoPaQ (MPQ) archive
@@ -480,7 +478,7 @@ namespace Test
                         using (var mpqArchive = new StormLibSharp.MpqArchive(file, FileAccess.Read))
                         {
                             // Try to open the listfile
-                            string listfile = null;
+                            string? listfile = null;
                             StormLibSharp.MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
 
                             // If we can't read the listfile, we just return
@@ -525,68 +523,68 @@ namespace Test
                 }
 #endif
 
-                // PAK
-                else if (ft == SupportedFileType.PAK)
+            // PAK
+            else if (ft == SupportedFileType.PAK)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting PAK contents");
+                Console.WriteLine();
+
+                var pak = PAK.Create(stream);
+                if (pak == null)
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting PAK contents");
+                    Console.WriteLine("Something went wrong parsing PAK");
                     Console.WriteLine();
-
-                    var pak = PAK.Create(stream);
-                    if (pak == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing PAK");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the PAK contents to the directory
-                        BinaryObjectScanner.FileType.PAK.ExtractAll(pak, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting PAK: {ex}");
-                        Console.WriteLine();
-                    }
+                    return;
                 }
 
-                // PFF
-                else if (ft == SupportedFileType.PFF)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting PFF contents");
+                    // Extract the PAK contents to the directory
+                    BinaryObjectScanner.FileType.PAK.ExtractAll(pak, outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting PAK: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    var pff = PFF.Create(stream);
-                    if (pff == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing PFF");
-                        Console.WriteLine();
-                        return;
-                    }
+            // PFF
+            else if (ft == SupportedFileType.PFF)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting PFF contents");
+                Console.WriteLine();
 
-                    try
-                    {
-                        // Extract the PFF contents to the directory
-                        BinaryObjectScanner.FileType.PFF.ExtractAll(pff, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting PFF: {ex}");
-                        Console.WriteLine();
-                    }
+                var pff = PFF.Create(stream);
+                if (pff == null)
+                {
+                    Console.WriteLine("Something went wrong parsing PFF");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // PKZIP
-                else if (ft == SupportedFileType.PKZIP)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting PKZIP contents");
+                    // Extract the PFF contents to the directory
+                    BinaryObjectScanner.FileType.PFF.ExtractAll(pff, outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting PFF: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    // If the zip file itself fails
+            // PKZIP
+            else if (ft == SupportedFileType.PKZIP)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting PKZIP contents");
+                Console.WriteLine();
+
+                // If the zip file itself fails
 #if NET462_OR_GREATER
                     try
                     {
@@ -619,46 +617,46 @@ namespace Test
                         Console.WriteLine();
                     }
 #else
-                    Console.WriteLine($"Extracting PKZIP not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting PKZIP not supported on this .NET version");
+                Console.WriteLine();
 #endif
+            }
+
+            // Quantum
+            else if (ft == SupportedFileType.Quantum)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting Quantum contents");
+                Console.WriteLine();
+
+                var quantum = Quantum.Create(stream);
+                if (quantum == null)
+                {
+                    Console.WriteLine("Something went wrong parsing Quantum");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // Quantum
-                else if (ft == SupportedFileType.Quantum)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting Quantum contents");
-                    Console.WriteLine();
-
-                    var quantum = Quantum.Create(stream);
-                    if (quantum == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing Quantum");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the Quantum contents to the directory
-                        BinaryObjectScanner.FileType.Quantum.ExtractAll(quantum, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting Quantum: {ex}");
-                        Console.WriteLine();
-                    }
+                    // Extract the Quantum contents to the directory
+                    BinaryObjectScanner.FileType.Quantum.ExtractAll(quantum, outputDirectory);
                 }
-
-                // RAR
-                else if (ft == SupportedFileType.RAR)
+                catch (Exception ex)
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting RAR contents");
+                    Console.WriteLine($"Something went wrong extracting Quantum: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    // If the rar file itself fails
+            // RAR
+            else if (ft == SupportedFileType.RAR)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting RAR contents");
+                Console.WriteLine();
+
+                // If the rar file itself fails
 #if NET462_OR_GREATER
                     try
                     {
@@ -690,46 +688,46 @@ namespace Test
                         Console.WriteLine();
                     }
 #else
-                    Console.WriteLine($"Extracting RAR not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting RAR not supported on this .NET version");
+                Console.WriteLine();
 #endif
+            }
+
+            // SGA
+            else if (ft == SupportedFileType.SGA)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting SGA contents");
+                Console.WriteLine();
+
+                var sga = SGA.Create(stream);
+                if (sga == null)
+                {
+                    Console.WriteLine("Something went wrong parsing SGA");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // SGA
-                else if (ft == SupportedFileType.SGA)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting SGA contents");
-                    Console.WriteLine();
-
-                    var sga = SGA.Create(stream);
-                    if (sga == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing SGA");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the SGA contents to the directory
-                        BinaryObjectScanner.FileType.SGA.ExtractAll(sga, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting SGA: {ex}");
-                        Console.WriteLine();
-                    }
+                    // Extract the SGA contents to the directory
+                    BinaryObjectScanner.FileType.SGA.ExtractAll(sga, outputDirectory);
                 }
-
-                // Tape Archive
-                else if (ft == SupportedFileType.RAR)
+                catch (Exception ex)
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting Tape Archive contents");
+                    Console.WriteLine($"Something went wrong extracting SGA: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    // If the tar file itself fails
+            // Tape Archive
+            else if (ft == SupportedFileType.RAR)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting Tape Archive contents");
+                Console.WriteLine();
+
+                // If the tar file itself fails
 #if NET462_OR_GREATER
                     try
                     {
@@ -761,98 +759,98 @@ namespace Test
                         Console.WriteLine();
                     }
 #else
-                    Console.WriteLine($"Extracting Tape Archive not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting Tape Archive not supported on this .NET version");
+                Console.WriteLine();
 #endif
+            }
+
+            // VBSP
+            else if (ft == SupportedFileType.VBSP)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting VBSP contents");
+                Console.WriteLine();
+
+                var vbsp = VBSP.Create(stream);
+                if (vbsp == null)
+                {
+                    Console.WriteLine("Something went wrong parsing VBSP");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // VBSP
-                else if (ft == SupportedFileType.VBSP)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting VBSP contents");
+                    // Extract the VBSP contents to the directory
+                    BinaryObjectScanner.FileType.VBSP.ExtractAllLumps(vbsp, outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting VBSP: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    var vbsp = VBSP.Create(stream);
-                    if (vbsp == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing VBSP");
-                        Console.WriteLine();
-                        return;
-                    }
+            // VPK
+            else if (ft == SupportedFileType.VPK)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting VPK contents");
+                Console.WriteLine();
 
-                    try
-                    {
-                        // Extract the VBSP contents to the directory
-                        BinaryObjectScanner.FileType.VBSP.ExtractAllLumps(vbsp, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting VBSP: {ex}");
-                        Console.WriteLine();
-                    }
+                var vpk = VPK.Create(stream);
+                if (vpk == null)
+                {
+                    Console.WriteLine("Something went wrong parsing VPK");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // VPK
-                else if (ft == SupportedFileType.VPK)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting VPK contents");
+                    // Extract the VPK contents to the directory
+                    BinaryObjectScanner.FileType.VPK.ExtractAll(vpk, outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting VPK: {ex}");
                     Console.WriteLine();
+                }
+            }
 
-                    var vpk = VPK.Create(stream);
-                    if (vpk == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing VPK");
-                        Console.WriteLine();
-                        return;
-                    }
+            // WAD
+            else if (ft == SupportedFileType.WAD)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting WAD contents");
+                Console.WriteLine();
 
-                    try
-                    {
-                        // Extract the VPK contents to the directory
-                        BinaryObjectScanner.FileType.VPK.ExtractAll(vpk, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting VPK: {ex}");
-                        Console.WriteLine();
-                    }
+                var wad = WAD.Create(stream);
+                if (wad == null)
+                {
+                    Console.WriteLine("Something went wrong parsing WAD");
+                    Console.WriteLine();
+                    return;
                 }
 
-                // WAD
-                else if (ft == SupportedFileType.WAD)
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting WAD contents");
-                    Console.WriteLine();
-
-                    var wad = WAD.Create(stream);
-                    if (wad == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing WAD");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the WAD contents to the directory
-                        BinaryObjectScanner.FileType.WAD.ExtractAllLumps(wad, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting WAD: {ex}");
-                        Console.WriteLine();
-                    }
+                    // Extract the WAD contents to the directory
+                    BinaryObjectScanner.FileType.WAD.ExtractAllLumps(wad, outputDirectory);
                 }
-
-                // xz
-                else if (ft == SupportedFileType.RAR)
+                catch (Exception ex)
                 {
-                    // Build the xz information
-                    Console.WriteLine("Extracting xz contents");
+                    Console.WriteLine($"Something went wrong extracting WAD: {ex}");
                     Console.WriteLine();
+                }
+            }
+
+            // xz
+            else if (ft == SupportedFileType.RAR)
+            {
+                // Build the xz information
+                Console.WriteLine("Extracting xz contents");
+                Console.WriteLine();
 
 #if NET462_OR_GREATER
                     using (var xzFile = new XZStream(stream))
@@ -873,45 +871,44 @@ namespace Test
                         }
                     }
 #else
-                    Console.WriteLine($"Extracting xz not supported on this .NET version");
-                    Console.WriteLine();
+                Console.WriteLine($"Extracting xz not supported on this .NET version");
+                Console.WriteLine();
 #endif
-                }
+            }
 
-                // XZP
-                else if (ft == SupportedFileType.XZP)
+            // XZP
+            else if (ft == SupportedFileType.XZP)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting XZP contents");
+                Console.WriteLine();
+
+                var xzp = XZP.Create(stream);
+                if (xzp == null)
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting XZP contents");
-                    Console.WriteLine();
-
-                    var xzp = XZP.Create(stream);
-                    if (xzp == null)
-                    {
-                        Console.WriteLine("Something went wrong parsing XZP");
-                        Console.WriteLine();
-                        return;
-                    }
-
-                    try
-                    {
-                        // Extract the XZP contents to the directory
-                        BinaryObjectScanner.FileType.XZP.ExtractAll(xzp, outputDirectory);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting XZP: {ex}");
-                        Console.WriteLine();
-                    }
-                }
-
-                // Everything else
-                else
-                {
-                    Console.WriteLine("Not a supported extractable file format, skipping...");
+                    Console.WriteLine("Something went wrong parsing XZP");
                     Console.WriteLine();
                     return;
                 }
+
+                try
+                {
+                    // Extract the XZP contents to the directory
+                    BinaryObjectScanner.FileType.XZP.ExtractAll(xzp, outputDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting XZP: {ex}");
+                    Console.WriteLine();
+                }
+            }
+
+            // Everything else
+            else
+            {
+                Console.WriteLine("Not a supported extractable file format, skipping...");
+                Console.WriteLine();
+                return;
             }
         }
     }

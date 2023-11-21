@@ -40,9 +40,7 @@ namespace BinaryObjectScanner.FileType
         {
             get
             {
-                if (contentCheckClasses == null)
-                    contentCheckClasses = InitCheckClasses<IContentCheck>();
-
+                contentCheckClasses ??= InitCheckClasses<IContentCheck>();
                 return contentCheckClasses ?? Enumerable.Empty<IContentCheck>();
             }
         }
@@ -54,9 +52,7 @@ namespace BinaryObjectScanner.FileType
         {
             get
             {
-                if (linearExecutableCheckClasses == null)
-                    linearExecutableCheckClasses = InitCheckClasses<ILinearExecutableCheck>();
-
+                linearExecutableCheckClasses ??= InitCheckClasses<ILinearExecutableCheck>();
                 return linearExecutableCheckClasses ?? Enumerable.Empty<ILinearExecutableCheck>();
             }
         }
@@ -68,9 +64,7 @@ namespace BinaryObjectScanner.FileType
         {
             get
             {
-                if (msdosExecutableCheckClasses == null)
-                    msdosExecutableCheckClasses = InitCheckClasses<IMSDOSExecutableCheck>();
-
+                msdosExecutableCheckClasses ??= InitCheckClasses<IMSDOSExecutableCheck>();
                 return msdosExecutableCheckClasses ?? Enumerable.Empty<IMSDOSExecutableCheck>();
             }
         }
@@ -82,9 +76,7 @@ namespace BinaryObjectScanner.FileType
         {
             get
             {
-                if (newExecutableCheckClasses == null)
-                    newExecutableCheckClasses = InitCheckClasses<INewExecutableCheck>();
-
+                newExecutableCheckClasses ??= InitCheckClasses<INewExecutableCheck>();
                 return newExecutableCheckClasses ?? Enumerable.Empty<INewExecutableCheck>();
             }
         }
@@ -96,9 +88,7 @@ namespace BinaryObjectScanner.FileType
         {
             get
             {
-                if (portableExecutableCheckClasses == null)
-                    portableExecutableCheckClasses = InitCheckClasses<IPortableExecutableCheck>();
-
+                portableExecutableCheckClasses ??= InitCheckClasses<IPortableExecutableCheck>();
                 return portableExecutableCheckClasses ?? Enumerable.Empty<IPortableExecutableCheck>();
             }
         }
@@ -140,10 +130,8 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Detect(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Detect(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -211,19 +199,17 @@ namespace BinaryObjectScanner.FileType
                 return null;
 
             // Read the file contents
-            byte[] fileContent = new byte[0];
+            byte[] fileContent = [];
             try
             {
 #if NET40
-                using (BinaryReader br = new BinaryReader(stream, Encoding.Default))
+                using var br = new BinaryReader(stream, Encoding.Default);
 #else
-                using (BinaryReader br = new BinaryReader(stream, Encoding.Default, true))
+                using var br = new BinaryReader(stream, Encoding.Default, true);
 #endif
-                {
-                    fileContent = br.ReadBytes((int)stream.Length);
-                    if (fileContent == null)
-                        return null;
-                }
+                fileContent = br.ReadBytes((int)stream.Length);
+                if (fileContent == null)
+                    return null;
             }
             catch (Exception ex)
             {

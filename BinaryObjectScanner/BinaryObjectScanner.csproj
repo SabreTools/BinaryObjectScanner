@@ -54,6 +54,21 @@
     </Content>
   </ItemGroup>
 
+  <!-- Support for old .NET versions -->
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net40`))">
+    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
+    <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
+    <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
+    <PackageReference Include="SharpCompress" Version="0.34.1" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="OpenMcdf" Version="2.3.0" />
     <PackageReference Include="SabreTools.Compression" Version="0.2.0" />
@@ -63,20 +78,6 @@
     <PackageReference Include="SabreTools.Serialization" Version="1.2.1" />
     <PackageReference Include="UnshieldSharp" Version="1.7.0" />
     <PackageReference Include="WiseUnpacker" Version="1.2.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(TargetFramework.StartsWith(`net40`))">
-    <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
-    <PackageReference Include="SharpCompress" Version="0.34.1" />
-    <PackageReference Include="SharpZipLib" Version="1.4.2" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
-    <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
 </Project>
