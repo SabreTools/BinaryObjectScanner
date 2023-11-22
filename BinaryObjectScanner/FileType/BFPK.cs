@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 #endif
@@ -123,7 +123,7 @@ namespace BinaryObjectScanner.FileType
                     {
                         fs.Write(data, 0, compressedSize);
                     }
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
                     else
                     {
                         MemoryStream ms = new MemoryStream(data);

@@ -45,7 +45,7 @@ namespace BinaryObjectScanner.Protection
                     };
 
                         var match = MatchUtil.GetFirstMatch(file, dcrtextData, matchers, includeDebug);
-                        if (!string.IsNullOrWhiteSpace(match))
+                        if (!string.IsNullOrEmpty(match))
                             return match;
                     }
                 }
@@ -73,7 +73,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             int position = positions[0];
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] versionBytes = new byte[8];
             Array.Copy(fileContent, position + 67, versionBytes, 0, 8);
             char[] version = versionBytes.Select(b => (char)b).ToArray();

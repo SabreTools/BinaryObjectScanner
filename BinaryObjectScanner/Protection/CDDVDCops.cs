@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -162,7 +164,7 @@ namespace BinaryObjectScanner.Protection
             };
 
                 var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
@@ -182,7 +184,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
             var matchers = new List<PathMatchSet>
@@ -228,7 +234,7 @@ namespace BinaryObjectScanner.Protection
             if (fileContent == null)
                 return null;
 
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] versionBytes = new byte[4];
             Array.Copy(fileContent, positions[0] + 15, versionBytes, 0, 4);
             char[] version = versionBytes.Select(b => (char)b).ToArray();

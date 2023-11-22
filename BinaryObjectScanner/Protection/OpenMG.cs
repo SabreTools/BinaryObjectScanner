@@ -1,5 +1,7 @@
 using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
@@ -64,7 +66,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -82,8 +88,8 @@ namespace BinaryObjectScanner.Protection
                 // Always found together on OpenMG releases ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
                 new PathMatchSet(new List<PathMatch>
                 {
-                    new PathMatch(Path.Combine("SDKHM.DLL").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("SDKHM.EXE").Replace("\\", "/"), useEndsWith: true),
+                    new FilePathMatch("SDKHM.DLL"),
+                    new FilePathMatch("SDKHM.EXE"),
                 }, "OpenMG"),
             };
 

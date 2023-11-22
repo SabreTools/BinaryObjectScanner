@@ -1,4 +1,6 @@
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
@@ -10,11 +12,19 @@ namespace BinaryObjectScanner.Protection
     public class Zzxzz : IPathCheck
     {
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
+#if NET20 || NET35
+                new PathMatchSet(Path.Combine(Path.Combine(path, "Zzxzz"), "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+#else
                 new PathMatchSet(Path.Combine(path, "Zzxzz", "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+#endif
                 new PathMatchSet($"Zzxzz/", "Zzxzz"),
             };
 

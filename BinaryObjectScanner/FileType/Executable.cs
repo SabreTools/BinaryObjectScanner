@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -143,7 +145,11 @@ namespace BinaryObjectScanner.FileType
                 return null;
 
             // Create the internal queue
+#if NET20 || NET35
+            var protections = new Queue<string>();
+#else
             var protections = new ConcurrentQueue<string>();
+#endif
 
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
@@ -178,7 +184,7 @@ namespace BinaryObjectScanner.FileType
                     protections.AddRange(subProtections.Values.ToArray());
             }
 
-            return string.Join(";", protections);
+            return string.Join(";", [.. protections]);
         }
 
         #region Check Runners
@@ -190,10 +196,14 @@ namespace BinaryObjectScanner.FileType
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public Dictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
+#else
         public ConcurrentDictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
+#endif
         {
             // If we have an invalid file
-            if (string.IsNullOrWhiteSpace(file))
+            if (string.IsNullOrEmpty(file))
                 return null;
             else if (!File.Exists(file))
                 return null;
@@ -202,7 +212,7 @@ namespace BinaryObjectScanner.FileType
             byte[] fileContent = [];
             try
             {
-#if NET40
+#if NET20 || NET35 || NET40
                 using var br = new BinaryReader(stream, Encoding.Default);
 #else
                 using var br = new BinaryReader(stream, Encoding.Default, true);
@@ -218,26 +228,51 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<IContentCheck, string>();
+#else
             var protections = new ConcurrentDictionary<IContentCheck, string>();
+#endif
 
             // Iterate through all checks
+#if NET20 || NET35
+            foreach (var checkClass in ContentCheckClasses)
+#else
             Parallel.ForEach(ContentCheckClasses, checkClass =>
+#endif
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckContents(file!, fileContent, includeDebug);
-                if (string.IsNullOrWhiteSpace(protection))
+                if (string.IsNullOrEmpty(protection))
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
+#if NET20 || NET35
+                protections[checkClass] = protection!;
+            }
+#else
                 protections.TryAdd(checkClass, protection!);
             });
+#endif
 
             return protections;
         }
@@ -249,29 +284,58 @@ namespace BinaryObjectScanner.FileType
         /// <param name="lex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public Dictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
+#else
         public ConcurrentDictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
+#endif
         {
             // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<ILinearExecutableCheck, string>();
+#else
             var protections = new ConcurrentDictionary<ILinearExecutableCheck, string>();
+#endif
 
             // Iterate through all checks
+#if NET20 || NET35
+            foreach (var checkClass in LinearExecutableCheckClasses)
+#else
             Parallel.ForEach(LinearExecutableCheckClasses, checkClass =>
+#endif
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
-                if (string.IsNullOrWhiteSpace(protection))
+                if (string.IsNullOrEmpty(protection))
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
+#if NET20 || NET35
+                protections[checkClass] = protection!;
+            }
+#else
                 protections.TryAdd(checkClass, protection!);
             });
+#endif
 
             return protections;
         }
@@ -283,29 +347,58 @@ namespace BinaryObjectScanner.FileType
         /// <param name="mz">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public Dictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
+#else
         public ConcurrentDictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
+#endif
         {
             // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<IMSDOSExecutableCheck, string>();
+#else
             var protections = new ConcurrentDictionary<IMSDOSExecutableCheck, string>();
+#endif
 
             // Iterate through all checks
+#if NET20 || NET35
+            foreach (var checkClass in MSDOSExecutableCheckClasses)
+#else
             Parallel.ForEach(MSDOSExecutableCheckClasses, checkClass =>
+#endif
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
-                if (string.IsNullOrWhiteSpace(protection))
+                if (string.IsNullOrEmpty(protection))
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
+#if NET20 || NET35
+                protections[checkClass] = protection!;
+            }
+#else
                 protections.TryAdd(checkClass, protection!);
             });
+#endif
 
             return protections;
         }
@@ -317,29 +410,58 @@ namespace BinaryObjectScanner.FileType
         /// <param name="nex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public Dictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
+#else
         public ConcurrentDictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
+#endif
         {
             // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<INewExecutableCheck, string>();
+#else
             var protections = new ConcurrentDictionary<INewExecutableCheck, string>();
+#endif
 
             // Iterate through all checks
+#if NET20 || NET35
+            foreach (var checkClass in NewExecutableCheckClasses)
+#else
             Parallel.ForEach(NewExecutableCheckClasses, checkClass =>
+#endif
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
-                if (string.IsNullOrWhiteSpace(protection))
+                if (string.IsNullOrEmpty(protection))
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
+#if NET20 || NET35
+                protections[checkClass] = protection!;
+            }
+#else
                 protections.TryAdd(checkClass, protection!);
             });
+#endif
 
             return protections;
         }
@@ -351,34 +473,63 @@ namespace BinaryObjectScanner.FileType
         /// <param name="pex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public Dictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
+#else
         public ConcurrentDictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
+#endif
         {
             // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<IPortableExecutableCheck, string>();
+#else
             var protections = new ConcurrentDictionary<IPortableExecutableCheck, string>();
+#endif
 
             // Iterate through all checks
+#if NET20 || NET35
+            foreach (var checkClass in PortableExecutableCheckClasses)
+#else
             Parallel.ForEach(PortableExecutableCheckClasses, checkClass =>
+#endif
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
-                if (string.IsNullOrWhiteSpace(protection))
+                if (string.IsNullOrEmpty(protection))
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
+#if NET20 || NET35
+                    continue;
+#else
                     return;
+#endif
 
+#if NET20 || NET35
+                protections[checkClass] = protection!;
+            }
+#else
                 protections.TryAdd(checkClass, protection!);
             });
+#endif
 
             return protections;
         }
 
-        #endregion
+#endregion
 
         #region Initializers
 

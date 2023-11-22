@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using ICSharpCode.SharpZipLib.Zip.Compression;
 #endif
 
@@ -167,7 +167,16 @@ namespace BinaryObjectScanner.FileType
 
             // Reverse and assemble the filename
             parentNames.Reverse();
+#if NET20 || NET35
+            var parentNamesArray = parentNames.Cast<string>().ToArray();
+            filename = parentNamesArray[0];
+            for (int i = 1; i < parentNamesArray.Length; i++)
+            {
+                filename = Path.Combine(filename, parentNamesArray[i]);
+            }
+#else
             filename = Path.Combine(parentNames.Cast<string>().ToArray());
+#endif
 
             // Get the file offset
             long fileOffset;
@@ -224,7 +233,7 @@ namespace BinaryObjectScanner.FileType
             else
             {
                 // Decompress the data
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
                 data = new byte[outputFileSize];
                 Inflater inflater = new Inflater();
                 inflater.SetInput(compressedData);
@@ -235,7 +244,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // If we have an invalid output directory
-            if (string.IsNullOrWhiteSpace(outputDirectory))
+            if (string.IsNullOrEmpty(outputDirectory))
                 return false;
 
             // Create the full output path

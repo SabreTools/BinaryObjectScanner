@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -85,7 +87,7 @@ namespace BinaryObjectScanner.Protection
             };
 
             // TODO: Re-enable all Entry Point checks after implementing
-            // if (pex.ContainsSection(".arch") || pex.ContainsSection(".srdata") || !string.IsNullOrWhiteSpace(MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, timingMatchers, includeDebug)))
+            // if (pex.ContainsSection(".arch") || pex.ContainsSection(".srdata") || !string.IsNullOrEmpty(MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, timingMatchers, includeDebug)))
             // {
             //     if (pex.OH_Magic == OptionalHeaderType.PE32Plus)
             //     {
@@ -158,7 +160,7 @@ namespace BinaryObjectScanner.Protection
             //         };
 
             //         var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-            //         if (!string.IsNullOrWhiteSpace(match))
+            //         if (!string.IsNullOrEmpty(match))
             //             return match;
 
             //         return "Denuvo (Unknown x64 Version)";
@@ -224,7 +226,7 @@ namespace BinaryObjectScanner.Protection
             //         };
 
             //         var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-            //         if (!string.IsNullOrWhiteSpace(match))
+            //         if (!string.IsNullOrEmpty(match))
             //             return match;
 
             //         //// Check if steam_api64.dll present
@@ -255,7 +257,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

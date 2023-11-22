@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -144,7 +146,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET20 || NET35
+        internal Queue<string> SafeCastCheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         internal ConcurrentQueue<string> SafeCastCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

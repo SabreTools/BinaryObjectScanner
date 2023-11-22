@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Packer
             if (nex.Model.Stub?.Header?.Reserved2?[4] == 0x6E49 && nex.Model.Stub?.Header?.Reserved2?[5] == 0x6F6E)
             {
                 string version = GetOldVersion(file, nex);
-                if (!string.IsNullOrWhiteSpace(version))
+                if (!string.IsNullOrEmpty(version))
                     return $"Inno Setup {version}";
                 
                 return "Inno Setup (Unknown Version)";

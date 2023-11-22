@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Compressors.Xz;
 #endif
 
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 // Create a temp output directory

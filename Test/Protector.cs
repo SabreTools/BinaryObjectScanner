@@ -1,8 +1,13 @@
 using System;
+#if NET20 || NET35
+using System.Collections.Generic;
+#else
 using System.Collections.Concurrent;
+#endif
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner;
+using BinaryObjectScanner.Utilities;
 
 namespace Test
 {
@@ -39,7 +44,11 @@ namespace Test
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
+#if NET20 || NET35
+        private static void WriteProtectionResultFile(string path, Dictionary<string, Queue<string>>? protections)
+#else
         private static void WriteProtectionResultFile(string path, ConcurrentDictionary<string, ConcurrentQueue<string>>? protections)
+#endif
         {
             if (protections == null)
             {
@@ -54,7 +63,7 @@ namespace Test
                 if (protections[key] == null || !protections[key].Any())
                     continue;
 
-                string line = $"{key}: {string.Join(", ", protections[key].OrderBy(p => p))}";
+                string line = $"{key}: {string.Join(", ", [.. protections[key].OrderBy(p => p)])}";
                 Console.WriteLine(line);
                 sw.WriteLine(line);
             }

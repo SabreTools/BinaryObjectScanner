@@ -1,5 +1,7 @@
 using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,15 +51,24 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // All found to be present on at multiple albums with LabelGate CD2 (Redump entry 95010 and product ID SVWC-7185), the original version of LabelGate still needs to be investigated.
                 new PathMatchSet(new List<PathMatch>
                 {
+#if NET20 || NET35
+                    new PathMatch(Path.Combine(Path.Combine("BIN", "WIN32"), "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
+                    new PathMatch(Path.Combine(Path.Combine("BIN", "WIN32"), "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+#else
                     new PathMatch(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
                     new PathMatch(Path.Combine("BIN", "WIN32", "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+#endif
                 }, "LabelGate CD2 Media Player"),
 
                 // All of these are also found present on all known LabelGate CD2 releases, though an additional file "RESERVED.DAT" is found in the same directory in at least one release (Product ID SVWC-7185)

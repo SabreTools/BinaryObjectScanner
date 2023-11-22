@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -66,7 +68,7 @@ namespace BinaryObjectScanner.ProtectionType
                 };
 
                     var match = MatchUtil.GetFirstMatch(file, initData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
+                    if (!string.IsNullOrEmpty(match))
                         return match;
                 }
             }
@@ -109,7 +111,11 @@ namespace BinaryObjectScanner.ProtectionType
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -150,7 +156,7 @@ namespace BinaryObjectScanner.ProtectionType
 
             int position = positions[0];
 
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] id1 = new byte[3];
             Array.Copy(fileContent, position + 5, id1, 0, 3);
             byte[] id2 = new byte[4];
@@ -180,7 +186,7 @@ namespace BinaryObjectScanner.ProtectionType
                 return null;
 
             int position = positions[0];
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] id1 = new byte[3];
             Array.Copy(fileContent, position + 4, id1, 0, 3);
             byte[] id2 = new byte[4];
@@ -224,7 +230,7 @@ namespace BinaryObjectScanner.ProtectionType
         private static string GetInternalVersion(PortableExecutable pex)
         {
             var companyName = pex.CompanyName?.ToLowerInvariant();
-            if (!string.IsNullOrWhiteSpace(companyName) && (companyName!.Contains("solidshield") || companyName.Contains("tages")))
+            if (!string.IsNullOrEmpty(companyName) && (companyName!.Contains("solidshield") || companyName.Contains("tages")))
                 return pex.GetInternalVersion() ?? string.Empty;
 
             return string.Empty;

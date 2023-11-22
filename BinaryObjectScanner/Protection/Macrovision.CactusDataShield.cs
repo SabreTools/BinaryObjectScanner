@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -64,7 +66,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET20 || NET35
+        internal Queue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         internal ConcurrentQueue<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
@@ -124,10 +130,10 @@ namespace BinaryObjectScanner.Protection
 
             // Find the version.txt file first
             var versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
-            if (!string.IsNullOrWhiteSpace(versionPath))
+            if (!string.IsNullOrEmpty(versionPath))
             {
                 var version = GetCactusDataShieldInternalVersion(versionPath);
-                if (!string.IsNullOrWhiteSpace(version))
+                if (!string.IsNullOrEmpty(version))
                     return version!;
             }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -111,7 +113,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
@@ -169,7 +175,7 @@ namespace BinaryObjectScanner.Protection
             if (versionTwo)
             {
                 int index = position + 14;
-#if NET40
+#if NET20 || NET35 || NET40
                 byte[] temp = new byte[2];
                 Array.Copy(sectionContent, index, temp, 0, 2);
                 day = new string(temp.Select(b => (char)b).ToArray());
@@ -190,7 +196,7 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 int index = position + 13;
-#if NET40
+#if NET20 || NET35 || NET40
                 byte[] temp = new byte[2];
                 Array.Copy(sectionContent, index, temp, 0, 2);
                 day = new string(temp.Select(b => (char)b).ToArray());
@@ -218,7 +224,7 @@ namespace BinaryObjectScanner.Protection
             if (sectionContent == null)
                 return null;
 
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] temp = new byte[4];
             Array.Copy(sectionContent, position + 76, temp, 0, 4);
             return new string(temp.Select(b => (char)b).ToArray());
@@ -241,7 +247,7 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetVersion16Bit(byte[] fileContent)
         {
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] temp = new byte[7];
             Array.Copy(fileContent, 71, temp, 0, 7);
             char[] version = temp.Select(b => (char)b).ToArray();

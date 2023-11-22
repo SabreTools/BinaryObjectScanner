@@ -270,7 +270,7 @@ namespace Test
         private static bool ValidateExtractionPath(Options options)
         {
             // Null or empty output path
-            if (string.IsNullOrWhiteSpace(options.OutputPath))
+            if (string.IsNullOrEmpty(options.OutputPath))
             {
                 Console.WriteLine("Output directory required for extraction!");
                 Console.WriteLine();

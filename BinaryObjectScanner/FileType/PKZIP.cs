@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 #endif
@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.FileType
             if (stream == null)
                 return null;
 
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 // Create a temp output directory

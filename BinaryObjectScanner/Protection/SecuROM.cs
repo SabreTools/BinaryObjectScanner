@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,7 +67,7 @@ namespace BinaryObjectScanner.Protection
                 if (nthSection == null)
                     continue;
 
-#if NET40 || NET452
+#if NET20 || NET35 || NET40 || NET452
                 string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? []).TrimEnd('\0');
 #else
                 string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? Array.Empty<byte>()).TrimEnd('\0');
@@ -83,7 +85,7 @@ namespace BinaryObjectScanner.Protection
                     };
 
                     var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
+                    if (!string.IsNullOrEmpty(match))
                         return match;
                 }
             }
@@ -109,7 +111,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

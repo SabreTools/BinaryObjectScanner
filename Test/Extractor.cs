@@ -3,10 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Utilities;
+#if NET40_OR_GREATER || NETCOREAPP
 using OpenMcdf;
+#endif
 using SabreTools.IO;
 using SabreTools.Serialization.Wrappers;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Archives;
 using SharpCompress.Archives.GZip;
 using SharpCompress.Archives.Rar;
@@ -17,8 +19,10 @@ using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Xz;
 #endif
+#if NET40_OR_GREATER || NETCOREAPP
 using UnshieldSharp.Archive;
 using UnshieldSharp.Cabinet;
+#endif
 
 namespace Test
 {
@@ -40,7 +44,11 @@ namespace Test
             }
             else if (Directory.Exists(path))
             {
+#if NET20 || NET35
+                foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+#else
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+#endif
                 {
                     ExtractFile(file, outputDirectory);
                 }
@@ -76,40 +84,40 @@ namespace Test
                 Console.WriteLine("Extracting 7-zip contents");
                 Console.WriteLine();
 
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
                 // If the 7-zip file itself fails
-#if NET462_OR_GREATER
-                    try
+                try
+                {
+                    using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
                     {
-                        using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
+                        foreach (var entry in sevenZipFile.Entries)
                         {
-                            foreach (var entry in sevenZipFile.Entries)
+                            // If an individual entry fails
+                            try
                             {
-                                // If an individual entry fails
-                                try
-                                {
-                                    // If we have a directory, skip it
-                                    if (entry.IsDirectory)
-                                        continue;
+                                // If we have a directory, skip it
+                                if (entry.IsDirectory)
+                                    continue;
 
-                                    string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                    entry.WriteToFile(tempFile);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Something went wrong extracting 7-zip entry {entry.Key}: {ex}");
-                                    Console.WriteLine();
-                                }
+                                string tempFile = Path.Combine(outputDirectory, entry.Key);
+                                entry.WriteToFile(tempFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Something went wrong extracting 7-zip entry {entry.Key}: {ex}");
+                                Console.WriteLine();
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting 7-zip: {ex}");
-                        Console.WriteLine();
-                    }
-#else
-                Console.WriteLine($"Extracting 7-zip not supported on this .NET version");
-                Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting 7-zip: {ex}");
+                    Console.WriteLine();
+                }
 #endif
             }
 
@@ -175,27 +183,27 @@ namespace Test
                 Console.WriteLine("Extracting bzip2 contents");
                 Console.WriteLine();
 
-#if NET462_OR_GREATER
-                    using (var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
+                using (var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
+                {
+                    // If an individual entry fails
+                    try
                     {
-                        // If an individual entry fails
-                        try
+                        string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
+                        using (FileStream fs = File.OpenWrite(tempFile))
                         {
-                            string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
-                            using (FileStream fs = File.OpenWrite(tempFile))
-                            {
-                                bz2File.CopyTo(fs);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Something went wrong extracting bzip2: {ex}");
-                            Console.WriteLine();
+                            bz2File.CopyTo(fs);
                         }
                     }
-#else
-                Console.WriteLine($"Extracting bzip2 not supported on this .NET version");
-                Console.WriteLine();
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Something went wrong extracting bzip2: {ex}");
+                        Console.WriteLine();
+                    }
+                }
 #endif
             }
 
@@ -206,6 +214,7 @@ namespace Test
                 Console.WriteLine("Extracting CFB contents");
                 Console.WriteLine();
 
+#if NET45_OR_GREATER || NETCOREAPP
                 // If the CFB file itself fails
                 try
                 {
@@ -245,6 +254,7 @@ namespace Test
                     Console.WriteLine($"Something went wrong extracting CFB: {ex}");
                     Console.WriteLine();
                 }
+#endif
             }
 
             // GCF
@@ -281,32 +291,32 @@ namespace Test
                 Console.WriteLine("Extracting gzip contents");
                 Console.WriteLine();
 
-#if NET462_OR_GREATER
-                    using (var zipFile = GZipArchive.Open(stream))
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
+                using (var zipFile = GZipArchive.Open(stream))
+                {
+                    foreach (var entry in zipFile.Entries)
                     {
-                        foreach (var entry in zipFile.Entries)
+                        // If an individual entry fails
+                        try
                         {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
 
-                                string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                entry.WriteToFile(tempFile);
-                            }
+                            string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
 
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting gzip entry {entry.Key}: {ex}");
-                                Console.WriteLine();
-                            }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting gzip entry {entry.Key}: {ex}");
+                            Console.WriteLine();
                         }
                     }
-#else
-                Console.WriteLine($"Extracting gzip not supported on this .NET version");
-                Console.WriteLine();
+                }
 #endif
             }
 
@@ -317,6 +327,7 @@ namespace Test
                 Console.WriteLine("Extracting InstallShield Archive V3 contents");
                 Console.WriteLine();
 
+#if NET40_OR_GREATER || NETCOREAPP
                 // If the cab file itself fails
                 try
                 {
@@ -332,7 +343,7 @@ namespace Test
                                 Directory.CreateDirectory(directoryName);
 
                             (byte[]? fileContents, string? error) = archive.Extract(cfile.FullPath ?? string.Empty);
-                            if (!string.IsNullOrWhiteSpace(error))
+                            if (!string.IsNullOrEmpty(error))
                                 continue;
 
                             if (fileContents != null && fileContents.Length > 0)
@@ -353,6 +364,7 @@ namespace Test
                     Console.WriteLine($"Something went wrong extracting InstallShield Archive V3: {ex}");
                     Console.WriteLine();
                 }
+#endif
             }
 
             // IS-CAB archive
@@ -362,6 +374,10 @@ namespace Test
                 Console.WriteLine("Extracting IS-CAB contents");
                 Console.WriteLine();
 
+#if NET20 || NET35 || NET40
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
                 // If the cab file itself fails
                 try
                 {
@@ -396,6 +412,7 @@ namespace Test
                     Console.WriteLine($"Something went wrong extracting IS-CAB: {ex}");
                     Console.WriteLine();
                 }
+#endif
             }
 
             // Microsoft Cabinet archive
@@ -464,63 +481,63 @@ namespace Test
                 }
             }
 
-#if NETFRAMEWORK && !NET40
-                // MoPaQ (MPQ) archive
-                else if (ft == SupportedFileType.MPQ)
+#if NETFRAMEWORK && !NET20 && !NET35 && !NET40
+            // MoPaQ (MPQ) archive
+            else if (ft == SupportedFileType.MPQ)
+            {
+                // Build the archive information
+                Console.WriteLine("Extracting MoPaQ contents");
+                Console.WriteLine();
+
+                // If the MPQ file itself fails
+                try
                 {
-                    // Build the archive information
-                    Console.WriteLine("Extracting MoPaQ contents");
-                    Console.WriteLine();
-
-                    // If the MPQ file itself fails
-                    try
+                    using (var mpqArchive = new StormLibSharp.MpqArchive(file, FileAccess.Read))
                     {
-                        using (var mpqArchive = new StormLibSharp.MpqArchive(file, FileAccess.Read))
+                        // Try to open the listfile
+                        string? listfile = null;
+                        StormLibSharp.MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
+
+                        // If we can't read the listfile, we just return
+                        if (!listStream.CanRead)
                         {
-                            // Try to open the listfile
-                            string? listfile = null;
-                            StormLibSharp.MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
+                            Console.WriteLine("Could not read the listfile, extraction halted!");
+                            Console.WriteLine();
+                        }
 
-                            // If we can't read the listfile, we just return
-                            if (!listStream.CanRead)
+                        // Read the listfile in for processing
+                        using (StreamReader sr = new StreamReader(listStream))
+                        {
+                            listfile = sr.ReadToEnd();
+                        }
+
+                        // Split the listfile by newlines
+                        string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
+
+                        // Loop over each entry
+                        foreach (string sub in listfileLines)
+                        {
+                            // If an individual entry fails
+                            try
                             {
-                                Console.WriteLine("Could not read the listfile, extraction halted!");
+                                string tempFile = Path.Combine(outputDirectory, sub);
+                                Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+                                mpqArchive.ExtractFile(sub, tempFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Something went wrong extracting MoPaQ entry {sub}: {ex}");
                                 Console.WriteLine();
-                            }
-
-                            // Read the listfile in for processing
-                            using (StreamReader sr = new StreamReader(listStream))
-                            {
-                                listfile = sr.ReadToEnd();
-                            }
-
-                            // Split the listfile by newlines
-                            string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
-
-                            // Loop over each entry
-                            foreach (string sub in listfileLines)
-                            {
-                                // If an individual entry fails
-                                try
-                                {
-                                    string tempFile = Path.Combine(outputDirectory, sub);
-                                    Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                                    mpqArchive.ExtractFile(sub, tempFile);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Something went wrong extracting MoPaQ entry {sub}: {ex}");
-                                    Console.WriteLine();
-                                }
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting MoPaQ: {ex}");
-                        Console.WriteLine();
-                    }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting MoPaQ: {ex}");
+                    Console.WriteLine();
+                }
+            }
 #endif
 
             // PAK
@@ -584,41 +601,43 @@ namespace Test
                 Console.WriteLine("Extracting PKZIP contents");
                 Console.WriteLine();
 
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
                 // If the zip file itself fails
-#if NET462_OR_GREATER
-                    try
+                try
+                {
+                    using (ZipArchive zipFile = ZipArchive.Open(stream))
                     {
-                        using (ZipArchive zipFile = ZipArchive.Open(stream))
+                        foreach (var entry in zipFile.Entries)
                         {
-                            foreach (var entry in zipFile.Entries)
+                            // If an individual entry fails
+                            try
                             {
-                                // If an individual entry fails
-                                try
-                                {
-                                    // If we have a directory, skip it
-                                    if (entry.IsDirectory)
-                                        continue;
+                                // If we have a directory, skip it
+                                if (entry.IsDirectory)
+                                    continue;
 
-                                    string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                    Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                                    entry.WriteToFile(tempFile);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Something went wrong extracting PKZIP entry {entry.Key}: {ex}");
-                                    Console.WriteLine();
-                                }
+                                string tempFile = Path.Combine(outputDirectory, entry.Key);
+                                string? directoryName = Path.GetDirectoryName(tempFile);
+                                if (directoryName != null)
+                                    Directory.CreateDirectory(directoryName);
+                                entry.WriteToFile(tempFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Something went wrong extracting PKZIP entry {entry.Key}: {ex}");
+                                Console.WriteLine();
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting PKZIP: {ex}");
-                        Console.WriteLine();
-                    }
-#else
-                Console.WriteLine($"Extracting PKZIP not supported on this .NET version");
-                Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting PKZIP: {ex}");
+                    Console.WriteLine();
+                }
 #endif
             }
 
@@ -656,40 +675,40 @@ namespace Test
                 Console.WriteLine("Extracting RAR contents");
                 Console.WriteLine();
 
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
                 // If the rar file itself fails
-#if NET462_OR_GREATER
-                    try
+                try
+                {
+                    using (RarArchive rarFile = RarArchive.Open(stream))
                     {
-                        using (RarArchive rarFile = RarArchive.Open(stream))
+                        foreach (var entry in rarFile.Entries)
                         {
-                            foreach (var entry in rarFile.Entries)
+                            // If an individual entry fails
+                            try
                             {
-                                // If an individual entry fails
-                                try
-                                {
-                                    // If we have a directory, skip it
-                                    if (entry.IsDirectory)
-                                        continue;
+                                // If we have a directory, skip it
+                                if (entry.IsDirectory)
+                                    continue;
 
-                                    string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                    entry.WriteToFile(tempFile);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Something went wrong extracting RAR entry {entry.Key}: {ex}");
-                                    Console.WriteLine();
-                                }
+                                string tempFile = Path.Combine(outputDirectory, entry.Key);
+                                entry.WriteToFile(tempFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Something went wrong extracting RAR entry {entry.Key}: {ex}");
+                                Console.WriteLine();
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting RAR: {ex}");
-                        Console.WriteLine();
-                    }
-#else
-                Console.WriteLine($"Extracting RAR not supported on this .NET version");
-                Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting RAR: {ex}");
+                    Console.WriteLine();
+                }
 #endif
             }
 
@@ -727,40 +746,40 @@ namespace Test
                 Console.WriteLine("Extracting Tape Archive contents");
                 Console.WriteLine();
 
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
                 // If the tar file itself fails
-#if NET462_OR_GREATER
-                    try
+                try
+                {
+                    using (TarArchive tarFile = TarArchive.Open(stream))
                     {
-                        using (TarArchive tarFile = TarArchive.Open(stream))
+                        foreach (var entry in tarFile.Entries)
                         {
-                            foreach (var entry in tarFile.Entries)
+                            // If an individual entry fails
+                            try
                             {
-                                // If an individual entry fails
-                                try
-                                {
-                                    // If we have a directory, skip it
-                                    if (entry.IsDirectory)
-                                        continue;
+                                // If we have a directory, skip it
+                                if (entry.IsDirectory)
+                                    continue;
 
-                                    string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                    entry.WriteToFile(tempFile);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine($"Something went wrong extracting Tape Archive entry {entry.Key}: {ex}");
-                                    Console.WriteLine();
-                                }
+                                string tempFile = Path.Combine(outputDirectory, entry.Key);
+                                entry.WriteToFile(tempFile);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Something went wrong extracting Tape Archive entry {entry.Key}: {ex}");
+                                Console.WriteLine();
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting Tape Archive: {ex}");
-                        Console.WriteLine();
-                    }
-#else
-                Console.WriteLine($"Extracting Tape Archive not supported on this .NET version");
-                Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting Tape Archive: {ex}");
+                    Console.WriteLine();
+                }
 #endif
             }
 
@@ -852,27 +871,27 @@ namespace Test
                 Console.WriteLine("Extracting xz contents");
                 Console.WriteLine();
 
-#if NET462_OR_GREATER
-                    using (var xzFile = new XZStream(stream))
+#if NET20 || NET35 || NET40 || NET452
+                Console.WriteLine("Extraction is not supported for this framework!");
+                Console.WriteLine();
+#else
+                using (var xzFile = new XZStream(stream))
+                {
+                    // If an individual entry fails
+                    try
                     {
-                        // If an individual entry fails
-                        try
+                        string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
+                        using (FileStream fs = File.OpenWrite(tempFile))
                         {
-                            string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
-                            using (FileStream fs = File.OpenWrite(tempFile))
-                            {
-                                xzFile.CopyTo(fs);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Something went wrong extracting xz: {ex}");
-                            Console.WriteLine();
+                            xzFile.CopyTo(fs);
                         }
                     }
-#else
-                Console.WriteLine($"Extracting xz not supported on this .NET version");
-                Console.WriteLine();
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Something went wrong extracting xz: {ex}");
+                        Console.WriteLine();
+                    }
+                }
 #endif
             }
 

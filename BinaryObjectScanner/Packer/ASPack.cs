@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Packer
             // {
             //     var matchers = GenerateMatchers();
             //     var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-            //     if (!string.IsNullOrWhiteSpace(match))
+            //     if (!string.IsNullOrEmpty(match))
             //         return match;
             // }
 
@@ -42,7 +42,7 @@ namespace BinaryObjectScanner.Packer
                 {
                     var matchers = GenerateMatchers();
                     var match = MatchUtil.GetFirstMatch(file, adataSectionRaw, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
+                    if (!string.IsNullOrEmpty(match))
                         return match;
                 }
             }

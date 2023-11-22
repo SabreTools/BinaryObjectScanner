@@ -367,7 +367,7 @@ namespace BinaryObjectScanner.Utilities
         public static SupportedFileType GetFileType(string extension)
         {
             // If we have an invalid extension
-            if (string.IsNullOrWhiteSpace(extension))
+            if (string.IsNullOrEmpty(extension))
                 return SupportedFileType.UNKNOWN;
 
             // Normalize the extension

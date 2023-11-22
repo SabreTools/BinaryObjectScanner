@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,16 +29,16 @@ namespace BinaryObjectScanner.Protection
 
             // Run C-Dilla NE checks
             var cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(cDilla))
+            if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
 
             // Run SafeCast NE checks
             var safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(safeCast))
+            if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", resultsList);
+                return string.Join(", ", resultsList.ToArray());
 
             return null;
         }
@@ -73,7 +75,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
-                if (!string.IsNullOrWhiteSpace(sectionMatch))
+                if (!string.IsNullOrEmpty(sectionMatch))
                 {
                     resultsList.Add(sectionMatch!);
                 }
@@ -81,7 +83,7 @@ namespace BinaryObjectScanner.Protection
                 {
                     // Get the .data section, if it exists, for protected sections.
                     sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
-                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                    if (!string.IsNullOrEmpty(sectionMatch))
                         resultsList.Add(sectionMatch!);
                 }
 
@@ -110,7 +112,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
-                if (!string.IsNullOrWhiteSpace(sectionMatch))
+                if (!string.IsNullOrEmpty(sectionMatch))
                 {
                     resultsList.Add(sectionMatch!);
                 }
@@ -118,133 +120,173 @@ namespace BinaryObjectScanner.Protection
                 {
                     // Check the .data section, if it exists, for protected sections.
                     sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
-                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                    if (!string.IsNullOrEmpty(sectionMatch))
                         resultsList.Add(sectionMatch!);
                 }
             }
 
             // Run Cactus Data Shield PE checks
             var match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run C-Dilla PE checks
             match = CDillaCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run RipGuard PE checks
             match = RipGuardCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeCast PE checks
             match = SafeCastCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeDisc PE checks
             match = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run FLEXnet PE checks
             match = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Clean the result list
             resultsList = CleanResultList(resultsList);
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", resultsList);
+                return string.Join(", ", resultsList.ToArray());
 
             return null;
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
+#if NET20 || NET35
+            var results = new Queue<string>();
+#else
             var results = new ConcurrentQueue<string>();
+#endif
 
             // Run Macrovision directory checks
             var macrovision = MacrovisionCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (macrovision != null && macrovision.Count > 0)
+#else
             if (macrovision != null && !macrovision.IsEmpty)
+#endif
                 results.AddRange(macrovision);
 
             // Run Cactus Data Shield directory checks
             var cactusDataShield = CactusDataShieldCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (cactusDataShield != null && cactusDataShield.Count > 0)
+#else
             if (cactusDataShield != null && !cactusDataShield.IsEmpty)
+#endif
                 results.AddRange(cactusDataShield);
 
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (cDilla != null && cDilla.Count > 0)
+#else
             if (cDilla != null && !cDilla.IsEmpty)
+#endif
                 results.AddRange(cDilla);
 
             // Run RipGuard directory checks
             var ripGuard = RipGuardCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (ripGuard != null && ripGuard.Count > 0)
+#else
             if (ripGuard != null && !ripGuard.IsEmpty)
+#endif
                 results.AddRange(ripGuard);
 
             // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (safeCast != null && safeCast.Count > 0)
+#else
             if (safeCast != null && !safeCast.IsEmpty)
+#endif
                 results.AddRange(safeCast);
 
             // Run SafeDisc directory checks
             var safeDisc = SafeDiscCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (safeDisc != null && safeDisc.Count > 0)
+#else
             if (safeDisc != null && !safeDisc.IsEmpty)
+#endif
                 results.AddRange(safeDisc);
 
             if (results != null && results.Count > 0)
                 return results;
 
+#if NET20 || NET35
+            return new Queue<string>();
+#else
             return new ConcurrentQueue<string>();
+#endif
         }
 
         /// <inheritdoc/>
         public string? CheckFilePath(string path)
         {
-            List<string> resultsList = new List<string>();
+            var resultsList = new List<string>();
 
             // Run Macrovision file checks
             var macrovision = MacrovisionCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(macrovision))
+            if (!string.IsNullOrEmpty(macrovision))
                 resultsList.Add(macrovision!);
 
             // Run Cactus Data Shield file checks
             var cactusDataShield = CactusDataShieldCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(cactusDataShield))
+            if (!string.IsNullOrEmpty(cactusDataShield))
                 resultsList.Add(cactusDataShield!);
 
             // Run C-Dilla file checks
             var cDilla = CDillaCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(cDilla))
+            if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
 
             // Run RipGuard file checks
             var ripGuard = RipGuardCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(ripGuard))
+            if (!string.IsNullOrEmpty(ripGuard))
                 resultsList.Add(ripGuard!);
 
             // Run SafeCast file checks
             var safeCast = SafeCastCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(safeCast))
+            if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
             // Run SafeDisc file checks
             var safeDisc = SafeDiscCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(safeDisc))
+            if (!string.IsNullOrEmpty(safeDisc))
                 resultsList.Add(safeDisc!);
 
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", resultsList);
+                return string.Join(", ", resultsList.ToArray());
 
             return null;
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET20 || NET35
+        internal Queue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {

@@ -98,7 +98,7 @@ namespace BinaryObjectScanner.FileType
             string filename = $"{lump.Name}.lmp";
 
             // If we have an invalid output directory
-            if (string.IsNullOrWhiteSpace(outputDirectory))
+            if (string.IsNullOrEmpty(outputDirectory))
                 return false;
 
             // Create the full output path
