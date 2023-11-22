@@ -762,28 +762,28 @@ namespace BinaryObjectScanner.Protection
             switch (sha1)
             {
                 // First known generic SafeDisc splash-screen.
-                // 16-bit depth version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
                 case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
                     return "1.30.010-2.40.010";
-                // 256-bit depth version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
                 case "0C9E45BF3EBE1382A3593994328C22BCB9A55456":
                     return "1.30.010-2.40.010";
 
                 // Second known generic SafeDisc splash-screen.
-                // 16-bit depth version, found in Redump entries 46339 and 75897.
+                // 4-bit (16 color), found in Redump entries 46339 and 75897.
                 case "9B80F524D45041ED8CE1613AD5BDE94BFDBB2814":
                     return "2.70.030-2.80.010";
-                // 256-bit depth version, found in Redump entries 46339 and 75897.
+                // 8-bit (256 color) version, found in Redump entries 46339 and 75897.
                 case "827AE9A32906CBE9098C9101184E0BE74CEA2744":
                     return "2.70.030-2.80.010";
 
                 // Third known generic SafeDisc splash-screen.
-                // 16-bit depth version, found in Redump entries 74338, 75782, 84985, and 91552.
+                // 4-bit (16 color), found in Redump entries 74338, 75782, 84985, and 91552.
                 case "814ED63FD619655650E271D1B8B46BBE39C3655A":
                     return "3.15.010-3.20.022";
-                // 256-bit depth version, found in Redump entries 74338, 75782, 84985, and 91552.
+                // 8-bit (256 color) version, found in Redump entries 31824, 74338, 75782, 84985, 91552, and 104053.
                 case "40C7ACEDB6C41AB067285090373E886EFB4F4AC4":
-                    return "3.15.010-3.20.022";
+                    return "3.15.010-4.60.000";
 
                 default:
                     return null;
@@ -792,17 +792,19 @@ namespace BinaryObjectScanner.Protection
             // There appear to be a few distinct generations of file names used for SafeDisc splash-screens.
             // The first are the files named "SPLSH16.BMP"/"SPLSH256.BMP", which were typically used in SafeDisc versions 1.00.025-1.01.044.
             // The next are the files named "000004XX", "000008XX", "00000cXX", and "00001XXX". When one of these is present, they seemingly always come in pairs of 2 with the extensions ".016" and ".256". They're typically present in SafeDisc versions 1.06.000-2.51.021.
-            // Next come the files simply named "0000000X", which still come in pairs with the extensions ".016" and ".256", starting in SafeDisc version 2.60.052.
+            // Next come the files simply named "0000000X", which still come in pairs with the extensions ".016" and ".256", starting in SafeDisc version 2.60.052 up until version 4.85.000. After this point, there doesn't seem to be any consistent SafeDisc splash-screen used at all.
             // Starting SafeDisc version 4.00.000, the files with the ".016" extension seem to mostly disappear, with the ".256" files still being present.
             // Exceptions: 
             // The files "00000409.016" and "00000409.256" are present in Redump entry 39273, despite it being SafeDisc 2.80.011. This may be because this disc contains some form of SafeDisc Lite as well, which tends to more closely resemble SafeDisc 1.
             // Redump entry 51597 contains "00000000.016" and "00000000.256", breaking the trend of SafeDisc 4 not having any files with the ".016" extension. This may be due to this being a rerelease, so the splash-screen may have already been present in the original game files and carried over.
 
+            // TODO: Investigate "/409/splash.bmp" and "/0x0409.ini" files in Redump entry 45469.
+
             // Known SafeDisc splash-screen file names (case-insensitive):
             // "00000000.016": Found in SafeDisc version 2.60.052-4.00.003 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 51597, 63813, 74338, 76775, and 84586).
-            // "00000000.256": Found in SafeDisc version 2.60.052-4.00.003 (Redump entries 2064, 9621, 11639, 13230, 32783, 35382, 35385, 35512, 39273, 52606, 51597, 63813, 68551, 71646, 74338, 76775, 83017, and 84586).
+            // "00000000.256": Found in SafeDisc version 2.60.052-4.85.000 (Redump entries 2064, 9621, 11639, 13230, 32783, 34783, 35382, 35385, 35512, 39273, 46765, 52606, 51597, 63813, 68551, 71646, 74338, 74366, 76775, 76813, 79113, 83017, 84586, and 98589).
             // "00000001.016": Found in SafeDisc version 2.72.000-3.20.024 (Redump entries 9621, 76775, and 86177).
-            // "00000001.256": Found in SafeDisc version 2.72.000-4.00.002 (Redump entries 9621, 71646, 76775, and 86177).
+            // "00000001.256": Found in SafeDisc version 2.72.000-4.50.000 (Redump entries 9621, 71646, 76775, 76813, and 86177).
             // "00000002.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000002.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000003.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
