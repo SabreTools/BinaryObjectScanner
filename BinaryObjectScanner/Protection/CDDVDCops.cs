@@ -78,14 +78,14 @@ namespace BinaryObjectScanner.Protection
                 {
                     // TODO: Remove from here once it's confirmed that no PE executables contain this string
                     // CD-Cops,  ver. 
-                    new ContentMatchSet(new byte?[]
+                    new(new byte?[]
                     {
                         0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                         0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                     }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
 
                     // // DVD-Cops,  ver. 
-                    new ContentMatchSet(new byte?[]
+                    new(new byte?[]
                     {
                         0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
                         0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
@@ -111,7 +111,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // CD-Cops,  ver. 
                 // Found in "h3blade.exe" in Redump entry 85077.
-                new ContentMatchSet(new byte?[]
+                new(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
@@ -157,7 +157,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // WEBCOPS
                 // Found in "HyperBowl.C_S" in https://web.archive.org/web/20120616074941/http://icm.games.tucows.com/files2/HyperDemo-109a.exe.
-                new ContentMatchSet(new byte?[]
+                new(new byte?[]
                 {
                     0x57, 0x45, 0x42, 0x43, 0x4F, 0x50, 0x53
                 }, "WEB-Cops")
@@ -197,12 +197,12 @@ namespace BinaryObjectScanner.Protection
                 // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
 
                 // Found in Redump entry 84517.
-                new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
-                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
+                new(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
 
-                new PathMatchSet(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -217,12 +217,12 @@ namespace BinaryObjectScanner.Protection
                 // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
 
                 // Found in Redump entry 84517.
-                new PathMatchSet(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
-                new PathMatchSet(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
-                new PathMatchSet(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
+                new(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
 
-                new PathMatchSet(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

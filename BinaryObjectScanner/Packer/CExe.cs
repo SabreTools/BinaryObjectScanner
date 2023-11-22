@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Packer
             {
                 var matchers = new List<ContentMatchSet>
             {
-                new ContentMatchSet(new byte?[]
+                new(new byte?[]
                 {
                     0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
                     0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
@@ -57,10 +57,8 @@ namespace BinaryObjectScanner.Packer
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>

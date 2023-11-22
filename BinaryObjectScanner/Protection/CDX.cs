@@ -19,9 +19,9 @@ namespace BinaryObjectScanner.Protection
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("CHKCDX16.DLL", useEndsWith: true), "CD-X (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("CHKCDX32.DLL", useEndsWith: true), "CD-X (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("CHKCDXNT.DLL", useEndsWith: true), "CD-X (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("CHKCDX16.DLL"), "CD-X (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("CHKCDX32.DLL"), "CD-X (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("CHKCDXNT.DLL"), "CD-X (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -32,9 +32,9 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("CHKCDX16.DLL", useEndsWith: true), "CD-X (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("CHKCDX32.DLL", useEndsWith: true), "CD-X (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("CHKCDXNT.DLL", useEndsWith: true), "CD-X (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("CHKCDX16.DLL"), "CD-X (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("CHKCDX32.DLL"), "CD-X (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("CHKCDXNT.DLL"), "CD-X (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

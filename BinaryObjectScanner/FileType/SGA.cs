@@ -20,10 +20,8 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -259,10 +257,8 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Open the output file for writing
-                using (Stream fs = File.OpenWrite(filename))
-                {
-                    fs.Write(data, 0, data.Length);
-                }
+                using Stream fs = File.OpenWrite(filename);
+                fs.Write(data, 0, data.Length);
             }
             catch
             {

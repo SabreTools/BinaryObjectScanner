@@ -184,7 +184,7 @@ namespace BinaryObjectScanner
 
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
-                        var fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList.ToArray()) : null);
+                        var fullProtection = fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", [.. fullProtectionList]) : null;
                         this._fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
@@ -226,7 +226,7 @@ namespace BinaryObjectScanner
 
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
-                    var fullProtection = (fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", fullProtectionList.ToArray()) : null);
+                    var fullProtection = fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", [.. fullProtectionList]) : null;
                     this._fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 

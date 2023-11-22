@@ -17,10 +17,10 @@ namespace BinaryObjectScanner.Protection
                 var contentMatchSets = new List<ContentMatchSet>
                 {
                     // CDSPlayer
-                    new ContentMatchSet(new byte?[] { 0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72 }, "Cactus Data Shield 200"),
+                    new(new byte?[] { 0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72 }, "Cactus Data Shield 200"),
 
                     // yucca.cds
-                    new ContentMatchSet(new byte?[] { 0x79, 0x75, 0x63, 0x63, 0x61, 0x2E, 0x63, 0x64, 0x73 }, "Cactus Data Shield 200"),
+                    new(new byte?[] { 0x79, 0x75, 0x63, 0x63, 0x61, 0x2E, 0x63, 0x64, 0x73 }, "Cactus Data Shield 200"),
                 };
 
                 if (contentMatchSets != null && contentMatchSets.Any())

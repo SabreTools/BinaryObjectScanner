@@ -92,10 +92,10 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch(needle: "SOFTLOCKC.dat", useEndsWith: true),
-                    new PathMatch("SOFTLOCKI.dat", useEndsWith: true),
+                    new FilePathMatch("SOFTLOCKC.dat"),
+                    new FilePathMatch("SOFTLOCKI.dat"),
                 }, "SoftLock"),
             };
 
@@ -107,8 +107,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("SOFTLOCKC.dat", useEndsWith: true), "SoftLock"),
-                new PathMatchSet(new PathMatch("SOFTLOCKI.dat", useEndsWith: true), "SoftLock"),
+                new(new FilePathMatch("SOFTLOCKC.dat"), "SoftLock"),
+                new(new FilePathMatch("SOFTLOCKI.dat"), "SoftLock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

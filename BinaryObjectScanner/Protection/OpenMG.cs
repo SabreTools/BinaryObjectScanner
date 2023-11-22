@@ -77,16 +77,16 @@ namespace BinaryObjectScanner.Protection
                 // So far found in every known release that uses OpenMG ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
                 // Files with the extension ".OMA" in the directory "OMGAUDIO" are the encrypted audio files, and files with in the directory "OMGEXTRA" the extension ".000" are bonus content.
                 // TODO: Investigate the consistency of "\OMGEXTRA\INDX0000.XML" and "\OMGEXTRA\INDX0001.XML", they seem to only appear when bonus content is present ("Touch" by Amerie).
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch(Path.Combine("OMGAUDIO", "00AUDTOC.DAT").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("OMGAUDIO", "01AUDSTR.DAT").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("OMGAUDIO", "05SRPCDS.DAT").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("OMGEXTRA", "OMGSVC.DAT").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("OMGAUDIO", "00AUDTOC.DAT").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("OMGAUDIO", "01AUDSTR.DAT").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("OMGAUDIO", "05SRPCDS.DAT").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("OMGEXTRA", "OMGSVC.DAT").Replace("\\", "/"), useEndsWith: true),
                 }, "OpenMG"),
 
                 // Always found together on OpenMG releases ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     new FilePathMatch("SDKHM.DLL"),
                     new FilePathMatch("SDKHM.EXE"),
@@ -102,22 +102,22 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // So far found in every known release that uses OpenMG ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
-                new PathMatchSet(new PathMatch("00AUDTOC.DAT", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("01AUDSTR.DAT", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("05SRPCDS.DAT", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("OMGSVC.DAT", useEndsWith: true), "OpenMG"),
+                new(new FilePathMatch("00AUDTOC.DAT"), "OpenMG"),
+                new(new FilePathMatch("01AUDSTR.DAT"), "OpenMG"),
+                new(new FilePathMatch("05SRPCDS.DAT"), "OpenMG"),
+                new(new FilePathMatch("OMGSVC.DAT"), "OpenMG"),
 
                 // Always found together on OpenMG releases ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
-                new PathMatchSet(new PathMatch("SDKHM.DLL", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("SDKHM.EXE", useEndsWith: true), "OpenMG"),
+                new(new FilePathMatch("SDKHM.DLL"), "OpenMG"),
+                new(new FilePathMatch("SDKHM.EXE"), "OpenMG"),
 
                 // Found together on one specific release ("Touch" by Amerie).
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch("OMGDBP.OCX", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("OMGDWRAP.DLL", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("OMGLGD.DLL", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("OMGUTILS.DLL", useEndsWith: true), "OpenMG"),
-                new PathMatchSet(new PathMatch("SALWRAP.DLL", useEndsWith: true), "OpenMG"),
+                new(new FilePathMatch("OMGDBP.OCX"), "OpenMG"),
+                new(new FilePathMatch("OMGDWRAP.DLL"), "OpenMG"),
+                new(new FilePathMatch("OMGLGD.DLL"), "OpenMG"),
+                new(new FilePathMatch("OMGUTILS.DLL"), "OpenMG"),
+                new(new FilePathMatch("SALWRAP.DLL"), "OpenMG"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

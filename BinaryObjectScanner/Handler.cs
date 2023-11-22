@@ -24,9 +24,7 @@ namespace BinaryObjectScanner
         {
             get
             {
-                if (pathCheckClasses == null)
-                    pathCheckClasses = InitCheckClasses<IPathCheck>();
-
+                pathCheckClasses ??= InitCheckClasses<IPathCheck>();
                 return pathCheckClasses;
             }
         }

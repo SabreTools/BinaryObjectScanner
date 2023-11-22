@@ -65,7 +65,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Seems likely to be present in most, if not all discs protected with Cenega ProtectDVD, but unable to confirm due to only having a small sample size.
                 // Found in Redump entry 31422 and IA item "speed-pack".
-                new PathMatchSet(new PathMatch("cenega.dll", useEndsWith: true), "Cenega ProtectDVD"),
+                new(new FilePathMatch("cenega.dll"), "Cenega ProtectDVD"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -78,7 +78,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Seems likely to be present in most, if not all discs protected with Cenega ProtectDVD, but unable to confirm due to only having a small sample size.
                 // Found in Redump entry 31422 and IA item "speed-pack".
-                new PathMatchSet(new PathMatch("cenega.dll", useEndsWith: true), "Cenega ProtectDVD"),
+                new(new FilePathMatch("cenega.dll"), "Cenega ProtectDVD"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

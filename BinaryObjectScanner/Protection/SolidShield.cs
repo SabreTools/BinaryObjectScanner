@@ -61,10 +61,10 @@ namespace BinaryObjectScanner.ProtectionType
                     var matchers = new List<ContentMatchSet>
                 {
                     // (char)0xAD + (char)0xDE + (char)0xFE + (char)0xCA
-                    new ContentMatchSet(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
+                    new(new byte?[] { 0xAD, 0xDE, 0xFE, 0xCA }, GetVersionPlusTages, "SolidShield"),
 
                     // (char)0xEF + (char)0xBE + (char)0xAD + (char)0xDE
-                    new ContentMatchSet(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield EXE Wrapper"),
+                    new(new byte?[] { 0xEF, 0xBE, 0xAD, 0xDE }, GetExeWrapperVersion, "SolidShield EXE Wrapper"),
                 };
 
                     var match = MatchUtil.GetFirstMatch(file, initData, matchers, includeDebug);
@@ -120,14 +120,14 @@ namespace BinaryObjectScanner.ProtectionType
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 68166.
-                new PathMatchSet(new FilePathMatch("tdvm.dll"), "SolidShield"),
-                new PathMatchSet(new FilePathMatch("tdvm.vds"), "SolidShield"),
-                new PathMatchSet(new PathMatch("vfs20.dll", useEndsWith: true), "SolidShield"),
+                new(new FilePathMatch("tdvm.dll"), "SolidShield"),
+                new(new FilePathMatch("tdvm.vds"), "SolidShield"),
+                new(new PathMatch("vfs20.dll", useEndsWith: true), "SolidShield"),
 
-                new PathMatchSet(new FilePathMatch("dvm.dll"), "SolidShield"),
-                new PathMatchSet(new FilePathMatch("hc.dll"), "SolidShield"),
-                new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+                new(new FilePathMatch("dvm.dll"), "SolidShield"),
+                new(new FilePathMatch("hc.dll"), "SolidShield"),
+                new(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
+                new(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };
 
             // TODO: Verify if these are OR or AND
@@ -139,10 +139,10 @@ namespace BinaryObjectScanner.ProtectionType
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("dvm.dll"), "SolidShield"),
-                new PathMatchSet(new FilePathMatch("hc.dll"), "SolidShield"),
-                new PathMatchSet(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-                new PathMatchSet(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+                new(new FilePathMatch("dvm.dll"), "SolidShield"),
+                new(new FilePathMatch("hc.dll"), "SolidShield"),
+                new(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
+                new(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -206,13 +206,13 @@ namespace BinaryObjectScanner.ProtectionType
                 && id2.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00 }))
             {
                 // "T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s" + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8 + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e" + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
-                byte?[] check2 = new byte?[]
-                {
+                byte?[] check2 =
+                [
                     0x54, 0x61, 0x67, 0x65, 0x73, 0x53, 0x65, 0x74,
                     0x75, 0x70, 0x30, 0x08, 0x01, 0x00, 0x46, 0x69,
                     0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F,
                     0x6E, 0x00, 0x00, 0x00, 0x00
-                };
+                ];
                 if (fileContent.FirstPosition(check2, out int position2))
                 {
                     position2--; // TODO: Verify this subtract

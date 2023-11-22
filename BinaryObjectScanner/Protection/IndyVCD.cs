@@ -23,8 +23,8 @@ namespace BinaryObjectScanner.Protection
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("INDYVCD.AX", useEndsWith: true), "IndyVCD (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("INDYMP3.idt", useEndsWith: true), "IndyVCD (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("INDYVCD.AX"), "IndyVCD (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("INDYMP3.idt"), "IndyVCD (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -35,8 +35,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("INDYVCD.AX", useEndsWith: true), "IndyVCD (Unconfirmed - Please report to us on Github)"),
-                new PathMatchSet(new PathMatch("INDYMP3.idt", useEndsWith: true), "IndyVCD (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("INDYVCD.AX"), "IndyVCD (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("INDYMP3.idt"), "IndyVCD (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

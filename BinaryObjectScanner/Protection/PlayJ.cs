@@ -52,11 +52,11 @@ namespace BinaryObjectScanner.Protection
             {
                 // Found in https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe.
                 // The files "Data8.bml" and "Data16.bml" are also present in the installation directory, but it is currently unknown if they are specific to this DRM or not.
-                new PathMatchSet(new PathMatch("PlayJ.exe", useEndsWith: true), "PlayJ Music Player"),
-                new PathMatchSet(new PathMatch("PLJFilter.ax", useEndsWith: true), "PlayJ Windows Media Player Plug-in"),
+                new(new FilePathMatch("PlayJ.exe"), "PlayJ Music Player"),
+                new(new FilePathMatch("PLJFilter.ax"), "PlayJ Windows Media Player Plug-in"),
 
                 // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
-                new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), "PlayJ Music Player Component"),
+                new(new FilePathMatch("PJSTREAM.DLL"), "PlayJ Music Player Component"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -69,11 +69,11 @@ namespace BinaryObjectScanner.Protection
             {
                 // Found in https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe.
                 // The files "Data8.bml" and "Data16.bml" are also present in the installation directory, but it is currently unknown if they are specific to this DRM or not.
-                new PathMatchSet(new PathMatch("PlayJ.exe", useEndsWith: true), "PlayJ Music Player"),
-                new PathMatchSet(new PathMatch("PLJFilter.ax", useEndsWith: true), "PlayJ Windows Media Player Plug-in"),
+                new(new FilePathMatch("PlayJ.exe"), "PlayJ Music Player"),
+                new(new FilePathMatch("PLJFilter.ax"), "PlayJ Windows Media Player Plug-in"),
 
                 // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
-                new PathMatchSet(new PathMatch("PJSTREAM.DLL", useEndsWith: true), "PlayJ Music Player Component"),
+                new(new FilePathMatch("PJSTREAM.DLL"), "PlayJ Music Player Component"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

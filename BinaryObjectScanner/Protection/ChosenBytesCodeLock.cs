@@ -65,10 +65,10 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the installation directory of Code-Lock version 2.35.
-                new PathMatchSet(new PathMatch("Code-Lock.chm", useEndsWith: true), "ChosenBytes Code-Lock"),
-                new PathMatchSet(new PathMatch("Code-Lock.DEP", useEndsWith: true), "ChosenBytes Code-Lock"),
-                new PathMatchSet(new PathMatch("Code-Lock.ocx", useEndsWith: true), "ChosenBytes Code-Lock"),
-                new PathMatchSet(new PathMatch("Code-Lock Wizard.exe", useEndsWith: true), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock.chm"), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock.DEP"), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock.ocx"), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock Wizard.exe"), "ChosenBytes Code-Lock"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -80,10 +80,10 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the installation directory of Code-Lock version 2.35.
-                new PathMatchSet(new PathMatch("Code-Lock.chm", useEndsWith: true), "ChosenBytes Code-Lock"),
-                new PathMatchSet(new PathMatch("Code-Lock.DEP", useEndsWith: true), "ChosenBytes Code-Lock"),
-                new PathMatchSet(new PathMatch("Code-Lock.ocx", useEndsWith: true), "ChosenBytes Code-Lock"),
-                new PathMatchSet(new PathMatch("Code-Lock Wizard.exe", useEndsWith: true), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock.chm"), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock.DEP"), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock.ocx"), "ChosenBytes Code-Lock"),
+                new(new FilePathMatch("Code-Lock Wizard.exe"), "ChosenBytes Code-Lock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

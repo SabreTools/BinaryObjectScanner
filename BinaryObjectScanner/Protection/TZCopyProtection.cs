@@ -64,10 +64,10 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Unconfirmed, not sure where this is supposed to be found.
-                new PathMatchSet(new PathMatch("_742893.016", useEndsWith: true), "TZCopyProtection (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("_742893.016"), "TZCopyProtection (Unconfirmed - Please report to us on Github)"),
 
                 // "Ghost" file used by newer versions of TZCopyProtection.
-                new PathMatchSet(new PathMatch("ZakMcCrack.Ghost", useEndsWith: true), "TZCopyProtection V1.11+"),
+                new(new FilePathMatch("ZakMcCrack.Ghost"), "TZCopyProtection V1.11+"),
 
                 // Newer versions of TZCopyProtection also create files with a TZC extension, though their purpose is currently unknown.
             };
@@ -81,10 +81,10 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Unconfirmed, not sure where this is supposed to be found.
-                new PathMatchSet(new PathMatch("_742893.016", useEndsWith: true), "TZCopyProtection (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("_742893.016"), "TZCopyProtection (Unconfirmed - Please report to us on Github)"),
 
                 // "Ghost" file used by newer versions of TZCopyProtection.
-                new PathMatchSet(new PathMatch("ZakMcCrack.Ghost", useEndsWith: true), "TZCopyProtection V1.11+"),
+                new(new FilePathMatch("ZakMcCrack.Ghost"), "TZCopyProtection V1.11+"),
 
                 // Newer versions of TZCopyProtection also create files with a TZC extension, though their purpose is currently unknown.
             };

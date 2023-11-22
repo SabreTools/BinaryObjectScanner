@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
                 var matchers = new List<ContentMatchSet>
                 {
                     // ACE-PCD
-                    new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
+                    new(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
                 };
 
                 var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
                 var matchers = new List<ContentMatchSet>
                 {
                     // DCP-BOV + (char)0x00 + (char)0x00
-                    new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
+                    new(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
                 var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
@@ -73,10 +73,10 @@ namespace BinaryObjectScanner.Protection
                     var matchers = new List<ContentMatchSet>
                 {
                     // HúMETINF
-                    new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
+                    new(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
 
                     // DCP-BOV + (char)0x00 + (char)0x00
-                    new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
+                    new(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
                     var match = MatchUtil.GetFirstMatch(file, lastSectionData, matchers, includeDebug);

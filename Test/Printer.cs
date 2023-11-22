@@ -27,7 +27,11 @@ namespace Test
             }
             else if (Directory.Exists(path))
             {
+#if NET20 || NET35
+                foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+#else
                 foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+#endif
                 {
                     PrintFileInfo(file, json, debug);
                 }

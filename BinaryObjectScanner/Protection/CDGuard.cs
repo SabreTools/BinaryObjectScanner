@@ -66,7 +66,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 97142.
-                new PathMatchSet(new PathMatch("cdguard.dll", useEndsWith: true), "CD-Guard Copy Protection System"),
+                new(new FilePathMatch("cdguard.dll"), "CD-Guard Copy Protection System"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -78,7 +78,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 97142.
-                new PathMatchSet(new PathMatch("cdguard.dll", useEndsWith: true), "CD-Guard Copy Protection System"),
+                new(new FilePathMatch("cdguard.dll"), "CD-Guard Copy Protection System"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
             // C:\NOMOUSE.SP
             //
             // // :\LASERLOK\LASERLOK.IN + (char)0x00 + C:\NOMOUSE.SP
-            // new ContentMatchSet(new byte?[]
+            // new(new byte?[]
             // {
             //     0x3A, 0x5C, 0x5C, 0x4C, 0x41, 0x53, 0x45, 0x52,
             //     0x4C, 0x4F, 0x4B, 0x5C, 0x5C, 0x4C, 0x41, 0x53,
@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Protection
             // }, "LaserLok 3"),
 
             // // LASERLOK_INIT + (char)0xC + LASERLOK_RUN + (char)0xE + LASERLOK_CHECK + (char)0xF + LASERLOK_CHECK2 + (char)0xF + LASERLOK_CHECK3
-            // new ContentMatchSet(new byte?[]
+            // new(new byte?[]
             // {
             //     0x4C, 0x41, 0x53, 0x45, 0x52, 0x4C, 0x4F, 0x4B,
             //     0x5F, 0x49, 0x4E, 0x49, 0x54, 0x0C, 0x4C, 0x41,
@@ -56,15 +56,15 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Packed by SPEEnc V2 Asterios Parlamentas.PE
-            byte?[] check = new byte?[]
-            {
+            byte?[] check =
+            [
                 0x50, 0x61, 0x63, 0x6B, 0x65, 0x64, 0x20, 0x62,
                 0x79, 0x20, 0x53, 0x50, 0x45, 0x45, 0x6E, 0x63,
                 0x20, 0x56, 0x32, 0x20, 0x41, 0x73, 0x74, 0x65,
                 0x72, 0x69, 0x6F, 0x73, 0x20, 0x50, 0x61, 0x72,
                 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73,
                 0x2E, 0x50, 0x45
-            };
+            ];
             int endDosStub = (int)(pex.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
             int position = -1;
             bool containsCheck = pex.StubExecutableData?.FirstPosition(check, out position) ?? false;
@@ -81,8 +81,8 @@ namespace BinaryObjectScanner.Protection
             if (containsCheck2 && pex.ContainsSection(".text"))
             {
                 // GetModuleHandleA + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + GetProcAddress + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + LoadLibraryA + (char)0x00 + (char)0x00 + KERNEL32.dll + (char)0x00 + ëy + (char)0x01 + SNIF/MPVI
-                byte?[] check2 = new byte?[]
-                {
+                byte?[] check2 =
+                [
                     0x47, 0x65, 0x74, 0x4D, 0x6F, 0x64, 0x75, 0x6C,
                     0x65, 0x48, 0x61, 0x6E, 0x64, 0x6C, 0x65, 0x41,
                     0x00, 0x00, 0x00, 0x00, 0x47, 0x65, 0x74, 0x50,
@@ -92,7 +92,7 @@ namespace BinaryObjectScanner.Protection
                     0x79, 0x41, 0x00, 0x00, 0x4B, 0x45, 0x52, 0x4E,
                     0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C,
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
-                };
+                ];
                 containsCheck2 = pex.GetFirstSectionData(".text")?.FirstPosition(check2, out position2) ?? false;
             }
             else
@@ -121,17 +121,17 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet($"LASERLOK{Path.DirectorySeparatorChar}", "LaserLok [Check disc for physical ring]"),
+                new($"LASERLOK{Path.DirectorySeparatorChar}", "LaserLok [Check disc for physical ring]"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -142,16 +142,16 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new PathMatchSet(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -163,11 +163,11 @@ namespace BinaryObjectScanner.Protection
                 return "(Build unknown)";
 
             // Unkown + (char)0x00 + Unkown
-            byte?[] check = new byte?[]
-            {
+            byte?[] check =
+            [
                 0x55, 0x6E, 0x6B, 0x6F, 0x77, 0x6E, 0x00, 0x55,
                 0x6E, 0x6B, 0x6F, 0x77, 0x6E
-            };
+            ];
             if (!sectionContent.FirstPosition(check, out int position))
                 return "(Build unknown)";
 
@@ -238,11 +238,9 @@ namespace BinaryObjectScanner.Protection
             if (!File.Exists(firstMatchedString))
                 return string.Empty;
 
-            using (var fs = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var br = new BinaryReader(fs))
-            {
-                return GetVersion16Bit(br.ReadBytes((int)fs.Length));
-            }
+            using var fs = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var br = new BinaryReader(fs);
+            return GetVersion16Bit(br.ReadBytes((int)fs.Length));
         }
 
         private static string GetVersion16Bit(byte[] fileContent)

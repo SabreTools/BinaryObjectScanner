@@ -31,11 +31,11 @@ namespace BinaryObjectScanner.Protection
             // Technically all need to exist but some might be renamed
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.256", useEndsWith: true), "SafeLock"),
+                new(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.001"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.002"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.128"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.256"), "SafeLock"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -46,11 +46,11 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.256", useEndsWith: true), "SafeLock"),
+                new(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.001"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.002"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.128"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.256"), "SafeLock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

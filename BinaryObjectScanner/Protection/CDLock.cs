@@ -45,7 +45,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in game executables protected with CD-Lock (Redump entries 24287 and 31615).
                     // TODO: Check for possible false postives (Redump entry 97942).
                     // 2 + (char)0xF2 + (char)0x02 + (char)0x82 + (char)0xC3 + (char)0xBC + (char)0x0B + $ + (char)0x99 + (char)0xAD + 'C + (char)0xE4 + (char)0x9D + st + (char)0x99 + (char)0xFA + 2$ + (char)0x9D + )4 + (char)0xFF + t
-                    new ContentMatchSet(new byte?[]
+                    new(new byte?[]
                     {
                         0x32, 0xF2, 0x02, 0x82, 0xC3, 0xBC, 0x0B, 0x24,
                         0x99, 0xAD, 0x27, 0x43, 0xE4, 0x9D, 0x73, 0x74,
@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.Protection
                 // TODO: Determine if there's any consistency in the naming of the additional AFP files.
 
                 // Found in every confirmed sample of CD-Lock, generally (but not always) appears to include markers relating to the additional AFP files present (Redump entries 24287 and 31615). 
-                new PathMatchSet(new PathMatch("CONFIG.AFP", useEndsWith: true), "CD-Lock"),
+                new(new PathMatch("CONFIG.AFP", useEndsWith: true), "CD-Lock"),
 
                 // There is also a "$$$$$$$$.$$$" file present on some discs, but it isn't known if this is directly related to CD-Lock (Redump entries 37788 and 43221).
             };
@@ -90,7 +90,7 @@ namespace BinaryObjectScanner.Protection
                 // TODO: Determine if there's any consistency in the naming of the additional AFP files.
 
                 // Found in every confirmed sample of CD-Lock, generally (but not always) appears to include markers relating to the additional AFP files present (Redump entries 24287 and 31615).
-                new PathMatchSet(new PathMatch("CONFIG.AFP", useEndsWith: true), "CD-Lock"),
+                new(new PathMatch("CONFIG.AFP", useEndsWith: true), "CD-Lock"),
 
                 // There is also a "$$$$$$$$.$$$" file present on some discs, but it isn't known if this is directly related to CD-Lock (Redump entries 37788 and 43221).
             };

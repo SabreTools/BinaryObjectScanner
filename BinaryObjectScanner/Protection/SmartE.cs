@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     new FilePathMatch("00001.TMP"),
                     new FilePathMatch("00002.TMP")
@@ -54,8 +54,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("00001.TMP"), "SmartE"),
-                new PathMatchSet(new FilePathMatch("00002.TMP"), "SmartE"),
+                new(new FilePathMatch("00001.TMP"), "SmartE"),
+                new(new FilePathMatch("00002.TMP"), "SmartE"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

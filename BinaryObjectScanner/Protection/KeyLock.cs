@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Protection
                 var contentMatchSets = new List<ContentMatchSet>
                 {
                     // KEY-LOCK COMMAND
-                    new ContentMatchSet(new byte?[]
+                    new(new byte?[]
                     {
                         0x4B, 0x45, 0x59, 0x2D, 0x4C, 0x4F, 0x43, 0x4B,
                         0x20, 0x43, 0x4F, 0x4D, 0x4D, 0x41, 0x4E, 0x44

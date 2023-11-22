@@ -85,7 +85,7 @@ namespace BinaryObjectScanner.Packer
                 var matchers = new List<ContentMatchSet>
                 {
                     // "rDlPtS02" + (char)0x87 + "eVx"
-                    new ContentMatchSet(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
+                    new(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
                 };
 
                 return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";

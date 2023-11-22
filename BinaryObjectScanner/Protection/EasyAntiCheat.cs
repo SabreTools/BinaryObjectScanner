@@ -92,41 +92,42 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found installed in "Program Files (x86)\EasyAntiCheat".
-                new PathMatchSet(new PathMatch("EasyAntiCheat.exe", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat.sys", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.exe"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.sys"), "Easy Anti-Cheat"),
 
                 // Found installed in "Program Files (x86)\EasyAntiCheat_EOS".
-                new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.sys", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
+                new(new FilePathMatch("EasyAntiCheat_EOS.exe"), "Easy Anti-Cheat (EOS Version)"),
+                new(new FilePathMatch("EasyAntiCheat_EOS.sys"), "Easy Anti-Cheat (EOS Version)"),
 
                 // Found installed in "AppData\Roaming\EasyAntiCheat".
-                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac.metadata", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheatAnimation.png", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat_wow64_x64.eac"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat_wow64_x64.eac.metadata"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheatAnimation.png"), "Easy Anti-Cheat"),
 
                 // Found in "Intruder" (Version 2287, Steam).
-                new PathMatchSet(new PathMatch("eac_server.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat.icns", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat.Client.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat.Server.dll", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("eac_server.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat.icns"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.Client.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.Server.dll"), "Easy Anti-Cheat"),
+
                 // Found in "Intruder" (Version 2287, Steam) and "Rec Room" (Version 20220803, Oculus).
-                new PathMatchSet(new PathMatch("EasyAntiCheat.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_Setup.exe", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_x64.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_x86.dll", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_Setup.exe"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_x64.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_x86.dll"), "Easy Anti-Cheat"),
 
                 // Found in "Video Horror Society" (Patch 1.0.70309, Steam).
-                new PathMatchSet(new PathMatch("EasyAntiCheat_EOS_Setup.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
-                new PathMatchSet(new PathMatch("InstallAntiCheat.bat", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("UninstallAntiCheat.bat", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_EOS_Setup.exe"), "Easy Anti-Cheat (EOS Version)"),
+                new(new FilePathMatch("InstallAntiCheat.bat"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("UninstallAntiCheat.bat"), "Easy Anti-Cheat"),
 
                 // Found in "VRChat" (Version 2022.2.2p2, Oculus).
-                new PathMatchSet(new PathMatch("start_protected_game.exe", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("start_protected_game.exe"), "Easy Anti-Cheat"),
 
                 // Found in "Apex Legends" (Build ID 12029216, Steam)
-                new PathMatchSet(new PathMatch("EasyAntiCheat_launcher.exe", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat_x64.so", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_launcher.exe"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat_x64.so"), "Easy Anti-Cheat"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -139,41 +140,41 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found installed in "Program Files (x86)\EasyAntiCheat".
-                new PathMatchSet(new PathMatch("EasyAntiCheat.exe", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat.sys", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.exe"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.sys"), "Easy Anti-Cheat"),
 
                 // Found installed in "Program Files (x86)\EasyAntiCheat_EOS".
-                new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_EOS.sys", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
+                new(new FilePathMatch("EasyAntiCheat_EOS.exe"), "Easy Anti-Cheat (EOS Version)"),
+                new(new FilePathMatch("EasyAntiCheat_EOS.sys"), "Easy Anti-Cheat (EOS Version)"),
 
                 // Found installed in "AppData\Roaming\EasyAntiCheat".
-                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat_wow64_x64.eac.metadata", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheatAnimation.png", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat_wow64_x64.eac"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat_wow64_x64.eac.metadata"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheatAnimation.png"), "Easy Anti-Cheat"),
 
                 // Found in "Intruder" (Version 2287, Steam).
-                new PathMatchSet(new PathMatch("eac_server.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat.icns", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat.Client.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat.Server.dll", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("eac_server.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat.icns"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.Client.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.Server.dll"), "Easy Anti-Cheat"),
                 // Found in "Intruder" (Version 2287, Steam) and "Rec Room" (Version 20220803, Oculus).
-                new PathMatchSet(new PathMatch("EasyAntiCheat.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_Setup.exe", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_x64.dll", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("EasyAntiCheat_x86.dll", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_Setup.exe"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_x64.dll"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_x86.dll"), "Easy Anti-Cheat"),
 
                 // Found in "Video Horror Society" (Patch 1.0.70309, Steam).
-                new PathMatchSet(new PathMatch("EasyAntiCheat_EOS_Setup.exe", useEndsWith: true), "Easy Anti-Cheat (EOS Version)"),
-                new PathMatchSet(new PathMatch("InstallAntiCheat.bat", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("UninstallAntiCheat.bat", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_EOS_Setup.exe"), "Easy Anti-Cheat (EOS Version)"),
+                new(new FilePathMatch("InstallAntiCheat.bat"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("UninstallAntiCheat.bat"), "Easy Anti-Cheat"),
 
                 // Found in "VRChat" (Version 2022.2.2p2, Oculus).
-                new PathMatchSet(new PathMatch("start_protected_game.exe", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("start_protected_game.exe"), "Easy Anti-Cheat"),
 
                 // Found in "Apex Legends" (Build ID 12029216, Steam)
-                new PathMatchSet(new PathMatch("EasyAntiCheat_launcher.exe", useEndsWith: true), "Easy Anti-Cheat"),
-                new PathMatchSet(new PathMatch("easyanticheat_x64.so", useEndsWith: true), "Easy Anti-Cheat"),
+                new(new FilePathMatch("EasyAntiCheat_launcher.exe"), "Easy Anti-Cheat"),
+                new(new FilePathMatch("easyanticheat_x64.so"), "Easy Anti-Cheat"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

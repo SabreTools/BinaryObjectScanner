@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
                         var matchers = new List<ContentMatchSet>
                     {
                         // kernel32.dll + (char)0x00 + (char)0x00 + (char)0x00 + VirtualProtect
-                        new ContentMatchSet(new byte?[]
+                        new(new byte?[]
                         {
                             0x6B, 0x65, 0x72, 0x6E, 0x65, 0x6C, 0x33, 0x32,
                             0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x00, 0x00, 0x56,

@@ -91,25 +91,23 @@ namespace Test
                 // If the 7-zip file itself fails
                 try
                 {
-                    using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream))
+                    using SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream);
+                    foreach (var entry in sevenZipFile.Entries)
                     {
-                        foreach (var entry in sevenZipFile.Entries)
+                        // If an individual entry fails
+                        try
                         {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
 
-                                string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                entry.WriteToFile(tempFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting 7-zip entry {entry.Key}: {ex}");
-                                Console.WriteLine();
-                            }
+                            string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting 7-zip entry {entry.Key}: {ex}");
+                            Console.WriteLine();
                         }
                     }
                 }
@@ -187,22 +185,19 @@ namespace Test
                 Console.WriteLine("Extraction is not supported for this framework!");
                 Console.WriteLine();
 #else
-                using (var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
+                using var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true);
+
+                // If an individual entry fails
+                try
                 {
-                    // If an individual entry fails
-                    try
-                    {
-                        string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
-                        using (FileStream fs = File.OpenWrite(tempFile))
-                        {
-                            bz2File.CopyTo(fs);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting bzip2: {ex}");
-                        Console.WriteLine();
-                    }
+                    string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
+                    using FileStream fs = File.OpenWrite(tempFile);
+                    bz2File.CopyTo(fs);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting bzip2: {ex}");
+                    Console.WriteLine();
                 }
 #endif
             }
@@ -295,26 +290,24 @@ namespace Test
                 Console.WriteLine("Extraction is not supported for this framework!");
                 Console.WriteLine();
 #else
-                using (var zipFile = GZipArchive.Open(stream))
+                using var zipFile = GZipArchive.Open(stream);
+                foreach (var entry in zipFile.Entries)
                 {
-                    foreach (var entry in zipFile.Entries)
+                    // If an individual entry fails
+                    try
                     {
-                        // If an individual entry fails
-                        try
-                        {
-                            // If we have a directory, skip it
-                            if (entry.IsDirectory)
-                                continue;
+                        // If we have a directory, skip it
+                        if (entry.IsDirectory)
+                            continue;
 
-                            string tempFile = Path.Combine(outputDirectory, entry.Key);
-                            entry.WriteToFile(tempFile);
-                        }
+                        string tempFile = Path.Combine(outputDirectory, entry.Key);
+                        entry.WriteToFile(tempFile);
+                    }
 
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Something went wrong extracting gzip entry {entry.Key}: {ex}");
-                            Console.WriteLine();
-                        }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Something went wrong extracting gzip entry {entry.Key}: {ex}");
+                        Console.WriteLine();
                     }
                 }
 #endif
@@ -492,43 +485,42 @@ namespace Test
                 // If the MPQ file itself fails
                 try
                 {
-                    using (var mpqArchive = new StormLibSharp.MpqArchive(file, FileAccess.Read))
+                    using var mpqArchive = new StormLibSharp.MpqArchive(file, FileAccess.Read);
+
+                    // Try to open the listfile
+                    string? listfile = null;
+                    StormLibSharp.MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
+
+                    // If we can't read the listfile, we just return
+                    if (!listStream.CanRead)
                     {
-                        // Try to open the listfile
-                        string? listfile = null;
-                        StormLibSharp.MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
+                        Console.WriteLine("Could not read the listfile, extraction halted!");
+                        Console.WriteLine();
+                    }
 
-                        // If we can't read the listfile, we just return
-                        if (!listStream.CanRead)
+                    // Read the listfile in for processing
+                    using (var sr = new StreamReader(listStream))
+                    {
+                        listfile = sr.ReadToEnd();
+                    }
+
+                    // Split the listfile by newlines
+                    string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
+
+                    // Loop over each entry
+                    foreach (string sub in listfileLines)
+                    {
+                        // If an individual entry fails
+                        try
                         {
-                            Console.WriteLine("Could not read the listfile, extraction halted!");
+                            string tempFile = Path.Combine(outputDirectory, sub);
+                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+                            mpqArchive.ExtractFile(sub, tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting MoPaQ entry {sub}: {ex}");
                             Console.WriteLine();
-                        }
-
-                        // Read the listfile in for processing
-                        using (StreamReader sr = new StreamReader(listStream))
-                        {
-                            listfile = sr.ReadToEnd();
-                        }
-
-                        // Split the listfile by newlines
-                        string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
-
-                        // Loop over each entry
-                        foreach (string sub in listfileLines)
-                        {
-                            // If an individual entry fails
-                            try
-                            {
-                                string tempFile = Path.Combine(outputDirectory, sub);
-                                Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                                mpqArchive.ExtractFile(sub, tempFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting MoPaQ entry {sub}: {ex}");
-                                Console.WriteLine();
-                            }
                         }
                     }
                 }
@@ -608,28 +600,26 @@ namespace Test
                 // If the zip file itself fails
                 try
                 {
-                    using (ZipArchive zipFile = ZipArchive.Open(stream))
+                    using ZipArchive zipFile = ZipArchive.Open(stream);
+                    foreach (var entry in zipFile.Entries)
                     {
-                        foreach (var entry in zipFile.Entries)
+                        // If an individual entry fails
+                        try
                         {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
 
-                                string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                string? directoryName = Path.GetDirectoryName(tempFile);
-                                if (directoryName != null)
-                                    Directory.CreateDirectory(directoryName);
-                                entry.WriteToFile(tempFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting PKZIP entry {entry.Key}: {ex}");
-                                Console.WriteLine();
-                            }
+                            string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            string? directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null)
+                                Directory.CreateDirectory(directoryName);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting PKZIP entry {entry.Key}: {ex}");
+                            Console.WriteLine();
                         }
                     }
                 }
@@ -682,25 +672,23 @@ namespace Test
                 // If the rar file itself fails
                 try
                 {
-                    using (RarArchive rarFile = RarArchive.Open(stream))
+                    using RarArchive rarFile = RarArchive.Open(stream);
+                    foreach (var entry in rarFile.Entries)
                     {
-                        foreach (var entry in rarFile.Entries)
+                        // If an individual entry fails
+                        try
                         {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
 
-                                string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                entry.WriteToFile(tempFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting RAR entry {entry.Key}: {ex}");
-                                Console.WriteLine();
-                            }
+                            string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting RAR entry {entry.Key}: {ex}");
+                            Console.WriteLine();
                         }
                     }
                 }
@@ -753,25 +741,23 @@ namespace Test
                 // If the tar file itself fails
                 try
                 {
-                    using (TarArchive tarFile = TarArchive.Open(stream))
+                    using TarArchive tarFile = TarArchive.Open(stream);
+                    foreach (var entry in tarFile.Entries)
                     {
-                        foreach (var entry in tarFile.Entries)
+                        // If an individual entry fails
+                        try
                         {
-                            // If an individual entry fails
-                            try
-                            {
-                                // If we have a directory, skip it
-                                if (entry.IsDirectory)
-                                    continue;
+                            // If we have a directory, skip it
+                            if (entry.IsDirectory)
+                                continue;
 
-                                string tempFile = Path.Combine(outputDirectory, entry.Key);
-                                entry.WriteToFile(tempFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Something went wrong extracting Tape Archive entry {entry.Key}: {ex}");
-                                Console.WriteLine();
-                            }
+                            string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            entry.WriteToFile(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting Tape Archive entry {entry.Key}: {ex}");
+                            Console.WriteLine();
                         }
                     }
                 }
@@ -875,22 +861,18 @@ namespace Test
                 Console.WriteLine("Extraction is not supported for this framework!");
                 Console.WriteLine();
 #else
-                using (var xzFile = new XZStream(stream))
+                using var xzFile = new XZStream(stream);
+                // If an individual entry fails
+                try
                 {
-                    // If an individual entry fails
-                    try
-                    {
-                        string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
-                        using (FileStream fs = File.OpenWrite(tempFile))
-                        {
-                            xzFile.CopyTo(fs);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Something went wrong extracting xz: {ex}");
-                        Console.WriteLine();
-                    }
+                    string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
+                    using FileStream fs = File.OpenWrite(tempFile);
+                    xzFile.CopyTo(fs);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Something went wrong extracting xz: {ex}");
+                    Console.WriteLine();
                 }
 #endif
             }

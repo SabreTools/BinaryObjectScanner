@@ -101,11 +101,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the SVKP 1.05-1.32 demos.
-                new PathMatchSet(new FilePathMatch("svkp.exe"), "SVKP"),
-                new PathMatchSet(new FilePathMatch("svkp.key"), "SVKP"),
+                new(new FilePathMatch("svkp.exe"), "SVKP"),
+                new(new FilePathMatch("svkp.key"), "SVKP"),
 
                 // Found in the SVKP 1.32 demo.
-                new PathMatchSet(new FilePathMatch("svkpnd.dll"), "SVKP"),
+                new(new FilePathMatch("svkpnd.dll"), "SVKP"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -117,11 +117,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the SVKP 1.05-1.32 demos.
-                new PathMatchSet(new FilePathMatch("svkp.exe"), "SVKP"),
-                new PathMatchSet(new FilePathMatch("svkp.key"), "SVKP"),
+                new(new FilePathMatch("svkp.exe"), "SVKP"),
+                new(new FilePathMatch("svkp.key"), "SVKP"),
 
                 // Found in the SVKP 1.32 demo.
-                new PathMatchSet(new FilePathMatch("svkpnd.dll"), "SVKP"),
+                new(new FilePathMatch("svkpnd.dll"), "SVKP"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

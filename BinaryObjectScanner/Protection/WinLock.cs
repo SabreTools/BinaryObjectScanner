@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // This is the temporary dummy file created in the C: drive.
-                new PathMatchSet(new PathMatch("WinLock.PSX", useEndsWith: true), "WinLock"),
+                new(new FilePathMatch("WinLock.PSX"), "WinLock"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -42,7 +42,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // This is the temporary dummy file created in the C: drive.
-                new PathMatchSet(new PathMatch("WinLock.PSX", useEndsWith: true), "WinLock"),
+                new(new FilePathMatch("WinLock.PSX"), "WinLock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

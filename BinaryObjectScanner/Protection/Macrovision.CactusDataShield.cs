@@ -78,16 +78,16 @@ namespace BinaryObjectScanner.Protection
                 // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
                 // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
                 // The file "DATA16.BML" is also present on this disc but the name is too generic to check for.
-                new PathMatchSet(new PathMatch("CACTUSPJ.exe", useEndsWith: true), "PlayJ Music Player (Cactus Data Shield 200)"),
+                new(new FilePathMatch("CACTUSPJ.exe"), "PlayJ Music Player (Cactus Data Shield 200)"),
 
                 // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]). 
                 // In "Volumina! - Puur" (7 43218 63282 2), this file is composed of multiple PLJ files combined together.
                 // In later versions, this file is a padded dummy file. ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
-                new PathMatchSet(new PathMatch("YUCCA.CDS", useEndsWith: true), "Cactus Data Shield 200"),
+                new(new FilePathMatch("YUCCA.CDS"), "Cactus Data Shield 200"),
 
                 // TODO: Find samples of the following: 
-                new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), GetCactusDataShieldVersion, "Cactus Data Shield"),
-                new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), GetCactusDataShieldVersion, "Cactus Data Shield"),
+                new(new FilePathMatch("CDSPlayer.app"), GetCactusDataShieldVersion, "Cactus Data Shield"),
+                new(new FilePathMatch("wmmp.exe"), GetCactusDataShieldVersion, "Cactus Data Shield"),
 
                 // The file "00000001.TMP" (with a filesize of 2,048 bytes) can be found in CDS-300, as well as SafeDisc.
                 // Due to this file being used in both protections, this file is detected within the general Macrovision checks.
@@ -104,16 +104,16 @@ namespace BinaryObjectScanner.Protection
                 // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
                 // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
                 // The file "DATA16.BML" is also present on this disc but the name is too generic to check for.
-                new PathMatchSet(new PathMatch("CACTUSPJ.exe", useEndsWith: true), "PlayJ Music Player (Cactus Data Shield 200)"),
+                new(new FilePathMatch("CACTUSPJ.exe"), "PlayJ Music Player (Cactus Data Shield 200)"),
 
                 // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]), 
                 // In "Volumia! - Puur", this file is composed of multiple PLJ files combined together.
                 // In later versions, this file is a padded dummy file. ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
-                new PathMatchSet(new PathMatch("YUCCA.CDS", useEndsWith: true), "Cactus Data Shield 200"),
+                new(new FilePathMatch("YUCCA.CDS"), "Cactus Data Shield 200"),
 
                 // TODO: Find samples of the following: 
-                new PathMatchSet(new PathMatch("CDSPlayer.app", useEndsWith: true), "Cactus Data Shield 200"),
-                new PathMatchSet(new PathMatch("wmmp.exe", useEndsWith: true), "Cactus Data Shield 200"),
+                new(new FilePathMatch("CDSPlayer.app"), "Cactus Data Shield 200"),
+                new(new FilePathMatch("wmmp.exe"), "Cactus Data Shield 200"),
 
                 // The file "00000001.TMP" (with a filesize of 2,048 bytes) can be found in CDS-300, as well as SafeDisc.
                 // Due to this file being used in both protections, this file is detected within the general Macrovision checks.
@@ -147,14 +147,12 @@ namespace BinaryObjectScanner.Protection
 
             try
             {
-                using (var sr = new StreamReader(path, Encoding.Default))
-                {
-                    var line = sr.ReadLine();
-                    if (line == null)
-                        return null;
+                using var sr = new StreamReader(path, Encoding.Default);
+                var line = sr.ReadLine();
+                if (line == null)
+                    return null;
 
-                    return $"{line.Substring(3)} ({sr.ReadLine()})";
-                }
+                return $"{line.Substring(3)} ({sr.ReadLine()})";
             }
             catch
             {

@@ -30,10 +30,10 @@ namespace BinaryObjectScanner.Packer
             var neMatchSets = new List<ContentMatchSet>
             {
                 // WiseInst
-                new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x49, 0x6E, 0x73, 0x74 }, "Wise Installation Wizard Module"),
+                new(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x49, 0x6E, 0x73, 0x74 }, "Wise Installation Wizard Module"),
 
                 // WiseMain
-                new ContentMatchSet(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
+                new(new byte?[] { 0x57, 0x69, 0x73, 0x65, 0x4D, 0x61, 0x69, 0x6E }, "Wise Installation Wizard Module"),
             };
 
             return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);

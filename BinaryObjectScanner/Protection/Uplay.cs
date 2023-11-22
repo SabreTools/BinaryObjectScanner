@@ -54,15 +54,15 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("UbisoftConnect.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new PathMatch("UbisoftGameLauncher.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new PathMatch("UbisoftGameLauncher64.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new PathMatch("UbisoftGameLauncherInstaller.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("Uplay.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayCrashReporter.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayInstaller.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayService.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayWebCore.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftConnect.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftGameLauncher.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftGameLauncher64.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftGameLauncherInstaller.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("Uplay.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayCrashReporter.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayInstaller.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayService.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayWebCore.exe"), "Uplay / Ubisoft Connect"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -73,15 +73,15 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("UbisoftConnect.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new PathMatch("UbisoftGameLauncher.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new PathMatch("UbisoftGameLauncher64.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new PathMatch("UbisoftGameLauncherInstaller.exe", useEndsWith: true), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("Uplay.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayCrashReporter.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayInstaller.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayService.exe"), "Uplay / Ubisoft Connect"),
-                new PathMatchSet(new FilePathMatch("UplayWebCore.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftConnect.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftGameLauncher.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftGameLauncher64.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UbisoftGameLauncherInstaller.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("Uplay.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayCrashReporter.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayInstaller.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayService.exe"), "Uplay / Ubisoft Connect"),
+                new(new FilePathMatch("UplayWebCore.exe"), "Uplay / Ubisoft Connect"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

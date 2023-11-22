@@ -64,8 +64,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), GetInternalVersion, "Impulse Reactor Core Module"),
-                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), GetInternalVersion, "Stardock Product Activation"),
+                new(new FilePathMatch("ImpulseReactor.dll"), GetInternalVersion, "Impulse Reactor Core Module"),
+                new(new FilePathMatch("ReactorActivate.exe"), GetInternalVersion, "Stardock Product Activation"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -76,8 +76,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), GetInternalVersion, "Impulse Reactor Core Module"),
-                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), GetInternalVersion, "Stardock Product Activation"),
+                new(new FilePathMatch("ImpulseReactor.dll"), GetInternalVersion, "Impulse Reactor Core Module"),
+                new(new FilePathMatch("ReactorActivate.exe"), GetInternalVersion, "Stardock Product Activation"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -87,11 +87,9 @@ namespace BinaryObjectScanner.Protection
         {
             try
             {
-                using (Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var pex = PortableExecutable.Create(fileStream);
-                    return pex?.GetInternalVersion() ?? string.Empty;
-                }
+                using Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var pex = PortableExecutable.Create(fileStream);
+                return pex?.GetInternalVersion() ?? string.Empty;
             }
             catch
             {

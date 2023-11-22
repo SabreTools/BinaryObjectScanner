@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     new FilePathMatch("wtmfiles.dat"),
                     new FilePathMatch("Viewer.exe"),
@@ -77,10 +77,10 @@ namespace BinaryObjectScanner.Protection
             // TODO: Add ImageX.imp as a wildcard, if possible
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("Image.imp"), "WTM CD Protect"),
-                new PathMatchSet(new FilePathMatch("Image1.imp"), "WTM CD Protect"),
-                new PathMatchSet(new FilePathMatch("imp.dat"), "WTM CD Protect"),
-                new PathMatchSet(new FilePathMatch("wtmfiles.dat"), "WTM Protection Viewer"),
+                new(new FilePathMatch("Image.imp"), "WTM CD Protect"),
+                new(new FilePathMatch("Image1.imp"), "WTM CD Protect"),
+                new(new FilePathMatch("imp.dat"), "WTM CD Protect"),
+                new(new FilePathMatch("wtmfiles.dat"), "WTM Protection Viewer"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Protection
             var contentMatchSets = new List<ContentMatchSet>
             {
                 //      SOFTWARE TERMINATED\nCONSOLE MAY HAVE BEEN MODIFIED\n     CALL 1-888-780-7690
-                new ContentMatchSet(new byte?[]
+                new(new byte?[]
                 {
                     0x20, 0x20, 0x20, 0x20, 0x20, 0x53, 0x4F, 0x46,
                     0x54, 0x57, 0x41, 0x52, 0x45, 0x20, 0x54, 0x45,
@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Protection
                 }, "PlayStation Anti-modchip (English)"),
 
                 // 強制終了しました。\n本体が改造されている\nおそれがあります。
-                new ContentMatchSet(new byte?[]
+                new(new byte?[]
                 {
                     0x5F, 0x37, 0x52, 0x36, 0x7D, 0x42, 0x4E, 0x86,
                     0x30, 0x57, 0x30, 0x7E, 0x30, 0x57, 0x30, 0x5F,

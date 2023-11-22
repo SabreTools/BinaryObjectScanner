@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // SafeCast
                 // Found as the Product Name in "cdac01aa.dll" from IA item "ejay_nestle_trial". Windows 10 appears to incorrectly truncate this to "SafeCas" in File Explorer.
-                new ContentMatchSet(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x43, 0x61, 0x73, 0x74 }, "SafeCast"),
+                new(new byte?[] { 0x53, 0x61, 0x66, 0x65, 0x43, 0x61, 0x73, 0x74 }, "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
@@ -155,38 +155,38 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "britney-spears-special-edition-cd-rom".
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("C2C.16", useEndsWith: true),
-                    new PathMatch("C2C.DLL", useEndsWith: true),
-                    new PathMatch("C2CDEL.16", useEndsWith: true),
-                    new PathMatch("C2CDEL.EXE", useEndsWith: true),
+                    new FilePathMatch("C2C.16"),
+                    new FilePathMatch("C2C.DLL"),
+                    new FilePathMatch("C2CDEL.16"),
+                    new FilePathMatch("C2CDEL.EXE"),
                 }, "SafeCast"),
 
                 // Found in IA item "ejay_nestle_trial".
-                new PathMatchSet(new PathMatch("cdac01aa.dll", useEndsWith: true), "SafeCast"),
-                new PathMatchSet(new PathMatch("cdac01ba.dll", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("cdac01aa.dll"), "SafeCast"),
+                new(new FilePathMatch("cdac01ba.dll"), "SafeCast"),
 
                 // Found in multiple versions of SafeCast, including Redump entries 83145 and 95524, as well as IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("cdac14ba.dll"), "SafeCast"),
 
                 // Found in Redump entry 83145.
-                new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("CDAC21BA.DLL"), "SafeCast"),
 
                 // Found in Redump entry 102979.
-                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("SCRfrsh.exe"), "SafeCast"),
 
                 // Found in Redump entries 26211 and 95524.
-                new PathMatchSet(new PathMatch("SCSHD.CSA", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("SCSHD.CSA"), "SafeCast"),
 
                 // Found in Redump entries 95524.
-                new PathMatchSet(new PathMatch("SCSHD.EXE", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("SCSHD.EXE"), "SafeCast"),
 
                 // Found in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("CDAC15BA.SYS", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("CDAC15BA.SYS"), "SafeCast"),
 
                 // Found in "cdac14ba.dll" in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("CDAC13BA.EXE", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("CDAC13BA.EXE"), "SafeCast"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -198,31 +198,31 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "ejay_nestle_trial".
-                new PathMatchSet(new PathMatch("cdac01aa.dll", useEndsWith: true), "SafeCast"),
-                new PathMatchSet(new PathMatch("cdac01ba.dll", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("cdac01aa.dll"), "SafeCast"),
+                new(new FilePathMatch("cdac01ba.dll"), "SafeCast"),
 
-                new PathMatchSet(new PathMatch("cdac11ba.exe", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("cdac11ba.exe"), "SafeCast"),
 
                 // Found in multiple versions of SafeCast, including Redump entry 83145 and IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("cdac14ba.dll", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("cdac14ba.dll"), "SafeCast"),
 
                 // Found in Redump entry 83145.
-                new PathMatchSet(new PathMatch("CDAC21BA.DLL", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("CDAC21BA.DLL"), "SafeCast"),
 
                 // Found in Redump entry 102979.
-                new PathMatchSet(new PathMatch("SCRfrsh.exe", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("SCRfrsh.exe"), "SafeCast"),
                 
                 // Found in Redump entries 26211 and 95524.
-                new PathMatchSet(new PathMatch("SCSHD.CSA", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("SCSHD.CSA"), "SafeCast"),
 
                 // Found in Redump entries 95524.
-                new PathMatchSet(new PathMatch("SCSHD.EXE", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("SCSHD.EXE"), "SafeCast"),
 
                 // Found in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("CDAC15BA.SYS", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("CDAC15BA.SYS"), "SafeCast"),
 
                 // Found in "cdac14ba.dll" in IA item "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282".
-                new PathMatchSet(new PathMatch("CDAC13BA.EXE", useEndsWith: true), "SafeCast"),
+                new(new FilePathMatch("CDAC13BA.EXE"), "SafeCast"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

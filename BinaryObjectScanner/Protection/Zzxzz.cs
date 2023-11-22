@@ -21,11 +21,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
 #if NET20 || NET35
-                new PathMatchSet(Path.Combine(Path.Combine(path, "Zzxzz"), "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+                new(Path.Combine(Path.Combine(path, "Zzxzz"), "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
 #else
-                new PathMatchSet(Path.Combine(path, "Zzxzz", "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+                new(Path.Combine(path, "Zzxzz", "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
 #endif
-                new PathMatchSet($"Zzxzz/", "Zzxzz"),
+                new($"Zzxzz/", "Zzxzz"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("Zzz.aze", useEndsWith: true), "Zzxzz"),
+                new(new PathMatch("Zzz.aze", useEndsWith: true), "Zzxzz"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

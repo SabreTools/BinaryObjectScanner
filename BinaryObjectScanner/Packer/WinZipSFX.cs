@@ -68,10 +68,8 @@ namespace BinaryObjectScanner.Packer
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -693,37 +691,23 @@ namespace BinaryObjectScanner.Packer
                 || sfxFileName == "WZIPSE32.exe" || sfxFileName == "SI32LPG.SFX"
                 || sfxFileName == "ST32E.WZE")
             {
-                switch (sfxTimeDateStamp)
+                return sfxTimeDateStamp switch
                 {
-                    case 842636344:
-                        return "2.0 (32-bit)";
-                    case 865370756:
-                        return "2.1 RC2 (32-bit)";
-                    case 869059925:
-                        return "2.1 (32-bit)";
-                    case 979049321:
-                        return "2.2.4003";
-                    case 1149714685:
-                        return "3.0.7158";
-                    case 1185211734:
-                        return "3.1.7556";
-                    case 1185211920:
-                        return "3.1.7556";
-                    case 1235490556:
-                        return "4.0.8421";
-                    case 1235490757:
-                        return "4.0.8421";
-                    case 1235490687:
-                        return "4.0.8421"; // 3.1.8421.0, SI32LPG?
-                    case 1257193383:
-                        return "4.0.8672"; // 3.1.8672.0
-                    case 1257193543:
-                        return "4.0.8672";
-                    case 1470410848:
-                        return "4.0.12218"; // 4.0.1221.0
-                    default:
-                        return $"{assemblyVersion} (32-bit)";
-                }
+                    842636344 => "2.0 (32-bit)",
+                    865370756 => "2.1 RC2 (32-bit)",
+                    869059925 => "2.1 (32-bit)",
+                    979049321 => "2.2.4003",
+                    1149714685 => "3.0.7158",
+                    1185211734 => "3.1.7556",
+                    1185211920 => "3.1.7556",
+                    1235490556 => "4.0.8421",
+                    1235490757 => "4.0.8421",
+                    1235490687 => "4.0.8421",// 3.1.8421.0, SI32LPG?
+                    1257193383 => "4.0.8672",// 3.1.8672.0
+                    1257193543 => "4.0.8672",
+                    1470410848 => "4.0.12218",// 4.0.1221.0
+                    _ => $"{assemblyVersion} (32-bit)",
+                };
             }
 
             // Personal Edition
@@ -731,152 +715,90 @@ namespace BinaryObjectScanner.Packer
                 || sfxFileName == "wzsepe32.exe" || sfxFileName == "SI32PE.SFX"
                 || sfxFileName == "SI32LPE.SFX")
             {
-                switch (sfxTimeDateStamp)
+                return sfxTimeDateStamp switch
                 {
-                    case 845061601:
-                        return "Personal Edition (32-bit)"; // TODO: Find version
-                    case 868303343:
-                        return "Personal Edition (32-bit)"; // TODO: Find version
-                    case 868304170:
-                        return "Personal Edition (32-bit)"; // TODO: Find version
-                    case 906039079:
-                        return "Personal Edition 2.2.1260 (32-bit)";
-                    case 906040543:
-                        return "Personal Edition 2.2.1260 (32-bit)";
-                    case 908628435:
-                        return "Personal Edition 2.2.1285 (32-bit)";
-                    case 908628785:
-                        return "Personal Edition 2.2.1285 (32-bit)";
-                    case 956165981:
-                        return "Personal Edition 2.2.3063";
-                    case 956166038:
-                        return "Personal Edition 2.2.3063";
-                    case 1006353695:
-                        return "Personal Edition 2.2.4325";
-                    case 1006353714:
-                        return "Personal Edition 2.2.4325"; // 8.1.0.0
-                    case 1076515698:
-                        return "Personal Edition 2.2.6028";
-                    case 1076515784:
-                        return "Personal Edition 2.2.6028"; // 9.0.6028.0
-                    case 1092688561:
-                        return "Personal Edition 2.2.6224";
-                    case 1092688645:
-                        return "Personal Edition 2.2.6224"; // 9.0.6224.0
-                    case 1125074095:
-                        return "Personal Edition 2.2.6604";
-                    case 1125074162:
-                        return "Personal Edition 2.2.6604"; // 10.0.6604.0
-                    case 1130153399:
-                        return "Personal Edition 2.2.6663";
-                    case 1130153428:
-                        return "Personal Edition 2.2.6663"; // 10.0.6663.0
-                    case 1149714176:
-                        return "Personal Edition 3.0.7158";
-                    case 1163137967:
-                        return "Personal Edition 3.0.7305";
-                    case 1163137994:
-                        return "Personal Edition 3.0.7313"; // 11.0.7313.0
-                    case 1176345383:
-                        return "Personal Edition 3.0.7452";
-                    case 1176345423:
-                        return "Personal Edition 3.1.7466"; // 11.1.7466.0
-                    case 1184106698:
-                        return "Personal Edition 3.1.7556";
-                    case 1207280880:
-                        return "Personal Edition 4.0.8060"; // 2.3.7382.0
-                    case 1207280892:
-                        return "Personal Edition 4.0.8094"; // 11.2.8094.0
-                    case 1220904506:
-                        return "Personal Edition 4.0.8213"; // 2.3.7382.0
-                    case 1220904518:
-                        return "Personal Edition 4.0.8252"; // 12.0.8252.0
-                    case 1235490648:
-                        return "Personal Edition 4.0.8421"; // 3.1.8421.0
-                    case 1242049399:
-                        return "Personal Edition 4.0.8497"; // 12.1.8497.0
-                    case 1257193469:
-                        return "Personal Edition 4.0.8672"; // 3.1.8672.0, SI32LPE?
-                    default:
-                        return $"Personal Edition {assemblyVersion} (32-bit)";
-                }
+                    845061601 => "Personal Edition (32-bit)",// TODO: Find version
+                    868303343 => "Personal Edition (32-bit)",// TODO: Find version
+                    868304170 => "Personal Edition (32-bit)",// TODO: Find version
+                    906039079 => "Personal Edition 2.2.1260 (32-bit)",
+                    906040543 => "Personal Edition 2.2.1260 (32-bit)",
+                    908628435 => "Personal Edition 2.2.1285 (32-bit)",
+                    908628785 => "Personal Edition 2.2.1285 (32-bit)",
+                    956165981 => "Personal Edition 2.2.3063",
+                    956166038 => "Personal Edition 2.2.3063",
+                    1006353695 => "Personal Edition 2.2.4325",
+                    1006353714 => "Personal Edition 2.2.4325",// 8.1.0.0
+                    1076515698 => "Personal Edition 2.2.6028",
+                    1076515784 => "Personal Edition 2.2.6028",// 9.0.6028.0
+                    1092688561 => "Personal Edition 2.2.6224",
+                    1092688645 => "Personal Edition 2.2.6224",// 9.0.6224.0
+                    1125074095 => "Personal Edition 2.2.6604",
+                    1125074162 => "Personal Edition 2.2.6604",// 10.0.6604.0
+                    1130153399 => "Personal Edition 2.2.6663",
+                    1130153428 => "Personal Edition 2.2.6663",// 10.0.6663.0
+                    1149714176 => "Personal Edition 3.0.7158",
+                    1163137967 => "Personal Edition 3.0.7305",
+                    1163137994 => "Personal Edition 3.0.7313",// 11.0.7313.0
+                    1176345383 => "Personal Edition 3.0.7452",
+                    1176345423 => "Personal Edition 3.1.7466",// 11.1.7466.0
+                    1184106698 => "Personal Edition 3.1.7556",
+                    1207280880 => "Personal Edition 4.0.8060",// 2.3.7382.0
+                    1207280892 => "Personal Edition 4.0.8094",// 11.2.8094.0
+                    1220904506 => "Personal Edition 4.0.8213",// 2.3.7382.0
+                    1220904518 => "Personal Edition 4.0.8252",// 12.0.8252.0
+                    1235490648 => "Personal Edition 4.0.8421",// 3.1.8421.0
+                    1242049399 => "Personal Edition 4.0.8497",// 12.1.8497.0
+                    1257193469 => "Personal Edition 4.0.8672",// 3.1.8672.0, SI32LPE?
+                    _ => $"Personal Edition {assemblyVersion} (32-bit)",
+                };
             }
 
             // Software Installation
             else if (sfxFileName == "VW95SRE.SFX" || sfxFileName == "SI32E.SFX"
                 || sfxFileName == "SI32E.WZE")
             {
-                switch (sfxTimeDateStamp)
+                return sfxTimeDateStamp switch
                 {
-                    case 842636381:
-                        return "Software Installation 2.0 (32-bit)";
-                    case 865370800:
-                        return "Software Installation 2.1 RC2 (32-bit)";
-                    case 869059963:
-                        return "Software Installation 2.1 (32-bit)";
-                    case 893107697:
-                        return "Software Installation 2.2.1110 (32-bit)";
-                    case 952007369:
-                        return "Software Installation 2.2.3063";
-                    case 1006352634:
-                        return "Software Installation 2.2.4325"; // +Personal Edition?
-                    case 979049345:
-                        return "Software Installation 2.2.4403";
-                    case 1026227373:
-                        return "Software Installation 2.2.5196"; // +Personal Edition?
-                    case 1090582390:
-                        return "Software Installation 2.2.6202"; // +Personal Edition?
-                    case 1149714757:
-                        return "Software Installation 3.0.7158";
-                    case 1154357628:
-                        return "Software Installation 3.0.7212";
-                    case 1175234637:
-                        return "Software Installation 3.0.7454";
-                    case 1185211802:
-                        return "Software Installation 3.1.7556";
-                    case 1470410906:
-                        return "Software Installation 4.0.12218"; // 4.0.1221.0
-                    default:
-                        return $"Software Installation {assemblyVersion} (32-bit)";
-                }
+                    842636381 => "Software Installation 2.0 (32-bit)",
+                    865370800 => "Software Installation 2.1 RC2 (32-bit)",
+                    869059963 => "Software Installation 2.1 (32-bit)",
+                    893107697 => "Software Installation 2.2.1110 (32-bit)",
+                    952007369 => "Software Installation 2.2.3063",
+                    1006352634 => "Software Installation 2.2.4325",// +Personal Edition?
+                    979049345 => "Software Installation 2.2.4403",
+                    1026227373 => "Software Installation 2.2.5196",// +Personal Edition?
+                    1090582390 => "Software Installation 2.2.6202",// +Personal Edition?
+                    1149714757 => "Software Installation 3.0.7158",
+                    1154357628 => "Software Installation 3.0.7212",
+                    1175234637 => "Software Installation 3.0.7454",
+                    1185211802 => "Software Installation 3.1.7556",
+                    1470410906 => "Software Installation 4.0.12218",// 4.0.1221.0
+                    _ => $"Software Installation {assemblyVersion} (32-bit)",
+                };
             }
 
-            switch (sfxFileName)
+            return sfxFileName switch
             {
                 // Standard
-                case "VW95SE.SFX":
-                    return "Unknown Version (32-bit)"; // TODO: Find starting version
-                case "ST32E.SFX":
-                    return "Unknown Version (32-bit)"; // TODO: Find starting version
-                case "WZIPSE32.exe":
-                    return "Unknown Version (32-bit)"; // TODO: Find starting version
-                case "SI32LPG.SFX":
-                    return "Unknown Version (32-bit)"; // TODO: Find starting version
-                case "ST32E.WZE":
-                    return "Unknown Version (32-bit)"; // TODO: Find starting version
-
+                "VW95SE.SFX" => "Unknown Version (32-bit)",// TODO: Find starting version
+                "ST32E.SFX" => "Unknown Version (32-bit)",// TODO: Find starting version
+                "WZIPSE32.exe" => "Unknown Version (32-bit)",// TODO: Find starting version
+                "SI32LPG.SFX" => "Unknown Version (32-bit)",// TODO: Find starting version
+                "ST32E.WZE" => "Unknown Version (32-bit)",// TODO: Find starting version
+                                                          
                 // Personal Edition
-                case "VW95LE.SFX":
-                    return "Unknown Version before Personal Edition Build 1285 (32-bit)";
-                case "PE32E.SFX":
-                    return "Unknown Version after Personal Edition Build 1285 (32-bit)";
-                case "wzsepe32.exe":
-                    return "Unknown Version Personal Edition (32-bit)"; // TODO: Find starting version
-                case "SI32PE.SFX":
-                    return "Unknown Version Personal Edition (32-bit)"; // TODO: Find starting version
-                case "SI32LPE.SFX":
-                    return "Unknown Version Personal Edition (32-bit)"; // TODO: Find starting version
-
+                "VW95LE.SFX" => "Unknown Version before Personal Edition Build 1285 (32-bit)",
+                "PE32E.SFX" => "Unknown Version after Personal Edition Build 1285 (32-bit)",
+                "wzsepe32.exe" => "Unknown Version Personal Edition (32-bit)",// TODO: Find starting version
+                "SI32PE.SFX" => "Unknown Version Personal Edition (32-bit)",// TODO: Find starting version
+                "SI32LPE.SFX" => "Unknown Version Personal Edition (32-bit)",// TODO: Find starting version
+                                                                             
                 // Software Installation
-                case "VW95SRE.SFX":
-                    return "Unknown Version before Software Installation 2.1 (32-bit)";
-                case "SI32E.SFX":
-                    return "Unknown Version after Software Installation 2.1 (32-bit)";
-                case "SI32E.WZE":
-                    return "Unknown Version Software Installation (32-bit)"; // TODO: Find starting version
-            }
-
-            return null;
+                "VW95SRE.SFX" => "Unknown Version before Software Installation 2.1 (32-bit)",
+                "SI32E.SFX" => "Unknown Version after Software Installation 2.1 (32-bit)",
+                "SI32E.WZE" => "Unknown Version Software Installation (32-bit)",// TODO: Find starting version
+                _ => null,
+            };
         }
     }
 }

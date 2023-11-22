@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("OriginSetup.exe", useEndsWith: true), "Origin"),
+                new(new FilePathMatch("OriginSetup.exe"), "Origin"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -50,7 +50,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("OriginSetup.exe", useEndsWith: true), "Origin"),
+                new(new FilePathMatch("OriginSetup.exe"), "Origin"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

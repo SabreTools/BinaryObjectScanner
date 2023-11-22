@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("DvdCrypt.pdb", useEndsWith: true), "DVD Crypt (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("DvdCrypt.pdb"), "DVD Crypt (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("DvdCrypt.pdb", useEndsWith: true), "DVD Crypt (Unconfirmed - Please report to us on Github)"),
+                new(new FilePathMatch("DvdCrypt.pdb"), "DVD Crypt (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

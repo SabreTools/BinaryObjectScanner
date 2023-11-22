@@ -159,38 +159,38 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in C-Dilla CD-Secure/CD-Compress 1.31.34.
-                new PathMatchSet(new PathMatch("CDANT.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDANT.DLL"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA05.DLL"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA10.EXE"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA40.DLL"), "C-Dilla License Management System"),
 
                 // Found in C-Dilla LMS version 3.24.010 (IA item "ejay_nestle_trial").
                 // TODO: Verify that all of these are exclusively part of LMS, and not SafeCast.
-                new PathMatchSet(new PathMatch("CdaLMS.exe", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("cdilla51.dll", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("cdilla52.dll", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CdaLMS.exe"), "C-Dilla License Management System"),
+                new(new FilePathMatch("cdilla51.dll"), "C-Dilla License Management System"),
+                new(new FilePathMatch("cdilla52.dll"), "C-Dilla License Management System"),
 
                 // Found in the installer C-Dilla LMS version 3.27.000.
                 // The files "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe" are found there as well, but aren't currently checked for due to possibly being too generic.
                 // TODO: Add grouped check for "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe".
-                new PathMatchSet(new PathMatch("CdaIns16.dll", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CdaIns32.dll", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CdaIns16.dll"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CdaIns32.dll"), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 3.1.
                 // The files "CDILLA05.DLL", "CDILLA10.EXE", and "CDILLA40.DLL" are included as well.
                 // TODO: Check into what file "CDAW31X.38_" gets installed as. I wasn't able to find what it gets installed to.
-                new PathMatchSet(new PathMatch("CDILLA32.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA64.EXE", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA32.DLL"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA64.EXE"), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 95. All the files installed for Windows 3.1 are also installed for 95.
-                new PathMatchSet(new PathMatch("CDAINT2F.VXD", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDAWIN95.VXD", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA13.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDAINT2F.VXD"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDAWIN95.VXD"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA13.DLL"), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows NT. All the files installed for Windows 95 and 3.1 (except for the VXD files) are also installed for NT.
-                new PathMatchSet(new PathMatch("CDANT.SYS", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDANTSRV.EXE", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA16.EXE", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDANT.SYS"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDANTSRV.EXE"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA16.EXE"), "C-Dilla License Management System"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -202,38 +202,38 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in C-Dilla CD-Secure/CD-Compress 1.31.34.
-                new PathMatchSet(new PathMatch("CDANT.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA05.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA10.EXE", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA40.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDANT.DLL"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA05.DLL"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA10.EXE"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA40.DLL"), "C-Dilla License Management System"),
 
                 // Found in C-Dilla LMS version 3.24.010 (IA item "ejay_nestle_trial").
                 // TODO: Verify that all of these are exclusively part of LMS, and not SafeCast.
-                new PathMatchSet(new PathMatch("CdaLMS.exe", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("cdilla51.dll", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("cdilla52.dll", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CdaLMS.exe"), "C-Dilla License Management System"),
+                new(new FilePathMatch("cdilla51.dll"), "C-Dilla License Management System"),
+                new(new FilePathMatch("cdilla52.dll"), "C-Dilla License Management System"),
 
                 // Found in the installer C-Dilla LMS version 3.27.000.
                 // The files "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe" are found there as well, but aren't currently checked for due to possibly being too generic.
                 // TODO: Add grouped check for "CdRemove.exe", "CdSet32.exe", "CdSet32.ini", "CdSetup.exe", "CdSetup.ini", and "CdUnin16.exe".
-                new PathMatchSet(new PathMatch("CdaIns16.dll", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CdaIns32.dll", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CdaIns16.dll"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CdaIns32.dll"), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 3.1.
                 // The files "CDILLA05.DLL", "CDILLA10.EXE", and "CDILLA40.DLL" are included as well.
                 // TODO: Check into what file "CDAW31X.38_" gets installed as. I wasn't able to find what it gets installed to.
-                new PathMatchSet(new PathMatch("CDILLA32.DLL", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA64.EXE", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA32.DLL"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA64.EXE"), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows 95. All the files installed for Windows 3.1 are also installed for 95.
-                new PathMatchSet(new PathMatch("CDAINT2F.VXD", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDAWIN95.VXD", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA13.DLL", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDAINT2F.VXD"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDAWIN95.VXD"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA13.DLL"), "C-Dilla License Management System"),
 
                 // Found installed in C-Dilla LMS version 3.27.000 for Windows NT. All the files installed for Windows 95 and 3.1 (except for the VXD files) are also installed for NT.
-                new PathMatchSet(new PathMatch("CDANT.SYS", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDANTSRV.EXE", useEndsWith: true), "C-Dilla License Management System"),
-                new PathMatchSet(new PathMatch("CDILLA16.EXE", useEndsWith: true), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDANT.SYS"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDANTSRV.EXE"), "C-Dilla License Management System"),
+                new(new FilePathMatch("CDILLA16.EXE"), "C-Dilla License Management System"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
