@@ -695,8 +695,9 @@ namespace BinaryObjectScanner.Protection
                 case "B824ED257946EEE93F438B25C855E9DDE7A3671A":
                     return "2.90.010-2.90.040";
                 // Found in Redump entries 13230 and 68204.
+                // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
                 case "CDA56FD150C9E9A19D7AF484621352122431F029":
-                    return "3.10.020";
+                    return "3.10.020/4+";
                 // Found in Redump entries 36511 and 74338.
                 case "E5504C4C31561D38C1F626C851A8D06212EA13E0":
                     return "3.15.010";
@@ -839,38 +840,52 @@ namespace BinaryObjectScanner.Protection
             // "0000000f.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
             // "00000404.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000404.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000406.016": Found in SafeDisc version 2.51.021 (Redump entry 66852).
-            // "00000406.256": Found in SafeDisc version 2.51.021 (Redump entry 66852).
+            // "00000406.016": Found in SafeDisc versions 1.41.000-2.51.021 (Redump entries 61047 and 66852).
+            // "00000406.256": Found in SafeDisc versions 1.41.000-2.51.021 (Redump entries 61047 and 66852).
             // "00000407.016": Found in SafeDisc versions 1.07.000-2.51.021 (Redump entries 43321, 44350, 46756, 48863, 49552, 66586, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000407.256": Found in SafeDisc versions 1.07.000-2.51.021 (Redump entries 43321, 44350, 46756, 48863, 49552, 66586, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000408.016": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "00000408.256": Found in SafeDisc version 2.51.021 (Redump entry 38589).
             // "00000409.016": Found in SafeDisc versions 1.06.000-2.80.011 (Redump entries 2022, 2595, 9718, 9819, 9846, 12885, 23786, 29073, 30022, 30555, 31526, 31666, 37832, 37920, 37982, 39273, 48863, 49552, 59462, 62935, and 63323).
             // "00000409.256": Found in SafeDisc versions 1.06.000-2.80.011 (Redump entries 2022, 2595, 9718, 9819, 9846, 12885, 23786, 29073, 30022, 30555, 31526, 31666, 37982, 37920, 37832, 39273, 48863, 49552, 59462, 62935, and 63323).
             // "0000040A.016": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 29073, 43321, 49552, and 66852).
             // "0000040A.256": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 29073, 43321, 49552 and 66852).
             // "0000040c.016": Found in SafeDisc versions 1.30.010-2.51.021 (Redump entries 43321, 48863, 49552, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "0000040c.256": Found in SafeDisc versions 1.30.010-2.51.021 (Redump entries 43321, 48863, 49552, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000040d.016": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "0000040d.256": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "0000040f.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "0000040f.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
             // "00000410.016": Found in SafeDisc versions 1.35.000-2.51.021 (Redump entries 9617, 48863, 49552, 66852, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000410.256": Found in SafeDisc versions 1.35.000-2.51.021 (Redump entries 9617, 48863, 49552, 66852, and 79476, IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000411.016": Found in SafeDisc versions 1.40.004-2.30.033 (Redump entry 53659 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000411.256": Found in SafeDisc versions 1.40.004-2.30.033 (Redump entry 53659 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000412.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000412.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000411.016": Found in SafeDisc versions 1.40.004-2.51.031 (Redump entries 38589, 53659 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000411.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 38589, 53659 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000412.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000412.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000413.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 66852 and 72195 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000413.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 66852 and 72195 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000415.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000415.016": Found in SafeDisc versions 1.40.004-2.10.030 (Redump entry 38541 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000415.256": Found in SafeDisc versions 1.40.004-2.10.030 (Redump entry 38541 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000416.016": Found in SafeDisc versions 1.40.004-2.10.030 (Redump entry 38541 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000416.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000416.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000416.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000419.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000419.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
             // "0000041d.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 55823, 66852, and 72195, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "0000041d.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 55823, 66852, and 72195, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "0000041e.016": Found in SafeDisc versions 1.40.004- (IA item the-sims-thai-english-electronic-arts-2000).
-            // "0000041e.256": Found in SafeDisc versions 1.40.004- (IA item the-sims-thai-english-electronic-arts-2000).
+            // "0000041e.016": Found in SafeDisc version 1.40.004 (IA item the-sims-thai-english-electronic-arts-2000).
+            // "0000041e.256": Found in SafeDisc version 1.40.004 (IA item the-sims-thai-english-electronic-arts-2000).
+            // "00000429.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000429.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
             // "00000804.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000804.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00000809.016": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 9617, 31149, 37478, 37523, 37832, 43321, 48863, 53659, 59462, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000, the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000, and "primal-3d-interactive-series-professional-edition-2002-english" items "Interactive Hand CD", "Interactive Hip CD", and "Interactive Spine CD").
             // "00000809.256": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 9617, 31149, 37478, 37523, 37832, 43321, 48863, 53659, 59462, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000, the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000, and "primal-3d-interactive-series-professional-edition-2002-english" items "Interactive Hand CD", "Interactive Hip CD", and "Interactive Spine CD").
-            // "00000c0a.016": Found in SafeDisc versions 1.30.010-2.30.031 (Redump entry 48863, 55078, 55080, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
-            // "00000c0a.256": Found in SafeDisc versions 1.30.010-2.30.031 (Redump entry 48863, 55078, 55080, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000814.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000814.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000816.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000816.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000c0a.016": Found in SafeDisc versions 1.11.000-2.30.031 (Redump entry 3569, 48863, 55078, 55080, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000c0a.256": Found in SafeDisc versions 1.11.000-2.30.031 (Redump entry 3569, 48863, 55078, 55080, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
             // "00001009.016": Found in SafeDisc version 2.30.030 (Redump entry 45040).
             // "00001009.256": Found in SafeDisc version 2.30.030 (Redump entry 45040).
             // "SPLSH16.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
