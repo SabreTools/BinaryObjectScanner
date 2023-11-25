@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -51,11 +53,15 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     new FilePathMatch("wtmfiles.dat"),
                     new FilePathMatch("Viewer.exe"),
@@ -71,10 +77,10 @@ namespace BinaryObjectScanner.Protection
             // TODO: Add ImageX.imp as a wildcard, if possible
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("Image.imp"), "WTM CD Protect"),
-                new PathMatchSet(new FilePathMatch("Image1.imp"), "WTM CD Protect"),
-                new PathMatchSet(new FilePathMatch("imp.dat"), "WTM CD Protect"),
-                new PathMatchSet(new FilePathMatch("wtmfiles.dat"), "WTM Protection Viewer"),
+                new(new FilePathMatch("Image.imp"), "WTM CD Protect"),
+                new(new FilePathMatch("Image1.imp"), "WTM CD Protect"),
+                new(new FilePathMatch("imp.dat"), "WTM CD Protect"),
+                new(new FilePathMatch("wtmfiles.dat"), "WTM Protection Viewer"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

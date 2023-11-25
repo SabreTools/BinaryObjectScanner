@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -51,7 +53,7 @@ namespace BinaryObjectScanner.Protection
                 {
                     // Found in "Asc001.dll", "Asc002.dll", "Asc003.dll", "Asc005.dll", "Asc006.exe", and "AscLM.cpl" (Redump entry 73521/IA item "Nova_HoyleCasino99USA").
                     // ÿÿÿÿ\\.\ASCLM
-                    new ContentMatchSet(new byte?[]
+                    new(new byte?[]
                     {
                         0xFF, 0xFF, 0xFF, 0xFF, 0x5C, 0x5C, 0x2E, 0x5C, 
                         0x41, 0x53, 0x43, 0x4C, 0x4D
@@ -59,7 +61,7 @@ namespace BinaryObjectScanner.Protection
                 };
 
                 var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
@@ -67,14 +69,18 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA".
-                new PathMatchSet(new PathMatch("AscLM.cpl", useEndsWith: true), "AegiSoft License Manager"),
-                new PathMatchSet(new PathMatch("AscLM.vxd", useEndsWith: true), "AegiSoft License Manager"),
-                new PathMatchSet(new PathMatch("AscLMd.vxd", useEndsWith: true), "AegiSoft License Manager"),
+                new(new FilePathMatch("AscLM.cpl"), "AegiSoft License Manager"),
+                new(new FilePathMatch("AscLM.vxd"), "AegiSoft License Manager"),
+                new(new FilePathMatch("AscLMd.vxd"), "AegiSoft License Manager"),
 
                 // There are a few other files present, but the file names on their own may be too overmatching. Due to the small sample size, it's not sure if these files are always present together.
                 // These files are "Asc001.dll", "Asc002.dll", "Asc003.dll", "Asc005.dll", and "Asc006.exe" (Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA").
@@ -89,9 +95,9 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA".
-                new PathMatchSet(new PathMatch("AscLM.cpl", useEndsWith: true), "AegiSoft License Manager"),
-                new PathMatchSet(new PathMatch("AscLM.vxd", useEndsWith: true), "AegiSoft License Manager"),
-                new PathMatchSet(new PathMatch("AscLMd.vxd", useEndsWith: true), "AegiSoft License Manager"),
+                new(new FilePathMatch("AscLM.cpl"), "AegiSoft License Manager"),
+                new(new FilePathMatch("AscLM.vxd"), "AegiSoft License Manager"),
+                new(new FilePathMatch("AscLMd.vxd"), "AegiSoft License Manager"),
 
                 // There are a few other files present, but the file names on their own may be too overmatching. Due to the small sample size, it's not sure if these files are always present together.
                 // These files are "Asc001.dll", "Asc002.dll", "Asc003.dll", "Asc005.dll", and "Asc006.exe" (Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA").

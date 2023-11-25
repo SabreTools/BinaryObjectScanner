@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NETFRAMEWORK && !NET40
+#if NETFRAMEWORK && !NET20 && !NET35 && !NET40
 using StormLibSharp;
 #endif
 
@@ -18,17 +18,15 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         // TODO: Add stream opening support
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NET40 || NETCOREAPP || NET5_0_OR_GREATER
+#if NET20 || NET35 || NET40 || NETCOREAPP || NET5_0_OR_GREATER
             // Not supported for .NET Core and modern .NET due to Windows DLL requirements
             return null;
 #else
@@ -38,7 +36,7 @@ namespace BinaryObjectScanner.FileType
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
-                using (MpqArchive mpqArchive = new MpqArchive(file, FileAccess.Read))
+                using (var mpqArchive = new MpqArchive(file, FileAccess.Read))
                 {
                     // Try to open the listfile
                     string? listfile = null;
@@ -49,7 +47,7 @@ namespace BinaryObjectScanner.FileType
                         return null;
 
                     // Read the listfile in for processing
-                    using (StreamReader sr = new StreamReader(listStream))
+                    using (var sr = new StreamReader(listStream))
                     {
                         listfile = sr.ReadToEnd();
                     }

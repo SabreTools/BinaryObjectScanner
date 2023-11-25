@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Utilities
         /// <returns>SHA1 hash as a string on success, null on error</returns>
         public static string? GetFileSHA1(string? path)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
                 return null;
 
             try

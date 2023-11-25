@@ -1,5 +1,7 @@
 using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,23 +51,32 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // All found to be present on at multiple albums with LabelGate CD2 (Redump entry 95010 and product ID SVWC-7185), the original version of LabelGate still needs to be investigated.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("BIN", "WIN32", "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+#if NET20 || NET35
+                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+#else
+                    new(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("BIN", "WIN32", "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+#endif
                 }, "LabelGate CD2 Media Player"),
 
                 // All of these are also found present on all known LabelGate CD2 releases, though an additional file "RESERVED.DAT" is found in the same directory in at least one release (Product ID SVWC-7185)
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch(Path.Combine("MQDISC", "LICENSE.TXT").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("MQDISC", "MQDISC.INI").Replace("\\", "/"), useEndsWith: true),
-                    new PathMatch(Path.Combine("MQDISC", "START.INI").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("MQDISC", "LICENSE.TXT").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("MQDISC", "MQDISC.INI").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("MQDISC", "START.INI").Replace("\\", "/"), useEndsWith: true),
                 }, "LabelGate CD2"),
             };
 
@@ -78,7 +89,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // This is the installer for the media player used by LabelGate CD2 (Redump entry 95010 and product ID SVWC-7185).
-                new PathMatchSet(new PathMatch("MQ2SETUP.EXE", useEndsWith: true), "LabelGate CD2 Media Player"),
+                new(new FilePathMatch("MQ2SETUP.EXE"), "LabelGate CD2 Media Player"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

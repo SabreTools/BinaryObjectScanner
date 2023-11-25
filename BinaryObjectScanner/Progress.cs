@@ -1,4 +1,4 @@
-#if NET40
+#if NET20 || NET35 || NET40
 
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
@@ -50,10 +50,7 @@ namespace System
         /// <exception cref="ArgumentNullException">The <paramref name="handler"/> is null (<see langword="Nothing" /> in Visual Basic).</exception>
         public Progress(Action<T> handler) : this()
         {
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
-
-            _handler = handler;
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         /// <summary>Raised for each reported progress value.</summary>
@@ -103,7 +100,7 @@ namespace System
     internal static class ProgressStatics
     {
         /// <summary>A default synchronization context that targets the ThreadPool.</summary>
-        internal static readonly SynchronizationContext DefaultContext = new SynchronizationContext();
+        internal static readonly SynchronizationContext DefaultContext = new();
     }
 }
 

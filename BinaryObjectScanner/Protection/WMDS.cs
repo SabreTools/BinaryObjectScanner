@@ -1,5 +1,7 @@
 using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -43,16 +45,20 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6) and "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8), "Touch" by Amerie, likely among others.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     // These files always appear to be present together.
-                    new PathMatch("WMDS.dll", useEndsWith: true),
-                    new PathMatch("WMDS.ini", useEndsWith: true),
+                    new FilePathMatch("WMDS.dll"),
+                    new FilePathMatch("WMDS.ini"),
                 }, "Windows Media Data Session DRM"),
             };
 
@@ -65,11 +71,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6) and "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8), "Touch" by Amerie, likely among others.
-                new PathMatchSet(new PathMatch("WMDS.dll", useEndsWith: true), "Windows Media Data Session DRM"),
-                new PathMatchSet(new PathMatch("WMDS.ini", useEndsWith: true), "Windows Media Data Session DRM"),
+                new(new FilePathMatch("WMDS.dll"), "Windows Media Data Session DRM"),
+                new(new FilePathMatch("WMDS.ini"), "Windows Media Data Session DRM"),
 
                 // Found on "Touch" by Amerie, along with "autorun.exe".
-                new PathMatchSet(new PathMatch("WMDST.DAT", useEndsWith: true), "Windows Media Data Session DRM"),
+                new(new FilePathMatch("WMDST.DAT"), "Windows Media Data Session DRM"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

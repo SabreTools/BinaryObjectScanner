@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -53,12 +55,16 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-                new PathMatchSet(new FilePathMatch("DecryptWrap.exe"), "DigiGuard"),
+                new(new FilePathMatch("DecryptWrap.exe"), "DigiGuard"),
 
                 // There are at least two additional specifically named DecryptWrap files, "DecryptWrapTW2000.exe" and "DecryptWrapTW2KCode.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             };
@@ -72,7 +78,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-                new PathMatchSet(new FilePathMatch("DecryptWrap.exe"), "DigiGuard"),
+                new(new FilePathMatch("DecryptWrap.exe"), "DigiGuard"),
 
                 // There are at least two additional specifically named DecryptWrap files, "DecryptWrapTW2000.exe" and "DecryptWrapTW2KCode.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             };

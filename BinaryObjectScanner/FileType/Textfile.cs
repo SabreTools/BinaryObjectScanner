@@ -17,10 +17,8 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Detect(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Detect(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -33,7 +31,7 @@ namespace BinaryObjectScanner.FileType
             {
                 // Load the current file content
                 var fileContent = string.Empty;
-#if NET40
+#if NET20 || NET35 || NET40
                 using (var sr = new StreamReader(stream, Encoding.Default, true, 1024 * 1024))
 #else
                 using (var sr = new StreamReader(stream, Encoding.Default, true, 1024 * 1024, true))
@@ -123,7 +121,7 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
             }
 
-            return string.Join(";", protections);
+            return string.Join(";", [.. protections]);
         }
     }
 }

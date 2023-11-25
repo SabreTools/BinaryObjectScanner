@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -50,17 +52,21 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found installed in the main game folder.
-                new PathMatchSet(new PathMatch("NeacClient.exe", useEndsWith: true), "NEAC Protect"),
-                new PathMatchSet(new PathMatch("NeacInterface.dll", useEndsWith: true), "NEAC Protect"),
-                new PathMatchSet(new PathMatch("NeacSafe64.sys", useEndsWith: true), "NEAC Protect"),
+                new(new FilePathMatch("NeacClient.exe"), "NEAC Protect"),
+                new(new FilePathMatch("NeacInterface.dll"), "NEAC Protect"),
+                new(new FilePathMatch("NeacSafe64.sys"), "NEAC Protect"),
 
                 // Found installed in "System32\drivers".
-                new PathMatchSet(new PathMatch("NeacSafe.sys", useEndsWith: true), "NEAC Protect"),
+                new(new FilePathMatch("NeacSafe.sys"), "NEAC Protect"),
 
                 // Known associated log files: "NeacSafe.log", "Neac.log", "NeacDll.log", "NeacLoader.log", and "NeacBak.log".
             };
@@ -74,12 +80,12 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found installed in the main game folder.
-                new PathMatchSet(new PathMatch("NeacClient.exe", useEndsWith: true), "NEAC Protect"),
-                new PathMatchSet(new PathMatch("NeacInterface.dll", useEndsWith: true), "NEAC Protect"),
-                new PathMatchSet(new PathMatch("NeacSafe64.sys", useEndsWith: true), "NEAC Protect"),
+                new(new FilePathMatch("NeacClient.exe"), "NEAC Protect"),
+                new(new FilePathMatch("NeacInterface.dll"), "NEAC Protect"),
+                new(new FilePathMatch("NeacSafe64.sys"), "NEAC Protect"),
 
                 // Found installed in "System32\drivers".
-                new PathMatchSet(new PathMatch("NeacSafe.sys", useEndsWith: true), "NEAC Protect"),
+                new(new FilePathMatch("NeacSafe.sys"), "NEAC Protect"),
 
                 // Known associated log files: "NeacSafe.log", "Neac.log", "NeacDll.log", "NeacLoader.log", and "NeacBak.log".
             };

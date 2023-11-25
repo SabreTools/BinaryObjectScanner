@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -53,13 +55,17 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Seems likely to be present in most, if not all discs protected with Cenega ProtectDVD, but unable to confirm due to only having a small sample size.
                 // Found in Redump entry 31422 and IA item "speed-pack".
-                new PathMatchSet(new PathMatch("cenega.dll", useEndsWith: true), "Cenega ProtectDVD"),
+                new(new FilePathMatch("cenega.dll"), "Cenega ProtectDVD"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -72,7 +78,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Seems likely to be present in most, if not all discs protected with Cenega ProtectDVD, but unable to confirm due to only having a small sample size.
                 // Found in Redump entry 31422 and IA item "speed-pack".
-                new PathMatchSet(new PathMatch("cenega.dll", useEndsWith: true), "Cenega ProtectDVD"),
+                new(new FilePathMatch("cenega.dll"), "Cenega ProtectDVD"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

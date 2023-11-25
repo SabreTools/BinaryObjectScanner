@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -76,7 +78,7 @@ namespace BinaryObjectScanner.Protection
             var timingMatchers = new List<ContentMatchSet>
             {
                 // Denuvo Timing
-                new ContentMatchSet(
+                new(
                     new byte?[]
                     {
                         0x44, 0x65, 0x6E, 0x75, 0x76, 0x6F, 0x20, 0x54,
@@ -85,7 +87,7 @@ namespace BinaryObjectScanner.Protection
             };
 
             // TODO: Re-enable all Entry Point checks after implementing
-            // if (pex.ContainsSection(".arch") || pex.ContainsSection(".srdata") || !string.IsNullOrWhiteSpace(MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, timingMatchers, includeDebug)))
+            // if (pex.ContainsSection(".arch") || pex.ContainsSection(".srdata") || !string.IsNullOrEmpty(MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, timingMatchers, includeDebug)))
             // {
             //     if (pex.OH_Magic == OptionalHeaderType.PE32Plus)
             //     {
@@ -158,7 +160,7 @@ namespace BinaryObjectScanner.Protection
             //         };
 
             //         var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-            //         if (!string.IsNullOrWhiteSpace(match))
+            //         if (!string.IsNullOrEmpty(match))
             //             return match;
 
             //         return "Denuvo (Unknown x64 Version)";
@@ -224,7 +226,7 @@ namespace BinaryObjectScanner.Protection
             //         };
 
             //         var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-            //         if (!string.IsNullOrWhiteSpace(match))
+            //         if (!string.IsNullOrEmpty(match))
             //             return match;
 
             //         //// Check if steam_api64.dll present
@@ -255,19 +257,23 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found in Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
                 // These files are automatically installed into an "Denuvo Anti-Cheat" folder when the game is installed. 
-                new PathMatchSet(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new PathMatchSet(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new PathMatchSet(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
 
                 // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
-                new PathMatchSet(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -281,12 +287,12 @@ namespace BinaryObjectScanner.Protection
                 // Found in Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
                 // These files are automatically installed into an "Denuvo Anti-Cheat" folder when the game is installed. 
-                new PathMatchSet(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new PathMatchSet(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new PathMatchSet(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
 
                 // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
-                new PathMatchSet(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

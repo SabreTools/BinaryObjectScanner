@@ -112,7 +112,7 @@ namespace BinaryObjectScanner.FileType
 
                 // Get the archive filename
                 string archiveFileName = item.ArchiveFilenames[directoryItem.DirectoryEntry.ArchiveIndex];
-                if (string.IsNullOrWhiteSpace(archiveFileName))
+                if (string.IsNullOrEmpty(archiveFileName))
                     return false;
 
                 // If the archive doesn't exist
@@ -152,11 +152,11 @@ namespace BinaryObjectScanner.FileType
 
             // Create the filename
             string filename = $"{directoryItem.Name}.{directoryItem.Extension}";
-            if (!string.IsNullOrWhiteSpace(directoryItem.Path))
+            if (!string.IsNullOrEmpty(directoryItem.Path))
                 filename = Path.Combine(directoryItem.Path, filename);
 
             // If we have an invalid output directory
-            if (string.IsNullOrWhiteSpace(outputDirectory))
+            if (string.IsNullOrEmpty(outputDirectory))
                 return false;
 
             // Create the full output path

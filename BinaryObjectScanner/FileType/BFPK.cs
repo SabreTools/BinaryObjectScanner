@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Compressors;
 using SharpCompress.Compressors.Deflate;
 #endif
@@ -19,10 +19,8 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -111,19 +109,19 @@ namespace BinaryObjectScanner.FileType
 
                 // Create the output path
                 string filePath = Path.Combine(outputDirectory, file.Name ?? $"file{index}");
-                using (FileStream fs = File.OpenWrite(filePath))
-                {
-                    // Read the data block
-                    var data = item.ReadFromDataSource(offset, compressedSize);
-                    if (data == null)
-                        return false;
+                using FileStream fs = File.OpenWrite(filePath);
 
-                    // If we have uncompressed data
-                    if (compressedSize == file.UncompressedSize)
-                    {
-                        fs.Write(data, 0, compressedSize);
-                    }
-#if NET462_OR_GREATER
+                // Read the data block
+                var data = item.ReadFromDataSource(offset, compressedSize);
+                if (data == null)
+                    return false;
+
+                // If we have uncompressed data
+                if (compressedSize == file.UncompressedSize)
+                {
+                    fs.Write(data, 0, compressedSize);
+                }
+#if NET462_OR_GREATER || NETCOREAPP
                     else
                     {
                         MemoryStream ms = new MemoryStream(data);
@@ -131,7 +129,6 @@ namespace BinaryObjectScanner.FileType
                         zs.CopyTo(fs);
                     }
 #endif
-                }
 
                 return true;
             }

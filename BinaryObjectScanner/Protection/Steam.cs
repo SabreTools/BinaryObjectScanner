@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -41,46 +43,50 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // These checks are grouped together due to the names being generic on their own (Redump entry 91450).
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     // TODO: Identify based on "Steam(TM)" being present in "Description" but not in "File Description".
-                    new PathMatch("steam.exe", useEndsWith: true),
+                    new FilePathMatch("steam.exe"),
 
-                    new PathMatch("steam.ini", useEndsWith: true),
+                    new FilePathMatch("steam.ini"),
                     
                     // TODO: Identify file using MSI property parsing.
-                    new PathMatch("steam.msi", useEndsWith: true),
+                    new FilePathMatch("steam.msi"),
                 }, "Steam"),
 
-                new PathMatchSet(new PathMatch("steam_api.dll", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("steam_api64.dll", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("steam_install_agreement.rtf", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.ini", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.pax.gz", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.pkg", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.sizes", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Czech.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_English.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_French.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_German.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Italian.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Polish.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Russian.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Spanish.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamRetailInstaller", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamService.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("steamxboxutil64.exe", useEndsWith: true), "Steam"),
+                new(new FilePathMatch("steam_api.dll"), "Steam"),
+                new(new FilePathMatch("steam_api64.dll"), "Steam"),
+                new(new FilePathMatch("steam_install_agreement.rtf"), "Steam"),
+                new(new FilePathMatch("SteamInstall.bom"), "Steam"),
+                new(new FilePathMatch("SteamInstall.exe"), "Steam"),
+                new(new FilePathMatch("SteamInstall.info"), "Steam"),
+                new(new FilePathMatch("SteamInstall.ini"), "Steam"),
+                new(new FilePathMatch("SteamInstall.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall.pax.gz"), "Steam"),
+                new(new FilePathMatch("SteamInstall.pkg"), "Steam"),
+                new(new FilePathMatch("SteamInstall.sizes"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Czech.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_English.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_French.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_German.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Italian.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Polish.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Russian.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Spanish.msi"), "Steam"),
+                new(new FilePathMatch("SteamRetailInstaller"), "Steam"),
+                new(new FilePathMatch("SteamRetailInstaller.dmg"), "Steam"),
+                new(new FilePathMatch("SteamService.exe"), "Steam"),
+                new(new FilePathMatch("SteamSetup.exe"), "Steam"),
+                new(new FilePathMatch("steamxboxutil64.exe"), "Steam"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -91,30 +97,30 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("steam_api.dll", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("steam_api64.dll", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("steam_install_agreement.rtf", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.bom", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.info", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.ini", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.pax.gz", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.pkg", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall.sizes", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Czech.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_English.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_French.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_German.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Italian.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Polish.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Russian.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamInstall_Spanish.msi", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamRetailInstaller", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamRetailInstaller.dmg", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamService.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("SteamSetup.exe", useEndsWith: true), "Steam"),
-                new PathMatchSet(new PathMatch("steamxboxutil64.exe", useEndsWith: true), "Steam"),
+                new(new FilePathMatch("steam_api.dll"), "Steam"),
+                new(new FilePathMatch("steam_api64.dll"), "Steam"),
+                new(new FilePathMatch("steam_install_agreement.rtf"), "Steam"),
+                new(new FilePathMatch("SteamInstall.bom"), "Steam"),
+                new(new FilePathMatch("SteamInstall.exe"), "Steam"),
+                new(new FilePathMatch("SteamInstall.info"), "Steam"),
+                new(new FilePathMatch("SteamInstall.ini"), "Steam"),
+                new(new FilePathMatch("SteamInstall.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall.pax.gz"), "Steam"),
+                new(new FilePathMatch("SteamInstall.pkg"), "Steam"),
+                new(new FilePathMatch("SteamInstall.sizes"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Czech.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_English.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_French.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_German.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Italian.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Polish.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Russian.msi"), "Steam"),
+                new(new FilePathMatch("SteamInstall_Spanish.msi"), "Steam"),
+                new(new FilePathMatch("SteamRetailInstaller"), "Steam"),
+                new(new FilePathMatch("SteamRetailInstaller.dmg"), "Steam"),
+                new(new FilePathMatch("SteamService.exe"), "Steam"),
+                new(new FilePathMatch("SteamSetup.exe"), "Steam"),
+                new(new FilePathMatch("steamxboxutil64.exe"), "Steam"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

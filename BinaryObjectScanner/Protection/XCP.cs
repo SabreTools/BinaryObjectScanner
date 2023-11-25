@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,9 +43,17 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
+#if NET20 || NET35
+            var protections = new Queue<string>();
+#else
             var protections = new ConcurrentQueue<string>();
+#endif
             if (files == null)
                 return protections;
 
@@ -52,10 +62,10 @@ namespace BinaryObjectScanner.Protection
                 || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)))
             {
                 var versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
-                if (!string.IsNullOrWhiteSpace(versionDatPath))
+                if (!string.IsNullOrEmpty(versionDatPath))
                 {
                     var xcpVersion = GetDatVersion(versionDatPath);
-                    if (!string.IsNullOrWhiteSpace(xcpVersion))
+                    if (!string.IsNullOrEmpty(xcpVersion))
                         protections.Enqueue(xcpVersion!);
                 }
                 else

@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -65,7 +67,7 @@ namespace BinaryObjectScanner.Protection
                 if (nthSection == null)
                     continue;
 
-#if NET40 || NET452
+#if NET20 || NET35 || NET40 || NET452
                 string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? []).TrimEnd('\0');
 #else
                 string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? Array.Empty<byte>()).TrimEnd('\0');
@@ -79,11 +81,11 @@ namespace BinaryObjectScanner.Protection
                     var matchers = new List<ContentMatchSet>
                     {
                         // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
-                        new ContentMatchSet(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
+                        new(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
                     };
 
                     var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
+                    if (!string.IsNullOrEmpty(match))
                         return match;
                 }
             }
@@ -109,28 +111,32 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch("CMS16.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS_95.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS_NT.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS32_95.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS32_NT.DLL", useEndsWith: true), "SecuROM"),
+                new(new FilePathMatch("CMS16.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS_95.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS_NT.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS32_95.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS32_NT.DLL"), "SecuROM"),
 
                 // TODO: Verify if these are OR or AND
-                new PathMatchSet(new PathMatch("SINTF32.DLL", useEndsWith: true), "SecuROM New"),
-                new PathMatchSet(new PathMatch("SINTF16.DLL", useEndsWith: true), "SecuROM New"),
-                new PathMatchSet(new PathMatch("SINTFNT.DLL", useEndsWith: true), "SecuROM New"),
+                new(new FilePathMatch("SINTF32.DLL"), "SecuROM New"),
+                new(new FilePathMatch("SINTF16.DLL"), "SecuROM New"),
+                new(new FilePathMatch("SINTFNT.DLL"), "SecuROM New"),
 
                 // TODO: Find more samples of this for different versions
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("securom_v7_01.bak", useEndsWith: true),
-                    new PathMatch("securom_v7_01.dat", useEndsWith: true),
-                    new PathMatch("securom_v7_01.tmp", useEndsWith: true),
+                    new FilePathMatch("securom_v7_01.bak"),
+                    new FilePathMatch("securom_v7_01.dat"),
+                    new FilePathMatch("securom_v7_01.tmp"),
                 }, "SecuROM 7.01"),
             };
 
@@ -142,19 +148,19 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("CMS16.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS_95.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS_NT.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS32_95.DLL", useEndsWith: true), "SecuROM"),
-                new PathMatchSet(new PathMatch("CMS32_NT.DLL", useEndsWith: true), "SecuROM"),
+                new(new FilePathMatch("CMS16.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS_95.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS_NT.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS32_95.DLL"), "SecuROM"),
+                new(new FilePathMatch("CMS32_NT.DLL"), "SecuROM"),
 
-                new PathMatchSet(new PathMatch("SINTF32.DLL", useEndsWith: true), "SecuROM New"),
-                new PathMatchSet(new PathMatch("SINTF16.DLL", useEndsWith: true), "SecuROM New"),
-                new PathMatchSet(new PathMatch("SINTFNT.DLL", useEndsWith: true), "SecuROM New"),
+                new(new FilePathMatch("SINTF32.DLL"), "SecuROM New"),
+                new(new FilePathMatch("SINTF16.DLL"), "SecuROM New"),
+                new(new FilePathMatch("SINTFNT.DLL"), "SecuROM New"),
 
-                new PathMatchSet(new PathMatch("securom_v7_01.bak", useEndsWith: true), "SecuROM 7.01"),
-                new PathMatchSet(new PathMatch("securom_v7_01.dat", useEndsWith: true), "SecuROM 7.01"),
-                new PathMatchSet(new PathMatch("securom_v7_01.tmp", useEndsWith: true), "SecuROM 7.01"),
+                new(new FilePathMatch("securom_v7_01.bak"), "SecuROM 7.01"),
+                new(new FilePathMatch("securom_v7_01.dat"), "SecuROM 7.01"),
+                new(new FilePathMatch("securom_v7_01.tmp"), "SecuROM 7.01"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -256,15 +262,15 @@ namespace BinaryObjectScanner.Protection
                 return "8";
 
             // Search .data for the version indicator
-            var matcher = new ContentMatch(new byte?[]
-            {
+            var matcher = new ContentMatch(
+            [
                 0x29, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null,
                 0x82, 0xD8, 0x0C, 0xAC
-            });
+            ]);
 
             (bool success, int position) = matcher.Match(dataSectionRaw);
 

@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
                         var matchers = new List<ContentMatchSet>
                     {
                         // kernel32.dll + (char)0x00 + (char)0x00 + (char)0x00 + VirtualProtect
-                        new ContentMatchSet(new byte?[]
+                        new(new byte?[]
                         {
                             0x6B, 0x65, 0x72, 0x6E, 0x65, 0x6C, 0x33, 0x32,
                             0x2E, 0x64, 0x6C, 0x6C, 0x00, 0x00, 0x00, 0x56,
@@ -45,7 +45,7 @@ namespace BinaryObjectScanner.Protection
                     };
 
                         var match = MatchUtil.GetFirstMatch(file, dcrtextData, matchers, includeDebug);
-                        if (!string.IsNullOrWhiteSpace(match))
+                        if (!string.IsNullOrEmpty(match))
                             return match;
                     }
                 }
@@ -73,7 +73,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             int position = positions[0];
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] versionBytes = new byte[8];
             Array.Copy(fileContent, position + 67, versionBytes, 0, 8);
             char[] version = versionBytes.Select(b => (char)b).ToArray();

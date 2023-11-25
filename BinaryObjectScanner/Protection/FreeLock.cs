@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -15,36 +17,40 @@ namespace BinaryObjectScanner.Protection
         // TODO: Add an MS-DOS executable check for "FREELOCK.EXE".
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // The disk image that every version of Freelock is distributed through.
-                new PathMatchSet(new PathMatch("FREELOCK.IMG", useEndsWith: true), "Freelock Disk Image"),
+                new(new FilePathMatch("FREELOCK.IMG"), "Freelock Disk Image"),
 
                 // Found in every "FREELOCK.IMG".
-                new PathMatchSet(new PathMatch("FREELOCK.EXE", useEndsWith: true), "Freelock"),
-                new PathMatchSet(new PathMatch("FREELOCK.TXT", useEndsWith: true), "Freelock"),
+                new(new FilePathMatch("FREELOCK.EXE"), "Freelock"),
+                new(new FilePathMatch("FREELOCK.TXT"), "Freelock"),
 
                 // Found in "FREELOCK.IMG" from Freelock 1.0-1.2.
-                new PathMatchSet(new PathMatch("FREELOCK", useEndsWith: true), "Freelock 1.0-1.2"),
+                new(new FilePathMatch("FREELOCK"), "Freelock 1.0-1.2"),
 
                 // Found in "FREELOCK.IMG" from Freelock 1.2+.
-                new PathMatchSet(new PathMatch("GENLOCK.EXE", useEndsWith: true), "Freelock 1.2+"),
-                new PathMatchSet(new PathMatch("freelock.ico", useEndsWith: true), "Freelock 1.2+"),
-                new PathMatchSet(new PathMatch("freelock.pif", useEndsWith: true), "Freelock 1.2+"),
+                new(new FilePathMatch("GENLOCK.EXE"), "Freelock 1.2+"),
+                new(new FilePathMatch("freelock.ico"), "Freelock 1.2+"),
+                new(new FilePathMatch("freelock.pif"), "Freelock 1.2+"),
 
                 // Created by "GENLOCK.EXE" in Freelock 1.2+.
-                new PathMatchSet(new PathMatch("FREELOCK.DAT", useEndsWith: true), "Freelock 1.2+"),
+                new(new FilePathMatch("FREELOCK.DAT"), "Freelock 1.2+"),
 
                 // Found in "FREELOCK.IMG" From Freelock 1.3.
-                new PathMatchSet(new PathMatch("FREELOCK.13", useEndsWith: true), "Freelock 1.3"),
+                new(new FilePathMatch("FREELOCK.13"), "Freelock 1.3"),
 
                 // Found in "FREELOCK.IMG" From Freelock 1.3.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("FREELOCK.13", useEndsWith: true),
-                    new PathMatch("FL.DAT", useEndsWith: true),
+                    new FilePathMatch("FREELOCK.13"),
+                    new FilePathMatch("FL.DAT"),
                 }, "Freelock 1.3"),
             };
 
@@ -57,25 +63,25 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // The disk image that every version of Freelock is distributed through.
-                new PathMatchSet(new PathMatch("FREELOCK.IMG", useEndsWith: true), "Freelock Disk Image"),
+                new(new FilePathMatch("FREELOCK.IMG"), "Freelock Disk Image"),
 
                 // Found in every "FREELOCK.IMG".
-                new PathMatchSet(new PathMatch("FREELOCK.EXE", useEndsWith: true), "Freelock"),
-                new PathMatchSet(new PathMatch("FREELOCK.TXT", useEndsWith: true), "Freelock"),
+                new(new FilePathMatch("FREELOCK.EXE"), "Freelock"),
+                new(new FilePathMatch("FREELOCK.TXT"), "Freelock"),
 
                 // Found in "FREELOCK.IMG" from Freelock 1.0-1.2.
-                new PathMatchSet(new PathMatch("FREELOCK", useEndsWith: true), "Freelock 1.0-1.2"),
+                new(new FilePathMatch("FREELOCK"), "Freelock 1.0-1.2"),
 
                 // Found in "FREELOCK.IMG" from Freelock 1.2+.
-                new PathMatchSet(new PathMatch("GENLOCK.EXE", useEndsWith: true), "Freelock 1.2+"),
-                new PathMatchSet(new PathMatch("freelock.ico", useEndsWith: true), "Freelock 1.2+"),
-                new PathMatchSet(new PathMatch("freelock.pif", useEndsWith: true), "Freelock 1.2+"),
+                new(new FilePathMatch("GENLOCK.EXE"), "Freelock 1.2+"),
+                new(new FilePathMatch("freelock.ico"), "Freelock 1.2+"),
+                new(new FilePathMatch("freelock.pif"), "Freelock 1.2+"),
 
                 // Created by "GENLOCK.EXE" in Freelock 1.2+.
-                new PathMatchSet(new PathMatch("FREELOCK.DAT", useEndsWith: true), "Freelock 1.2+"),
+                new(new FilePathMatch("FREELOCK.DAT"), "Freelock 1.2+"),
 
                 // Found in "FREELOCK.IMG" From Freelock 1.3.
-                new PathMatchSet(new PathMatch("FREELOCK.13", useEndsWith: true), "Freelock 1.3"),
+                new(new FilePathMatch("FREELOCK.13"), "Freelock 1.3"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +24,7 @@ namespace BinaryObjectScanner
         {
             get
             {
-                if (pathCheckClasses == null)
-                    pathCheckClasses = InitCheckClasses<IPathCheck>();
-
+                pathCheckClasses ??= InitCheckClasses<IPathCheck>();
                 return pathCheckClasses;
             }
         }
@@ -48,21 +48,37 @@ namespace BinaryObjectScanner
         /// <param name="path">Path of the file or directory to check</param>
         /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Dictionary<string, Queue<string>> HandlePathChecks(string path, IEnumerable<string>? files)
+#else
         public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathChecks(string path, IEnumerable<string>? files)
+#endif
         {
             // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<string, Queue<string>>();
+#else
             var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+#endif
 
             // Preprocess the list of files
             files = files?.Select(f => f.Replace('\\', '/'))?.ToList();
 
             // Iterate through all checks
+#if NET20 || NET35
+            foreach (var checkClass in PathCheckClasses)
+#else
             Parallel.ForEach(PathCheckClasses, checkClass =>
+#endif
             {
                 var subProtections = checkClass?.PerformCheck(path, files);
                 if (subProtections != null)
                     AppendToDictionary(protections, path, subProtections);
+#if NET20 || NET35
+            }
+#else
             });
+#endif
 
             return protections;
         }
@@ -79,7 +95,11 @@ namespace BinaryObjectScanner
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Queue<string>? HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
+#else
         public static ConcurrentQueue<string>? HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
+#endif
         {
             var protection = impl.Detect(stream, fileName, includeDebug);
             return ProcessProtectionString(protection);
@@ -93,7 +113,11 @@ namespace BinaryObjectScanner
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream? stream, Scanner scanner)
+#else
         public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream? stream, Scanner scanner)
+#endif
         {
             // If the extractable file itself fails
             try
@@ -135,14 +159,22 @@ namespace BinaryObjectScanner
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, null on error</returns>
+#if NET20 || NET35
+        private static Queue<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
+#else
         private static ConcurrentQueue<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
+#endif
         {
             // If we have an invalid path
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrEmpty(path))
                 return null;
 
             // Setup the output dictionary
+#if NET20 || NET35
+            var protections = new Queue<string>();
+#else
             var protections = new ConcurrentQueue<string>();
+#endif
 
             // If we have a file path
             if (File.Exists(path))
@@ -193,14 +225,22 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="protection">Protection string to process</param>
         /// <returns>Set of protections parsed, null on error</returns>
+#if NET20 || NET35
+        private static Queue<string>? ProcessProtectionString(string? protection)
+#else
         private static ConcurrentQueue<string>? ProcessProtectionString(string? protection)
+#endif
         {
             // If we have an invalid protection string
-            if (string.IsNullOrWhiteSpace(protection))
+            if (string.IsNullOrEmpty(protection))
                 return null;
 
             // Setup the output queue
+#if NET20 || NET35
+            var protections = new Queue<string>();
+#else
             var protections = new ConcurrentQueue<string>();
+#endif
 
             // If we have an indicator of multiple protections
             if (protection!.Contains(";"))

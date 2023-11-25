@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -20,16 +22,20 @@ namespace BinaryObjectScanner.Protection
     public class SafeLock : IPathCheck
     {
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             // Technically all need to exist but some might be renamed
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.256", useEndsWith: true), "SafeLock"),
+                new(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.001"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.002"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.128"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.256"), "SafeLock"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -40,11 +46,11 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.001", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.002", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.128", useEndsWith: true), "SafeLock"),
-                new PathMatchSet(new PathMatch("SafeLock.256", useEndsWith: true), "SafeLock"),
+                new(new FilePathMatch("SafeLock.DAT"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.001"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.002"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.128"), "SafeLock"),
+                new(new FilePathMatch("SafeLock.256"), "SafeLock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

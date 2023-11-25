@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -54,12 +56,16 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), GetInternalVersion, "Impulse Reactor Core Module"),
-                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), GetInternalVersion, "Stardock Product Activation"),
+                new(new FilePathMatch("ImpulseReactor.dll"), GetInternalVersion, "Impulse Reactor Core Module"),
+                new(new FilePathMatch("ReactorActivate.exe"), GetInternalVersion, "Stardock Product Activation"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -70,8 +76,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("ImpulseReactor.dll", useEndsWith: true), GetInternalVersion, "Impulse Reactor Core Module"),
-                new PathMatchSet(new PathMatch("ReactorActivate.exe", useEndsWith: true), GetInternalVersion, "Stardock Product Activation"),
+                new(new FilePathMatch("ImpulseReactor.dll"), GetInternalVersion, "Impulse Reactor Core Module"),
+                new(new FilePathMatch("ReactorActivate.exe"), GetInternalVersion, "Stardock Product Activation"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -81,11 +87,9 @@ namespace BinaryObjectScanner.Protection
         {
             try
             {
-                using (Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var pex = PortableExecutable.Create(fileStream);
-                    return pex?.GetInternalVersion() ?? string.Empty;
-                }
+                using Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var pex = PortableExecutable.Create(fileStream);
+                return pex?.GetInternalVersion() ?? string.Empty;
             }
             catch
             {

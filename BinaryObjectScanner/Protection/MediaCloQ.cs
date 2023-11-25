@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -37,14 +39,18 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // The file "sunncomm.ico" was a previously used file check, but since it's just an icon of the SunnComm logo, it seems too likely to result in false positives.
 
                 // Found on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-                new PathMatchSet(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
+                new(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -58,7 +64,7 @@ namespace BinaryObjectScanner.Protection
                 // The file "sunncomm.ico" was a previously used file check, but since it's just an icon of the SunnComm logo, it seems too likely to result in false positives.
 
                 // Found on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-                new PathMatchSet(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
+                new(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

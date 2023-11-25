@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -51,17 +53,17 @@ namespace BinaryObjectScanner.Protection
                 if (pex.EntryPointData.StartsWith(new byte?[]
                 {
                     0x60, 0xEB, 0x03, 0xC7, 0x84, 0xE8, 0xEB, 0x03,
-                    0xC7, 0x84, 0x9A, 0xE8, 0x00, 0x00, 0x00, 0x00, 
+                    0xC7, 0x84, 0x9A, 0xE8, 0x00, 0x00, 0x00, 0x00,
                     0x5D, 0x81, 0xED, 0x10, 0x00, 0x00, 0x00, 0xEB,
                     0x03, 0xC7, 0x84, 0xE9, 0x64, 0xA0, 0x23, 0x00,
                     0x00, 0x00, 0xEB
                 }))
                     return "SVKP v1.051";
-                
+
                 // Found in the SVKP 1.11 demo.
                 if (pex.EntryPointData.StartsWith(new byte?[]
                 {
-                    0x60, 0xE8, null, null, null, null, 0x5D, 0x81, 
+                    0x60, 0xE8, null, null, null, null, 0x5D, 0x81,
                     0xED, 0x06, null, null, null, 0x64, 0xA0, 0x23
                 }))
                     return "SVKP v1.11";
@@ -69,8 +71,8 @@ namespace BinaryObjectScanner.Protection
                 // Found in the SVKP 1.32 demo and Redump entry 84122.
                 if (pex.EntryPointData.StartsWith(new byte?[]
                 {
-                    0x60, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81, 
-                    0xED, 0x06, 0x00, 0x00, 0x00, 0xEB, 0x05, 0xB8, 
+                    0x60, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81,
+                    0xED, 0x06, 0x00, 0x00, 0x00, 0xEB, 0x05, 0xB8,
                     null, null, null, null, 0x64, 0xA0, 0x23
                 }))
                     return "SVKP v1.3+";
@@ -90,16 +92,20 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found in the SVKP 1.05-1.32 demos.
-                new PathMatchSet(new FilePathMatch("svkp.exe"), "SVKP"),
-                new PathMatchSet(new FilePathMatch("svkp.key"), "SVKP"),
+                new(new FilePathMatch("svkp.exe"), "SVKP"),
+                new(new FilePathMatch("svkp.key"), "SVKP"),
 
                 // Found in the SVKP 1.32 demo.
-                new PathMatchSet(new FilePathMatch("svkpnd.dll"), "SVKP"),
+                new(new FilePathMatch("svkpnd.dll"), "SVKP"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -111,11 +117,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the SVKP 1.05-1.32 demos.
-                new PathMatchSet(new FilePathMatch("svkp.exe"), "SVKP"),
-                new PathMatchSet(new FilePathMatch("svkp.key"), "SVKP"),
+                new(new FilePathMatch("svkp.exe"), "SVKP"),
+                new(new FilePathMatch("svkp.key"), "SVKP"),
 
                 // Found in the SVKP 1.32 demo.
-                new PathMatchSet(new FilePathMatch("svkpnd.dll"), "SVKP"),
+                new(new FilePathMatch("svkpnd.dll"), "SVKP"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

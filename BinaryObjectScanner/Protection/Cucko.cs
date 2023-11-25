@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Protection
                     {
                         // Confirmed to detect most examples known of Cucko. The only known exception is the version of "TSLHost.dll" included on Redump entry 36119.
                         // ŠU‰8...…™...ŠUŠ8T...
-                        new ContentMatchSet(new byte?[]
+                        new(new byte?[]
                         {
                             0x8A, 0x55, 0x89, 0x38, 0x14, 0x1E, 0x0F, 0x85,
                             0x99, 0x00, 0x00, 0x00, 0x8A, 0x55, 0x8A, 0x38,

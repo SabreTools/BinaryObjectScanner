@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
 #endif
@@ -19,16 +19,14 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 // Create a temp output directory

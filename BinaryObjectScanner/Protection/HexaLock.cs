@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -68,35 +70,39 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // "Start_Here.exe" is the default name used in HexaLock AutoLock 4.5.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("Start_Here.exe", useEndsWith: true),
-                    new PathMatch("MFINT.DLL", useEndsWith: true),
-                    new PathMatch("MFIMP.DLL", useEndsWith: true),
+                    new FilePathMatch("Start_Here.exe"),
+                    new FilePathMatch("MFINT.DLL"),
+                    new FilePathMatch("MFIMP.DLL"),
                 }, "Hexalock AutoLock 4.5"),
 
                 // Used for PDF protection in HexaLock AutoLock 4.7. "Start.exe" likely has some internal strings that can be checked.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("kleft.ipf", useEndsWith: true),
-                    new PathMatch("ReadPFile.exe", useEndsWith: true),
-                    new PathMatch("Start.exe", useEndsWith: true),
+                    new FilePathMatch("kleft.ipf"),
+                    new FilePathMatch("ReadPFile.exe"),
+                    new FilePathMatch("Start.exe"),
                 }, "HexaLock AutoLock 4.7 PDF DRM"),
 
                 // Should be present in all known versions.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("MFINT.DLL", useEndsWith: true),
-                    new PathMatch("MFIMP.DLL", useEndsWith: true),
+                    new FilePathMatch("MFINT.DLL"),
+                    new FilePathMatch("MFIMP.DLL"),
                 }, "HexaLock AutoLock"),
 
                 // Found inside the file typically named "Start_Here.exe" in version 4.5.
-                new PathMatchSet(new PathMatch("HCPSMng.exe", useEndsWith: true), "HexaLock AutoLock 4.5"),
+                new(new PathMatch("HCPSMng.exe"), "HexaLock AutoLock 4.5"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -108,18 +114,18 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found to be the default name used in HexaLock AutoLock 4.5.
-                new PathMatchSet(new PathMatch("Start_Here.exe", useEndsWith: true), "HexaLock AutoLock 4.5"),
+                new(new FilePathMatch("Start_Here.exe"), "HexaLock AutoLock 4.5"),
 
                 // Found to be contained in HexaLock AutoLock 4.5 and 4.7.
-                new PathMatchSet(new PathMatch("MFINT.DLL", useEndsWith: true), "HexaLock AutoLock"),
-                new PathMatchSet(new PathMatch("MFIMP.DLL", useEndsWith: true), "HexaLock AutoLock"),
+                new(new FilePathMatch("MFINT.DLL"), "HexaLock AutoLock"),
+                new(new FilePathMatch("MFIMP.DLL"), "HexaLock AutoLock"),
 
                 // Used for PDF protection in HexaLock AutoLock 4.7.
-                new PathMatchSet(new PathMatch("kleft.ipf", useEndsWith: true), "HexaLock AutoLock 4.7 PDF DRM"),
-                new PathMatchSet(new PathMatch("ReadPFile.exe", useEndsWith: true), "HexaLock AutoLock 4.7 PDF DRM"),
+                new(new FilePathMatch("kleft.ipf"), "HexaLock AutoLock 4.7 PDF DRM"),
+                new(new FilePathMatch("ReadPFile.exe"), "HexaLock AutoLock 4.7 PDF DRM"),
 
                 // Found inside the file typically named "Start_Here.exe" in version 4.5.
-                new PathMatchSet(new PathMatch("HCPSMng.exe", useEndsWith: true), "HexaLock AutoLock 4.5"),
+                new(new FilePathMatch("HCPSMng.exe"), "HexaLock AutoLock 4.5"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

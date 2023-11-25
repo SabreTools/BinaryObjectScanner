@@ -3,7 +3,7 @@
     /// <summary>
     /// Struct representing protection scanning progress
     /// </summary>
-#if NET40
+#if NET20 || NET35 || NET40
     public class ProtectionProgress : System.EventArgs
 #else
     public struct ProtectionProgress

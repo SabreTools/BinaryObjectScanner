@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -19,12 +21,16 @@ namespace BinaryObjectScanner.Protection
     public class WinLock : IPathCheck
     {
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // This is the temporary dummy file created in the C: drive.
-                new PathMatchSet(new PathMatch("WinLock.PSX", useEndsWith: true), "WinLock"),
+                new(new FilePathMatch("WinLock.PSX"), "WinLock"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -36,7 +42,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // This is the temporary dummy file created in the C: drive.
-                new PathMatchSet(new PathMatch("WinLock.PSX", useEndsWith: true), "WinLock"),
+                new(new FilePathMatch("WinLock.PSX"), "WinLock"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

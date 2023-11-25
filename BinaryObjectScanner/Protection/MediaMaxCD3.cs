@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -63,26 +65,30 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     // TODO: Verify if these are OR or AND
 					// TODO: Verify that this is directly related to MediaMax CD-3.
-                    new PathMatch("PlayDisc.exe", useEndsWith: true),
-                    new PathMatch("PlayDisc.xml", useEndsWith: true),
+                    new FilePathMatch("PlayDisc.exe"),
+                    new FilePathMatch("PlayDisc.xml"),
                 }, "MediaMax CD-3"),
 
                 // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
                 // "SCCD3X01.dll" should already be detected by the content checks, but not "SCCD3X02.dll".
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
                     // TODO: Verify if these are OR or AND
-                    new PathMatch("SCCD3X01.dll", useEndsWith: true),
-                    new PathMatch("SCCD3X02.dll", useEndsWith: true),
+                    new FilePathMatch("SCCD3X01.dll"),
+                    new FilePathMatch("SCCD3X02.dll"),
                 }, "MediaMax CD-3"),
             };
 
@@ -95,8 +101,8 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
-                new PathMatchSet(new PathMatch("SCCD3X01.dll", useEndsWith: true), "MediaMax CD-3"),
-                new PathMatchSet(new PathMatch("SCCD3X02.dll", useEndsWith: true), "MediaMax CD-3"),
+                new(new FilePathMatch("SCCD3X01.dll"), "MediaMax CD-3"),
+                new(new FilePathMatch("SCCD3X02.dll"), "MediaMax CD-3"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

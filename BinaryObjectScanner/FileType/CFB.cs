@@ -2,7 +2,9 @@
 using System.IO;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+#if NET40_OR_GREATER || NETCOREAPP
 using OpenMcdf;
+#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -17,15 +19,17 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
+#if NET20 || NET35
+            // Not supported for .NET Framework 2.0 or .NET Framework 3.5 due to library support
+            return null;
+#else
             try
             {
                 // Create a temp output directory
@@ -84,6 +88,7 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
+#endif
         }
 
         /// <remarks>Adapted from LibMSI</remarks>

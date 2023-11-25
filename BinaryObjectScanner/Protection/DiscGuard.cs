@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -82,7 +84,7 @@ namespace BinaryObjectScanner.Protection
                     {
                         // Found in "T29.dll" (Redump entry 31914).
                         // This check should be as long as the following check, as this data is nearly identical (including length) in the original files, but for some reason the section ends early, causing part of the remaining data to not be part of a section.
-                        new ContentMatchSet(new byte?[]
+                        new(new byte?[]
                         {
                             0x7B, 0x39, 0x8F, 0x07, 0x47, 0xE9, 0x96, 0x8C, 0xCA, 0xB2, 0x5C, 0x50,
                             0xC7, 0x5A, 0x18, 0xBD, 0x75, 0xB5, 0x68, 0x6A, 0x78, 0xB5, 0xCF, 0xF2,
@@ -100,7 +102,7 @@ namespace BinaryObjectScanner.Protection
                         }, GetVersion, "DiscGuard"),
 
                         // Found in "T5375.dll" (Redump entry 79284), "TD352.dll" and "TE091.dll" (Redump entry 46743), "T71E1.dll" and "T7181.dll" (Redump entry 46961), and "TA0E4.DLL" (Redump entry 79374).
-                        new ContentMatchSet(new byte?[]
+                        new(new byte?[]
                         {
                             0x7B, 0x39, 0x8F, 0x07, 0x45, 0xE9, 0x96, 0x8C, 0xCA, 0xB2, 0x5C, 0x50,
                             0xC7, 0x5A, 0x18, 0xBD, 0x75, 0xB5, 0x68, 0x6A, 0x78, 0xB5, 0xCF, 0xF2,
@@ -128,7 +130,7 @@ namespace BinaryObjectScanner.Protection
                     };
 
                     var match = MatchUtil.GetFirstMatch(file, vbnData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
+                    if (!string.IsNullOrEmpty(match))
                         return match;
                 }
             }
@@ -137,29 +139,33 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found together in seemingly every DiscGuard game (Redump entries 31914, 46743, 46961, 79284, and 79374).
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("IOSLINK.VXD", useEndsWith: true),
-                    new PathMatch("IOSLINK.SYS", useEndsWith: true),
+                    new FilePathMatch("IOSLINK.VXD"),
+                    new FilePathMatch("IOSLINK.SYS"),
                 }, "DiscGuard"),
 
                 // Found together in one DiscGuard game (Redump entry 31914).
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("TTR1.DLL", useEndsWith: true),
-                    new PathMatch("TTR2.DLL", useEndsWith: true),
+                    new FilePathMatch("TTR1.DLL"),
+                    new FilePathMatch("TTR2.DLL"),
                 }, "DiscGuard"),
 
                 // Found together in most DiscGuard games (Redump entries 46743, 46961, 79284, and 79374).
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("T111.DLL", useEndsWith: true),
-                    new PathMatch("T222.DLL", useEndsWith: true),
+                    new FilePathMatch("T111.DLL"),
+                    new FilePathMatch("T222.DLL"),
                 }, "DiscGuard"),
             };
 
@@ -172,11 +178,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found together in seemingly every DiscGuard game (Redump entries 31914, 46743, 46961, 79284, and 79374).
-                new PathMatchSet(new PathMatch("IOSLINK.VXD", useEndsWith: true), "DiscGuard"),
-                new PathMatchSet(new PathMatch("IOSLINK.SYS", useEndsWith: true), "DiscGuard"),
+                new(new FilePathMatch("IOSLINK.VXD"), "DiscGuard"),
+                new(new FilePathMatch("IOSLINK.SYS"), "DiscGuard"),
 
                 // IOSLINK.DLL doesn't seem to be present in any known samples, but a check for it was in the original BurnOut.
-                new PathMatchSet(new PathMatch("IOSLINK.DLL", useEndsWith: true), "DiscGuard (Unconfirmed check, report this to us on GitHub))"),
+                new(new FilePathMatch("IOSLINK.DLL"), "DiscGuard (Unconfirmed check, report this to us on GitHub))"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -212,11 +218,9 @@ namespace BinaryObjectScanner.Protection
         {
             try
             {
-                using (Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var pex = PortableExecutable.Create(fileStream);
-                    return pex?.GetInternalVersion() ?? string.Empty;
-                }
+                using Stream fileStream = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.Read);
+                var pex = PortableExecutable.Create(fileStream);
+                return pex?.GetInternalVersion() ?? string.Empty;
             }
             catch
             {

@@ -109,7 +109,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // If we have an invalid output directory
-            if (string.IsNullOrWhiteSpace(outputDirectory))
+            if (string.IsNullOrEmpty(outputDirectory))
                 return false;
 
             // Create the full output path
@@ -188,7 +188,7 @@ namespace BinaryObjectScanner.FileType
             string filename = $"{texture.Name}.bmp";
 
             // If we have an invalid output directory
-            if (string.IsNullOrWhiteSpace(outputDirectory))
+            if (string.IsNullOrEmpty(outputDirectory))
                 return false;
 
             // Create the full output path

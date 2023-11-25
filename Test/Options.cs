@@ -19,7 +19,7 @@ namespace Test
         /// <summary>
         /// Set of input paths to use for operations
         /// </summary>
-        public List<string> InputPaths { get; private set; } = new List<string>();
+        public List<string> InputPaths { get; private set; } = [];
 
         #region Extraction
 
@@ -90,7 +90,7 @@ namespace Test
         /// <summary>
         /// Parse commandline arguments into an Options object
         /// </summary>
-        public static Options ParseOptions(string[] args)
+        public static Options? ParseOptions(string[] args)
         {
             // If we have invalid arguments
             if (args == null || args.Length == 0)
@@ -154,7 +154,7 @@ namespace Test
 
                     case "-o":
                     case "--outdir":
-                        options.OutputPath = index + 1 < args.Length ? args[++index] : null;
+                        options.OutputPath = index + 1 < args.Length ? args[++index] : string.Empty;
                         break;
 
                     #endregion
@@ -270,7 +270,7 @@ namespace Test
         private static bool ValidateExtractionPath(Options options)
         {
             // Null or empty output path
-            if (string.IsNullOrWhiteSpace(options.OutputPath))
+            if (string.IsNullOrEmpty(options.OutputPath))
             {
                 Console.WriteLine("Output directory required for extraction!");
                 Console.WriteLine();

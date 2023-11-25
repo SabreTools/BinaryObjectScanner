@@ -28,11 +28,11 @@ namespace BinaryObjectScanner.Protection
                 var matchers = new List<ContentMatchSet>
                 {
                     // ACE-PCD
-                    new ContentMatchSet(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
+                    new(new byte?[] { 0x41, 0x43, 0x45, 0x2D, 0x50, 0x43, 0x44 }, GetVersion6till8, "ProtectDISC"),
                 };
 
                 var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
@@ -43,11 +43,11 @@ namespace BinaryObjectScanner.Protection
                 var matchers = new List<ContentMatchSet>
                 {
                     // DCP-BOV + (char)0x00 + (char)0x00
-                    new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
+                    new(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
                 var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
@@ -73,14 +73,14 @@ namespace BinaryObjectScanner.Protection
                     var matchers = new List<ContentMatchSet>
                 {
                     // HúMETINF
-                    new ContentMatchSet(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
+                    new(new byte?[] { 0x48, 0xFA, 0x4D, 0x45, 0x54, 0x49, 0x4E, 0x46 }, GetVersion76till10, "ProtectDISC"),
 
                     // DCP-BOV + (char)0x00 + (char)0x00
-                    new ContentMatchSet(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
+                    new(new byte?[] { 0x44, 0x43, 0x50, 0x2D, 0x42, 0x4F, 0x56, 0x00, 0x00 }, GetVersion3till6, "VOB ProtectCD/DVD"),
                 };
 
                     var match = MatchUtil.GetFirstMatch(file, lastSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrWhiteSpace(match))
+                    if (!string.IsNullOrEmpty(match))
                         return match;
                 }
             }
@@ -136,7 +136,7 @@ namespace BinaryObjectScanner.Protection
             int index = positions[0] - 12;
 
             // Version 6-7 with Build Number in plain text
-#if NET40
+#if NET20 || NET35 || NET40
             byte[] temp = new byte[4];
             Array.Copy(fileContent, index, temp, 0, 4);
             if (temp.SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D }))
@@ -147,7 +147,7 @@ namespace BinaryObjectScanner.Protection
                 index = positions[0] - 12 - 6;
 
                 // Version 7
-#if NET40
+#if NET20 || NET35 || NET40
                 temp = new byte[6];
                 Array.Copy(fileContent, index, temp, 0, 6);
                 if (new string(temp.Select(b => (char)b).ToArray()) == "Henrik")
@@ -176,7 +176,7 @@ namespace BinaryObjectScanner.Protection
                     index -= 5;
                 }
 
-#if NET40
+#if NET20 || NET35 || NET40
                 temp = new byte[6];
                 Array.Copy(fileContent, index, temp, 0, 6);
                 char[] arrBuild = temp.Select(b => (char)b).ToArray();

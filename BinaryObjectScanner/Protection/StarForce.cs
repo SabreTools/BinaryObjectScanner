@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
@@ -100,35 +102,39 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // This file combination is found in Redump entry 21136.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("protect.x86", useEndsWith: true),
-                    new PathMatch("protect.x64", useEndsWith: true),
-                    new PathMatch("protect.dll", useEndsWith: true),
-                    new PathMatch("protect.exe", useEndsWith: true),
-                    new PathMatch("protect.msg", useEndsWith: true),
+                    new FilePathMatch("protect.x86"),
+                    new FilePathMatch("protect.x64"),
+                    new FilePathMatch("protect.dll"),
+                    new FilePathMatch("protect.exe"),
+                    new FilePathMatch("protect.msg"),
                 }, "StarForce"),
 
                 // This file combination is found in multiple games, such as Redump entries 81756, 91336, and 93657.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("protect.x86", useEndsWith: true),
-                    new PathMatch("protect.x64", useEndsWith: true),
-                    new PathMatch("protect.dll", useEndsWith: true),
-                    new PathMatch("protect.exe", useEndsWith: true),
+                    new FilePathMatch("protect.x86"),
+                    new FilePathMatch("protect.x64"),
+                    new FilePathMatch("protect.dll"),
+                    new FilePathMatch("protect.exe"),
                 }, "StarForce"),
 
                 // This file combination is found in Redump entry 96137.
-                new PathMatchSet(new List<PathMatch>
+                new(new List<PathMatch>
                 {
-                    new PathMatch("protect.x86", useEndsWith: true),
-                    new PathMatch("protect.dll", useEndsWith: true),
-                    new PathMatch("protect.exe", useEndsWith: true),
+                    new FilePathMatch("protect.x86"),
+                    new FilePathMatch("protect.dll"),
+                    new FilePathMatch("protect.exe"),
                 }, "StarForce"),
             };
 

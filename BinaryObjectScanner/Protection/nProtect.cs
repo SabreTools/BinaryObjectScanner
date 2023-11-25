@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if NET40_OR_GREATER || NETCOREAPP
+using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -78,19 +80,23 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
                 // Found in "MSSetup.exe" in Redump entry 90526 and "mhfSetup_f40_1000.exe" and Redump entry 99598.
-                new PathMatchSet(new PathMatch("GameGuard.des", useEndsWith: true), "nProtect GameGuard"),
+                new(new FilePathMatch("GameGuard.des"), "nProtect GameGuard"),
 
                 // Found in "MSSetup.exe" in Redump entry 90526.
-                new PathMatchSet(new PathMatch("npkcrypt.dll", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkcrypt.sys", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkcrypt.vxd", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkcusb.sys", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkpdb.dll", useEndsWith: true), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcrypt.dll"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcrypt.sys"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcrypt.vxd"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcusb.sys"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkpdb.dll"), "nProtect KeyCrypt"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -102,12 +108,12 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in "MSSetup.exe" in Redump entry 90526.
-                new PathMatchSet(new PathMatch("GameGuard.des", useEndsWith: true), "nProtect GameGuard"),
-                new PathMatchSet(new PathMatch("npkcrypt.dll", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkcrypt.sys", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkcrypt.vxd", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkcusb.sys", useEndsWith: true), "nProtect KeyCrypt"),
-                new PathMatchSet(new PathMatch("npkpdb.dll", useEndsWith: true), "nProtect KeyCrypt"),
+                new(new FilePathMatch("GameGuard.des"), "nProtect GameGuard"),
+                new(new FilePathMatch("npkcrypt.dll"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcrypt.sys"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcrypt.vxd"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkcusb.sys"), "nProtect KeyCrypt"),
+                new(new FilePathMatch("npkpdb.dll"), "nProtect KeyCrypt"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

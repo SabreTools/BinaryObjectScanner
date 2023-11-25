@@ -1,5 +1,7 @@
 ﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,16 +29,16 @@ namespace BinaryObjectScanner.Protection
 
             // Run C-Dilla NE checks
             var cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(cDilla))
+            if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
 
             // Run SafeCast NE checks
             var safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(safeCast))
+            if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", resultsList);
+                return string.Join(", ", [.. resultsList]);
 
             return null;
         }
@@ -73,7 +75,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
-                if (!string.IsNullOrWhiteSpace(sectionMatch))
+                if (!string.IsNullOrEmpty(sectionMatch))
                 {
                     resultsList.Add(sectionMatch!);
                 }
@@ -81,7 +83,7 @@ namespace BinaryObjectScanner.Protection
                 {
                     // Get the .data section, if it exists, for protected sections.
                     sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
-                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                    if (!string.IsNullOrEmpty(sectionMatch))
                         resultsList.Add(sectionMatch!);
                 }
 
@@ -110,7 +112,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
-                if (!string.IsNullOrWhiteSpace(sectionMatch))
+                if (!string.IsNullOrEmpty(sectionMatch))
                 {
                     resultsList.Add(sectionMatch!);
                 }
@@ -118,138 +120,178 @@ namespace BinaryObjectScanner.Protection
                 {
                     // Check the .data section, if it exists, for protected sections.
                     sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
-                    if (!string.IsNullOrWhiteSpace(sectionMatch))
+                    if (!string.IsNullOrEmpty(sectionMatch))
                         resultsList.Add(sectionMatch!);
                 }
             }
 
             // Run Cactus Data Shield PE checks
             var match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run C-Dilla PE checks
             match = CDillaCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run RipGuard PE checks
             match = RipGuardCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeCast PE checks
             match = SafeCastCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeDisc PE checks
             match = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run FLEXnet PE checks
             match = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
-            if (!string.IsNullOrWhiteSpace(match))
+            if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Clean the result list
             resultsList = CleanResultList(resultsList);
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", resultsList);
+                return string.Join(", ", [.. resultsList]);
 
             return null;
         }
 
         /// <inheritdoc/>
+#if NET20 || NET35
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
+#if NET20 || NET35
+            var results = new Queue<string>();
+#else
             var results = new ConcurrentQueue<string>();
+#endif
 
             // Run Macrovision directory checks
             var macrovision = MacrovisionCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (macrovision != null && macrovision.Count > 0)
+#else
             if (macrovision != null && !macrovision.IsEmpty)
+#endif
                 results.AddRange(macrovision);
 
             // Run Cactus Data Shield directory checks
             var cactusDataShield = CactusDataShieldCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (cactusDataShield != null && cactusDataShield.Count > 0)
+#else
             if (cactusDataShield != null && !cactusDataShield.IsEmpty)
+#endif
                 results.AddRange(cactusDataShield);
 
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (cDilla != null && cDilla.Count > 0)
+#else
             if (cDilla != null && !cDilla.IsEmpty)
+#endif
                 results.AddRange(cDilla);
 
             // Run RipGuard directory checks
             var ripGuard = RipGuardCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (ripGuard != null && ripGuard.Count > 0)
+#else
             if (ripGuard != null && !ripGuard.IsEmpty)
+#endif
                 results.AddRange(ripGuard);
 
             // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (safeCast != null && safeCast.Count > 0)
+#else
             if (safeCast != null && !safeCast.IsEmpty)
+#endif
                 results.AddRange(safeCast);
 
             // Run SafeDisc directory checks
             var safeDisc = SafeDiscCheckDirectoryPath(path, files);
+#if NET20 || NET35
+            if (safeDisc != null && safeDisc.Count > 0)
+#else
             if (safeDisc != null && !safeDisc.IsEmpty)
+#endif
                 results.AddRange(safeDisc);
 
             if (results != null && results.Count > 0)
                 return results;
 
+#if NET20 || NET35
+            return new Queue<string>();
+#else
             return new ConcurrentQueue<string>();
+#endif
         }
 
         /// <inheritdoc/>
         public string? CheckFilePath(string path)
         {
-            List<string> resultsList = new List<string>();
+            var resultsList = new List<string>();
 
             // Run Macrovision file checks
             var macrovision = MacrovisionCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(macrovision))
+            if (!string.IsNullOrEmpty(macrovision))
                 resultsList.Add(macrovision!);
 
             // Run Cactus Data Shield file checks
             var cactusDataShield = CactusDataShieldCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(cactusDataShield))
+            if (!string.IsNullOrEmpty(cactusDataShield))
                 resultsList.Add(cactusDataShield!);
 
             // Run C-Dilla file checks
             var cDilla = CDillaCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(cDilla))
+            if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
 
             // Run RipGuard file checks
             var ripGuard = RipGuardCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(ripGuard))
+            if (!string.IsNullOrEmpty(ripGuard))
                 resultsList.Add(ripGuard!);
 
             // Run SafeCast file checks
             var safeCast = SafeCastCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(safeCast))
+            if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
             // Run SafeDisc file checks
             var safeDisc = SafeDiscCheckFilePath(path);
-            if (!string.IsNullOrWhiteSpace(safeDisc))
+            if (!string.IsNullOrEmpty(safeDisc))
                 resultsList.Add(safeDisc!);
 
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", resultsList);
+                return string.Join(", ", [.. resultsList]);
 
             return null;
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
+#if NET20 || NET35
+        internal Queue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
+#else
         internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
+#endif
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
-                new PathMatchSet(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
+                new(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+                new(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -260,8 +302,8 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new PathMatchSet(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
-                new PathMatchSet(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
+                new(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+                new(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -275,21 +317,20 @@ namespace BinaryObjectScanner.Protection
             // This file is present in most, if not all, SafeDisc protected discs. It seems to have very consistent file sizes, only being found to use three different file sizes in it's entire run.
             // A rough estimate of the product and version can be gotten by checking the file size.
             // One filesize is known to overlap with both SafeDisc and CDS-300, and so is detected separately here.
-            FileInfo fi = new FileInfo(firstMatchedString);
-            switch (fi.Length)
+            var fi = new FileInfo(firstMatchedString);
+            return fi.Length switch
             {
                 // Found in Redump entries 37832 and 66005. 
-                case 20:
-                    return "SafeDisc 1.00.025-1.41.001";
+                20 => "SafeDisc 1.00.025-1.41.001",
+
                 // Found in Redump entries 30555 and 58573.
-                case 2_048:
-                    return "Macrovision Protection File [Likely indicates either SafeDisc 1.45.011+ (CD) or CDS-300]";
+                2_048 => "Macrovision Protection File [Likely indicates either SafeDisc 1.45.011+ (CD) or CDS-300]",
+
                 // Found in Redump entries 11347 and 64255.
-                case 20_482_048:
-                    return "SafeDisc 3+ (DVD)";
-                default:
-                    return "(Unknown Version - Report this to us on GitHub)";
-            }
+                20_482_048 => "SafeDisc 3+ (DVD)",
+
+                _ => "(Unknown Version - Report this to us on GitHub)",
+            };
         }
 
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
@@ -298,75 +339,74 @@ namespace BinaryObjectScanner.Protection
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            FileInfo fi = new FileInfo(firstMatchedString);
-            switch (fi.Length)
+            var fi = new FileInfo(firstMatchedString);
+            return fi.Length switch
             {
                 // Found in Redump entry 102979.
-                case 1:
-                    return "(Empty File)";
+                1 => "(Empty File)",
+
                 // Found in Redump entries 9718, 12885, 21154, 31149, 37523, 37920.
-                case 14_304:
-                    return "/ SafeDisc 1.06.000-1.20.001";
+                14_304 => "/ SafeDisc 1.06.000-1.20.001",
+
                 // Found in Redump entries 9617 and 31526.
-                case 14_368:
-                    return "/ SafeDisc 1.30.010-1.35.000";
+                14_368 => "/ SafeDisc 1.30.010-1.35.000",
+
                 // Found in Redump entries 2595, 37832, and 44350.
-                case 10_848:
-                    return "/ SafeDisc 1.40.004-1.41.001";
+                10_848 => "/ SafeDisc 1.40.004-1.41.001",
+
                 // Found in Redump entries 30555 and 55078.
-                case 11_968:
-                    return "/ SafeDisc 1.45.011";
+                11_968 => "/ SafeDisc 1.45.011",
+
                 // Found in Redump entries 28810 and 62935.
-                case 11_616:
-                    return "/ SafeDisc 1.50.020";
+                11_616 => "/ SafeDisc 1.50.020",
+
                 // Found in Redump entries 72195 and 73502.
-                case 18_768:
-                    return "/ SafeDisc 2.05.030";
+                18_768 => "/ SafeDisc 2.05.030",
+
                 // Found in Redump entries 38541 and 59462.
-                case 20_128:
-                    return "/ SafeDisc 2.10.030";
+                20_128 => "/ SafeDisc 2.10.030",
+
                 // Found in Redump entries 9819, 15312, 55823.
-                case 27_440:
-                    return "/ SafeDisc 2.30.030-2.30.033";
+                27_440 => "/ SafeDisc 2.30.030-2.30.033",
+
                 // Found in Redump entries 9846 and 23786.
-                case 28_624:
-                    return "/ SafeDisc 2.40.010-2.40.011";
+                28_624 => "/ SafeDisc 2.40.010-2.40.011",
+
                 // Found in Redump entries 30022 and 31666.
-                case 28_400:
-                    return "/ SafeDisc 2.51.020-2.51.021";
+                28_400 => "/ SafeDisc 2.51.020-2.51.021",
+
                 // Found in Redump entries 2064 and 47047.
-                case 29_392:
-                    return "/ SafeDisc 2.60.052";
+                29_392 => "/ SafeDisc 2.60.052",
+
                 // Found in Redump entries 13048 and 48101.
-                case 11_376:
-                    return "/ SafeDisc 2.70.030-2.72.000";
+                11_376 => "/ SafeDisc 2.70.030-2.72.000",
+
                 // Found in Redump entries 32783 and 39273.
-                case 12_464:
-                    return "3.17.000 / SafeDisc 2.80.010-2.80.011";
+                12_464 => "3.17.000 / SafeDisc 2.80.010-2.80.011",
+
                 // Found in Redump entries 11638 and 52606.
-                case 12_400:
-                    return "3.18.000 / SafeDisc 2.90.010-2.90.040";
+                12_400 => "3.18.000 / SafeDisc 2.90.010-2.90.040",
+
                 // Found in Redump entries 13230, 15383, and 36511.
                 // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
-                case 12_528:
-                    return "3.19.000 / SafeDisc 3.10.020-3.15.011/4+";
+                12_528 => "3.19.000 / SafeDisc 3.10.020-3.15.011/4+";
+                
                 // Found in Redump entries 58625 and 84586.
-                case 11_973:
-                    return "3.22.000 / SafeDisc 3.20.020-3.20.022";
+                11_973 => "3.22.000 / SafeDisc 3.20.020-3.20.022",
+
                 // Found in Redump entries 15614, 42034, 45686, 56320, 60021, 79729, and 80776.
-                case 163_644:
-                    return "4.00.060 / SafeDisc 4.00.000-4.70.000";
+                163_644 => "4.00.060 / SafeDisc 4.00.000-4.70.000",
+
                 // Found distributed online, but so far not in a game release. TODO: Discover original source.
                 // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
-                case 23_040:
-                    return "4.03.086 / Product Unknown";
+                23_040 => "4.03.086 / Product Unknown",
+
                 // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
-                case 10_784:
-                    return "/ SafeCast ESD 2.02.040";
+                10_784 => "/ SafeCast ESD 2.02.040",
+
                 // This file is not currently known to be used in versions past 4.70.000.
-                default:
-                    return "/ Product Unknown (Report this to us on GitHub)";
-            }
+                _ => "/ Product Unknown (Report this to us on GitHub)",
+            };
         }
 
         // TODO: Combine with filesize version checks if possible.
@@ -377,37 +417,36 @@ namespace BinaryObjectScanner.Protection
             var version = pex.FileVersion;
             if (!string.IsNullOrEmpty(version))
             {
-                switch (version)
+                return version switch
                 {
                     // Found in Redump entries 32783 and 39273.
                     // The product version is "3.17.000 Windows NT 2002/07/01".
-                    case "3.17.000":
-                        return "3.17.000 / SafeDisc 2.80.010-2.80.011";
+                    "3.17.000" => "3.17.000 / SafeDisc 2.80.010-2.80.011",
+
                     // Found in Redump entries 11638 and 52606.
                     // The product version is "3.18.000 Windows NT 2002/11/14".
-                    case "3.18.000":
-                        return "3.18.000 / SafeDisc 2.90.010-2.90.040";
+                    "3.18.000" => "3.18.000 / SafeDisc 2.90.010-2.90.040",
+
                     // Found in Redump entries 13230, 15383, and 36511.
                     // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
                     // The product version is "3.19.000 Windows NT/2K/XP 2003/03/19".
-                    case "3.19.000":
-                        return "3.19.000 / SafeDisc 3.10.020-3.15.011/4+";
+                    "3.19.000" => "3.19.000 / SafeDisc 3.10.020-3.15.011/4+",
+                    
                     // Found in Redump entries 58625 and 84586.
                     // The product version is "SECURITY Driver 3.22.000 2004/01/16".
-                    case "3.22.000":
-                        return "3.22.000 / SafeDisc 3.20.020-3.20.022";
+                    "3.22.000" => "3.22.000 / SafeDisc 3.20.020-3.20.022",
+
                     // Found in Redump entries 15614, 42034, 45686, 56320, 60021, 79729, and 80776.
                     // The product version is "SECURITY Driver 4.00.060 2004/08/31".
-                    case "4.00.060":
-                        return "4.00.060 / SafeDisc 4.00.000-4.70.000";
+                    "4.00.060" => "4.00.060 / SafeDisc 4.00.000-4.70.000",
+
                     // Found distributed online, but so far not in a game release. TODO: Discover original source.
                     // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
                     // The product version is "SECURITY Driver 4.03.086 2006/09/13".
-                    case "4.03.086":
-                        return "4.03.086 / Unknown Product";
-                    default:
-                        return $"Unknown Version {version} (Report this to us on GitHub)";
-                }
+                    "4.03.086" => "4.03.086 / Unknown Product",
+
+                    _ => $"Unknown Version {version} (Report this to us on GitHub)",
+                };
             }
 
             return "Unknown Version (Report this to us on GitHub)";
@@ -434,7 +473,7 @@ namespace BinaryObjectScanner.Protection
                 var matchers = new List<ContentMatchSet>
                 {
                     // BoG_ *90.0&!!  Yy>
-                    new ContentMatchSet(new byte?[]
+                    new(new byte?[]
                     {
                         0x42, 0x6F, 0x47, 0x5F, 0x20, 0x2A, 0x39, 0x30,
                         0x2E, 0x30, 0x26, 0x21, 0x21, 0x20, 0x20, 0x59,
@@ -483,102 +522,101 @@ namespace BinaryObjectScanner.Protection
 
         private static string MacrovisionVersionToProductName(string version)
         {
-            switch (version)
+            return version switch
             {
                 // CDS-300 (Confirmed)
-                case "2.90.044": // Found in "American Made World Played" by Les Paul & Friends (Japan) (https://www.discogs.com/release/18934432-Les-Paul-Friends-American-Made-World-Played) and "X&Y" by Coldplay (Japan) (https://www.discogs.com/release/822378-Coldplay-XY).
-                    return "CDS-300";
+                // Found in "American Made World Played" by Les Paul & Friends (Japan) (https://www.discogs.com/release/18934432-Les-Paul-Friends-American-Made-World-Played) and "X&Y" by Coldplay (Japan) (https://www.discogs.com/release/822378-Coldplay-XY).
+                "2.90.044" => "CDS-300",
 
                 // SafeCast (Confirmed)
                 // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
-                case "2.11.010": // Found in Redump entry 83145.
-                case "2.11.020": // Found in IA item "microsoft-software-jukebox-for-toshiba-1.0".
-                case "2.11.060": // Found in Redump entry 102979.
-                case "2.16.050": // Found in IA items "cdrom-turbotax-2002", "TurboTax_Deluxe_Tax_Year_2002_for_Wndows_2.00R_Intuit_2002_352282", and "TurboTax_Premier_Tax_Year_2002_for_Windows_v02.00Z-R_Intuit_352283_2002".
-                case "2.60.030": // Found in Redump entry 74384 (Semi-confirmed) and "Data Becker Web To Date v3.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/ (Unconfirmed).
-                case "2.67.010": // Found in "[Win] Photoshop CS2.7z" in IA item "Adobe-CS2".
-                    return "SafeCast";
+                // Found in Redump entry 83145.
+                "2.11.010"
+                    or "2.11.020"
+                    or "2.11.060"
+                    or "2.16.050"
+                    or "2.60.030"
+                    or "2.67.010" => "SafeCast",
 
                 // SafeCast (Unconfirmed)
-                case "2.41.000": // Found in Adobe Photoshop according to http://www.reversing.be/article.php?story=2006102413541932
-                case "2.42.000": // Found in "Dreamweaver MX 2004 v7.0.1" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
-                case "2.50.030": // Found in "ArcSoft Media Card Companion v1.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
-                case "2.51.000": // Found in "Autodesk Inventor Professional v9.0" according to https://web.archive.org/web/20210331144912/https://protectionid.net/.
-                    return "SafeCast (Unconfirmed - Please report to us on GitHub)";
+                // Found in Adobe Photoshop according to http://www.reversing.be/article.php?story=2006102413541932
+                "2.41.000"
+                    or "2.42.000"
+                    or "2.50.030"
+                    or "2.51.000" => "SafeCast (Unconfirmed - Please report to us on GitHub)",
 
                 // SafeCast ESD (Confirmed)
-                case "2.02.040": // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
-                    return "SafeCast ESD";
+                // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
+                "2.02.040" => "SafeCast ESD",
 
                 // SafeDisc (Confirmed)
-                case "1.00.025": // Found in Redump entry 66005.
-                case "1.00.026": // Found in Redump entries 1882 and 30049.
-                case "1.00.030": // Found in Redump entries 31575 and 41923.
-                case "1.00.032": // Found in Redump entries 1883 and 42114.
-                case "1.00.035": // Found in Redump entries 36223 and 40771.
-                case "1.01.034": // Found in Redump entries 42155 and 47574.
-                case "1.01.038": // Found in Redump entry 51459.
-                case "1.01.043": // Found in Redump entries 34562 and 63304.
-                case "1.01.044": // Found in Redump entries 61731 and 81619.
-                case "1.06.000": // Found in Redump entries 29073 and 31149.
-                case "1.07.000": // Found in Redump entries 9718 and 46756.
-                case "1.09.000": // Found in Redump entries 12885 and 66210.
-                case "1.11.000": // Found in Redump entries 37523 and 66586.
-                case "1.20.000": // Found in Redump entries 21154 and 37982.
-                case "1.20.001": // Found in Redump entry 37920.
-                case "1.30.010": // Found in Redump entries 31526 and 55080.
-                case "1.35.000": // Found in Redump entries 9617 and 49552.
-                case "1.40.004": // Found in Redump entries 2595 and 30121.
-                case "1.41.000": // Found in Redump entries 44350 and 63323.
-                case "1.41.001": // Found in Redump entries 37832 and 42091.
-                case "1.45.011": // Found in Redump entries 30555 and 55078.
-                case "1.50.020": // Found in Redump entries 28810 and 62935.
-                case "2.05.030": // Found in Redump entries 72195 and 73502.
-                case "2.10.030": // Found in Redump entries 38541, 59462, and 81096.
-                case "2.30.030": // Found in Redump entries 55823 and 79476.
-                case "2.30.031": // Found in Redump entries 15312 and 48863.
-                case "2.30.033": // Found in Redump entries 9819 and 53658.
-                case "2.40.010": // Found in Redump entries 9846 and 65642.
-                case "2.40.011": // Found in Redump entries 23786 and 37478.
-                case "2.51.020": // Found in Redump entries 30022 and 75014.
-                case "2.51.021": // Found in Redump entries 31666 and 66852.
-                case "2.60.052": // Found in Redump entries 2064 and 47047.
-                case "2.70.030": // Found in Redump entries 13048 and 35385.
-                case "2.72.000": // Found in Redump entries 48101 and 64198.
-                case "2.80.010": // Found in Redump entries 32783 and 72743.
-                case "2.80.011": // Found in Redump entries 39273 and 59351.
-                case "2.90.040": // Found in Redump entries 52606 and 62505.
-                case "3.10.020": // Found in Redump entries 13230 and 68204.
-                case "3.15.010": // Found in Redump entries 36511 and 74338.
-                case "3.15.011": // Found in Redump entries 15383 and 35512.
-                case "3.20.020": // Found in Redump entries 30404 and 56748.
-                case "3.20.022": // Found in Redump entries 58625 and 91552.
-                case "3.20.024": // Found in Redump entries 20729 and 63813 (CD) and Redump entries 20728 and 64255 (DVD).
-                case "4.00.000": // Found in Redump entries 35382 and 79729 (CD) and Redump entry 74520 (DVD).
-                case "4.00.001": // Found in  Redump entries 8842 and 83017 (CD) and Redump entries 15614 and 38143 (DVD).
-                case "4.00.002": // Found in Redump entries 42034 and 71646 (CD) and Redump entries 78980 and 86196 (DVD).
-                case "4.00.003": // Found in Redump entries 60021 and 68551 (CD) and Redump entries 51597 and 83408 (DVD).
-                case "4.50.000": // Found in Redump entries 58990 and 80776 (CD) and Redump entries 65569 and 76813 (DVD).
-                case "4.60.000": // Found in Redump entries 45686 and 46765 (CD) and Redump entries 45469 and 50682 (DVD).
-                case "4.70.000": // Found in Redump entry 56320 (CD) and Redump entries 34783 and 66403 (DVD).
-                case "4.80.000": // Found in Redump entries 64145 and 78543 (CD only).
-                case "4.81.000": // Found in Redump entries 52523 and 76346 (DVD only).
-                case "4.85.000": // Found in Redump entries 20434 and 31766 (DVD only).
-                case "4.90.000": // Found in Redump entries 56319 and 66333 (DVD only).
-                case "4.90.010": // Found in Redump entries 58573 and 78976 (CD) and Redump entries 11347 and 29069 (DVD).
-                    return "SafeDisc";
+                // Found in Redump entry 66005.
+                "1.00.025"
+                    or "1.00.026"
+                    or "1.00.030"
+                    or "1.00.032"
+                    or "1.00.035"
+                    or "1.01.034"
+                    or "1.01.038"
+                    or "1.01.043"
+                    or "1.01.044"
+                    or "1.06.000"
+                    or "1.07.000"
+                    or "1.09.000"
+                    or "1.11.000"
+                    or "1.20.000"
+                    or "1.20.001"
+                    or "1.30.010"
+                    or "1.35.000"
+                    or "1.40.004"
+                    or "1.41.000"
+                    or "1.41.001"
+                    or "1.45.011"
+                    or "1.50.020"
+                    or "2.05.030"
+                    or "2.10.030"
+                    or "2.30.030"
+                    or "2.30.031"
+                    or "2.30.033"
+                    or "2.40.010"
+                    or "2.40.011"
+                    or "2.51.020"
+                    or "2.51.021"
+                    or "2.60.052"
+                    or "2.70.030"
+                    or "2.72.000"
+                    or "2.80.010"
+                    or "2.80.011"
+                    or "2.90.040"
+                    or "3.10.020"
+                    or "3.15.010"
+                    or "3.15.011"
+                    or "3.20.020"
+                    or "3.20.022"
+                    or "3.20.024"
+                    or "4.00.000"
+                    or "4.00.001"
+                    or "4.00.002"
+                    or "4.00.003"
+                    or "4.50.000"
+                    or "4.60.000"
+                    or "4.70.000"
+                    or "4.80.000"
+                    or "4.81.000"
+                    or "4.85.000"
+                    or "4.90.000"
+                    or "4.90.010" => "SafeDisc",
 
                 // SafeDisc (Unconfirmed)
-                case "1.01.045": // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
-                    return "SafeDisc (Unconfirmed - Please report to us on GitHub)";
+                // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
+                "1.01.045" => "SafeDisc (Unconfirmed - Please report to us on GitHub)",
 
                 // SafeDisc Lite (Confirmed)
-                case "2.60.020": // Found in Redump entry 14928.
-                    return "SafeDisc Lite";
+                // Found in Redump entry 14928.
+                "2.60.020" => "SafeDisc Lite",
 
-                default:
-                    return "Macrovision Protected Application (Generic detection - Report to us on GitHub)";
-            }
+                _ => "Macrovision Protected Application (Generic detection - Report to us on GitHub)",
+            };
         }
 
         private List<string>? CleanResultList(List<string>? resultsList)
@@ -588,7 +626,7 @@ namespace BinaryObjectScanner.Protection
                 return resultsList;
 
             // Get distinct and order
-            return resultsList.Distinct().OrderBy(s => s).ToList();
+            return [.. resultsList.Distinct().OrderBy(s => s)];
         }
     }
 }

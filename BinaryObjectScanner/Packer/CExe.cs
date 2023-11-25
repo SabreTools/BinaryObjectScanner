@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
 using ICSharpCode.SharpZipLib.Zip.Compression;
 #endif
 using SabreTools.Matching;
@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Packer
             {
                 var matchers = new List<ContentMatchSet>
             {
-                new ContentMatchSet(new byte?[]
+                new(new byte?[]
                 {
                     0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
                     0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Packer
             };
 
                 var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
-                if (!string.IsNullOrWhiteSpace(match))
+                if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
@@ -57,10 +57,8 @@ namespace BinaryObjectScanner.Packer
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return Extract(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -90,7 +88,7 @@ namespace BinaryObjectScanner.Packer
                     try
                     {
                         // Inflate the data into the buffer
-#if NET462_OR_GREATER
+#if NET462_OR_GREATER || NETCOREAPP
                         Inflater inflater = new Inflater();
                         inflater.SetInput(payload);
                         data = new byte[payload.Length * 4];
