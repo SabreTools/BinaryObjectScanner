@@ -163,18 +163,18 @@ namespace BinaryObjectScanner.Protection
                 }, "SafeDisc 1.45.011-1.50.020"),
 
                 // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
-                new PathMatchSet(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000000.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000000.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
                 //new(new FilePathMatch("00000001.TMP"), GetSafeDisc00000001TMPVersion, "SafeDisc"),
@@ -255,18 +255,18 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000002.TMP"), "SafeDisc 2+"),
 
                 // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
-                new PathMatchSet(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000000.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
-                new PathMatchSet(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000000.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
 
 
                 new(new FilePathMatch("DPLAYERX.DLL"), GetSafeDiscDPlayerXVersion, "SafeDisc"),
@@ -735,7 +735,7 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        internal static string GetSafeDiscSplshVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string? GetSafeDiscSplshVersion(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;

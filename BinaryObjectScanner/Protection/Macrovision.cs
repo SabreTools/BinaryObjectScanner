@@ -390,7 +390,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 13230, 15383, and 36511.
                 // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
                 12_528 => "3.19.000 / SafeDisc 3.10.020-3.15.011/4+",
-                
+
                 // Found in Redump entries 58625 and 84586.
                 11_973 => "3.22.000 / SafeDisc 3.20.020-3.20.022",
 
@@ -431,7 +431,7 @@ namespace BinaryObjectScanner.Protection
                     // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
                     // The product version is "3.19.000 Windows NT/2K/XP 2003/03/19".
                     "3.19.000" => "3.19.000 / SafeDisc 3.10.020-3.15.011/4+",
-                    
+
                     // Found in Redump entries 58625 and 84586.
                     // The product version is "SECURITY Driver 3.22.000 2004/01/16".
                     "3.22.000" => "3.22.000 / SafeDisc 3.20.020-3.20.022",
