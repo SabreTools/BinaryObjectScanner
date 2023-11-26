@@ -128,6 +128,14 @@ namespace BinaryObjectScanner.Protection
                     new(".icd", useEndsWith: true),
                 }, "SafeDisc 1/Lite"),
 
+                // Check for the original filename used for the SafeDisc splash-screens, new file names are used in later versions.
+                new(new List<PathMatch>
+                {
+                    new FilePathMatch("00000001.TMP"),
+                    new FilePathMatch("SPLSH16.BMP"),
+                    new FilePathMatch("SPLSH256.BMP"),
+                }, "SafeDisc 1.00.025-1.01.044"),
+
                 new(new List<PathMatch>
                 {
                     new FilePathMatch("00000001.TMP"),
@@ -154,7 +162,19 @@ namespace BinaryObjectScanner.Protection
                     new FilePathMatch("secdrv.sys"),
                 }, "SafeDisc 1.45.011-1.50.020"),
 
-                // TODO: Research "splash16.bmp" and "splash256.bmp".
+                // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
+                new PathMatchSet(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000000.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
 
                 // Found to be present in every version of SafeDisc, possibly every single release.
                 //new(new FilePathMatch("00000001.TMP"), GetSafeDisc00000001TMPVersion, "SafeDisc"),
@@ -234,7 +254,20 @@ namespace BinaryObjectScanner.Protection
                 //new(new FilePathMatch("00000001.TMP"), GetSafeDisc00000001TMPVersion, "SafeDisc"),
                 new(new FilePathMatch("00000002.TMP"), "SafeDisc 2+"),
 
-                // TODO: Research "splash16.bmp" and "splash256.bmp".
+                // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
+                new PathMatchSet(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000000.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("0000040c.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("0000040c.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000407.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000409.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
+                new PathMatchSet(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
+
 
                 new(new FilePathMatch("DPLAYERX.DLL"), GetSafeDiscDPlayerXVersion, "SafeDisc"),
                 new(new FilePathMatch("drvmgt.dll"), GetSafeDiscDrvmgtVersion, "SafeDisc"),
@@ -655,7 +688,8 @@ namespace BinaryObjectScanner.Protection
                 "B824ED257946EEE93F438B25C855E9DDE7A3671A" => "2.90.010-2.90.040",
 
                 // Found in Redump entries 13230 and 68204.
-                "CDA56FD150C9E9A19D7AF484621352122431F029" => "3.10.020",
+                // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
+                "CDA56FD150C9E9A19D7AF484621352122431F029" => "3.10.020/4+",
 
                 // Found in Redump entries 36511 and 74338.
                 "E5504C4C31561D38C1F626C851A8D06212EA13E0" => "3.15.010",
@@ -699,6 +733,144 @@ namespace BinaryObjectScanner.Protection
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
+        }
+
+        internal static string GetSafeDiscSplshVersion(string firstMatchedString, IEnumerable<string>? files)
+        {
+            if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
+                return string.Empty;
+
+            var sha1 = GetFileSHA1(firstMatchedString);
+            switch (sha1)
+            {
+                // First known generic SafeDisc splash-screen.
+                // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
+                    return "1.30.010-2.40.010";
+                // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                case "0C9E45BF3EBE1382A3593994328C22BCB9A55456":
+                    return "1.30.010-2.40.010";
+
+                // Second known generic SafeDisc splash-screen.
+                // 4-bit (16 color), found in Redump entries 46339 and 75897.
+                case "9B80F524D45041ED8CE1613AD5BDE94BFDBB2814":
+                    return "2.70.030-2.80.010";
+                // 8-bit (256 color) version, found in Redump entries 46339 and 75897.
+                case "827AE9A32906CBE9098C9101184E0BE74CEA2744":
+                    return "2.70.030-2.80.010";
+
+                // Third known generic SafeDisc splash-screen.
+                // 4-bit (16 color), found in Redump entries 74338, 75782, 84985, and 91552.
+                case "814ED63FD619655650E271D1B8B46BBE39C3655A":
+                    return "3.15.010-3.20.022";
+                // 8-bit (256 color) version, found in Redump entries 31824, 74338, 75782, 84985, 91552, and 104053.
+                case "40C7ACEDB6C41AB067285090373E886EFB4F4AC4":
+                    return "3.15.010-4.60.000";
+
+                default:
+                    return null;
+            }
+
+            // There appear to be a few distinct generations of file names used for SafeDisc splash-screens.
+            // The first are the files named "SPLSH16.BMP"/"SPLSH256.BMP", which were typically used in SafeDisc versions 1.00.025-1.01.044.
+            // The next are the files named "000004XX", "000008XX", "00000cXX", and "00001XXX". When one of these is present, they seemingly always come in pairs of 2 with the extensions ".016" and ".256". They're typically present in SafeDisc versions 1.06.000-2.51.021.
+            // Next come the files simply named "0000000X", which still come in pairs with the extensions ".016" and ".256", starting in SafeDisc version 2.60.052 up until version 4.85.000. After this point, there doesn't seem to be any consistent SafeDisc splash-screen used at all.
+            // Starting SafeDisc version 4.00.000, the files with the ".016" extension seem to mostly disappear, with the ".256" files still being present.
+            // Exceptions: 
+            // The files "00000409.016" and "00000409.256" are present in Redump entry 39273, despite it being SafeDisc 2.80.011. This may be because this disc contains some form of SafeDisc Lite as well, which tends to more closely resemble SafeDisc 1.
+            // Redump entry 51597 contains "00000000.016" and "00000000.256", breaking the trend of SafeDisc 4 not having any files with the ".016" extension. This may be due to this being a rerelease, so the splash-screen may have already been present in the original game files and carried over.
+
+            // TODO: Investigate "/409/splash.bmp" and "/0x0409.ini" files in Redump entry 45469.
+
+            // Known SafeDisc splash-screen file names (case-insensitive):
+            // "00000000.016": Found in SafeDisc version 2.60.052-4.00.003 (Redump entries 2064, 9621, 11639, 13230, 32783, 35385, 35512, 39273, 52606, 51597, 63813, 74338, 76775, and 84586).
+            // "00000000.256": Found in SafeDisc version 2.60.052-4.85.000 (Redump entries 2064, 9621, 11639, 13230, 32783, 34783, 35382, 35385, 35512, 39273, 46765, 52606, 51597, 63813, 68551, 71646, 74338, 74366, 76775, 76813, 79113, 83017, 84586, and 98589).
+            // "00000001.016": Found in SafeDisc version 2.72.000-3.20.024 (Redump entries 9621, 76775, and 86177).
+            // "00000001.256": Found in SafeDisc version 2.72.000-4.50.000 (Redump entries 9621, 71646, 76775, 76813, and 86177).
+            // "00000002.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000002.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000003.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000003.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000004.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000004.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000005.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000005.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000006.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000006.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000007.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000007.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000008.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000008.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000009.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000009.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000010.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000010.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000011.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000011.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000a.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000a.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000b.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000b.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000c.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000c.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000d.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000d.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000e.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000e.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000f.016": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "0000000f.256": Found in SafeDisc version 2.72.000 (Redump entry 9621).
+            // "00000404.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000404.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000406.016": Found in SafeDisc versions 1.41.000-2.51.021 (Redump entries 61047 and 66852).
+            // "00000406.256": Found in SafeDisc versions 1.41.000-2.51.021 (Redump entries 61047 and 66852).
+            // "00000407.016": Found in SafeDisc versions 1.07.000-2.51.021 (Redump entries 43321, 44350, 46756, 48863, 49552, 66586, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000407.256": Found in SafeDisc versions 1.07.000-2.51.021 (Redump entries 43321, 44350, 46756, 48863, 49552, 66586, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000408.016": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "00000408.256": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "00000409.016": Found in SafeDisc versions 1.06.000-2.80.011 (Redump entries 2022, 2595, 9718, 9819, 9846, 12885, 23786, 29073, 30022, 30555, 31526, 31666, 37832, 37920, 37982, 39273, 48863, 49552, 59462, 62935, and 63323).
+            // "00000409.256": Found in SafeDisc versions 1.06.000-2.80.011 (Redump entries 2022, 2595, 9718, 9819, 9846, 12885, 23786, 29073, 30022, 30555, 31526, 31666, 37982, 37920, 37832, 39273, 48863, 49552, 59462, 62935, and 63323).
+            // "0000040A.016": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 29073, 43321, 49552, and 66852).
+            // "0000040A.256": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 29073, 43321, 49552 and 66852).
+            // "0000040c.016": Found in SafeDisc versions 1.30.010-2.51.021 (Redump entries 43321, 48863, 49552, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000040c.256": Found in SafeDisc versions 1.30.010-2.51.021 (Redump entries 43321, 48863, 49552, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000040d.016": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "0000040d.256": Found in SafeDisc version 2.51.021 (Redump entry 38589).
+            // "0000040f.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "0000040f.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000410.016": Found in SafeDisc versions 1.35.000-2.51.021 (Redump entries 9617, 48863, 49552, 66852, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000410.256": Found in SafeDisc versions 1.35.000-2.51.021 (Redump entries 9617, 48863, 49552, 66852, and 79476, IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000411.016": Found in SafeDisc versions 1.40.004-2.51.031 (Redump entries 38589, 53659 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000411.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 38589, 53659 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000412.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000412.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000413.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 66852 and 72195 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000413.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 66852 and 72195 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000415.016": Found in SafeDisc versions 1.40.004-2.10.030 (Redump entry 38541 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000415.256": Found in SafeDisc versions 1.40.004-2.10.030 (Redump entry 38541 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000416.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000416.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entry 38589 and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000419.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000419.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "0000041d.016": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 55823, 66852, and 72195, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000041d.256": Found in SafeDisc versions 1.40.004-2.51.021 (Redump entries 55823, 66852, and 72195, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "0000041e.016": Found in SafeDisc version 1.40.004 (IA item the-sims-thai-english-electronic-arts-2000).
+            // "0000041e.256": Found in SafeDisc version 1.40.004 (IA item the-sims-thai-english-electronic-arts-2000).
+            // "00000429.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000429.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000804.016": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000804.256": Found in SafeDisc versions 1.40.004-1.50.020 (IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000809.016": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 9617, 31149, 37478, 37523, 37832, 43321, 48863, 53659, 59462, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000, the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000, and "primal-3d-interactive-series-professional-edition-2002-english" items "Interactive Hand CD", "Interactive Hip CD", and "Interactive Spine CD").
+            // "00000809.256": Found in SafeDisc versions 1.06.000-2.51.021 (Redump entries 9617, 31149, 37478, 37523, 37832, 43321, 48863, 53659, 59462, 66852, 72195, and 79476, and IA items the-sims-thai-english-electronic-arts-2000, the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000, and "primal-3d-interactive-series-professional-edition-2002-english" items "Interactive Hand CD", "Interactive Hip CD", and "Interactive Spine CD").
+            // "00000814.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000814.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000816.016": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000816.256": Found in SafeDisc version 1.41.000 (Redump entry 61047).
+            // "00000c0a.016": Found in SafeDisc versions 1.11.000-2.30.031 (Redump entry 3569, 48863, 55078, 55080, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00000c0a.256": Found in SafeDisc versions 1.11.000-2.30.031 (Redump entry 3569, 48863, 55078, 55080, and 79476, and IA items the-sims-thai-english-electronic-arts-2000 and the-sims-livin-large-expansion-pack-thai-english-electronic-arts-2000).
+            // "00001009.016": Found in SafeDisc version 2.30.030 (Redump entry 45040).
+            // "00001009.256": Found in SafeDisc version 2.30.030 (Redump entry 45040).
+            // "SPLSH16.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
+            // "SPLSH256.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
         }
 
         private string? GetVersionFromSHA1Hash(string sha1Hash)
