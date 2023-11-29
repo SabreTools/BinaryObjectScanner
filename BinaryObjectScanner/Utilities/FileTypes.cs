@@ -319,6 +319,11 @@ namespace BinaryObjectScanner.Utilities
             if (magic.StartsWith(new byte?[] { 0x3F, 0x5F, 0x03, 0x00 }))
                 return SupportedFileType.Textfile;
 
+            // XML 
+            // "<?xml"
+            if (magic.StartsWith(new byte?[] { 0x3C, 0x3F, 0x78, 0x6D, 0x6C }))
+                return SupportedFileType.Textfile;
+
             #endregion
 
             #region VBSP

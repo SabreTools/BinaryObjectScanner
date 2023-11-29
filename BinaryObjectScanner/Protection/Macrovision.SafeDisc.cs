@@ -235,8 +235,20 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
-                // Found on Redump entry 42762.
-                new(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+                // TODO: Add version parsing for "SafeDiscDVD for Macintosh" from "Info.plist".
+                // Found in Redump entries 23983, 42762, 72713, and 73070.
+                new(new FilePathMatch(".SafeDiscDVD.bundle"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("SafeDiscDVD"), "SafeDiscDVD for Macintosh"),
+
+                // Found in Redump entries 42762 and 73070.
+                // These files, along with "00000001.TMP" as found in the same version of SafeDiscDVD, appear to be likely encrypted game executables and are multiple GB in size.
+                new(new FilePathMatch("00000001I.TMP"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("00000001P.TMP"), "SafeDiscDVD for Macintosh"),
+
+                // TODO: Add version parsing for "SafeDisc Lite for Macintosh" from "Info.plist".
+                // Found in Redump entry 89649.
+                new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
+                new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -325,8 +337,20 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
-                // Found in Redump entry 42762.
-                new(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+                // TODO: Add version parsing for "SafeDiscDVD for Macintosh" from "Info.plist".
+                // Found in Redump entries 23983, 42762, 72713, and 73070.
+                new(new FilePathMatch(".SafeDiscDVD.bundle"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("SafeDiscDVD"), "SafeDiscDVD for Macintosh"),
+
+                // Found in Redump entries 42762 and 73070.
+                // These files, along with "00000001.TMP" as found in the same version of SafeDiscDVD, appear to be likely encrypted game executables and are multiple GB in size.
+                new(new FilePathMatch("00000001I.TMP"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("00000001P.TMP"), "SafeDiscDVD for Macintosh"),
+
+                // TODO: Add version parsing for "SafeDisc Lite for Macintosh" from "Info.plist".
+                // Found in Redump entry 89649.
+                new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
+                new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
