@@ -99,7 +99,8 @@ namespace BinaryObjectScanner.FileType
                     protections.Add("Rainbow Sentinel");
 
                 // SafeDisc 
-                // Found in "Info.plist" in Redump entries 23983, 42762, 72713, and 73070.
+                // TODO: Add better version parsing.
+                // Found in "Info.plist" in Redump entries 23983, 42762, 72713, 73070, and 89603.
                 if (fileContent.Contains("<string>com.europevisionmacro.SafeDiscDVD</string>"))
                 {
                     if (fileContent.Contains("<string>2.90.032</string>"))

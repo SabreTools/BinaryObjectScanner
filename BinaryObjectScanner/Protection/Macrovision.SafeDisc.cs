@@ -235,8 +235,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
-                // TODO: Add version parsing for "SafeDiscDVD for Macintosh" from "Info.plist".
-                // Found in Redump entries 23983, 42762, 72713, and 73070.
+                // Found in Redump entries 23983, 42762, 72713, 73070, and 89603.
                 new(new FilePathMatch(".SafeDiscDVD.bundle"), "SafeDiscDVD for Macintosh"),
                 new(new FilePathMatch("SafeDiscDVD"), "SafeDiscDVD for Macintosh"),
 
@@ -245,10 +244,11 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001I.TMP"), "SafeDiscDVD for Macintosh"),
                 new(new FilePathMatch("00000001P.TMP"), "SafeDiscDVD for Macintosh"),
 
-                // TODO: Add version parsing for "SafeDisc Lite for Macintosh" from "Info.plist".
                 // Found in Redump entry 89649.
                 new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
                 new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
+
+                // TODO: Investigate Redump entry 63769 further to confirm reported version number.
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -337,8 +337,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
-                // TODO: Add version parsing for "SafeDiscDVD for Macintosh" from "Info.plist".
-                // Found in Redump entries 23983, 42762, 72713, and 73070.
+                // Found in Redump entries 23983, 42762, 72713, 73070, and 89603.
                 new(new FilePathMatch(".SafeDiscDVD.bundle"), "SafeDiscDVD for Macintosh"),
                 new(new FilePathMatch("SafeDiscDVD"), "SafeDiscDVD for Macintosh"),
 
@@ -347,10 +346,11 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001I.TMP"), "SafeDiscDVD for Macintosh"),
                 new(new FilePathMatch("00000001P.TMP"), "SafeDiscDVD for Macintosh"),
 
-                // TODO: Add version parsing for "SafeDisc Lite for Macintosh" from "Info.plist".
                 // Found in Redump entry 89649.
                 new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
                 new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
+
+                // TODO: Investigate Redump entry 63769 further to confirm reported version number.
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
