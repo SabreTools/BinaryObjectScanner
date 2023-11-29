@@ -60,7 +60,8 @@ namespace BinaryObjectScanner.Utilities
 
             // Add the key if needed and then append the lists
 #if NET20 || NET35
-            original[key] ??= new Queue<string>();
+            if (!original.ContainsKey(key))
+                original[key] = new Queue<string>();
 #else
             original.TryAdd(key, new ConcurrentQueue<string>());
 #endif
@@ -88,7 +89,8 @@ namespace BinaryObjectScanner.Utilities
 
             // Add the key if needed and then append the lists
 #if NET20 || NET35
-            original[key] ??= new Queue<string>();
+            if (!original.ContainsKey(key))
+                original[key] = new Queue<string>();
 #else
             original.TryAdd(key, new ConcurrentQueue<string>());
 #endif
@@ -114,7 +116,8 @@ namespace BinaryObjectScanner.Utilities
             foreach (string key in addition.Keys)
             {
 #if NET20 || NET35
-                original[key] ??= new Queue<string>();
+                if (!original.ContainsKey(key))
+                    original[key] = new Queue<string>();
 #else
                 original.TryAdd(key, new ConcurrentQueue<string>());
 #endif
