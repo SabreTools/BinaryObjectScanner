@@ -248,7 +248,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
                 new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
 
-                // TODO: Investigate Redump entry 63769 further to confirm reported version number.
+                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning. It appears to contain the same "BoG_" string and version detection logic.
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -350,7 +350,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
                 new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
 
-                // TODO: Investigate Redump entry 63769 further to confirm reported version number.
+                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning. It appears to contain the same "BoG_" string and version detection logic.
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

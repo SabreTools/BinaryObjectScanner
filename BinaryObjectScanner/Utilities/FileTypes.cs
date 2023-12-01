@@ -741,6 +741,10 @@ namespace BinaryObjectScanner.Utilities
             if (extension.Equals("xml", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.Textfile;
 
+            // Property list
+            if (extension.Equals("plist", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Textfile;
+
             #endregion
 
             #region VBSP
