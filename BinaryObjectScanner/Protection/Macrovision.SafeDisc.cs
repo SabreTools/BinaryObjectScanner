@@ -768,12 +768,12 @@ namespace BinaryObjectScanner.Protection
             switch (sha1)
             {
                 // First known generic SafeDisc splash-screen.
-                // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, and 79272.
                 case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
-                    return "1.30.010-2.40.010";
-                // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                    return "1.11.000-2.40.010";
+                // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, and 79272.
                 case "0C9E45BF3EBE1382A3593994328C22BCB9A55456":
-                    return "1.30.010-2.40.010";
+                    return "1.11.000-2.40.010";
 
                 // Second known generic SafeDisc splash-screen.
                 // 4-bit (16 color), found in Redump entries 46339 and 75897.
