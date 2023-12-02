@@ -8,6 +8,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6
+    // ProtectDISC 9/10 checks for the presence of CSS on the disc to run, but don't encrypt any sectors or check for keys. Confirmed in Redump entries 78367 and 110095.
     public class ProtectDISC : IPortableExecutableCheck
     {
         /// <inheritdoc/>
