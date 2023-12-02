@@ -98,6 +98,28 @@ namespace BinaryObjectScanner.FileType
                 if (fileContent.Contains("Sentinel Driver Disk"))
                     protections.Add("Rainbow Sentinel");
 
+                // SafeDisc 
+                // TODO: Add better version parsing.
+                // Found in "Info.plist" in Redump entries 23983, 42762, 72713, 73070, and 89603.
+                if (fileContent.Contains("<string>com.europevisionmacro.SafeDiscDVD</string>"))
+                {
+                    if (fileContent.Contains("<string>2.90.032</string>"))
+                        protections.Add("SafeDiscDVD for Macintosh 2.90.032");
+                    else
+                        protections.Add("SafeDiscDVD for Macintosh (Unknown Version - Please report to us on GitHub)");
+                }
+
+                // Found in "Info.plist" in Redump entry 89649.
+                if (fileContent.Contains("<string>com.macrovisioneurope.SafeDiscLT</string>"))
+                {
+                    // TODO: Investigate why "CFBundleGetInfoString" and "CFBundleShortVersionString" say version 2.70.020, but "CFBundleVersion" says version 2.70.010.
+                    if (fileContent.Contains("<string>2.70.020</string"))
+                        protections.Add("SafeDiscLT for Macintosh 2.70.020");
+                    else
+                        protections.Add("SafeDiscLT for Macintosh (Unknown Version - Please report to us on GitHub)");
+                }
+
+
                 // The full line from a sample is as follows:
                 //
                 // The files securom_v7_01.dat and securom_v7_01.bak have been created during the installation of a SecuROM protected application.

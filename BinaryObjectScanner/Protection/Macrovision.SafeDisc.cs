@@ -235,8 +235,20 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
-                // Found on Redump entry 42762.
-                new(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+                // Found in Redump entries 23983, 42762, 72713, 73070, and 89603.
+                new(new FilePathMatch(".SafeDiscDVD.bundle"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("SafeDiscDVD"), "SafeDiscDVD for Macintosh"),
+
+                // Found in Redump entries 42762 and 73070.
+                // These files, along with "00000001.TMP" as found in the same version of SafeDiscDVD, appear to be likely encrypted game executables and are multiple GB in size.
+                new(new FilePathMatch("00000001I.TMP"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("00000001P.TMP"), "SafeDiscDVD for Macintosh"),
+
+                // Found in Redump entry 89649.
+                new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
+                new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
+
+                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning. It appears to contain the same "BoG_" string and version detection logic.
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -325,8 +337,20 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
-                // Found in Redump entry 42762.
-                new(".SafeDiscDVD.bundle", "SafeDisc for Macintosh"),
+                // Found in Redump entries 23983, 42762, 72713, 73070, and 89603.
+                new(new FilePathMatch(".SafeDiscDVD.bundle"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("SafeDiscDVD"), "SafeDiscDVD for Macintosh"),
+
+                // Found in Redump entries 42762 and 73070.
+                // These files, along with "00000001.TMP" as found in the same version of SafeDiscDVD, appear to be likely encrypted game executables and are multiple GB in size.
+                new(new FilePathMatch("00000001I.TMP"), "SafeDiscDVD for Macintosh"),
+                new(new FilePathMatch("00000001P.TMP"), "SafeDiscDVD for Macintosh"),
+
+                // Found in Redump entry 89649.
+                new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
+                new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
+
+                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning. It appears to contain the same "BoG_" string and version detection logic.
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -744,12 +768,12 @@ namespace BinaryObjectScanner.Protection
             switch (sha1)
             {
                 // First known generic SafeDisc splash-screen.
-                // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, and 79272.
                 case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
-                    return "1.30.010-2.40.010";
-                // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 68206, 75501, and 79272.
+                    return "1.11.000-2.40.010";
+                // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, and 79272.
                 case "0C9E45BF3EBE1382A3593994328C22BCB9A55456":
-                    return "1.30.010-2.40.010";
+                    return "1.11.000-2.40.010";
 
                 // Second known generic SafeDisc splash-screen.
                 // 4-bit (16 color), found in Redump entries 46339 and 75897.
