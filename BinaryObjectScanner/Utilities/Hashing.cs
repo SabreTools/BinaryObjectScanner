@@ -22,7 +22,7 @@ namespace BinaryObjectScanner.Utilities
             try
             {
                 var sha1 = SHA1.Create();
-                using (Stream fileStream = File.OpenRead(path))
+                using (Stream fileStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
                     byte[] buffer = new byte[32768];
                     while (true)

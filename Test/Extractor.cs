@@ -65,7 +65,7 @@ namespace Test
         private static void ExtractFile(string file, string outputDirectory)
         {
             Console.WriteLine($"Attempting to extract all files from {file}");
-            using Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
             // Read the first 8 bytes
             byte[]? magic = stream.ReadBytes(8);

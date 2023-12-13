@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             return Extract(fs, file, includeDebug);
         }
 

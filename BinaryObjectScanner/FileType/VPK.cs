@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 return Extract(fs, file, includeDebug);
             }
@@ -124,7 +124,7 @@ namespace BinaryObjectScanner.FileType
                 try
                 {
                     // Open the archive
-                    archiveStream = File.OpenRead(archiveFileName);
+                    archiveStream = File.Open(archiveFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                     // Seek to the data
                     archiveStream.Seek(directoryItem.DirectoryEntry.EntryOffset, SeekOrigin.Begin);
