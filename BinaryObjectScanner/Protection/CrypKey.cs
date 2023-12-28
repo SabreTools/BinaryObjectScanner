@@ -55,7 +55,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "CKSEC_32.DLL" in IA item "NBECRORV11".
             if (name?.StartsWith("CrypKey Instant security library") == true)
-                return $"CrypKey Instant {version}".TrimEnd();
+                return $"CrypKey Instant {pex.GetInternalVersion()}";
 
             // Found in 'cki32k.dll'
             if (name?.StartsWith("CrypKey") == true)
