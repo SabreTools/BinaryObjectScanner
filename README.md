@@ -49,7 +49,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | ChosenBytes CodeLock | True | True | Partially unconfirmed² |
 | CopyKiller | True | True | Unconfirmed¹ |
 | CopyLok/CodeLok | True | False | |
-| CrypKey | True | False | |
+| CrypKey | True | True | |
 | Cucko (EA Custom) | True | False | Does not detect all known cases |
 | Denuvo Anti-Cheat/Anti-Tamper| True | True | |
 | DigiGuard | True | True | |
