@@ -1,11 +1,11 @@
 ﻿#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
 #endif
+using System.Collections.Generic;
+using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            // Get the .data/DATA section strings, if they exist
+            // Get the CODE section strings, if they exist
             var strs = pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
