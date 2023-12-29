@@ -23,8 +23,8 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            // Get the CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("CODE");
+            // Get the code/CODE section strings, if they exist
+            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 // Found in "NECRO95.EXE" in IA item "NBECRORV11".
