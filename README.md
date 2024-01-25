@@ -47,7 +47,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | CDSHiELD SE | True | False | |
 | Cenga ProtectDVD | True | True | |
 | ChosenBytes CodeLock | True | True | Partially unconfirmed² |
-| CopyKiller | True | True | Unconfirmed¹ |
+| CopyKiller | True | True | |
 | CopyLok/CodeLok | True | False | |
 | CrypKey | True | True | |
 | Cucko (EA Custom) | True | False | Does not detect all known cases |
