@@ -1,13 +1,13 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
+﻿using System;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
 #endif
-using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner.ProtectionType
+namespace BinaryObjectScanner.Protection
 {
     /// <summary>
     /// CopyKiller was a program made by Webstylerzone that allowed you to copyprotect your own discs.
@@ -37,9 +37,8 @@ namespace BinaryObjectScanner.ProtectionType
     /// Version 3.99a Installer: https://web.archive.org/web/20070721070138/http://www.webstylerzone.com/Downloads/exe/CopyKiller-Setup.exe
     /// Version 3.99a Portable: https://web.archive.org/web/20070721070214/http://www.webstylerzone.com/Downloads/zip/CopyKiller.zip
     /// 
-    /// TODO: Add support for the developer's EXE obfuscator, "EXEShield Deluxe".
+    /// TODO: Add support for the developer's EXE obfuscator, "EXEShield Deluxe". Most, if not all, EXEShield protected files are currently detected as "EXE Stealth" by BOS.
     /// Samples include CopyKiller (Versions 3.64 & 3.99a) and SafeDiscScanner (Version 0.16) (https://archive.org/details/safediscscanner-0.16-webstylerzone-from-unofficial-source).
-    /// 
     /// </summary>
     public class CopyKiller : IPathCheck, IPortableExecutableCheck
     {
@@ -53,13 +52,10 @@ namespace BinaryObjectScanner.ProtectionType
                 return null;
 
             // TODO: Figure out why this check doesn't work.
-            // Found in ""autorun.exe" in CopyKiller V3.64, V3.99, and V3.99a.
+            // Found in "autorun.exe" in CopyKiller V3.64, V3.99, and V3.99a.
             var name = pex.ProductName;
             if (name?.StartsWith("CopyKiller", StringComparison.OrdinalIgnoreCase) == true)
-                return $"CopyKiller V3.64+";
-
-            else if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
-                return $"SolidShield Core.dll {pex.GetInternalVersion()}";
+                return "CopyKiller V3.64+";
 
             return null;
         }

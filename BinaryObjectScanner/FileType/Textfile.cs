@@ -61,7 +61,6 @@ namespace BinaryObjectScanner.FileType
                 // Found in "autorun.dat" in CopyKiller versions 3.99 and 3.99a.
                 else if (fileContent.Contains("CopyKiller V4 CD / DVD-Protection"))
                     protections.Add("CopyKiller V3.99+");
-                // TODO: Scan ".wzc" files.
                 // Found in "engine.wzc" in CopyKiller versions 3.62 and 3.64.
                 else if (fileContent.Contains("CopyKiller V3.6x Protection Engine"))
                     protections.Add("CopyKiller V3.62-V3.64");

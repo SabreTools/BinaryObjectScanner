@@ -725,6 +725,10 @@ namespace BinaryObjectScanner.Utilities
             if (extension.Equals("doc", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.Textfile;
 
+            // Property list
+            if (extension.Equals("plist", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Textfile;
+
             // Rich Text File
             if (extension.Equals("rtf", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.Textfile;
@@ -737,13 +741,15 @@ namespace BinaryObjectScanner.Utilities
             if (extension.Equals("hlp", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.Textfile;
 
+            // WZC
+            if (extension.Equals("wzc", StringComparison.OrdinalIgnoreCase))
+                return SupportedFileType.Textfile;
+
             // XML
             if (extension.Equals("xml", StringComparison.OrdinalIgnoreCase))
                 return SupportedFileType.Textfile;
 
-            // Property list
-            if (extension.Equals("plist", StringComparison.OrdinalIgnoreCase))
-                return SupportedFileType.Textfile;
+            
 
             #endregion
 
