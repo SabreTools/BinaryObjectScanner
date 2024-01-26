@@ -54,6 +54,20 @@ namespace BinaryObjectScanner.FileType
                 else if (fileContent.Contains("Please enter a valid registration number"))
                     protections.Add("CD-Key / Serial");
 
+                // CopyKiller
+                // Found in "autorun.dat" in CopyKiller versions 3.62 and 3.64.
+                if (fileContent.Contains("CopyKiller CD-Protection V3.6x"))
+                    protections.Add("CopyKiller V3.62-V3.64");
+                // Found in "autorun.dat" in CopyKiller versions 3.99 and 3.99a.
+                else if (fileContent.Contains("CopyKiller V4 CD / DVD-Protection"))
+                    protections.Add("CopyKiller V3.99+");
+                // Found in "engine.wzc" in CopyKiller versions 3.62 and 3.64.
+                else if (fileContent.Contains("CopyKiller V3.6x Protection Engine"))
+                    protections.Add("CopyKiller V3.62-V3.64");
+                // Found in "engine.wzc" in CopyKiller versions 3.99 and 3.99a.
+                else if (fileContent.Contains("CopyKiller V3.99x Protection Engine"))
+                            protections.Add("CopyKiller V3.99+");
+
                 // Freelock
                 // Found in "FILE_ID.DIZ" distributed with Freelock.
                 if (fileContent.Contains("FREELOCK 1.0"))
