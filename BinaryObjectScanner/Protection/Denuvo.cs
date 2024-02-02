@@ -51,8 +51,16 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("Denuvo Anti-Cheat Update Service", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Denuvo Anti-Cheat";
 
+            // Found in "denuvo-anti-cheat-update-service-launcher.dll".
+            if (name?.Equals("Denuvo Anti-Cheat Update Service Launcher", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Denuvo Anti-Cheat";
+
             // Found in "denuvo-anti-cheat-runtime.dll".
             if (name?.Equals("Denuvo Anti-Cheat Runtime", StringComparison.OrdinalIgnoreCase) == true)
+                return $"Denuvo Anti-Cheat";
+
+            // Found in "denuvo-anti-cheat-crash-report.exe".
+            if (name?.Equals("Denuvo Anti-Cheat Crash Report Tool", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Denuvo Anti-Cheat";
 
             // Data sourced from:
@@ -274,6 +282,15 @@ namespace BinaryObjectScanner.Protection
 
                 // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
                 new(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                
+                // Found in the Denuvo Anti-Cheat installer on their support website. (https://web.archive.org/web/20240130142033/https://support.codefusion.technology/anti-cheat/?l=ja&s=ac&e=2009)
+                new(new PathMatch("denuvo-anti-cheat-installer.zip", useEndsWith: true), "Denuvo Anti-Cheat"),
+
+                // Found in "denuvo-anti-cheat-installer.zip".
+                new(new PathMatch("Denuvo-Anti-Cheat_install_run_as_Admin.bat", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-crash-report.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-crash-report.exe.config", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-update-service-launcher.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -293,6 +310,15 @@ namespace BinaryObjectScanner.Protection
 
                 // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
                 new(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                
+                // Found in the Denuvo Anti-Cheat installer on their support website. (https://web.archive.org/web/20240130142033/https://support.codefusion.technology/anti-cheat/?l=ja&s=ac&e=2009)
+                new(new PathMatch("denuvo-anti-cheat-installer.zip", useEndsWith: true), "Denuvo Anti-Cheat"),
+
+                // Found in "denuvo-anti-cheat-installer.zip".
+                new(new PathMatch("Denuvo-Anti-Cheat_install_run_as_Admin.bat", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-crash-report.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-crash-report.exe.config", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new PathMatch("denuvo-anti-cheat-update-service-launcher.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
