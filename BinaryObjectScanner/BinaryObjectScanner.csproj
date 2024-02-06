@@ -15,7 +15,7 @@
     <!-- Package Properties -->
     <Authors>Matt Nadareski</Authors>
     <Description>Protection scanning library</Description>
-    <Copyright>Copyright (c)2018-2023 Matt Nadareski</Copyright>
+    <Copyright>Copyright (c)2018-2024 Matt Nadareski</Copyright>
     <PackageProjectUrl>https://github.com/SabreTools/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SabreTools/BinaryObjectScanner</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
