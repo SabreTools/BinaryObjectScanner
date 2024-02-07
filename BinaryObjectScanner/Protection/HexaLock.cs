@@ -113,9 +113,6 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                // Found to be the default name used in HexaLock AutoLock 4.5.
-                new(new FilePathMatch("Start_Here.exe"), "HexaLock AutoLock 4.5"),
-
                 // Found to be contained in HexaLock AutoLock 4.5 and 4.7.
                 new(new FilePathMatch("MFINT.DLL"), "HexaLock AutoLock"),
                 new(new FilePathMatch("MFIMP.DLL"), "HexaLock AutoLock"),
