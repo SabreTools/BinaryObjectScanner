@@ -474,7 +474,7 @@ namespace Test
                 }
             }
 
-#if NETFRAMEWORK && !NET20 && !NET35 && !NET40
+#if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
             // MoPaQ (MPQ) archive
             else if (ft == SupportedFileType.MPQ)
             {

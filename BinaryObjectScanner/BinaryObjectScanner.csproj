@@ -23,21 +23,29 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
+  <!-- Set a build flag for Windows specifically -->
+  <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`win-`))">
+    <DefineConstants>WIN</DefineConstants>
+  </PropertyGroup>
+
   <!-- Exclude certain parts of external modules for .NET Framework 4.5.2 and above -->
-  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
+  <PropertyGroup>
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       **\AssemblyInfo.cs;
+      _EXTERNAL\LessIO\src\LessIO.Tests\**;
+      _EXTERNAL\libmspack4n\lib\**;
+      _EXTERNAL\libmspack4n\libmspack4ntest\**;
       _EXTERNAL\stormlibsharp\lib\**;
       _EXTERNAL\stormlibsharp\src\TestConsole\**
     </DefaultItemExcludes>
   </PropertyGroup>
 
-  <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, .NET Framework 4.0, .NET Core and modern .NET -->
-  <PropertyGroup Condition="!$(TargetFramework.StartsWith(`net4`)) OR $(TargetFramework.StartsWith(`net40`))">
+  <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, .NET Framework 4.0 or non-Windows builds -->
+  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`)) OR !$(RuntimeIdentifier.StartsWith(`win-`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
-      _EXTERNAL\**;
+      _EXTERNAL\**
     </DefaultItemExcludes>
   </PropertyGroup>
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NETFRAMEWORK && !NET20 && !NET35 && !NET40
+#if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
 using StormLibSharp;
 #endif
 
@@ -26,8 +26,9 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NET20 || NET35 || NET40 || NETCOREAPP || NET5_0_OR_GREATER
-            // Not supported for .NET Core and modern .NET due to Windows DLL requirements
+#if NET20 || NET35 || NET40 || !WIN
+            // Not supported for old .NET due to feature requirements
+            // Not supported in non-Windows builds due to DLL requirements
             return null;
 #else
             try

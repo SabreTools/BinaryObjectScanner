@@ -11,6 +11,11 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <!-- Set a build flag for Windows specifically -->
+  <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`win-`))">
+    <DefineConstants>WIN</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
   </ItemGroup>
