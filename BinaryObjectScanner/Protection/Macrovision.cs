@@ -342,6 +342,9 @@ namespace BinaryObjectScanner.Protection
             var fi = new FileInfo(firstMatchedString);
             return fi.Length switch
             {
+                // Found in Redump entry 63488.
+                0 => "(Empty File)",
+
                 // Found in Redump entry 102979.
                 1 => "(Empty File)",
 

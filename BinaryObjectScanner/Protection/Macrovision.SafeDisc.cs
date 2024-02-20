@@ -627,6 +627,9 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 102979.
                 "B858CB282617FB0956D960215C8E84D1CCF909C6" => "(Empty File)",
 
+                // Found in Redump entry 63488.
+                "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" => "(Empty File)",
+
                 // Found in Redump entries 29073 and 31149.
                 "33434590D7DE4EEE2C35FCC98B0BF141F422B26D" => "1.06.000",
 
@@ -769,6 +772,10 @@ namespace BinaryObjectScanner.Protection
             var sha1 = GetFileSHA1(firstMatchedString);
             switch (sha1)
             {
+                // Found in Redump entry 63488.
+                case "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709":
+                    return "(Empty File)";
+
                 // First known generic SafeDisc splash-screen.
                 // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, 79272, and 110603.
                 case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
