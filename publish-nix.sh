@@ -101,14 +101,14 @@ then
         for RUNTIME in "${RUNTIMES[@]}"
         do
             cd $BUILD_FOLDER/Test/bin/Debug/${FRAMEWORK}/${RUNTIME}/publish/
-            if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
+            if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] || [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
             then
                 zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
             else
                 zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip .
             fi
             cd $BUILD_FOLDER/Test/bin/Release/${FRAMEWORK}/${RUNTIME}/publish/
-            if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
+            if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] || [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
             then
                 zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
             else
