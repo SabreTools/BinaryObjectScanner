@@ -53,7 +53,7 @@ if (!$NO_BUILD.IsPresent)
     dotnet restore
 
     # Create Nuget Package
-    dotnet pack --output $BUILD_FOLDER
+    dotnet pack BinaryObjectScanner\BinaryObjectScanner.csproj --output $BUILD_FOLDER
 
     # Build Test
     foreach ($FRAMEWORK in $FRAMEWORKS)
