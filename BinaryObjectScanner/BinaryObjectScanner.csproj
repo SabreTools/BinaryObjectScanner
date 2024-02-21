@@ -50,7 +50,7 @@
   </PropertyGroup>
 
   <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND $(RuntimeIdentifier.StartsWith(`win-`))">
+  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`))">
     <Content Include="*.dll">
       <Pack>true</Pack>
       <PackagePath>contentFiles;content</PackagePath>
