@@ -14,11 +14,11 @@ param(
     [Alias("UseAll")]
     [switch]$USE_ALL,
 
-	[Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $false)]
     [Alias("NoBuild")]
     [switch]$NO_BUILD,
 
-	[Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $false)]
     [Alias("NoArchive")]
     [switch]$NO_ARCHIVE
 )
@@ -48,54 +48,54 @@ $VALID_CROSS_PLATFORM_RUNTIMES = @('win-arm64', 'linux-x64', 'linux-arm64', 'osx
 # Only build if requested
 if (!$NO_BUILD.IsPresent)
 {
-	# Restore Nuget packages for all builds
-	Write-Host "Restoring Nuget packages"
-	dotnet restore
+    # Restore Nuget packages for all builds
+    Write-Host "Restoring Nuget packages"
+    dotnet restore
 
     # Create Nuget Package
     dotnet pack --output $BUILD_FOLDER
 
     # Build Test
-	foreach ($FRAMEWORK in $FRAMEWORKS)
-	{
-		foreach ($RUNTIME in $RUNTIMES)
-		{
-			# Only .NET 5 and above can publish to a single file
-			if ($SINGLE_FILE_CAPABLE -contains $FRAMEWORK)
-			{
-				dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true
-				dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
-			}
-			else
-			{
-				dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT
-				dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
-			}
-		}
-	}
+    foreach ($FRAMEWORK in $FRAMEWORKS)
+    {
+        foreach ($RUNTIME in $RUNTIMES)
+        {
+            # Only .NET 5 and above can publish to a single file
+            if ($SINGLE_FILE_CAPABLE -contains $FRAMEWORK)
+            {
+                dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true
+                dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
+            }
+            else
+            {
+                dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT
+                dotnet publish Test\Test.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
+            }
+        }
+    }
 }
 
 # Only create archives if requested
 if (!$NO_ARCHIVE.IsPresent)
 {
-	# Create Test archives
-	foreach ($FRAMEWORK in $FRAMEWORKS)
-	{
-		foreach ($RUNTIME in $RUNTIMES)
-		{
+    # Create Test archives
+    foreach ($FRAMEWORK in $FRAMEWORKS)
+    {
+        foreach ($RUNTIME in $RUNTIMES)
+        {
             # If we have an invalid combination of framework and runtime
             if ($VALID_CROSS_PLATFORM_FRAMEWORKS -notcontains $FRAMEWORK -and $VALID_CROSS_PLATFORM_RUNTIMES -contains $RUNTIME)
             {
                 continue
             }
 
-			Set-Location -Path $BUILD_FOLDER\Test\bin\Debug\${FRAMEWORK}\${RUNTIME}\publish\
-			7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
-			Set-Location -Path $BUILD_FOLDER\Test\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
-			7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
-		}
-	}
+            Set-Location -Path $BUILD_FOLDER\Test\bin\Debug\${FRAMEWORK}\${RUNTIME}\publish\
+            7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
+            Set-Location -Path $BUILD_FOLDER\Test\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
+            7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
+        }
+    }
 
-	# Reset the directory
-	Set-Location -Path $PSScriptRoot
+    # Reset the directory
+    Set-Location -Path $PSScriptRoot
 }
