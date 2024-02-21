@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <!-- Set a build flag for Windows specifically -->
-  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86' OR '$(RuntimeIdentifier)'=='win-x64'">
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
     <DefineConstants>$(DefineConstants);WIN</DefineConstants>
   </PropertyGroup>
 
