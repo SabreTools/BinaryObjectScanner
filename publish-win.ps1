@@ -44,7 +44,7 @@ if ($USE_ALL.IsPresent)
 $SINGLE_FILE_CAPABLE = @('net5.0', 'net6.0', 'net7.0', 'net8.0')
 $VALID_CROSS_PLATFORM_FRAMEWORKS = @('netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0')
 $VALID_CROSS_PLATFORM_RUNTIMES = @('win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64')
-$NON_DLL_FRAMEWORKS @('net20', 'net35', 'net40')
+$NON_DLL_FRAMEWORKS = @('net20', 'net35', 'net40')
 $NON_DLL_RUNTIMES = @('win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64')
 
 # Only build if requested
@@ -92,9 +92,23 @@ if (!$NO_ARCHIVE.IsPresent)
             }
 
             Set-Location -Path $BUILD_FOLDER\Test\bin\Debug\${FRAMEWORK}\${RUNTIME}\publish\
-            7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
+            if ($VALID_CROSS_PLATFORM_FRAMEWORKS -contains $FRAMEWORK -and $NON_DLL_RUNTIMES -contains $RUNTIME)
+            {
+                7z a -tzip -x!*.dll $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
+            }
+            else
+            {
+                7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
+            }
             Set-Location -Path $BUILD_FOLDER\Test\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
-            7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
+            if ($VALID_CROSS_PLATFORM_FRAMEWORKS -contains $FRAMEWORK -and $NON_DLL_RUNTIMES -contains $RUNTIME)
+            {
+                7z a -tzip -x!*.dll $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
+            }
+            else
+            {
+                7z a -tzip $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
+            }
         }
     }
 

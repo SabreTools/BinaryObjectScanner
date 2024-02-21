@@ -93,20 +93,27 @@ then
     for FRAMEWORK in "${FRAMEWORKS[@]}"
     do
         # If we have an invalid combination of framework and runtime
-        if [[ ! $(echo ${VALID_CROSS_PLATFORM_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ]]
+        if [ ! $(echo ${VALID_CROSS_PLATFORM_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${VALID_CROSS_PLATFORM_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
         then
-            if [[ $(echo ${VALID_CROSS_PLATFORM_RUNTIMES[@]} | fgrep -w $RUNTIME) ]]
-            then
-                continue
-            fi
+            continue
         fi
 
         for RUNTIME in "${RUNTIMES[@]}"
         do
             cd $BUILD_FOLDER/Test/bin/Debug/${FRAMEWORK}/${RUNTIME}/publish/
-            zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip .
+            if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
+            then
+                zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip . -x '*.dll'
+            else
+                zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip .
+            fi
             cd $BUILD_FOLDER/Test/bin/Release/${FRAMEWORK}/${RUNTIME}/publish/
-            zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip .
+            if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
+            then
+                zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip . -x '*.dll'
+            else
+                zip -r $BUILD_FOLDER/BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip .
+            fi
         done
     done
 
