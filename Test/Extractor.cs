@@ -408,6 +408,7 @@ namespace Test
 #endif
             }
 
+#if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
             // Microsoft Cabinet archive
             else if (ft == SupportedFileType.MicrosoftCAB)
             {
@@ -415,7 +416,7 @@ namespace Test
                 Console.WriteLine("Extracting MS-CAB contents");
                 Console.WriteLine();
 
-                var cabinet = MicrosoftCabinet.Create(stream);
+                var cabinet = new LibMSPackN.MSCabinet(file);
                 if (cabinet == null)
                 {
                     Console.WriteLine("Something went wrong parsing MS-CAB archive");
@@ -425,7 +426,24 @@ namespace Test
 
                 try
                 {
-                    Console.WriteLine("MS-CAB extraction is disabled");
+                    // Extract the MS-CAB contents to the directory
+                    foreach (var compressedFile in cabinet.GetFiles())
+                    {
+                        try
+                        {
+                            string tempFile = Path.Combine(outputDirectory, compressedFile.Filename);
+                            string? directoryName = Path.GetDirectoryName(tempFile);
+                            if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
+
+                            compressedFile.ExtractTo(tempFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something went wrong extracting Microsoft Cabinet entry {compressedFile.Filename}: {ex}");
+                            Console.WriteLine();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -433,6 +451,7 @@ namespace Test
                     Console.WriteLine();
                 }
             }
+#endif
 
             // Microsoft LZ / LZ32
             else if (ft == SupportedFileType.MicrosoftLZ)
@@ -514,7 +533,10 @@ namespace Test
                         try
                         {
                             string tempFile = Path.Combine(outputDirectory, sub);
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
+                            string? directoryName = Path.GetDirectoryName(tempFile);
+                            if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
+
                             mpqArchive.ExtractFile(sub, tempFile);
                         }
                         catch (Exception ex)

@@ -24,8 +24,8 @@
   </PropertyGroup>
 
   <!-- Set a build flag for Windows specifically -->
-  <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`win-`))">
-    <DefineConstants>WIN</DefineConstants>
+  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86' OR '$(RuntimeIdentifier)'=='win-x64'">
+    <DefineConstants>$(DefineConstants);WIN</DefineConstants>
   </PropertyGroup>
 
   <!-- Exclude certain parts of external modules for .NET Framework 4.5.2 and above -->
@@ -50,7 +50,7 @@
   </PropertyGroup>
 
   <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
+  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND $(RuntimeIdentifier.StartsWith(`win-`))">
     <Content Include="*.dll">
       <Pack>true</Pack>
       <PackagePath>contentFiles;content</PackagePath>

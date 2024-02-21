@@ -166,7 +166,7 @@ namespace Test
 #if NET6_0_OR_GREATER
                         options.Json = true;
 #else
-                        Console.WriteLine("JSON output not available in .NET Framework 4.8");
+                        Console.WriteLine("JSON output not available in .NET Framework");
 #endif
                         break;
 
