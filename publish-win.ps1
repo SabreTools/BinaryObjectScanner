@@ -37,7 +37,7 @@ $RUNTIMES = @('win-x86', 'win-x64', 'linux-x64', 'osx-x64')
 if ($USE_ALL.IsPresent)
 {
     $FRAMEWORKS = @('net20', 'net35', 'net40', 'net452', 'net462', 'net472', 'net48', 'netcoreapp3.1', 'net5.0', 'net6.0', 'net7.0', 'net8.0')
-    $RUNTIMES = @('win-x86', 'win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64', 'osx-arm64')
+    $RUNTIMES = @('win-x86', 'win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64')
 }
 
 # Create the filter arrays
