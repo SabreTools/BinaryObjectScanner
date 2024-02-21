@@ -62,6 +62,12 @@ if (!$NO_BUILD.IsPresent)
     {
         foreach ($RUNTIME in $RUNTIMES)
         {
+            # If we have an invalid combination of framework and runtime
+            if ($VALID_CROSS_PLATFORM_FRAMEWORKS -notcontains $FRAMEWORK -and $VALID_CROSS_PLATFORM_RUNTIMES -contains $RUNTIME)
+            {
+                continue
+            }
+
             # Only .NET 5 and above can publish to a single file
             if ($SINGLE_FILE_CAPABLE -contains $FRAMEWORK)
             {
