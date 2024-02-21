@@ -98,14 +98,14 @@ then
     # Create Test archives
     for FRAMEWORK in "${FRAMEWORKS[@]}"
     do
-        # If we have an invalid combination of framework and runtime
-        if [ ! $(echo ${VALID_CROSS_PLATFORM_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${VALID_CROSS_PLATFORM_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
-        then
-            continue
-        fi
-
         for RUNTIME in "${RUNTIMES[@]}"
         do
+            # If we have an invalid combination of framework and runtime
+            if [ ! $(echo ${VALID_CROSS_PLATFORM_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] && [ $(echo ${VALID_CROSS_PLATFORM_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
+            then
+                continue
+            fi
+
             cd $BUILD_FOLDER/Test/bin/Debug/${FRAMEWORK}/${RUNTIME}/publish/
             if [ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ] || [ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]
             then

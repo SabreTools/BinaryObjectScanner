@@ -100,7 +100,7 @@ if (!$NO_ARCHIVE.IsPresent)
             Set-Location -Path $BUILD_FOLDER\Test\bin\Debug\${FRAMEWORK}\${RUNTIME}\publish\
             if ($NON_DLL_FRAMEWORKS -contains $FRAMEWORK -or $NON_DLL_RUNTIMES -contains $RUNTIME)
             {
-                7z a -tzip -x!CascLib.dll -x!mspack.dll -x!StormLib.dll $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
+                7z a -tzip -x'!CascLib.dll' -x'!mspack.dll' -x'!StormLib.dll' $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_debug.zip *
             }
             else
             {
@@ -109,7 +109,7 @@ if (!$NO_ARCHIVE.IsPresent)
             Set-Location -Path $BUILD_FOLDER\Test\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
             if ($NON_DLL_FRAMEWORKS -contains $FRAMEWORK -or $NON_DLL_RUNTIMES -contains $RUNTIME)
             {
-                7z a -tzip -x!CascLib.dll -x!mspack.dll -x!StormLib.dll $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
+                7z a -tzip -x'!CascLib.dll' -x'!mspack.dll' -x'!StormLib.dll' $BUILD_FOLDER\BinaryObjectScanner_${FRAMEWORK}_${RUNTIME}_release.zip *
             }
             else
             {
