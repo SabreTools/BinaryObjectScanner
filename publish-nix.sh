@@ -4,15 +4,12 @@
 # - .NET 8.0 (or newer) SDK is installed and in PATH
 # - zip is installed and in PATH
 # - Git is installed and in PATH
-# - The relevant commandline programs are already downloaded
-#   and put into their respective folders
 #
 # If any of these are not satisfied, the operation may fail
 # in an unpredictable way and result in an incomplete output.
 
 # Optional parameters
 USE_ALL=false
-INCLUDE_PROGRAMS=false
 NO_BUILD=false
 NO_ARCHIVE=false
 while getopts "uba" OPTION

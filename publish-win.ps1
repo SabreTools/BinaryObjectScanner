@@ -2,8 +2,6 @@
 # - .NET 8.0 (or newer) SDK is installed and in PATH
 # - 7-zip commandline (7z.exe) is installed and in PATH
 # - Git for Windows is installed and in PATH
-# - The relevant commandline programs are already downloaded
-#   and put into their respective folders
 #
 # If any of these are not satisfied, the operation may fail
 # in an unpredictable way and result in an incomplete output.
