@@ -400,8 +400,8 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 15614, 42034, 45686, 56320, 60021, 79729, and 80776.
                 163_644 => "4.00.060 / SafeDisc 4.00.000-4.70.000",
 
-                // Found distributed online, but so far not in a game release. TODO: Discover original source.
-                // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officialy by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
+                // Found distributed online, but so far not in a game release. May be a final driver version never released with a game. TODO: Discover original source.
+                // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officially by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
                 23_040 => "4.03.086 / Product Unknown",
 
                 // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
@@ -409,6 +409,22 @@ namespace BinaryObjectScanner.Protection
 
                 // This file is not currently known to be used in versions past 4.70.000.
                 _ => "/ Product Unknown (Report this to us on GitHub)",
+
+                // Hashes have not been found to be a reliable indicator for these files, and likely differ on a game-to-game basis. Some hashes were previously collected and are collected below:
+                // Found in Redump entries 3569 and 3570.
+                // "B64AD3EC82F2EB9FB854512CB59C25A771322181" => "1.11.000",
+                // It is not known which games these files are from.
+                // "EBF69B0A96ADFC903B7E486708474DC864CC0C7C" => "1.40.004",
+                // "F68A1370660F8B94F896BBBA8DC6E47644D19092" => "2.30",
+                // "60BC8C3222081BF76466C521474D63714AFD43CD" => "2.40",
+                // "08CECA66432278D8C4E0F448436B77583C3C61C8" => "2.50",
+                // "10080EB46BF76AC9CF9EA74372CFA4313727F0CA" => "2.51",
+                // "832D359A6DE191C788B0E61E33F3D01F8D793D3C" => "2.70",
+                // "AFCFAAC945A5B47712719A5E6A7EB69E36A5A6E0" or "CB24FBE8AA23A49E95F3C83FB15123FFB01F43F4" => "2.80",
+                // "0383B69F98D0A9C0383C8130D52D6B431C79AC48" => "2.90",
+                // "D7C9213CC78FF57F2F655B050C4D5AC065661AA9" => "3.20",
+                // "FC6FEDACC21A7244975B8F410FF8673285374CC2" => "4.00.002",// Also 4.60.000, might be a fluke
+                // "2D9F54F35F5BACB8959EF3AFFDC3E4209A4629CB" => "1-4",
             };
         }
 

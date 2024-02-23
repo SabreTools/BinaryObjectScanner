@@ -176,8 +176,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
                 new(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
 
-                // Found to be present in every version of SafeDisc, possibly every single release.
-                //new(new FilePathMatch("00000001.TMP"), GetSafeDisc00000001TMPVersion, "SafeDisc"),
+                // The file "00000001.TMP" is found in most, if not all, SafeDisc protected programs and is detected within the general Macrovision checks due to being used in other Macrovision DRM.
 
                 // Found in many versions of SafeDisc, beginning in 2.05.030 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new(new FilePathMatch("00000002.TMP"), "SafeDisc 2+"),
@@ -263,7 +262,9 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("CLCD32.DLL"), GetSafeDiscCLCD32Version, "SafeDisc"),
                 new(new FilePathMatch("CLOKSPL.EXE"), GetSafeDiscCLOKSPLVersion, "SafeDisc"),
 
-                //new(new FilePathMatch("00000001.TMP"), GetSafeDisc00000001TMPVersion, "SafeDisc"),
+                // The file "00000001.TMP" is found in most, if not all, SafeDisc protected programs and is detected within the general Macrovision checks due to being used in other Macrovision DRM.
+
+                // Found in many versions of SafeDisc, beginning in 2.05.030 and being used all the way until the final version 4.90.010. It is not always present, even in versions it has been used in. Found in Redump entries 56319 and 72195.
                 new(new FilePathMatch("00000002.TMP"), "SafeDisc 2+"),
 
                 // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
@@ -599,7 +600,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 9718, 12885, and 37523.
                 156_160 => "1.07.000-1.11.000",
 
-                // File size checks for versions 1.2X+ are superceded by executable string checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
+                // File size checks for versions 1.2X+ are superseded by executable string checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
                 // 157,184 bytes corresponds to SafeDisc 1.20.000-1.20.001 (Redump entries 21154 and 37920).
                 // 163,382 bytes corresponds to SafeDisc 1.30.010 (Redump entries 31526 and 55080).
                 // 165,888 bytes corresponds to SafeDisc 1.35.000 (Redump entries 9617 and 49552).
@@ -609,6 +610,16 @@ namespace BinaryObjectScanner.Protection
                 // 138,752 bytes corresponds to SafeDisc 1.50.020 (Redump entries 28810 and 62935).
 
                 _ => "1",
+
+                // Hashes have not been found to be a reliable indicator for these files, and likely differ on a game-to-game basis. Some hashes were previously collected and are collected below:
+                // Found in Redump entry 41923.
+                // F7A57F83BDC29040E20FD37CD0C6D7E6B2984180" => "1.00.030",
+                // Found in Redump entries 3569 and 3570.
+                // "A8ED1613D47D1B5064300FF070484528EBB20A3B" => "1.11.000",
+                // It is not known which games these files are from.
+                // "ED680E9A13F593E7A80A69EE1035D956AB62212B" => "1.3x",
+                // "66D8589343E00FA3E11BBF462E38C6F502515BEA" => "1.30.010",
+                // "5751AE2EE805D31227CFE7680F3C8BE4AB8945A3" => "1.40",
             };
         }
 
@@ -904,35 +915,6 @@ namespace BinaryObjectScanner.Protection
             // "00001009.256": Found in SafeDisc version 2.30.030 (Redump entry 45040).
             // "SPLSH16.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
             // "SPLSH256.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
-        }
-
-        private string? GetVersionFromSHA1Hash(string sha1Hash)
-        {
-            return sha1Hash.ToLowerInvariant() switch
-            {
-                // dplayerx.dll
-                "f7a57f83bdc29040e20fd37cd0c6d7e6b2984180" => "1.00.030",
-                "a8ed1613d47d1b5064300ff070484528ebb20a3b" => "1.11.000",
-                "ed680e9a13f593e7a80a69ee1035d956ab62212b" => "1.3x",
-                "66d8589343e00fa3e11bbf462e38c6f502515bea" => "1.30.010",
-                "5751ae2ee805d31227cfe7680f3c8be4ab8945a3" => "1.40",
-
-                // secdrv.sys
-                "b64ad3ec82f2eb9fb854512cb59c25a771322181" => "1.11.000",
-                "ebf69b0a96adfc903b7e486708474dc864cc0c7c" => "1.40.004",
-                "f68a1370660f8b94f896bbba8dc6e47644d19092" => "2.30",
-                "60bc8c3222081bf76466c521474d63714afd43cd" => "2.40",
-                "08ceca66432278d8c4e0f448436b77583c3c61c8" => "2.50",
-                "10080eb46bf76ac9cf9ea74372cfa4313727f0ca" => "2.51",
-                "832d359a6de191c788b0e61e33f3d01f8d793d3c" => "2.70",
-                "afcfaac945a5b47712719a5e6a7eb69e36a5a6e0" or "cb24fbe8aa23a49e95f3c83fb15123ffb01f43f4" => "2.80",
-                "0383b69f98d0a9c0383c8130d52d6b431c79ac48" => "2.90",
-                "d7c9213cc78ff57f2f655b050c4d5ac065661aa9" => "3.20",
-                "fc6fedacc21a7244975b8f410ff8673285374cc2" => "4.00.002",// Also 4.60.000, might be a fluke
-                "2d9f54f35f5bacb8959ef3affdc3e4209a4629cb" => "1-4",
-
-                _ => null,
-            };
         }
 
         private string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
