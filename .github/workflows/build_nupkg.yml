@@ -30,13 +30,13 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: 'Nuget Package'
-        path: '*.nupkg'
+        path: 'BinaryObjectScanner/bin/Release/*.nupkg'
 
     - name: Upload to rolling
       uses: ncipollo/release-action@v1.14.0
       with:
         allowUpdates: True
-        artifacts: '*.nupkg'
+        artifacts: 'BinaryObjectScanner/bin/Release/*.nupkg'
         body: 'Last built commit: ${{ github.sha }}'
         commit: ${{ github.sha }}
         name: 'Rolling Release'
