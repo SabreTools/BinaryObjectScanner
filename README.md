@@ -4,7 +4,6 @@
 [![Build Test](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml)
 [![Nuget Pack](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_nupkg.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_nupkg.yml)
 
-
 C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. A reference application called `Test` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
 
 The following libraries (or ports thereof) are used for file handling:
