@@ -36,7 +36,6 @@ jobs:
         allowUpdates: True
         artifacts: 'BinaryObjectScanner/bin/Release/*.nupkg'
         body: 'Last built commit: ${{ github.sha }}'
-        commit: ${{ github.sha }}
         name: 'Rolling Release'
         prerelease: True
         replacesArtifacts: True
