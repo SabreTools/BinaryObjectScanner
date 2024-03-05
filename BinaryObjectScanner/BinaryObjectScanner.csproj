@@ -84,6 +84,7 @@
 
   <ItemGroup>
     <PackageReference Include="SabreTools.Compression" Version="0.3.0" />
+    <PackageReference Include="SabreTools.Hashing" Version="1.1.2" />
     <PackageReference Include="SabreTools.IO" Version="1.3.0" />
     <PackageReference Include="SabreTools.Matching" Version="1.3.0" />
     <PackageReference Include="SabreTools.Models" Version="1.3.0" />

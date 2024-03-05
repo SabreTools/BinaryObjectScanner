@@ -4,9 +4,9 @@ using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
 using System.IO;
+using SabreTools.Hashing;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
-using static BinaryObjectScanner.Utilities.Hashing;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.Protection
                     // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
                     if (fi.Length == 49_152)
                     {
-                        var sha1 = GetFileSHA1(file);
+                        var sha1 = HashTool.GetFileHash(file, HashType.SHA1);
                         if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
                             return "RipGuard";
                     }
