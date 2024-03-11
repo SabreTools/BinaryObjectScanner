@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.FileType
             get
             {
                 contentCheckClasses ??= InitCheckClasses<IContentCheck>();
-                return contentCheckClasses ?? Enumerable.Empty<IContentCheck>();
+                return contentCheckClasses ?? [];
             }
         }
 
@@ -55,7 +55,7 @@ namespace BinaryObjectScanner.FileType
             get
             {
                 linearExecutableCheckClasses ??= InitCheckClasses<ILinearExecutableCheck>();
-                return linearExecutableCheckClasses ?? Enumerable.Empty<ILinearExecutableCheck>();
+                return linearExecutableCheckClasses ?? [];
             }
         }
 
@@ -67,7 +67,7 @@ namespace BinaryObjectScanner.FileType
             get
             {
                 msdosExecutableCheckClasses ??= InitCheckClasses<IMSDOSExecutableCheck>();
-                return msdosExecutableCheckClasses ?? Enumerable.Empty<IMSDOSExecutableCheck>();
+                return msdosExecutableCheckClasses ?? [];
             }
         }
 
@@ -79,7 +79,7 @@ namespace BinaryObjectScanner.FileType
             get
             {
                 newExecutableCheckClasses ??= InitCheckClasses<INewExecutableCheck>();
-                return newExecutableCheckClasses ?? Enumerable.Empty<INewExecutableCheck>();
+                return newExecutableCheckClasses ?? [];
             }
         }
 
@@ -91,7 +91,7 @@ namespace BinaryObjectScanner.FileType
             get
             {
                 portableExecutableCheckClasses ??= InitCheckClasses<IPortableExecutableCheck>();
-                return portableExecutableCheckClasses ?? Enumerable.Empty<IPortableExecutableCheck>();
+                return portableExecutableCheckClasses ?? [];
             }
         }
 
@@ -537,17 +537,29 @@ namespace BinaryObjectScanner.FileType
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T>? InitCheckClasses<T>() =>
-            InitCheckClasses<T>(typeof(Handler).Assembly) ?? Enumerable.Empty<T>();
+            InitCheckClasses<T>(typeof(Handler).Assembly) ?? [];
 
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T>? InitCheckClasses<T>(Assembly assembly)
         {
-            return assembly.GetTypes()?
-                .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
-                .Select(t => (T?)Activator.CreateInstance(t))
-                .Cast<T>() ?? [];
+            List<T?> types = [];
+            try
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (type.IsClass && type.GetInterface(typeof(T).Name) != null)
+                    {
+                        var instance = (T?)Activator.CreateInstance(type);
+                        if (instance != null)
+                            types.Add(instance);
+                    }
+                }
+            }
+            catch { }
+
+            return types;
         }
 
         #endregion

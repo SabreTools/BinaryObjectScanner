@@ -211,9 +211,22 @@ namespace BinaryObjectScanner
         /// </summary>
         private static IEnumerable<T?> InitCheckClasses<T>(Assembly assembly)
         {
-            return assembly.GetTypes()?
-                .Where(t => t.IsClass && t.GetInterface(typeof(T).Name) != null)?
-                .Select(t => (T?)Activator.CreateInstance(t)) ?? [];
+            List<T?> types = [];
+            try
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (type.IsClass && type.GetInterface(typeof(T).Name) != null)
+                    {
+                        var instance = (T?)Activator.CreateInstance(type);
+                        if (instance != null)
+                            types.Add(instance);
+                    }
+                }
+            }
+            catch { }
+
+            return types;
         }
 
         #endregion
