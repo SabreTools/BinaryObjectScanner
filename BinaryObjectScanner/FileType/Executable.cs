@@ -544,7 +544,7 @@ namespace BinaryObjectScanner.FileType
         /// </summary>
         private static IEnumerable<T>? InitCheckClasses<T>(Assembly assembly)
         {
-            List<T?> types = [];
+            List<T> types = [];
             try
             {
                 foreach (Type type in assembly.GetTypes())
