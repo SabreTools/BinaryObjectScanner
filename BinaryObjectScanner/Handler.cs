@@ -204,29 +204,40 @@ namespace BinaryObjectScanner
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T?> InitCheckClasses<T>() =>
-            InitCheckClasses<T>(typeof(Handler).Assembly);
+            InitCheckClasses<T>(Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
         private static IEnumerable<T?> InitCheckClasses<T>(Assembly assembly)
         {
-            List<T?> types = [];
+            List<T?> classTypes = [];
+
+            // If not all types can be loaded, use the ones that could be
+            List<Type> assemblyTypes = [];
             try
             {
-                foreach (Type type in assembly.GetTypes())
-                {
-                    if (type.IsClass && type.GetInterface(typeof(T).Name) != null)
-                    {
-                        var instance = (T?)Activator.CreateInstance(type);
-                        if (instance != null)
-                            types.Add(instance);
-                    }
-                }
+                assemblyTypes = assembly.GetTypes().ToList<Type>();
             }
-            catch { }
+            catch (ReflectionTypeLoadException rtle)
+            {
+                assemblyTypes = rtle.Types.Where(t => t != null)!.ToList<Type>();
+            }
 
-            return types;
+            // Loop through all types 
+            foreach (Type type in assemblyTypes)
+            {
+                // If the type isn't a class or doesn't implement the interface
+                if (!type.IsClass || type.GetInterface(typeof(T).Name) == null)
+                    continue;
+
+                // Try to create a concrete instance of the type
+                var instance = (T?)Activator.CreateInstance(type);
+                if (instance != null)
+                    classTypes.Add(instance);
+            }
+
+            return classTypes;
         }
 
         #endregion
