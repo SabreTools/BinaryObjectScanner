@@ -48,7 +48,7 @@ namespace BinaryObjectScanner.Protection
                     if (fi.Length == 49_152)
                     {
                         var sha1 = HashTool.GetFileHash(file, HashType.SHA1);
-                        if (sha1 == "6A7B8545800E0AB252773A8CD0A2185CA2497938")
+                        if (string.Equals(sha1, "6A7B8545800E0AB252773A8CD0A2185CA2497938", StringComparison.OrdinalIgnoreCase))
                             return "RipGuard";
                     }
                 }

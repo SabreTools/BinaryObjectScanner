@@ -364,7 +364,7 @@ namespace BinaryObjectScanner.Protection
 
             // The hash of the file CLCD16.dll is able to provide a broad version range that appears to be consistent, but it seems it was rarely updated so these checks are quite broad.
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
-            return sha1 switch
+            return sha1?.ToUpperInvariant() switch
             {
                 // Found in Redump entries 61731 and 66005.
                 "C13493AB753891B8BEE9E4E014896B026C01AC92" => "1.00.025-1.01.044",
@@ -387,7 +387,7 @@ namespace BinaryObjectScanner.Protection
 
             // The hash of the file CLCD32.dll so far appears to be a solid indicator of version for versions it was used with. It appears to have been updated with every release, unlike its counterpart, CLCD16.dll.
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
-            return sha1 switch
+            return sha1?.ToUpperInvariant() switch
             {
                 // Found in Redump entry 66005.
                 "BAD49BA0DEA041E85EF1CABAA9F0ECD822CE1376" => "1.00.025",
@@ -486,7 +486,7 @@ namespace BinaryObjectScanner.Protection
 
             // The hash of every "CLOKSPL.EXE" correlates directly to a specific SafeDisc version.
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
-            return sha1 switch
+            return sha1?.ToUpperInvariant() switch
             {
                 // Found in Redump entry 66005.
                 "DD131A7B988065764E2A0F20B66C89049B20A7DE" => "1.00.025",
@@ -633,7 +633,7 @@ namespace BinaryObjectScanner.Protection
             // Particularly interesting inconsistencies will be noted below:
             // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe with a version of 4.60.000, and a copy of drvmgt.dll belonging to version 3.10.020. This seems like an accidental(?) distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
-            return sha1 switch
+            return sha1?.ToUpperInvariant() switch
             {
                 // Found in Redump entry 102979.
                 "B858CB282617FB0956D960215C8E84D1CCF909C6" => "(Empty File)",
@@ -781,7 +781,7 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
-            switch (sha1)
+            switch (sha1?.ToUpperInvariant())
             {
                 // Found in Redump entry 63488.
                 case "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709":
