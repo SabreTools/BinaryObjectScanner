@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER || NETCOREAPP
-using ICSharpCode.SharpZipLib.Zip.Compression;
-#endif
+using SabreTools.Compression.zlib;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -230,15 +228,19 @@ namespace BinaryObjectScanner.FileType
             }
             else
             {
-                // Decompress the data
-#if NET462_OR_GREATER || NETCOREAPP
+                // Inflate the data into the buffer
+                var zstream = new ZLib.z_stream_s();
                 data = new byte[outputFileSize];
-                Inflater inflater = new Inflater();
-                inflater.SetInput(compressedData);
-                inflater.Inflate(data);
-#else
-                data = new byte[outputFileSize];
-#endif
+                unsafe
+                {
+                    fixed (byte* payloadPtr = compressedData)
+                    fixed (byte* dataPtr = data)
+                    {
+                        zstream.next_in = payloadPtr;
+                        zstream.next_out = dataPtr;
+                        int zret = ZLib.inflate(zstream, 1);
+                    }
+                }
             }
 
             // If we have an invalid output directory

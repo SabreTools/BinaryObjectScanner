@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER || NETCOREAPP
-using ICSharpCode.SharpZipLib.Zip.Compression;
-#endif
+using SabreTools.Compression.zlib;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 
@@ -88,16 +86,27 @@ namespace BinaryObjectScanner.Packer
                     try
                     {
                         // Inflate the data into the buffer
-#if NET462_OR_GREATER || NETCOREAPP
-                        Inflater inflater = new Inflater();
-                        inflater.SetInput(payload);
+                        var zstream = new ZLib.z_stream_s();
                         data = new byte[payload.Length * 4];
-                        int read = inflater.Inflate(data);
+                        unsafe
+                        {
+                            fixed (byte* payloadPtr = payload)
+                            fixed (byte* dataPtr = data)
+                            {
+                                zstream.next_in = payloadPtr;
+                                zstream.next_out = dataPtr;
+                                int zret = ZLib.inflate(zstream, 1);
+                            }
+                        }
 
                         // Trim the buffer to the proper size
-                        data = new ReadOnlySpan<byte>(data, 0, read).ToArray();
+                        uint read = zstream.total_out;
+#if NET462_OR_GREATER || NETCOREAPP
+                        data = new ReadOnlySpan<byte>(data, 0, (int)read).ToArray();
 #else
-                        data = null;
+                        var temp = new byte[read];
+                        Array.Copy(data, 0, temp, 0, read);
+                        data = temp;
 #endif
                     }
                     catch
