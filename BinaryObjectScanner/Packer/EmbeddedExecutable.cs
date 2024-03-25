@@ -46,6 +46,7 @@ namespace BinaryObjectScanner.Packer
             try
             {
                 // Parse into an executable again for easier extraction
+                stream?.Seek(0, SeekOrigin.Begin);
                 var pex = PortableExecutable.Create(stream);
                 if (pex?.ResourceData == null)
                     return null;
