@@ -62,7 +62,7 @@ namespace BinaryObjectScanner
 #endif
 
             // Preprocess the list of files
-            files = files?.Select(f => f.Replace('\\', '/'))?.ToList();
+            files = files?.Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?.ToList();
 
             // Iterate through all checks
 #if NET20 || NET35
