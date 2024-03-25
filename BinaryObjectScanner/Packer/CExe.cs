@@ -88,6 +88,7 @@ namespace BinaryObjectScanner.Packer
                     {
                         // Inflate the data into the buffer
                         var zstream = new ZLib.z_stream_s();
+                        var state = new ZLib.inflate_state();
                         data = new byte[payload.Length * 4];
                         unsafe
                         {
@@ -95,7 +96,14 @@ namespace BinaryObjectScanner.Packer
                             fixed (byte* dataPtr = data)
                             {
                                 zstream.next_in = payloadPtr;
+                                zstream.avail_in = (uint)payload.Length;
                                 zstream.next_out = dataPtr;
+                                zstream.avail_out = (uint)data.Length;
+
+                                state.strm = zstream;
+                                state.mode = ZLib.inflate_mode.HEAD;
+
+                                zstream.i_state = state;
                                 int zret = ZLib.inflate(zstream, 1);
                             }
                         }
