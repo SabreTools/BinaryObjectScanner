@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
@@ -10,7 +9,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class EXEStealth : IContentCheck, IExtractable, IPortableExecutableCheck
+    public class EXEStealth : IContentCheck, IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
@@ -75,19 +74,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             return null;
         }

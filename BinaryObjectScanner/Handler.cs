@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
+using SabreTools.Serialization.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BinaryObjectScanner
@@ -108,7 +109,7 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Handle files based on an IExtractable implementation
         /// </summary>
-        /// <param name="impl">IDetectable class representing the file type</param>
+        /// <param name="impl">IExtractable class representing the file type</param>
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
@@ -124,6 +125,198 @@ namespace BinaryObjectScanner
             {
                 // Extract and get the output path
                 var tempPath = impl.Extract(stream, fileName, scanner.IncludeDebug);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var subProtections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(subProtections, tempPath);
+                PrependToKeys(subProtections, fileName);
+                return subProtections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Handle files based on an IExtractableMSDOSExecutable implementation
+        /// </summary>
+        /// <param name="impl">IExtractableMSDOSExecutable class representing the file type</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="mz">MSDOS to scan the contents of</param>
+        /// <param name="scanner">Scanner object to use on extractable contents</param>
+        /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractableMSDOSExecutable impl, string fileName, MSDOS mz, Scanner scanner)
+#else
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractableMSDOSExecutable impl, string fileName, MSDOS mz, Scanner scanner)
+#endif
+        {
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                var tempPath = impl.Extract(fileName, mz, scanner.IncludeDebug);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var subProtections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(subProtections, tempPath);
+                PrependToKeys(subProtections, fileName);
+                return subProtections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Handle files based on an IExtractableLinearExecutable implementation
+        /// </summary>
+        /// <param name="impl">IExtractableLinearExecutable class representing the file type</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="lex">LinearExecutable to scan the contents of</param>
+        /// <param name="scanner">Scanner object to use on extractable contents</param>
+        /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractableLinearExecutable impl, string fileName, LinearExecutable lex, Scanner scanner)
+#else
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractableLinearExecutable impl, string fileName, LinearExecutable lex, Scanner scanner)
+#endif
+        {
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                var tempPath = impl.Extract(fileName, lex, scanner.IncludeDebug);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var subProtections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(subProtections, tempPath);
+                PrependToKeys(subProtections, fileName);
+                return subProtections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Handle files based on an IExtractableNewExecutable implementation
+        /// </summary>
+        /// <param name="impl">IExtractableNewExecutable class representing the file type</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="nex">NewExecutable to scan the contents of</param>
+        /// <param name="scanner">Scanner object to use on extractable contents</param>
+        /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractableNewExecutable impl, string fileName, NewExecutable nex, Scanner scanner)
+#else
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractableNewExecutable impl, string fileName, NewExecutable nex, Scanner scanner)
+#endif
+        {
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                var tempPath = impl.Extract(fileName, nex, scanner.IncludeDebug);
+                if (tempPath == null)
+                    return null;
+
+                // Collect and format all found protections
+                var subProtections = scanner.GetProtections(tempPath);
+
+                // If temp directory cleanup fails
+                try
+                {
+                    Directory.Delete(tempPath, true);
+                }
+                catch (Exception ex)
+                {
+                    if (scanner.IncludeDebug) Console.WriteLine(ex);
+                }
+
+                // Prepare the returned protections
+                StripFromKeys(subProtections, tempPath);
+                PrependToKeys(subProtections, fileName);
+                return subProtections;
+            }
+            catch (Exception ex)
+            {
+                if (scanner.IncludeDebug) Console.WriteLine(ex);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Handle files based on an IExtractablePortableExecutable implementation
+        /// </summary>
+        /// <param name="impl">IExtractablePortableExecutable class representing the file type</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="pex">PortableExecutable to scan the contents of</param>
+        /// <param name="scanner">Scanner object to use on extractable contents</param>
+        /// <returns>Set of protections in file, null on error</returns>
+#if NET20 || NET35
+        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractablePortableExecutable impl, string fileName, PortableExecutable pex, Scanner scanner)
+#else
+        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractablePortableExecutable impl, string fileName, PortableExecutable pex, Scanner scanner)
+#endif
+        {
+            // If the extractable file itself fails
+            try
+            {
+                // Extract and get the output path
+                var tempPath = impl.Extract(fileName, pex, scanner.IncludeDebug);
                 if (tempPath == null)
                     return null;
 

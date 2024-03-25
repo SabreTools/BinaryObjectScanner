@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Packer
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class CExe : IExtractable, IPortableExecutableCheck
+    public class CExe : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -50,26 +50,10 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             try
             {
-                // Parse into an executable again for easier extraction
-                stream?.Seek(0, SeekOrigin.Begin);
-                var pex = PortableExecutable.Create(stream);
-                if (pex == null)
-                    return null;
-
                 // Get the first resource of type 99 with index 2
                 var payload = pex.FindResourceByNamedType("99, 2").FirstOrDefault();
                 if (payload == null || payload.Length == 0)

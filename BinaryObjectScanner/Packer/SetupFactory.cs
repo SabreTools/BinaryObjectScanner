@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -8,7 +7,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Add extraction, which is possible but the only tools available that can
     // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class SetupFactory : IExtractable, IPortableExecutableCheck
+    public class SetupFactory : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -39,23 +38,11 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             return null;
         }
-    
+
         private string GetVersion(PortableExecutable pex)
         {
             // Check the product version explicitly

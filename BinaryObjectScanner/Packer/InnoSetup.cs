@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -9,7 +8,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InnoSetup : IExtractable, INewExecutableCheck, IPortableExecutableCheck
+    public class InnoSetup : IExtractablePortableExecutable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -54,19 +53,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             return null;
         }

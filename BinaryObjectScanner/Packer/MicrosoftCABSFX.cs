@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -8,7 +7,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction, which should be possible with LibMSPackN, but it refuses to extract due to SFX files lacking the typical CAB identifiers.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class MicrosoftCABSFX : IExtractable, IPortableExecutableCheck
+    public class MicrosoftCABSFX : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -48,23 +47,11 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             return null;
         }
-    
+
         private string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions

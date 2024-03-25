@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -8,7 +7,7 @@ namespace BinaryObjectScanner.Packer
     // Created by IndigoRose (creators of Setup Factory), primarily to be used to create autorun menus for various media.
     // Official website: https://www.autoplay.org/
     // TODO: Add extraction
-    public class AutoPlayMediaStudio : IExtractable, IPortableExecutableCheck
+    public class AutoPlayMediaStudio : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -34,19 +33,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             return null;
         }

@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Packer
     /// Though not technically a packer, this detection is for any executables that include
     /// others in their resources in some uncompressed manner to be used at runtime.
     /// </summary>
-    public class EmbeddedExecutable : IExtractable, IPortableExecutableCheck
+    public class EmbeddedExecutable : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -29,28 +29,10 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
             try
             {
-                // Parse into an executable again for easier extraction
-                stream?.Seek(0, SeekOrigin.Begin);
-                var pex = PortableExecutable.Create(stream);
-                if (pex?.ResourceData == null)
-                    return null;
-
                 // Get the resources that have an executable signature
                 var resources = pex.ResourceData
                     .Where(kvp => kvp.Value != null && kvp.Value is byte[])

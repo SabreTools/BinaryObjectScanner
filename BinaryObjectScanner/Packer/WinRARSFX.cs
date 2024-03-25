@@ -11,7 +11,7 @@ using SharpCompress.Readers;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class WinRARSFX : IExtractable, IPortableExecutableCheck
+    public class WinRARSFX : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -33,17 +33,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
         {
 #if NET462_OR_GREATER || NETCOREAPP
             try

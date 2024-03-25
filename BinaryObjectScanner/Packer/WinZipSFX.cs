@@ -11,7 +11,7 @@ using SharpCompress.Archives.Zip;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class WinZipSFX : IExtractable, INewExecutableCheck, IPortableExecutableCheck
+    public class WinZipSFX : IExtractableNewExecutable, IExtractablePortableExecutable, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -63,17 +63,17 @@ namespace BinaryObjectScanner.Packer
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
-        }
+        public string? Extract(string file, NewExecutable nex, bool includeDebug)
+            => Extract(file, includeDebug);
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
+            => Extract(file, includeDebug);
+
+        /// <summary>
+        /// Handle common extraction between executable types
+        /// </summary>
+        private static string? Extract(string file, bool includeDebug)
         {
 #if NET462_OR_GREATER || NETCOREAPP
             try
@@ -122,7 +122,7 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// TODO: Reduce the checks to only the ones that differ between versions
         /// TODO: Research to see if the versions are embedded elsewhere in these files
-        private string? GetNEHeaderVersion(NewExecutable nex)
+        private static string? GetNEHeaderVersion(NewExecutable nex)
         {
             #region 2.0 Variants
 
@@ -680,7 +680,7 @@ namespace BinaryObjectScanner.Packer
         /// Get the version from the PE export directory table value combinations
         /// </summary>
         /// TODO: Research to see if the versions are embedded elsewhere in these files
-        private string? GetPEExportDirectoryVersion(PortableExecutable pex)
+        private static string? GetPEExportDirectoryVersion(PortableExecutable pex)
         {
             string sfxFileName = pex.Model.ExportTable?.ExportDirectoryTable?.Name ?? string.Empty;
             uint sfxTimeDateStamp = pex.Model.ExportTable?.ExportDirectoryTable?.TimeDateStamp ?? uint.MaxValue;

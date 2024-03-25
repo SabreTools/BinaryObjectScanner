@@ -457,7 +457,7 @@ namespace BinaryObjectScanner
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, mz);
                 if (extractedProtections != null)
                     AppendToDictionary(protections, extractedProtections);
             }
@@ -471,7 +471,7 @@ namespace BinaryObjectScanner
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, lex);
                 if (extractedProtections != null)
                     AppendToDictionary(protections, extractedProtections);
             }
@@ -485,7 +485,7 @@ namespace BinaryObjectScanner
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, nex);
                 if (extractedProtections != null)
                     AppendToDictionary(protections, extractedProtections);
             }
@@ -499,7 +499,7 @@ namespace BinaryObjectScanner
                 AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, stream);
+                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, pex);
                 if (extractedProtections != null)
                     AppendToDictionary(protections, extractedProtections);
             }
@@ -512,12 +512,12 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="classes">Set of classes returned from Exectuable scans</param>
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
-        /// <param name="stream">Stream to scan the contents of</param>
+        /// <param name="mz">MSDOS to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
 #if NET20 || NET35
-        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, Stream stream)
+        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, MSDOS mz)
 #else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, Stream stream)
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, MSDOS mz)
 #endif
         {
             // If we have an invalid set of classes
@@ -532,7 +532,7 @@ namespace BinaryObjectScanner
 #endif
 
             // If we have any extractable packers
-            var extractables = classes.Where(c => c is IExtractable).Select(c => c as IExtractable);
+            var extractables = classes.Where(c => c is IExtractableMSDOSExecutable).Select(c => c as IExtractableMSDOSExecutable);
 #if NET20 || NET35
             foreach (var extractable in extractables)
 #else
@@ -548,7 +548,166 @@ namespace BinaryObjectScanner
 #endif
 
                 // Get the protection for the class, if possible
-                var extractedProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
+                var extractedProtections = Handler.HandleExtractable(extractable, fileName, mz, this);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
+#if NET20 || NET35
+            }
+#else
+            });
+#endif
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Handle extractable protections, such as executable packers
+        /// </summary>
+        /// <param name="classes">Set of classes returned from Exectuable scans</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="lex">LinearExecutable to scan the contents of</param>
+        /// <returns>Set of protections found from extraction, null on error</returns>
+#if NET20 || NET35
+        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, LinearExecutable lex)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, LinearExecutable lex)
+#endif
+        {
+            // If we have an invalid set of classes
+            if (classes == null || !classes.Any())
+                return null;
+
+            // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<string, Queue<string>>();
+#else
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+#endif
+
+            // If we have any extractable packers
+            var extractables = classes.Where(c => c is IExtractableLinearExecutable).Select(c => c as IExtractableLinearExecutable);
+#if NET20 || NET35
+            foreach (var extractable in extractables)
+#else
+            Parallel.ForEach(extractables, extractable =>
+#endif
+            {
+                // If we have an invalid extractable somehow
+                if (extractable == null)
+#if NET20 || NET35
+                    continue;
+#else
+                    return;
+#endif
+
+                // Get the protection for the class, if possible
+                var extractedProtections = Handler.HandleExtractable(extractable, fileName, lex, this);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
+#if NET20 || NET35
+            }
+#else
+            });
+#endif
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Handle extractable protections, such as executable packers
+        /// </summary>
+        /// <param name="classes">Set of classes returned from Exectuable scans</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="nex">NewExecutable to scan the contents of</param>
+        /// <returns>Set of protections found from extraction, null on error</returns>
+#if NET20 || NET35
+        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, NewExecutable nex)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, NewExecutable nex)
+#endif
+        {
+            // If we have an invalid set of classes
+            if (classes == null || !classes.Any())
+                return null;
+
+            // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<string, Queue<string>>();
+#else
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+#endif
+
+            // If we have any extractable packers
+            var extractables = classes.Where(c => c is IExtractableNewExecutable).Select(c => c as IExtractableNewExecutable);
+#if NET20 || NET35
+            foreach (var extractable in extractables)
+#else
+            Parallel.ForEach(extractables, extractable =>
+#endif
+            {
+                // If we have an invalid extractable somehow
+                if (extractable == null)
+#if NET20 || NET35
+                    continue;
+#else
+                    return;
+#endif
+
+                // Get the protection for the class, if possible
+                var extractedProtections = Handler.HandleExtractable(extractable, fileName, nex, this);
+                if (extractedProtections != null)
+                    AppendToDictionary(protections, extractedProtections);
+#if NET20 || NET35
+            }
+#else
+            });
+#endif
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Handle extractable protections, such as executable packers
+        /// </summary>
+        /// <param name="classes">Set of classes returned from Exectuable scans</param>
+        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
+        /// <param name="pex">PortableExecutable to scan the contents of</param>
+        /// <returns>Set of protections found from extraction, null on error</returns>
+#if NET20 || NET35
+        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, PortableExecutable pex)
+#else
+        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, PortableExecutable pex)
+#endif
+        {
+            // If we have an invalid set of classes
+            if (classes == null || !classes.Any())
+                return null;
+
+            // Create the output dictionary
+#if NET20 || NET35
+            var protections = new Dictionary<string, Queue<string>>();
+#else
+            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
+#endif
+
+            // If we have any extractable packers
+            var extractables = classes.Where(c => c is IExtractablePortableExecutable).Select(c => c as IExtractablePortableExecutable);
+#if NET20 || NET35
+            foreach (var extractable in extractables)
+#else
+            Parallel.ForEach(extractables, extractable =>
+#endif
+            {
+                // If we have an invalid extractable somehow
+                if (extractable == null)
+#if NET20 || NET35
+                    continue;
+#else
+                    return;
+#endif
+
+                // Get the protection for the class, if possible
+                var extractedProtections = Handler.HandleExtractable(extractable, fileName, pex, this);
                 if (extractedProtections != null)
                     AppendToDictionary(protections, extractedProtections);
 #if NET20 || NET35
