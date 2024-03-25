@@ -239,8 +239,10 @@ namespace BinaryObjectScanner.FileType
                     {
                         zstream.next_in = payloadPtr;
                         zstream.avail_in = (uint)compressedData.Length;
+                        zstream.total_in = (uint)compressedData.Length;
                         zstream.next_out = dataPtr;
                         zstream.avail_out = (uint)data.Length;
+                        zstream.total_out = 0;
 
                         state.strm = zstream;
                         state.mode = ZLib.inflate_mode.HEAD;

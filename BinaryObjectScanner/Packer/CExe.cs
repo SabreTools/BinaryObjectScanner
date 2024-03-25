@@ -97,8 +97,10 @@ namespace BinaryObjectScanner.Packer
                             {
                                 zstream.next_in = payloadPtr;
                                 zstream.avail_in = (uint)payload.Length;
+                                zstream.total_in = (uint)payload.Length;
                                 zstream.next_out = dataPtr;
                                 zstream.avail_out = (uint)data.Length;
+                                zstream.total_out = 0;
 
                                 state.strm = zstream;
                                 state.mode = ZLib.inflate_mode.HEAD;
