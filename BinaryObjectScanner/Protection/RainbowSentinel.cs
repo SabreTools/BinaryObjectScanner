@@ -15,6 +15,7 @@ namespace BinaryObjectScanner.Protection
     /// Rainbow Sentinel SuperPro: https://www.rainbow.com.my/superpro.php
     /// TODO: Investigate other versions/products.
     /// TODO: See if this is at all related to https://cpl.thalesgroup.com/software-monetization/all-products/sentinel-hl.
+    /// TODO: Investigate the possible integration between FlexLM and Rainbow Sentinel in IA item "prog-17_202403".
     /// 
     /// Versions: 
     /// Rainbow Sentinel PD-15: IA items "ASMEsMechanicalEngineeringToolkit1997December" and "aplicaciones-windows".
