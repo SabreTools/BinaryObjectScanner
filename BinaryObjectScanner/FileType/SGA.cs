@@ -230,7 +230,6 @@ namespace BinaryObjectScanner.FileType
             {
                 // Inflate the data into the buffer
                 var zstream = new ZLib.z_stream_s();
-                var state = new ZLib.inflate_state();
                 data = new byte[outputFileSize];
                 unsafe
                 {
@@ -244,10 +243,7 @@ namespace BinaryObjectScanner.FileType
                         zstream.avail_out = (uint)data.Length;
                         zstream.total_out = 0;
 
-                        state.strm = zstream;
-                        state.mode = ZLib.inflate_mode.HEAD;
-
-                        zstream.i_state = state;
+                        ZLib.inflateInit_(zstream, ZLib.zlibVersion(), compressedData.Length);
                         int zret = ZLib.inflate(zstream, 1);
                     }
                 }
