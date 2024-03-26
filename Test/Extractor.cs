@@ -19,10 +19,8 @@ using SharpCompress.Compressors;
 using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Xz;
 #endif
-#if NET40_OR_GREATER || NETCOREAPP
 using UnshieldSharp.Archive;
 using UnshieldSharp.Cabinet;
-#endif
 
 namespace Test
 {
@@ -320,7 +318,6 @@ namespace Test
                 Console.WriteLine("Extracting InstallShield Archive V3 contents");
                 Console.WriteLine();
 
-#if NET40_OR_GREATER || NETCOREAPP
                 // If the cab file itself fails
                 try
                 {
@@ -357,7 +354,6 @@ namespace Test
                     Console.WriteLine($"Something went wrong extracting InstallShield Archive V3: {ex}");
                     Console.WriteLine();
                 }
-#endif
             }
 
             // IS-CAB archive
@@ -367,10 +363,6 @@ namespace Test
                 Console.WriteLine("Extracting IS-CAB contents");
                 Console.WriteLine();
 
-#if NET20 || NET35 || NET40
-                Console.WriteLine("Extraction is not supported for this framework!");
-                Console.WriteLine();
-#else
                 // If the cab file itself fails
                 try
                 {
@@ -405,7 +397,6 @@ namespace Test
                     Console.WriteLine($"Something went wrong extracting IS-CAB: {ex}");
                     Console.WriteLine();
                 }
-#endif
             }
 
 #if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN

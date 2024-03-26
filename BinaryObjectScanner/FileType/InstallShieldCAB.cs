@@ -2,9 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
-#if NET40_OR_GREATER || NETCOREAPP
 using UnshieldSharp.Cabinet;
-#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -26,10 +24,6 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NET20 || NET35
-            // Not supported for .NET Framework 2.0 or .NET Framework 3.5 due to library support
-            return null;
-#else
             // Get the name of the first cabinet file or header
             var directory = Path.GetDirectoryName(file);
             string noExtension = Path.GetFileNameWithoutExtension(file);
@@ -102,7 +96,6 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
                 return null;
             }
-#endif
         }
     }
 }

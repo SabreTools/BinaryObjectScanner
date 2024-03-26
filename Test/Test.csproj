@@ -24,7 +24,7 @@
   <!-- Support for old .NET versions -->
   <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))">
     <PackageReference Include="OpenMcdf" Version="2.3.1" />
-    <PackageReference Include="UnshieldSharp" Version="1.7.2" />
+    <PackageReference Include="UnshieldSharp" Version="1.7.3" />
   </ItemGroup>
 
   <ItemGroup>
