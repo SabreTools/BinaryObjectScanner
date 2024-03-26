@@ -87,6 +87,7 @@ namespace BinaryObjectScanner.Packer
 
                                 ZLib.inflateInit_(zstream, ZLib.zlibVersion(), payload.Length);
                                 int zret = ZLib.inflate(zstream, 1);
+                                ZLib.inflateEnd(zstream);
                             }
                         }
 
@@ -107,7 +108,7 @@ namespace BinaryObjectScanner.Packer
                     }
                 }
 
-                // Otherwise, LZ is used via the Windows API
+                // Otherwise, LZ is used
                 else
                 {
                     try

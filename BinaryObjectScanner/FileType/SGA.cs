@@ -245,6 +245,7 @@ namespace BinaryObjectScanner.FileType
 
                         ZLib.inflateInit_(zstream, ZLib.zlibVersion(), compressedData.Length);
                         int zret = ZLib.inflate(zstream, 1);
+                        ZLib.inflateEnd(zstream);
                     }
                 }
             }
