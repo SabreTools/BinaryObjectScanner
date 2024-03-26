@@ -320,7 +320,7 @@ namespace BinaryObjectScanner.Packer
         /// <summary>
         /// Class representing the properties of each recognized Wise installer format
         /// </summary>
-        /// <see href="https://github.com/mnadareski/WiseUnpacker/blob/master/WiseUnpacker/FormatProperty.cs"/>
+        /// TODO: Requires all fields to be writable in package before replacement
         private class FormatProperty
         {
             /// <summary>
