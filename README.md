@@ -6,13 +6,12 @@
 
 C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. A reference application called `Test` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
 
-The following libraries (or ports thereof) are used for file handling:
+The following non-project libraries (or ports thereof) are used for file handling:
 
 - [LessIO](https://github.com/activescott/LessIO) - Used by libmspack4n for IO handling
 - [libmspack4n](https://github.com/activescott/libmspack4n) MS-CAB extraction [Unused in .NET Frawework 2.0/3.5/4.0 and non-Windows builds due to Windows-specific libraries]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
-- [SharpZipLib](https://github.com/icsharpcode/SharpZipLib) - zlib-based extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Frawework 2.0/3.5/4.0 and non-Windows builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
