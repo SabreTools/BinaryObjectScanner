@@ -94,6 +94,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Rainbow Sentinel | True | True | |
 | Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
 | RipGuard | True | True | Partially unconfirmed² |
+| Roxxe | True | False | |
 | SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
 | SafeLock | False | True | |
 | SecuROM | True | True | v8.x and White Label detected partially² |
