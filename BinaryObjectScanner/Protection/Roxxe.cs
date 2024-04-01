@@ -25,8 +25,8 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            // Get the CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("CODE");
+            // Get the code/CODE section strings, if they exist
+            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 // Found in "Owar.exe" in IA item "game4u-22-cd".
@@ -35,6 +35,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rsrc section strings, if they exist
+            // TODO: Check for these strings specifically within the application-defined resource that they're found in, not just the generic resource section.
             strs = pex.GetFirstSectionStrings(".rsrc");
             if (strs != null)
             {
@@ -44,6 +45,9 @@ namespace BinaryObjectScanner.Protection
                     return "Roxxe (Possibly remnants)";
                 
                 if (strs.Any(s => s.Contains("CommonPRRT")))
+                    return "Roxxe (Possibly remnants)";
+
+                if (strs.Any(s => s.Contains("roxe")))
                     return "Roxxe (Possibly remnants)";
             }
 
