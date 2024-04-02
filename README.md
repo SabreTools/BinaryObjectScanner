@@ -1,4 +1,4 @@
-# BinaryObjectScanner
+# Binary Object Scanner
 
 [![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/BinaryObjectScanner)
 [![Build Test](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml)
