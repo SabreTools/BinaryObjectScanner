@@ -21,10 +21,11 @@ namespace BinaryObjectScanner.Protection
     /// TODO: Investigate "sntnlusb.sys" (https://www.rainbow.com.my/document/endusertroubleshooting.pdf).
     /// 
     /// Versions: 
-    /// Rainbow Sentinel PD-5.1: IA items "pcwkcd-1296" and "CHIPTRMart97".
+    /// Rainbow Sentinel PD-5.1: IA items "pcwkcd-1296, "CHIPTRMart97", and "bugcd199801".
     /// Rainbow Sentinel PD-5.1e (Beta): IA item "CHIPTRMart97".
+    /// Rainbow Sentinel PD-5.37: File "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
     /// Rainbow Sentinel PD-5.39: IA item "chip-cds-2001-08".
-    /// Rainbow Sentinel PD-15: IA items "ASMEsMechanicalEngineeringToolkit1997December" and "aplicaciones-windows".
+    /// Rainbow Sentinel PD-15: IA items "ASMEsMechanicalEngineeringToolkit1997December", "aplicaciones-windows", and "ASMEsMechanicalEngineeringToolkit1997December".
     /// Rainbow Sentinel PD-17: IA item "czchip199707cd".
     /// Rainbow Sentinel PD-30: BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
     /// Rainbow Sentinel PD-31: BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
@@ -172,6 +173,11 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("NetSentinel Server for WIN 32", StringComparison.OrdinalIgnoreCase) == true)
                 return "Rainbow NetSentinel Server for Win32";
 
+            // Found in "\disc4\cad\sdcc_200.zip\DISK1\_USER1.HDR\Language_Independent_Intel_32_Files\SNTNLUSB.SYS" in "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
+            // TODO: Check if the version included with this is useful.
+            if (name?.Equals("Rainbow Technologies Sentinel Device Driver", StringComparison.OrdinalIgnoreCase) == true)
+                return "Rainbow Sentinel Driver";
+
             name = pex.ProductName;
 
             // Found in multiple files in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", including "RNBOVTMP.DLL", "SENTTEMP.DLL", and "SNTI386.DLL".
@@ -193,6 +199,11 @@ namespace BinaryObjectScanner.Protection
             // Found in "F481_SetupSysDriver.exe.B391C18A_6953_11D4_82CB_00D0B72E1DB9"/"SetupSysDriver.exe" in IA item "chip-cds-2001-08".
             if (name?.Equals("Sentinel System Driver", StringComparison.OrdinalIgnoreCase) == true)
                 return $"Rainbow Sentinel {pex.ProductVersion}";
+
+            // Found in "\disc4\cad\sdcc_200.zip\DISK1\_USER1.HDR\Language_Independent_Intel_32_Files\SNTNLUSB.SYS" in "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
+            // TODO: Check if the version included with this is useful.
+            if (name?.Equals("Rainbow Technologies USB Security Device Driver", StringComparison.OrdinalIgnoreCase) == true)
+                return "Rainbow Sentinel Driver";
 
             // Get the .data/DATA section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
@@ -330,6 +341,15 @@ namespace BinaryObjectScanner.Protection
                  new(new FilePathMatch("NSRVOM.EXE"), "Rainbow NetSentinel Server for OS/2"),
                  new(new FilePathMatch("NSRVGX.EXE"), "Rainbow NetSentinel Server for Win32"),
 
+                 // Found in "\disc4\cad\sdcc_200.zip\DISK1\_USER1.HDR\Language_Independent_Intel_32_Files" in "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
+                 // TODO: Add text file checks for these IFX files.
+                 new(new FilePathMatch("SNTNLUSB.IFX"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTNLUSB.INF"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTNLUSB.SYS"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTUSB95.IFX"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTUSB95.INF"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTUSB95.SYS"), "Rainbow Sentinel USB Driver"),
+
                  // Found in IA item "czchip199707cd".
                  new(new List<PathMatch>
                  {
@@ -421,6 +441,15 @@ namespace BinaryObjectScanner.Protection
                  new(new FilePathMatch("SNTI386.DLL"), "Rainbow Sentinel Windows NT Intel Platform Driver"),
                  new(new FilePathMatch("SNTMIPS.DLL"), "Rainbow Sentinel Windows NT MIPS Platform Driver"),
                  new(new FilePathMatch("SNTPPC.DLL"), "Rainbow Sentinel Windows NT PowerPC Platform Driver"),
+
+                 // Found in "\disc4\cad\sdcc_200.zip\DISK1\_USER1.HDR\Language_Independent_Intel_32_Files" in "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
+                 // TODO: Add text file checks for these IFX files.
+                 new(new FilePathMatch("SNTNLUSB.IFX"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTNLUSB.INF"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTNLUSB.SYS"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTUSB95.IFX"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTUSB95.INF"), "Rainbow Sentinel USB Driver"),
+                 new(new FilePathMatch("SNTUSB95.SYS"), "Rainbow Sentinel USB Driver"),
 
                  // Found in IA item "chip-cds-2001-08".
                  // File names for Rainbow Sentinel files sometimes found in ".cab" files.
