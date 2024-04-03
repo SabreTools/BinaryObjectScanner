@@ -47,8 +47,9 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Any(s => s.Contains("CommonPRRT")))
                     return "Roxxe (Possibly remnants)";
 
-                if (strs.Any(s => s.Contains("roxe")))
-                    return "Roxxe (Possibly remnants)";
+                // Currently overmatches, will likely be a viable check when better Delphi executable parsing is available.
+                // if (strs.Any(s => s.Contains("roxe")))
+                //     return "Roxxe (Possibly remnants)";
             }
 
             return null;
