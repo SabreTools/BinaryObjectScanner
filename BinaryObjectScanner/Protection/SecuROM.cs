@@ -226,31 +226,40 @@ namespace BinaryObjectScanner.Protection
         // These live in the MS-DOS stub, for some reason
         private static string GetV7Version(PortableExecutable pex)
         {
-            int index = 172; // 64 bytes for DOS stub, 236 bytes in total
+            try
+            {
+                int index = 172; // 64 bytes for DOS stub, 236 bytes in total
 #if NETFRAMEWORK
-            byte[] bytes = new byte[4];
-            Array.Copy(pex.StubExecutableData, index, bytes, 0, 4);
+                byte[] bytes = new byte[4];
+                Array.Copy(pex.StubExecutableData, index, bytes, 0, 4);
 #else
-            byte[] bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 4).ToArray();
+                byte[] bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 4).ToArray();
 #endif
 
-            //SecuROM 7 new and 8
-            if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
-            {
-                return $"{bytes[0] ^ 0xEA}.{bytes[1] ^ 0x2C:00}.{bytes[2] ^ 0x8:0000}";
+                //SecuROM 7 new and 8
+                if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
+                {
+                    return $"{bytes[0] ^ 0xEA}.{bytes[1] ^ 0x2C:00}.{bytes[2] ^ 0x8:0000}";
+                }
+
+                // SecuROM 7 old
+                else
+                {
+                    index = 58; // 64 bytes for DOS stub, 122 bytes in total
+#if NETFRAMEWORK
+                    bytes = new byte[2];
+                    Array.Copy(pex.StubExecutableData, index, bytes, 0, 2);
+#else
+                    bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 2).ToArray();
+#endif
+                    return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
+                }
             }
-
-            // SecuROM 7 old
-            else
+            catch (ArgumentException)
             {
-                index = 58; // 64 bytes for DOS stub, 122 bytes in total
-#if NETFRAMEWORK
-                bytes = new byte[2];
-                Array.Copy(pex.StubExecutableData, index, bytes, 0, 2);
-#else
-                bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 2).ToArray();
-#endif
-                return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
+                // If SecuROM is stripped, the MS-DOS stub might be shorter.
+                // We then know that SecuROM -was- there, but we don't know what exact version.
+                return "7 remnants";
             }
         }
 
