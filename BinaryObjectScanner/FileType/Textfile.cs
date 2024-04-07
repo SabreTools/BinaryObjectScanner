@@ -107,6 +107,11 @@ namespace BinaryObjectScanner.FileType
                 // Found in "SENTW95.HLP" and "SENTINEL.HLP" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
                 if (fileContent.Contains("Rainbow Sentinel Driver Help"))
                     protections.Add("Rainbow Sentinel");
+                // Found in "\disc4\cad\sdcc_200.zip\DISK1\_USER1.HDR\Language_Independent_Intel_32_Files\SNTNLUSB.INF" in "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
+                if (fileContent.Contains("SNTNLUSB.SvcDesc=\"Rainbow Security Device\""))
+                    protections.Add("Rainbow Sentinel USB Driver");
+                if (fileContent.Contains("SntUsb95.SvcDesc=\"Rainbow Security Device\""))
+                    protections.Add("Rainbow Sentinel USB Driver");
 
                 // Found in "OEMSETUP.INF" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
                 if (fileContent.Contains("Sentinel Driver Disk"))
