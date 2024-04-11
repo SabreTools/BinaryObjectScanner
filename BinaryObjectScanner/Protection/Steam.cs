@@ -55,7 +55,8 @@ namespace BinaryObjectScanner.Protection
                 new(new List<PathMatch>
                 {
                     // TODO: Identify based on "Steam(TM)" being present in "Description" but not in "File Description".
-                    new FilePathMatch("steam.exe"),
+                    // Overmatches on some files, such as IA item "ASMEsMechanicalEngineeringToolkit1997December".
+                    // new FilePathMatch("steam.exe"),
 
                     new FilePathMatch("steam.ini"),
                     
