@@ -76,9 +76,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? Extract(string file, bool includeDebug)
         {
-            if (file == null)
-                return null;
-
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
