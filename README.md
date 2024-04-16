@@ -92,6 +92,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
 | Rainbow Sentinel | True | True | |
+| RealArcade | True | True | |
 | Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
 | RipGuard | True | True | Partially unconfirmed² |
 | Roxxe | True | False | |

@@ -20,6 +20,8 @@ namespace BinaryObjectScanner
                 //case SupportedFileType.N3DS: return new FileType.N3DS();
                 //case SupportedFileType.Nitro: return new FileType.Nitro();
                 case SupportedFileType.PLJ: return new FileType.PLJ();
+                case SupportedFileType.RealArcadeInstaller: return new FileType.RealArcadeInstaller();
+                case SupportedFileType.RealArcadeMezzanine: return new FileType.RealArcadeMezzanine();
                 case SupportedFileType.SFFS: return new FileType.SFFS();
                 case SupportedFileType.Textfile: return new FileType.Textfile();
                 default: return null;

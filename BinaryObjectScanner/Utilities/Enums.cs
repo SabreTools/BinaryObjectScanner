@@ -141,6 +141,16 @@
         RAR,
 
         /// <summary>
+        /// RealArcade Installer
+        /// </summary>
+        RealArcadeInstaller,
+
+        /// <summary>
+        /// RealArcade Mezzanine
+        /// </summary>
+        RealArcadeMezzanine,
+
+        /// <summary>
         /// 7-zip archive
         /// </summary>
         SevenZip,

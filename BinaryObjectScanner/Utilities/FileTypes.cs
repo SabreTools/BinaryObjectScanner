@@ -259,6 +259,20 @@ namespace BinaryObjectScanner.Utilities
 
             #endregion
 
+            #region RealArcade
+
+            // RASGI2.0
+            // Found in the ".rgs files in IA item "Nova_RealArcadeCD_USA".
+            if (magic.StartsWith(new byte?[] { 0x52, 0x41, 0x53, 0x47, 0x49, 0x32, 0x2E, 0x30 }))
+                return SupportedFileType.RealArcadeInstaller;
+
+            // XZip2.0
+            // Found in the ".mez" files in IA item "Nova_RealArcadeCD_USA".
+            if (magic.StartsWith(new byte?[] { 0x58, 0x5A, 0x69, 0x70, 0x32, 0x2E, 0x30 }))
+                return SupportedFileType.RealArcadeMezzanine;
+
+            #endregion
+
             #region SevenZip
 
             if (magic.StartsWith(new byte?[] { 0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c }))
