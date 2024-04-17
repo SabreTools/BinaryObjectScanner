@@ -27,7 +27,35 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            var name = pex.LegalCopyright;
+            // TODO: Find what fvinfo field actually maps to this
+            var name = pex.FileDescription;
+
+            // There are some File Description checks that are currently too generic to use.
+            // "Host Library" - Found in "protect.dll" in Redump entry 81756.
+            // "User Interface Application" - Found in "protect.exe" in Redump entry 81756.
+            // "Helper Application" - Found in "protect.x64" and "protect.x86" in Redump entry 81756.
+
+            // Found in "sfdrvrem.exe" in Redump entry 102677.
+            if (name?.Contains("FrontLine Drivers Removal Tool") == true)
+                return $"StarForce FrontLine Driver Removal Tool";
+
+            // Found in "protect.exe" in Redump entry 94805.
+            if (name?.Contains("FrontLine Protection GUI Application") == true)
+                return $"StarForce {pex.GetInternalVersion()}";
+
+            // Found in "protect.dll" in Redump entry 94805.
+            if (name?.Contains("FrontLine Protection Library") == true)
+                return $"StarForce {pex.GetInternalVersion()}";
+
+            // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
+            if (name?.Contains("FrontLine Helper") == true)
+                return $"StarForce {pex.GetInternalVersion()}";
+
+            // TODO: Find a sample of this check.
+            if (name?.Contains("Protected Module") == true)
+                return $"StarForce 5";
+
+            name = pex.LegalCopyright;
             if (name?.StartsWith("(c) Protection Technology") == true) // (c) Protection Technology (StarForce)?
                 return $"StarForce {pex.GetInternalVersion()}";
             else if (name?.Contains("Protection Technology") == true) // Protection Technology (StarForce)?
@@ -60,30 +88,6 @@ namespace BinaryObjectScanner.Protection
                 if (pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "PSA_GetDiscLabel"))
                     return $"StarForce {pex.GetInternalVersion()}";
             }
-
-            // TODO: Find what fvinfo field actually maps to this
-            name = pex.FileDescription;
-
-            // There are some File Description checks that are currently too generic to use.
-            // "Host Library" - Found in "protect.dll" in Redump entry 81756.
-            // "User Interface Application" - Found in "protect.exe" in Redump entry 81756.
-            // "Helper Application" - Found in "protect.x64" and "protect.x86" in Redump entry 81756.
-
-            // Found in "protect.exe" in Redump entry 94805.
-            if (name?.Contains("FrontLine Protection GUI Application") == true)
-                return $"StarForce {pex.GetInternalVersion()}";
-
-            // Found in "protect.dll" in Redump entry 94805.
-            if (name?.Contains("FrontLine Protection Library") == true)
-                return $"StarForce {pex.GetInternalVersion()}";
-
-            // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
-            if (name?.Contains("FrontLine Helper") == true)
-                return $"StarForce {pex.GetInternalVersion()}";
-
-            // TODO: Find a sample of this check.
-            if (name?.Contains("Protected Module") == true)
-                return $"StarForce 5";
 
             // TODO: Check to see if there are any missing checks
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/StarForce.2.sg
