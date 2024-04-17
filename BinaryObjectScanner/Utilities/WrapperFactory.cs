@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Utilities
         /// <summary>
         /// Create an instance of a wrapper based on file type
         /// </summary>
-        public static object? CreateWrapper(SupportedFileType fileType, Stream? data)
+        public static IWrapper? CreateWrapper(SupportedFileType fileType, Stream? data)
         {
             switch (fileType)
             {
@@ -60,7 +60,7 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="stream">Stream data to parse</param>
         /// <returns>IWrapper representing the executable, null on error</returns>
-        public static object? CreateExecutableWrapper(Stream? stream)
+        public static IWrapper? CreateExecutableWrapper(Stream? stream)
         {
             // If we have no stream
             if (stream == null)
