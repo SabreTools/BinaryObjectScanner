@@ -31,14 +31,16 @@ namespace BinaryObjectScanner.Utilities
                 //case SupportedFileType.LDSCRYPT: return LDSCRYPT.Create(data);
                 case SupportedFileType.MicrosoftCAB: return MicrosoftCabinet.Create(data);
                 //case SupportedFileType.MicrosoftLZ: return MicrosoftLZ.Create(data);
-                //case SupportedFileType.MPQ: return MoPaQ.Create(data);
+                case SupportedFileType.MPQ: return MoPaQ.Create(data);
                 case SupportedFileType.N3DS: return N3DS.Create(data);
                 case SupportedFileType.NCF: return NCF.Create(data);
                 case SupportedFileType.Nitro: return Nitro.Create(data);
                 case SupportedFileType.PAK: return PAK.Create(data);
                 case SupportedFileType.PFF: return PFF.Create(data);
+                //case SupportedFileType.PIC: return PIC.Create(data);
                 //case SupportedFileType.PKZIP: return PKZIP.Create(data);
                 case SupportedFileType.PLJ: return PlayJAudioFile.Create(data);
+                //case SupportedFileType.PLJPlaylist: return PlayJPlaylist.Create(data);
                 case SupportedFileType.Quantum: return Quantum.Create(data);
                 //case SupportedFileType.RAR: return RAR.Create(data);
                 //case SupportedFileType.SevenZip: return SevenZip.Create(data);
