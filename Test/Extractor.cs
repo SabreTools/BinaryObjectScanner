@@ -20,7 +20,6 @@ using SharpCompress.Compressors.BZip2;
 using SharpCompress.Compressors.Xz;
 #endif
 using UnshieldSharp.Archive;
-using UnshieldSharp.Cabinet;
 
 namespace Test
 {
