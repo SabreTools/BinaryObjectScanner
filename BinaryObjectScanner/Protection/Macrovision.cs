@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
-using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 

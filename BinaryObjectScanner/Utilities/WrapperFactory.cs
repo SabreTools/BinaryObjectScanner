@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Utilities
         /// <summary>
         /// Create an instance of a wrapper based on file type
         /// </summary>
-        public static IWrapper? CreateWrapper(SupportedFileType fileType, Stream? data)
+        public static object? CreateWrapper(SupportedFileType fileType, Stream? data)
         {
             switch (fileType)
             {
@@ -60,14 +60,14 @@ namespace BinaryObjectScanner.Utilities
         /// </summary>
         /// <param name="stream">Stream data to parse</param>
         /// <returns>IWrapper representing the executable, null on error</returns>
-        public static IWrapper? CreateExecutableWrapper(Stream? stream)
+        public static object? CreateExecutableWrapper(Stream? stream)
         {
             // If we have no stream
             if (stream == null)
                 return null;
 
             // Try to get an MS-DOS wrapper first
-            IWrapper? wrapper = MSDOS.Create(stream);
+            var wrapper = MSDOS.Create(stream);
             if (wrapper == null || !(wrapper is MSDOS msdos))
                 return null;
 

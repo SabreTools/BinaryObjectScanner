@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
+using WiseUnpacker;
 using Wise = WiseUnpacker.WiseUnpacker;
 
 namespace BinaryObjectScanner.Packer
@@ -151,14 +152,14 @@ namespace BinaryObjectScanner.Packer
                 // Ensure that we have an archive end
                 if (format.ArchiveEnd > 0)
                 {
-                    overlayOffset = dataStart + format.ArchiveEnd;
+                    overlayOffset = (int)(dataStart + format.ArchiveEnd);
                     int archiveEndLoaded = overlayData.ReadInt32(ref overlayOffset);
                     if (archiveEndLoaded != 0)
                         format.ArchiveEnd = archiveEndLoaded;
                 }
 
                 // Skip to the start of the archive
-                overlayOffset = dataStart + format.ArchiveStart;
+                overlayOffset = (int)(dataStart + format.ArchiveStart);
 
                 // Skip over the initialization text, if we expect it
                 if (format.InitText)
@@ -315,48 +316,6 @@ namespace BinaryObjectScanner.Packer
                 return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
 
             return null;
-        }
-
-        /// <summary>
-        /// Class representing the properties of each recognized Wise installer format
-        /// </summary>
-        /// TODO: Requires all fields to be writable in package before replacement
-        private class FormatProperty
-        {
-            /// <summary>
-            /// Offset to the executable data
-            /// </summary>
-            public int ExecutableOffset { get; set; }
-
-            /// <summary>
-            /// Indicates if this format includes a DLL at the start or not
-            /// </summary>
-            public bool Dll { get; set; }
-
-            /// <summary>
-            /// Offset within the data where the archive starts
-            /// </summary>
-            public int ArchiveStart { get; set; }
-
-            /// <summary>
-            /// Position in the archive head of the archive end
-            /// </summary>
-            public int ArchiveEnd { get; set; }
-
-            /// <summary>
-            /// Format includes initialization text
-            /// </summary>
-            public bool InitText { get; set; }
-
-            /// <summary>
-            /// Position of the filename within the data
-            /// </summary>
-            public int FilenamePosition { get; set; }
-
-            /// <summary>
-            /// Format does not include a CRC
-            /// </summary>
-            public bool NoCrc { get; set; }
         }
     }
 }

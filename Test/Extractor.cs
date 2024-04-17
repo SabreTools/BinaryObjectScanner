@@ -6,7 +6,7 @@ using BinaryObjectScanner.Utilities;
 #if NET40_OR_GREATER || NETCOREAPP
 using OpenMcdf;
 #endif
-using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 #if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Archives;

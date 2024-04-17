@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.IO;
+using SabreTools.IO.Extensions;
 
 namespace BinaryObjectScanner.FileType
 {
