@@ -140,7 +140,7 @@ namespace Test
                 PFF item => item.PrettyPrint(),
                 PIC item => item.PrettyPrint(),
                 PlayJAudioFile item => item.PrettyPrint(),
-                //PlayJPlaylist item => item.PrettyPrint(),
+                PlayJPlaylist item => item.PrettyPrint(),
                 PortableExecutable item => item.PrettyPrint(),
                 Quantum item => item.PrettyPrint(),
                 SGA item => item.PrettyPrint(),
@@ -429,16 +429,16 @@ namespace Test
             return builder;
         }
 
-        ///// <summary>
-        ///// Export the item information as pretty-printed text
-        ///// </summary>
-        //private static StringBuilder PrettyPrint(this PlayJPlaylist item)
-        //{
-        //    Console.WriteLine($"{item.Description()} wrapper created successfully!");
-        //    var builder = new StringBuilder();
-        //    SabreTools.Printing.PlayJPlaylist.Print(builder, item.Model);
-        //    return builder;
-        //}
+        /// <summary>
+        /// Export the item information as pretty-printed text
+        /// </summary>
+        private static StringBuilder PrettyPrint(this PlayJPlaylist item)
+        {
+           Console.WriteLine($"{item.Description()} wrapper created successfully!");
+           var builder = new StringBuilder();
+           SabreTools.Printing.PlayJAudioPlaylist.Print(builder, item.Model);
+           return builder;
+        }
 
         /// <summary>
         /// Export the item information as pretty-printed text
