@@ -5,7 +5,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if NET462_OR_GREATER || NETCOREAPP
 using System.Text;
+#endif
 using System.Threading.Tasks;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
@@ -92,7 +94,7 @@ namespace BinaryObjectScanner
         public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(string path)
 #endif
         {
-            return GetProtections(new List<string> { path });
+            return GetProtections([path]);
         }
 
         /// <summary>
