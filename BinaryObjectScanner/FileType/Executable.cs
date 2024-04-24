@@ -7,7 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Threading.Tasks;
+#endif
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using SabreTools.Serialization.Wrappers;
