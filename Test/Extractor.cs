@@ -1,7 +1,8 @@
 using System;
 using System.IO;
-using System.Linq;
+#if NET452_OR_GREATER || NETCOREAPP
 using System.Text;
+#endif
 using BinaryObjectScanner.Utilities;
 #if NET40_OR_GREATER || NETCOREAPP
 using OpenMcdf;

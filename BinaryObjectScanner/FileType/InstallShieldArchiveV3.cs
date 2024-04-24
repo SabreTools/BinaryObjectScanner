@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using UnshieldSharp.Archive;
 
 namespace BinaryObjectScanner.FileType
 {
