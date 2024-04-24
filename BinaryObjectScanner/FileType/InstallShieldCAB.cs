@@ -59,21 +59,21 @@ namespace BinaryObjectScanner.FileType
                 Directory.CreateDirectory(tempPath);
 
                 var cabfile = InstallShieldCabinet.Open(file);
-                if (cabfile == null)
+                if (cabfile?.HeaderList == null)
                     return null;
 
-                for (int i = 0; i < cabfile.FileCount; i++)
+                for (int i = 0; i < cabfile.HeaderList.FileCount; i++)
                 {
                     try
                     {
                         // Check if the file is valid first
-                        if (!cabfile.FileIsValid(i))
+                        if (!cabfile.HeaderList.FileIsValid(i))
                             continue;
 
                         string tempFile;
                         try
                         {
-                            string? filename = cabfile.FileName(i);
+                            string? filename = cabfile.HeaderList.GetFileName(i);
                             tempFile = Path.Combine(tempPath, filename ?? string.Empty);
                         }
                         catch

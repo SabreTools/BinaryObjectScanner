@@ -7,7 +7,7 @@ using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
 using WiseUnpacker;
-using Wise = WiseUnpacker.WiseUnpacker;
+using WiseUnpacker.EWISE;
 
 namespace BinaryObjectScanner.Packer
 {
@@ -82,8 +82,7 @@ namespace BinaryObjectScanner.Packer
             try
             {
                 // TODO: Try to find where the file data lives and how to get it
-                var unpacker = new Wise();
-                if (!unpacker.ExtractTo(file, tempPath))
+                if (!Extractor.ExtractTo(file, tempPath))
                 {
                     try
                     {
@@ -191,8 +190,7 @@ namespace BinaryObjectScanner.Packer
                 // If we have DEFLATE -- TODO: Port implementation here or use DeflateStream
                 else
                 {
-                    Wise unpacker = new Wise();
-                    if (!unpacker.ExtractTo(file, tempPath))
+                    if (!Extractor.ExtractTo(file, tempPath))
                     {
                         try
                         {

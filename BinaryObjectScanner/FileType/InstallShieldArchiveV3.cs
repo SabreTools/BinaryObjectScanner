@@ -31,16 +31,16 @@ namespace BinaryObjectScanner.FileType
                 Directory.CreateDirectory(tempPath);
 
                 UnshieldSharp.Archive.InstallShieldArchiveV3 archive = new UnshieldSharp.Archive.InstallShieldArchiveV3(file);
-                foreach (CompressedFile cfile in archive.Files.Select(kvp => kvp.Value))
+                foreach (var cfile in archive.Files)
                 {
                     try
                     {
-                        string tempFile = Path.Combine(tempPath, cfile.FullPath!);
+                        string tempFile = Path.Combine(tempPath, cfile.Key);
                         var directoryName = Path.GetDirectoryName(tempFile);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
 
-                        (byte[]? fileContents, string? error) = archive.Extract(cfile.FullPath!);
+                        (byte[]? fileContents, string? error) = archive.Extract(cfile.Key);
                         if (fileContents == null || !string.IsNullOrEmpty(error))
                             continue;
 

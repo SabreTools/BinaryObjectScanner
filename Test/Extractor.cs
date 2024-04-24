@@ -94,8 +94,12 @@ namespace Test
                         // If an individual entry fails
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
+                                continue;
+
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
                                 continue;
 
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
@@ -293,8 +297,12 @@ namespace Test
                     // If an individual entry fails
                     try
                     {
-                        // If we have a directory, skip it
+                        // If the entry is a directory
                         if (entry.IsDirectory)
+                            continue;
+
+                        // If the entry has an invalid key
+                        if (entry.Key == null)
                             continue;
 
                         string tempFile = Path.Combine(outputDirectory, entry.Key);
@@ -321,17 +329,17 @@ namespace Test
                 try
                 {
                     var archive = new InstallShieldArchiveV3(file);
-                    foreach (var cfile in archive.Files.Select(kvp => kvp.Value))
+                    foreach (var cfile in archive.Files)
                     {
                         // If an individual entry fails
                         try
                         {
-                            string tempFile = Path.Combine(outputDirectory, cfile.FullPath ?? string.Empty);
+                            string tempFile = Path.Combine(outputDirectory, cfile.Key);
                             string? directoryName = Path.GetDirectoryName(tempFile);
                             if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
                                 Directory.CreateDirectory(directoryName);
 
-                            (byte[]? fileContents, string? error) = archive.Extract(cfile.FullPath ?? string.Empty);
+                            (byte[]? fileContents, string? error) = archive.Extract(cfile.Key);
                             if (!string.IsNullOrEmpty(error))
                                 continue;
 
@@ -343,7 +351,7 @@ namespace Test
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Something went wrong extracting InstallShield Archive V3 entry {cfile.Name}: {ex}");
+                            Console.WriteLine($"Something went wrong extracting InstallShield Archive V3 entry {cfile.Value.Name}: {ex}");
                             Console.WriteLine();
                         }
                     }
@@ -366,12 +374,19 @@ namespace Test
                 try
                 {
                     var cabfile = UnshieldSharp.Cabinet.InstallShieldCabinet.Open(file);
-                    for (int i = 0; i < (cabfile?.FileCount ?? 0); i++)
+                    if (cabfile?.HeaderList == null)
+                    {
+                        Console.WriteLine("Something went wrong parsing IS-CAB archive");
+                        Console.WriteLine();
+                        return;
+                    }
+
+                    for (int i = 0; i < cabfile!.HeaderList.FileCount; i++)
                     {
                         // If an individual entry fails
                         try
                         {
-                            string? filename = cabfile?.FileName(i);
+                            string? filename = cabfile.HeaderList.GetFileName(i);
                             string tempFile;
                             try
                             {
@@ -618,8 +633,12 @@ namespace Test
                         // If an individual entry fails
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
+                                continue;
+
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
                                 continue;
 
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
@@ -690,8 +709,12 @@ namespace Test
                         // If an individual entry fails
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
+                                continue;
+
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
                                 continue;
 
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
@@ -759,8 +782,12 @@ namespace Test
                         // If an individual entry fails
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
+                                continue;
+
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
                                 continue;
 
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
