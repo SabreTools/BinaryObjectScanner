@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.Packer
         /// Handle common extraction between executable types
         /// </summary>
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public static string? Extract(string file, bool includeDebug)
         {
 #if NET462_OR_GREATER || NETCOREAPP
             try
@@ -89,8 +89,12 @@ namespace BinaryObjectScanner.Packer
                     {
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
+                                continue;
+
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
                                 continue;
 
                             // If we have a partial entry due to an incomplete multi-part archive, skip it

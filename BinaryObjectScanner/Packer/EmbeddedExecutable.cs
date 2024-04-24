@@ -33,6 +33,10 @@ namespace BinaryObjectScanner.Packer
         {
             try
             {
+                // If there are no resources
+                if (pex.ResourceData == null)
+                    return null;
+
                 // Get the resources that have an executable signature
                 var resources = pex.ResourceData
                     .Where(kvp => kvp.Value != null && kvp.Value is byte[])
@@ -57,11 +61,8 @@ namespace BinaryObjectScanner.Packer
                         tempFile = Path.Combine(tempPath, tempFile);
 
                         // Write the resource data to a temp file
-                        using (var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                        {
-                            if (tempStream != null)
-                                tempStream.Write(data, 0, data.Length);
-                        }
+                        using var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                        tempStream?.Write(data, 0, data.Length);
                     }
                     catch (Exception ex)
                     {

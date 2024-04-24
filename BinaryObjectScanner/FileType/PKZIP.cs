@@ -42,11 +42,15 @@ namespace BinaryObjectScanner.FileType
                     {
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
                                 continue;
 
-                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
+                                continue;
+
+                            // If the entry is partial due to an incomplete multi-part archive, skip it
                             if (!entry.IsComplete)
                                 continue;
 

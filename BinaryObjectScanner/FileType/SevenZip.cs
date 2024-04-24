@@ -26,6 +26,9 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
+            if (stream == null)
+                return null;
+
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
@@ -39,8 +42,12 @@ namespace BinaryObjectScanner.FileType
                     {
                         try
                         {
-                            // If we have a directory, skip it
+                            // If the entry is a directory
                             if (entry.IsDirectory)
+                                continue;
+
+                            // If the entry has an invalid key
+                            if (entry.Key == null)
                                 continue;
 
                             string tempFile = Path.Combine(tempPath, entry.Key);
