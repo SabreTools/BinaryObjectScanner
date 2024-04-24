@@ -23,7 +23,7 @@ namespace System
     public class Progress<T> : IProgress<T> where T : EventArgs
     {
         /// <summary>The synchronization context captured upon construction.  This will never be null.</summary>
-        private readonly SynchronizationContext _synchronizationContext;
+        private readonly SynchronizationContext? _synchronizationContext;
         /// <summary>The handler specified to the constructor.  This may be null.</summary>
         private readonly Action<T>? _handler;
         /// <summary>A cached delegate used to post invocation to the synchronization context.</summary>
@@ -73,7 +73,7 @@ namespace System
             {
                 // Post the processing to the sync context.
                 // (If T is a value type, it will get boxed here.)
-                _synchronizationContext.Post(_invokeHandlers, value);
+                _synchronizationContext?.Post(_invokeHandlers, value);
             }
         }
 
