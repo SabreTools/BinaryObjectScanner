@@ -42,11 +42,7 @@ namespace Test
             }
             else if (Directory.Exists(path))
             {
-#if NET20 || NET35
-                foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
-#else
-                foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
-#endif
+                foreach (string file in IOExtensions.SafeEnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
                     ExtractFile(file, outputDirectory);
                 }
@@ -70,13 +66,13 @@ namespace Test
             stream.Seek(0, SeekOrigin.Begin);
 
             // Get the file type
-            SupportedFileType ft = FileTypes.GetFileType(magic ?? []);
+            WrapperType ft = WrapperFactory.GetFileType(magic ?? []);
 
             // Executables technically can be "extracted", but let's ignore that
             // TODO: Support executables that include other stuff
 
             // 7-zip
-            if (ft == SupportedFileType.SevenZip)
+            if (ft == WrapperType.SevenZip)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting 7-zip contents");
@@ -122,7 +118,7 @@ namespace Test
             }
 
             // BFPK archive
-            else if (ft == SupportedFileType.BFPK)
+            else if (ft == WrapperType.BFPK)
             {
                 // Build the BFPK information
                 Console.WriteLine("Extracting BFPK contents");
@@ -149,7 +145,7 @@ namespace Test
             }
 
             // BSP
-            else if (ft == SupportedFileType.BSP)
+            else if (ft == WrapperType.BSP)
             {
                 // Build the BSP information
                 Console.WriteLine("Extracting BSP contents");
@@ -177,7 +173,7 @@ namespace Test
             }
 
             // bzip2
-            else if (ft == SupportedFileType.BZip2)
+            else if (ft == WrapperType.BZip2)
             {
                 // Build the bzip2 information
                 Console.WriteLine("Extracting bzip2 contents");
@@ -205,7 +201,7 @@ namespace Test
             }
 
             // CFB
-            else if (ft == SupportedFileType.CFB)
+            else if (ft == WrapperType.CFB)
             {
                 // Build the installer information
                 Console.WriteLine("Extracting CFB contents");
@@ -255,7 +251,7 @@ namespace Test
             }
 
             // GCF
-            else if (ft == SupportedFileType.GCF)
+            else if (ft == WrapperType.GCF)
             {
                 // Build the GCF information
                 Console.WriteLine("Extracting GCF contents");
@@ -282,7 +278,7 @@ namespace Test
             }
 
             // gzip
-            else if (ft == SupportedFileType.GZIP)
+            else if (ft == WrapperType.GZIP)
             {
                 // Build the gzip information
                 Console.WriteLine("Extracting gzip contents");
@@ -320,7 +316,7 @@ namespace Test
             }
 
             // InstallShield Archive V3 (Z)
-            else if (ft == SupportedFileType.InstallShieldArchiveV3)
+            else if (ft == WrapperType.InstallShieldArchiveV3)
             {
                 // Build the InstallShield Archive V3 information
                 Console.WriteLine("Extracting InstallShield Archive V3 contents");
@@ -365,7 +361,7 @@ namespace Test
             }
 
             // IS-CAB archive
-            else if (ft == SupportedFileType.InstallShieldCAB)
+            else if (ft == WrapperType.InstallShieldCAB)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting IS-CAB contents");
@@ -416,7 +412,7 @@ namespace Test
 
 #if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
             // Microsoft Cabinet archive
-            else if (ft == SupportedFileType.MicrosoftCAB)
+            else if (ft == WrapperType.MicrosoftCAB)
             {
                 // Build the cabinet information
                 Console.WriteLine("Extracting MS-CAB contents");
@@ -460,7 +456,7 @@ namespace Test
 #endif
 
             // Microsoft LZ / LZ32
-            else if (ft == SupportedFileType.MicrosoftLZ)
+            else if (ft == WrapperType.MicrosoftLZ)
             {
                 // Build the Microsoft LZ / LZ32 information
                 Console.WriteLine("Extracting Microsoft LZ / LZ32 contents");
@@ -501,7 +497,7 @@ namespace Test
 
 #if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
             // MoPaQ (MPQ) archive
-            else if (ft == SupportedFileType.MPQ)
+            else if (ft == WrapperType.MPQ)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting MoPaQ contents");
@@ -561,7 +557,7 @@ namespace Test
 #endif
 
             // PAK
-            else if (ft == SupportedFileType.PAK)
+            else if (ft == WrapperType.PAK)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting PAK contents");
@@ -588,7 +584,7 @@ namespace Test
             }
 
             // PFF
-            else if (ft == SupportedFileType.PFF)
+            else if (ft == WrapperType.PFF)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting PFF contents");
@@ -615,7 +611,7 @@ namespace Test
             }
 
             // PKZIP
-            else if (ft == SupportedFileType.PKZIP)
+            else if (ft == WrapperType.PKZIP)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting PKZIP contents");
@@ -664,7 +660,7 @@ namespace Test
             }
 
             // Quantum
-            else if (ft == SupportedFileType.Quantum)
+            else if (ft == WrapperType.Quantum)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting Quantum contents");
@@ -691,7 +687,7 @@ namespace Test
             }
 
             // RAR
-            else if (ft == SupportedFileType.RAR)
+            else if (ft == WrapperType.RAR)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting RAR contents");
@@ -737,7 +733,7 @@ namespace Test
             }
 
             // SGA
-            else if (ft == SupportedFileType.SGA)
+            else if (ft == WrapperType.SGA)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting SGA contents");
@@ -764,7 +760,7 @@ namespace Test
             }
 
             // Tape Archive
-            else if (ft == SupportedFileType.RAR)
+            else if (ft == WrapperType.RAR)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting Tape Archive contents");
@@ -810,7 +806,7 @@ namespace Test
             }
 
             // VBSP
-            else if (ft == SupportedFileType.VBSP)
+            else if (ft == WrapperType.VBSP)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting VBSP contents");
@@ -837,7 +833,7 @@ namespace Test
             }
 
             // VPK
-            else if (ft == SupportedFileType.VPK)
+            else if (ft == WrapperType.VPK)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting VPK contents");
@@ -864,7 +860,7 @@ namespace Test
             }
 
             // WAD
-            else if (ft == SupportedFileType.WAD)
+            else if (ft == WrapperType.WAD)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting WAD contents");
@@ -891,7 +887,7 @@ namespace Test
             }
 
             // xz
-            else if (ft == SupportedFileType.RAR)
+            else if (ft == WrapperType.RAR)
             {
                 // Build the xz information
                 Console.WriteLine("Extracting xz contents");
@@ -918,7 +914,7 @@ namespace Test
             }
 
             // XZP
-            else if (ft == SupportedFileType.XZP)
+            else if (ft == WrapperType.XZP)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting XZP contents");

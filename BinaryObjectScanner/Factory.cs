@@ -1,5 +1,5 @@
 ﻿using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Utilities;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner
 {
@@ -8,22 +8,22 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Create an instance of a detectable based on file type
         /// </summary>
-        public static IDetectable? CreateDetectable(SupportedFileType fileType)
+        public static IDetectable? CreateDetectable(WrapperType fileType)
         {
             switch (fileType)
             {
-                case SupportedFileType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
-                case SupportedFileType.BDPlusSVM: return new FileType.BDPlusSVM();
-                //case SupportedFileType.CIA: return new FileType.CIA();
-                case SupportedFileType.Executable: return new FileType.Executable();
-                case SupportedFileType.LDSCRYPT: return new FileType.LDSCRYPT();
-                //case SupportedFileType.N3DS: return new FileType.N3DS();
-                //case SupportedFileType.Nitro: return new FileType.Nitro();
-                case SupportedFileType.PLJ: return new FileType.PLJ();
-                case SupportedFileType.RealArcadeInstaller: return new FileType.RealArcadeInstaller();
-                case SupportedFileType.RealArcadeMezzanine: return new FileType.RealArcadeMezzanine();
-                case SupportedFileType.SFFS: return new FileType.SFFS();
-                case SupportedFileType.Textfile: return new FileType.Textfile();
+                case WrapperType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
+                case WrapperType.BDPlusSVM: return new FileType.BDPlusSVM();
+                //case WrapperType.CIA: return new FileType.CIA();
+                case WrapperType.Executable: return new FileType.Executable();
+                case WrapperType.LDSCRYPT: return new FileType.LDSCRYPT();
+                //case WrapperType.N3DS: return new FileType.N3DS();
+                //case WrapperType.Nitro: return new FileType.Nitro();
+                case WrapperType.PlayJAudioFile: return new FileType.PLJ();
+                case WrapperType.RealArcadeInstaller: return new FileType.RealArcadeInstaller();
+                case WrapperType.RealArcadeMezzanine: return new FileType.RealArcadeMezzanine();
+                case WrapperType.SFFS: return new FileType.SFFS();
+                case WrapperType.Textfile: return new FileType.Textfile();
                 default: return null;
             }
         }
@@ -31,40 +31,40 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Create an instance of an extractable based on file type
         /// </summary>
-        public static IExtractable? CreateExtractable(SupportedFileType fileType)
+        public static IExtractable? CreateExtractable(WrapperType fileType)
         {
             switch (fileType)
             {
-                case SupportedFileType.BFPK: return new FileType.BFPK();
-                case SupportedFileType.BSP: return new FileType.BSP();
-                case SupportedFileType.BZip2: return new FileType.BZip2();
-                case SupportedFileType.CFB: return new FileType.CFB();
-                //case SupportedFileType.CIA: return new FileType.CIA();
-                case SupportedFileType.GCF: return new FileType.GCF();
-                case SupportedFileType.GZIP: return new FileType.GZIP();
-                case SupportedFileType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
-                case SupportedFileType.InstallShieldCAB: return new FileType.InstallShieldCAB();
-                case SupportedFileType.MicrosoftCAB: return new FileType.MicrosoftCAB();
-                case SupportedFileType.MicrosoftLZ: return new FileType.MicrosoftLZ();
-                case SupportedFileType.MPQ: return new FileType.MPQ();
-                //case SupportedFileType.N3DS: return new FileType.N3DS();
-                //case SupportedFileType.NCF: return new FileType.NCF();
-                //case SupportedFileType.Nitro: return new FileType.Nitro();
-                case SupportedFileType.PAK: return new FileType.PAK();
-                case SupportedFileType.PFF: return new FileType.PFF();
-                case SupportedFileType.PKZIP: return new FileType.PKZIP();
-                //case SupportedFileType.PLJ: return new FileType.PLJ();
-                //case SupportedFileType.Quantum: return new FileType.Quantum();
-                case SupportedFileType.RAR: return new FileType.RAR();
-                case SupportedFileType.SevenZip: return new FileType.SevenZip();
-                case SupportedFileType.SFFS: return new FileType.SFFS();
-                case SupportedFileType.SGA: return new FileType.SGA();
-                case SupportedFileType.TapeArchive: return new FileType.TapeArchive();
-                case SupportedFileType.VBSP: return new FileType.VBSP();
-                case SupportedFileType.VPK: return new FileType.VPK();
-                case SupportedFileType.WAD: return new FileType.WAD();
-                case SupportedFileType.XZ: return new FileType.XZ();
-                case SupportedFileType.XZP: return new FileType.XZP();
+                case WrapperType.BFPK: return new FileType.BFPK();
+                case WrapperType.BSP: return new FileType.BSP();
+                case WrapperType.BZip2: return new FileType.BZip2();
+                case WrapperType.CFB: return new FileType.CFB();
+                //case WrapperType.CIA: return new FileType.CIA();
+                case WrapperType.GCF: return new FileType.GCF();
+                case WrapperType.GZIP: return new FileType.GZIP();
+                case WrapperType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
+                case WrapperType.InstallShieldCAB: return new FileType.InstallShieldCAB();
+                case WrapperType.MicrosoftCAB: return new FileType.MicrosoftCAB();
+                case WrapperType.MicrosoftLZ: return new FileType.MicrosoftLZ();
+                case WrapperType.MoPaQ: return new FileType.MPQ();
+                //case WrapperType.N3DS: return new FileType.N3DS();
+                //case WrapperType.NCF: return new FileType.NCF();
+                //case WrapperType.Nitro: return new FileType.Nitro();
+                case WrapperType.PAK: return new FileType.PAK();
+                case WrapperType.PFF: return new FileType.PFF();
+                case WrapperType.PKZIP: return new FileType.PKZIP();
+                //case WrapperType.PLJ: return new FileType.PLJ();
+                //case WrapperType.Quantum: return new FileType.Quantum();
+                case WrapperType.RAR: return new FileType.RAR();
+                case WrapperType.SevenZip: return new FileType.SevenZip();
+                case WrapperType.SFFS: return new FileType.SFFS();
+                case WrapperType.SGA: return new FileType.SGA();
+                case WrapperType.TapeArchive: return new FileType.TapeArchive();
+                case WrapperType.VBSP: return new FileType.VBSP();
+                case WrapperType.VPK: return new FileType.VPK();
+                case WrapperType.WAD: return new FileType.WAD();
+                case WrapperType.XZ: return new FileType.XZ();
+                case WrapperType.XZP: return new FileType.XZP();
                 default: return null;
             }
         }

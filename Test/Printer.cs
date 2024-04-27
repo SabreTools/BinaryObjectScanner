@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using BinaryObjectScanner.Utilities;
 using SabreTools.IO.Extensions;
-using SabreTools.Printing;
+using SabreTools.Serialization.Wrappers;
+using SPrinter = SabreTools.Serialization.Printer;
 
 namespace Test
 {
@@ -25,11 +25,7 @@ namespace Test
             }
             else if (Directory.Exists(path))
             {
-#if NET20 || NET35
-                foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
-#else
-                foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
-#endif
+                foreach (string file in IOExtensions.SafeEnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
                     PrintFileInfo(file, json, debug);
                 }
@@ -56,11 +52,11 @@ namespace Test
                 stream.Seek(0, SeekOrigin.Begin);
 
                 // Get the file type
-                SupportedFileType ft = FileTypes.GetFileType(magic ?? []);
-                if (ft == SupportedFileType.UNKNOWN)
+                WrapperType ft = WrapperFactory.GetFileType(magic ?? []);
+                if (ft == WrapperType.UNKNOWN)
                 {
                     string extension = Path.GetExtension(file).TrimStart('.');
-                    ft = FileTypes.GetFileType(extension);
+                    ft = WrapperFactory.GetFileType(extension);
                 }
 
                 // Print out the file format
@@ -95,7 +91,7 @@ namespace Test
 #endif
 
                 // Create the output data
-                var builder = wrapper.ExportStringBuilder();
+                var builder = SPrinter.ExportStringBuilder(wrapper);
                 if (builder == null)
                 {
                     Console.WriteLine("No item information could be generated");

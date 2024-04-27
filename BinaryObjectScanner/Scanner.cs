@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
+using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
@@ -133,11 +134,7 @@ namespace BinaryObjectScanner
                 if (Directory.Exists(path))
                 {
                     // Enumerate all files at first for easier access
-#if NET20 || NET35
-                    var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories).ToList();
-#else
-                    var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).ToList();
-#endif
+                    var files = IOExtensions.SafeEnumerateFiles(path, "*", SearchOption.AllDirectories).ToList();
 
                     // Scan for path-detectable protections
                     if (ScanPaths)
@@ -330,12 +327,12 @@ namespace BinaryObjectScanner
                 }
 
                 // Get the file type either from magic number or extension
-                SupportedFileType fileType = FileTypes.GetFileType(magic);
-                if (fileType == SupportedFileType.UNKNOWN)
-                    fileType = FileTypes.GetFileType(extension);
+                WrapperType fileType = WrapperFactory.GetFileType(magic);
+                if (fileType == WrapperType.UNKNOWN)
+                    fileType = WrapperFactory.GetFileType(extension);
 
                 // If we still got unknown, just return null
-                if (fileType == SupportedFileType.UNKNOWN)
+                if (fileType == WrapperType.UNKNOWN)
                     return null;
 
                 #region Non-Archive File Types
