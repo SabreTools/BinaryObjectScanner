@@ -497,7 +497,7 @@ namespace Test
 
 #if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
             // MoPaQ (MPQ) archive
-            else if (ft == WrapperType.MPQ)
+            else if (ft == WrapperType.MoPaQ)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting MoPaQ contents");

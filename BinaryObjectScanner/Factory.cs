@@ -53,7 +53,7 @@ namespace BinaryObjectScanner
                 case WrapperType.PAK: return new FileType.PAK();
                 case WrapperType.PFF: return new FileType.PFF();
                 case WrapperType.PKZIP: return new FileType.PKZIP();
-                //case WrapperType.PLJ: return new FileType.PLJ();
+                //case WrapperType.PlayJAudioFile: return new FileType.PLJ();
                 //case WrapperType.Quantum: return new FileType.Quantum();
                 case WrapperType.RAR: return new FileType.RAR();
                 case WrapperType.SevenZip: return new FileType.SevenZip();
