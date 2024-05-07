@@ -9,10 +9,10 @@ C# protection, packer, and archive scanning library. This currently compiles as 
 The following non-project libraries (or ports thereof) are used for file handling:
 
 - [LessIO](https://github.com/activescott/LessIO) - Used by libmspack4n for IO handling
-- [libmspack4n](https://github.com/activescott/libmspack4n) MS-CAB extraction [Unused in .NET Frawework 2.0/3.5/4.0 and non-Windows builds due to Windows-specific libraries]
+- [libmspack4n](https://github.com/activescott/libmspack4n) MS-CAB extraction [Unused in .NET Frawework 2.0/3.5/4.0, non-Windows, and non-x86 builds due to Windows-specific libraries]
 - [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
-- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Frawework 2.0/3.5/4.0 and non-Windows builds due to Windows-specific libraries]
+- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Frawework 2.0/3.5/4.0, non-Windows, and non-x86  builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
 - [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
 
