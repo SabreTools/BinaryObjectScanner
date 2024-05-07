@@ -187,9 +187,9 @@ Below is a list of container formats that are supported in some way:
 | InstallShield CAB | Yes | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
 | Link Data Security encrypted file | No | Yes | No | |
-| Microsoft cabinet file | Yes | Yes | Yes | |
+| Microsoft cabinet file | Yes | Yes | Yes* | Via `libmspack4n`, Windows x86 only, .NET Framework 4.5.2 and above |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
-| MoPaQ game data archive (MPQ) | No | Yes | Yes | Via `StormLibSharp` |
+| MoPaQ game data archive (MPQ) | No | Yes | Yes* | Via `StormLibSharp`, Windows x86 only, .NET Framework 4.5.2 and above |
 | MS-DOS Executable | Yes | Yes | No | Incomplete |
 | New Exectuable | Yes | Yes | No | Incomplete |
 | Nintendo 3DS cart image | Yes | Yes | No | |
