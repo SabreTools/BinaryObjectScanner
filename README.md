@@ -10,7 +10,7 @@ The following non-project libraries (or ports thereof) are used for file handlin
 
 - [LessIO](https://github.com/activescott/LessIO) - Used by libmspack4n for IO handling
 - [libmspack4n](https://github.com/activescott/libmspack4n) MS-CAB extraction [Unused in .NET Frawework 2.0/3.5/4.0, non-Windows, and non-x86 builds due to Windows-specific libraries]
-- [openmcdf](https://github.com/ironfede/openmcdf) - MSI extraction
+- [OpenMcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Frawework 2.0/3.5/4.0, non-Windows, and non-x86  builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
@@ -25,6 +25,21 @@ The following projects have influenced this library:
 - [NDecrypt](https://github.com/SabreTools/NDecrypt) - NDS (Nitro) and 3DS cart image file layouts and documentation, though not encrypt/decrypt.
 
 Please visit our sibling project, [DRML](https://github.com/TheRogueArchivist/DRML), the DRM Library for a more in-depth look at some of the protections detected.
+
+## Compatibility Notes
+
+Binary Object Scanner strives to have both full compatibility for scanning across .NET versions as well as across OSes. Unfortunately, this is not always the case. Please see the below list for known compatibility issues.
+
+- **7-zip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
+- **bzip2 archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
+- **gzip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
+- **MS-CAB** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
+- **MSI** - Extraction is only supported on .NET Framework 4.0 and higher due to `OpenMcdf` support limitations
+- **MoPaQ** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
+- **PKZIP and derived files (ZIP, etc.)** - Extraction is only supported on .NET Framework 4.6.2 and higher
+- **RAR archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
+- **Tape archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
+- **xz archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 
 ## Protections Detected
 
