@@ -18,7 +18,7 @@ The following non-project libraries (or ports thereof) are used for file handlin
 
 The following projects have influenced this library:
 
-- [BurnOut](http://burnout.sourceforge.net/) - Project that this library was initially based on. The only thing left from that original port is in the name of the library. This project is fully unaffiliated with the original BurnOut and its authors.
+- [BurnOut](http://burnout.sourceforge.net/) - Project that this library was initially based on. This project is fully unaffiliated with the original BurnOut and its authors.
 - [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Documentation around Valve package handling, including extraction.
 - [libbdplus](https://www.videolan.org/developers/libbdplus.html) - Documentation around the BD+ SVM files.
 - [libmspack](https://github.com/kyz/libmspack) - Documentation around the MS-CAB format and associated compression methods.
