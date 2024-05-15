@@ -20,10 +20,13 @@ namespace BinaryObjectScanner.Packer
             if (nex.Model.ResidentNameTable == null)
                 return null;
 
-            // Check for the WinZip name string
+            // Check for the WinZip name strings
             bool winZipNameFound = nex.Model.ResidentNameTable
                 .Select(rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString))
                 .Any(s => s.Contains("WZ-SE-01"));
+            winZipNameFound |= nex.Model.NonResidentNameTable?
+                .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
+                .Any(s => s.Contains("WinZip(R) Self-Extractor")) ?? false;
 
             // If we didn't find it
             if (!winZipNameFound)
