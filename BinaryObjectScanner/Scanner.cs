@@ -15,6 +15,7 @@ using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using SabreTools.IO.Extensions;
+using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 using static BinaryObjectScanner.Utilities.Dictionary;
 
@@ -425,9 +426,18 @@ namespace BinaryObjectScanner
 #endif
         {
             // Try to create a wrapper for the proper executable type
-            var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-            if (wrapper == null)
+            IWrapper? wrapper;
+            try
+            {
+                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
+                if (wrapper == null)
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                if (IncludeDebug) Console.WriteLine(ex);
                 return null;
+            }
 
             // Create the output dictionary
 #if NET20 || NET35
