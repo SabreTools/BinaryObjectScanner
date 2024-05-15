@@ -8,7 +8,9 @@ using System.Linq;
 #if NET462_OR_GREATER || NETCOREAPP
 using System.Text;
 #endif
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Threading.Tasks;
+#endif
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
@@ -327,11 +329,7 @@ namespace BinaryObjectScanner
                 }
 
                 // Get the file type either from magic number or extension
-                WrapperType fileType = WrapperFactory.GetFileType(magic);
-                if (fileType == WrapperType.UNKNOWN)
-                    fileType = WrapperFactory.GetFileType(extension);
-
-                // If we still got unknown, just return null
+                WrapperType fileType = WrapperFactory.GetFileType(magic, extension);
                 if (fileType == WrapperType.UNKNOWN)
                     return null;
 

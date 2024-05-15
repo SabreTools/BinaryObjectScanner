@@ -1,20 +1,50 @@
 using System;
 using System.IO;
+#if NET452_OR_GREATER || NETCOREAPP
+using System.Text;
+#endif
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 using SPrinter = SabreTools.Serialization.Printer;
 
 namespace Test
 {
-    internal static class Printer
+    internal class Printer
     {
+        #region Options
+
+        /// <inheritdoc cref="BinaryObjectScanner.Options.IncludeDebug"/>
+        public bool IncludeDebug => _options?.IncludeDebug ?? false;
+
         /// <summary>
-        /// Wrapper to print information for a single path
+        /// Options object for configuration
         /// </summary>
-        /// <param name="path">File or directory path</param>
-        /// <param name="json">Enable JSON output, if supported</param>
-        /// <param name="debug">Enable debug output</param>
-        public static void PrintPathInfo(string path, bool json, bool debug)
+        private readonly BinaryObjectScanner.Options _options;
+
+        #endregion
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="includeDebug">Enable including debug information</param>
+        public Printer(bool includeDebug)
+        {
+            this._options = new BinaryObjectScanner.Options
+            {
+                IncludeDebug = includeDebug,
+            };
+
+#if NET462_OR_GREATER || NETCOREAPP
+            // Register the codepages
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+        }/// <summary>
+         /// Wrapper to print information for a single path
+         /// </summary>
+         /// <param name="path">File or directory path</param>
+         /// <param name="json">Enable JSON output, if supported</param>
+         /// <param name="debug">Enable debug output</param>
+        public void PrintPathInfo(string path, bool json, bool debug)
         {
             Console.WriteLine($"Checking possible path: {path}");
 
@@ -39,7 +69,7 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
-        private static void PrintFileInfo(string file, bool json, bool debug)
+        private void PrintFileInfo(string file, bool json, bool debug)
         {
             Console.WriteLine($"Attempting to print info for {file}");
 
@@ -47,17 +77,25 @@ namespace Test
             {
                 using Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-                // Read the first 8 bytes
-                byte[]? magic = stream.ReadBytes(8);
-                stream.Seek(0, SeekOrigin.Begin);
+                // Get the extension for certain checks
+                string extension = Path.GetExtension(file).ToLower().TrimStart('.');
+
+                // Get the first 16 bytes for matching
+                byte[] magic = new byte[16];
+                try
+                {
+                    stream.Read(magic, 0, 16);
+                    stream.Seek(0, SeekOrigin.Begin);
+                }
+                catch (Exception ex)
+                {
+                    if (IncludeDebug) Console.WriteLine(ex);
+
+                    return;
+                }
 
                 // Get the file type
-                WrapperType ft = WrapperFactory.GetFileType(magic ?? []);
-                if (ft == WrapperType.UNKNOWN)
-                {
-                    string extension = Path.GetExtension(file).TrimStart('.');
-                    ft = WrapperFactory.GetFileType(extension);
-                }
+                WrapperType ft = WrapperFactory.GetFileType(magic, extension);
 
                 // Print out the file format
                 Console.WriteLine($"File format found: {ft}");

@@ -28,6 +28,12 @@ namespace Test
                 return;
             }
 
+            // Create extractor for all paths
+            var extractor = new Extractor(options.Debug);
+
+            // Create printer for all paths
+            var printer = new Printer(options.Debug);
+
             // Create scanner for all paths
             var scanner = new Scanner(
                 options.ScanArchives,
@@ -43,14 +49,14 @@ namespace Test
             {
                 // Extraction
                 if (options.EnableExtraction)
-                    Extractor.ExtractPath(inputPath, options.OutputPath);
+                    extractor.ExtractPath(inputPath, options.OutputPath);
 
                 // Information printing
                 if (options.EnableInformation)
 #if NETFRAMEWORK
-                    Printer.PrintPathInfo(inputPath, false, options.Debug);
+                    printer.PrintPathInfo(inputPath, false, options.Debug);
 #else
-                    Printer.PrintPathInfo(inputPath, options.Json, options.Debug);
+                    printer.PrintPathInfo(inputPath, options.Json, options.Debug);
 #endif
 
                 // Scanning
