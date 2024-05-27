@@ -72,6 +72,10 @@ namespace BinaryObjectScanner.Protection
                     return "SafeDisc Lite";
                 if (strs.Any(s => s.Contains("LTDLL_Unwrap")))
                     return "SafeDisc Lite";
+
+                // Present in "Setup.exe" from the earlier "safedisc.exe" driver update provided by Macrovision.
+                if (strs.Any(s => s.Contains("Failed to get the DRVMGT.DLL Setup API address")))
+                    return "Macrovision SecDrv Update Installer";
             }
 
             var name = pex.FileDescription;
@@ -79,13 +83,22 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
 
+            // Present in "Setup.exe" from the later "safedisc.exe" driver update provided by Macrovision.
+            if (name?.Equals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase) == true)
+                return "Macrovision SecDrv Update Installer";
+
             // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             name = pex.ProductName;
             if (name?.Equals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase) == true)
                 return "SafeDisc 1.00.025-1.01.044";
+
             // Present in "Diag.exe" files from SafeDisc 4.50.000+.
             else if (name?.Equals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase) == true)
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+
+            // Present in "Setup.exe" from the later "safedisc.exe" driver update provided by Macrovision.
+            if (name?.Equals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase) == true)
+                return "Macrovision SecDrv Update Installer";
 
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
