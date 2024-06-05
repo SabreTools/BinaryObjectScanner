@@ -52,6 +52,14 @@ namespace BinaryObjectScanner.Protection
                 //     return "Roxxe (Possibly remnants)";
             }
 
+            // If any dialog boxes match
+            // Found in "Data6.OWP" in IA item "game4u-22-cd".
+            if (pex.FindDialogBoxByItemTitle("SharpTiny Version 1.0").Any())
+                return "Roxxe";
+            // Found in "Data8.OWP" in IA item "game4u-22-cd".
+            else if (pex.FindDialogBoxByItemTitle("T32xWin Version 1.0").Any())
+                return "Roxxe";
+
             return null;
         }
 
