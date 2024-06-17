@@ -100,8 +100,14 @@ namespace BinaryObjectScanner.FileType
                     protections.Add("MediaMax CD-3");
 
                 // phenoProtect
+                // Found in Redump entry 84082.
                 if (fileContent.Contains("phenoProtect"))
                     protections.Add("phenoProtect");
+                // Additional check to minimize overmatching.
+                if (fileContent.Contains("InstallSHIELD Software Coporation"))
+                    // Found in Redump entry 102493.
+                    if (fileContent.Contains("COPYPROTECTION_FAILEDR"))
+                        protections.Add("phenoProtect");
 
                 // Rainbow Sentinel
                 // Found in "SENTW95.HLP" and "SENTINEL.HLP" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
