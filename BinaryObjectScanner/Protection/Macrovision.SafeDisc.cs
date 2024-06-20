@@ -108,8 +108,12 @@ namespace BinaryObjectScanner.Protection
 
             // Found in Redump entries 20729 and 65569.
             // Get the debug data
-            if (pex.FindCodeViewDebugTableByPath("SafeDisc").Any() || pex.FindCodeViewDebugTableByPath("Safedisk").Any())
-                return "SafeDisc";
+            try
+            {
+                if (pex.FindCodeViewDebugTableByPath("SafeDisc").Any() || pex.FindCodeViewDebugTableByPath("Safedisk").Any())
+                    return "SafeDisc";
+            }
+            catch { }
 
             // TODO: Investigate various section names:
             // "STLPORT_" - Found in Redump entry 11638.
