@@ -205,7 +205,7 @@ namespace BinaryObjectScanner.Protection
             byte[] subSubVersion = new byte[2];
             subSubVersion[0] = (byte)(fileContent[index] ^ 42);
             index++;
-            subSubVersion[0] = (byte)(fileContent[index] ^ 8);
+            subSubVersion[1] = (byte)(fileContent[index] ^ 8);
             index += 2;
 
             byte[] subSubSubVersion = new byte[4];
