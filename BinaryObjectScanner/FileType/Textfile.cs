@@ -54,6 +54,14 @@ namespace BinaryObjectScanner.FileType
                 else if (fileContent.Contains("Please enter a valid registration number"))
                     protections.Add("CD-Key / Serial");
 
+                // Channelware
+                // Found in "README.TXT" in Redump entry 116358.
+                if (fileContent.Contains("This application is a Channelware-activated product."))
+                    protections.Add("Channelware");
+                // Found in "Swr.dat" in the "TOYSTORY" installation folder from Redump entry 12354.
+                if (fileContent.Contains("cwsw.com/authts"))
+                    protections.Add("Channelware");
+
                 // CopyKiller
                 // Found in "autorun.dat" in CopyKiller versions 3.62 and 3.64.
                 if (fileContent.Contains("CopyKiller CD-Protection V3.6x"))
