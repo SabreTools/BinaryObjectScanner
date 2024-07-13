@@ -76,10 +76,10 @@ namespace BinaryObjectScanner.ProtectionType
                 new(new List<PathMatch>
                 {
                     // d37f70489207014d7d0fbaa43b081a93e8030498
-                    new(Path.Combine("Sys", "Devx.sys").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("Sys", "Devx.sys")),
 
                     // a0acbc2f8e321e4f30c913c095e28af444058249
-                    new(Path.Combine("Sys", "VtPr.sys").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("Sys", "VtPr.sys")),
 
                     // SHA-1 is variable, file size is 81,920 bytes
                     new FilePathMatch("Wave.aif"),
@@ -99,16 +99,16 @@ namespace BinaryObjectScanner.ProtectionType
                 new(new List<PathMatch>
                 {
                     // f82339d797be6da92f5d9dadeae9025385159057
-                    new(Path.Combine("9x", "Tamlx.alf").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("9x", "Tamlx.alf")),
 
                     // 933c004d3043863f019f5ffaf63402a30e65026c
-                    new(Path.Combine("9x", "Tamlx.apt").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("9x", "Tamlx.apt")),
 
                     // d45745fa6b0d23fe0ee12e330ab85d5bf4e0e776
-                    new(Path.Combine("NT", "enodpl.sys").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("NT", "enodpl.sys")),
 
                     // f111eba05ca6e9061c557547420847d7fdee657d
-                    new(Path.Combine("NT", "litdpl.sys").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("NT", "litdpl.sys")),
                 }, "TAGES"),
 
                 // Currently only known to exist in "XIII" and "Beyond Good & Evil" (Redump entries 8774-8776, 45940-45941, 18690-18693, and presumably 21320, 21321, 21323, and 36124).
@@ -127,16 +127,16 @@ namespace BinaryObjectScanner.ProtectionType
                 new(new List<PathMatch>
                 {
                     // 40826e95f3ad8031b6debe15aca052c701288e04
-                    new(Path.Combine("9x", "hwpsgt.vxd").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("9x", "hwpsgt.vxd")),
 
                     // f82339d797be6da92f5d9dadeae9025385159057
-                    new(Path.Combine("9x", "lemsgt.vxd").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("9x", "lemsgt.vxd")),
 
                     // 43f407ecdc0d87a3713126b757ccaad07ade285f
-                    new(Path.Combine("NT", "hwpsgt.sys").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("NT", "hwpsgt.sys")),
 
                     // 548dd6359abbcc8c84ce346d078664eeedc716f7
-                    new(Path.Combine("NT", "lemsgt.sys").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("NT", "lemsgt.sys")),
                 }, "TAGES"),
 
                 // The following files are supposed to only be found inside the driver setup executables, and are present in at least version 5.2.0.1 (Redump entry 15976).

@@ -63,20 +63,20 @@ namespace BinaryObjectScanner.Protection
                 new(new List<PathMatch>
                 {
 #if NET20 || NET35
-                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQ2SETUP.EXE")),
+                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQSTART.EXE")),
 #else
-                    new(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine("BIN", "WIN32", "MQSTART.EXE").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE")),
+                    new(Path.Combine("BIN", "WIN32", "MQSTART.EXE")),
 #endif
                 }, "LabelGate CD2 Media Player"),
 
                 // All of these are also found present on all known LabelGate CD2 releases, though an additional file "RESERVED.DAT" is found in the same directory in at least one release (Product ID SVWC-7185)
                 new(new List<PathMatch>
                 {
-                    new(Path.Combine("MQDISC", "LICENSE.TXT").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine("MQDISC", "MQDISC.INI").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine("MQDISC", "START.INI").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("MQDISC", "LICENSE.TXT")),
+                    new(Path.Combine("MQDISC", "MQDISC.INI")),
+                    new(Path.Combine("MQDISC", "START.INI")),
                 }, "LabelGate CD2"),
             };
 

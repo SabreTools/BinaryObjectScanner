@@ -82,7 +82,11 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("chanwr.ini"), "Channelware"),
                 new(new FilePathMatch("CWAuto.dll"), "Channelware"),
 
-                // TODO: Add check for "CWare" and "cware" folders.
+                // Found in Redump entry 116358.
+                new(Path.Combine("CWare", "install.exe"), "Channelware"),
+
+                // Found in Redump entry 12354.
+                new(Path.Combine("cware", "Install.exe"), "Channelware"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -104,7 +108,11 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("chanwr.ini"), "Channelware"),
                 new(new FilePathMatch("CWAuto.dll"), "Channelware"),
 
-                // TODO: Add check for "CWare" and "cware" folders.
+                // Found in Redump entry 116358.
+                new(Path.Combine("CWare", "install.exe"), "Channelware"),
+
+                // Found in Redump entry 12354.
+                new(Path.Combine("cware", "Install.exe"), "Channelware"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

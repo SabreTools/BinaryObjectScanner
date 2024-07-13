@@ -21,9 +21,9 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
 #if NET20 || NET35
-                new(Path.Combine(Path.Combine(path, "Zzxzz"), "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+                new(Path.Combine(Path.Combine(path, "Zzxzz"), "Zzz.aze"), "Zzxzz"),
 #else
-                new(Path.Combine(path, "Zzxzz", "Zzz.aze").Replace("\\", "/"), "Zzxzz"),
+                new(Path.Combine(path, "Zzxzz", "Zzz.aze"), "Zzxzz"),
 #endif
                 new($"Zzxzz/", "Zzxzz"),
             };
