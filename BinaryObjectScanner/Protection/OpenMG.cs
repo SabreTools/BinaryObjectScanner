@@ -79,10 +79,10 @@ namespace BinaryObjectScanner.Protection
                 // TODO: Investigate the consistency of "\OMGEXTRA\INDX0000.XML" and "\OMGEXTRA\INDX0001.XML", they seem to only appear when bonus content is present ("Touch" by Amerie).
                 new(new List<PathMatch>
                 {
-                    new(Path.Combine("OMGAUDIO", "00AUDTOC.DAT").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine("OMGAUDIO", "01AUDSTR.DAT").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine("OMGAUDIO", "05SRPCDS.DAT").Replace("\\", "/"), useEndsWith: true),
-                    new(Path.Combine("OMGEXTRA", "OMGSVC.DAT").Replace("\\", "/"), useEndsWith: true),
+                    new(Path.Combine("OMGAUDIO", "00AUDTOC.DAT")),
+                    new(Path.Combine("OMGAUDIO", "01AUDSTR.DAT")),
+                    new(Path.Combine("OMGAUDIO", "05SRPCDS.DAT")),
+                    new(Path.Combine("OMGEXTRA", "OMGSVC.DAT")),
                 }, "OpenMG"),
 
                 // Always found together on OpenMG releases ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).

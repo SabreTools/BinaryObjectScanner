@@ -22,7 +22,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(Path.Combine("ZDAT", "webmast.dxx").Replace("\\", "/"), "Tivola Ring Protection [Check disc for physical ring]"),
+                new(Path.Combine("ZDAT", "webmast.dxx"), "Tivola Ring Protection [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(Path.Combine("ZDAT", "webmast.dxx").Replace("\\", "/"), "Tivola Ring Protection [Check disc for physical ring]"),
+                new(Path.Combine("ZDAT", "webmast.dxx"), "Tivola Ring Protection [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
