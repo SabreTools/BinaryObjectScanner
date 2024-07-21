@@ -1,7 +1,7 @@
 # Binary Object Scanner
 
 [![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/BinaryObjectScanner)
-[![Build Test](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml)
+[![Test Build](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_test.yml)
 [![Nuget Pack](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_nupkg.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_nupkg.yml)
 
 C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. A reference application called `Test` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
@@ -25,6 +25,12 @@ The following projects have influenced this library:
 - [NDecrypt](https://github.com/SabreTools/NDecrypt) - NDS (Nitro) and 3DS cart image file layouts and documentation, though not encrypt/decrypt.
 
 Please visit our sibling project, [DRML](https://github.com/TheRogueArchivist/DRML), the DRM Library for a more in-depth look at some of the protections detected.
+
+## Releases
+
+For the most recent stable build, download the latest release here: [Releases Page](https://github.com/SabreTools/BinaryObjectScanner/releases)
+
+For the latest WIP build here: [Rolling Release](https://github.com/SabreTools/BinaryObjectScanner/releases/tag/rolling)
 
 ## Compatibility Notes
 
