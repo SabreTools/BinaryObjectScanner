@@ -82,6 +82,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | DiscGuard | True | True | Partially unconfirmed² |
 | DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
 | DVD Crypt | False | True | Unconfirmed¹ |
+| EA Anti Cheat | True | True | |
 | EA Protections | True | False | Including EA CDKey and EA DRM. |
 | Easy Anti-Cheat | True | True | |
 | Engine32 | True | False | |
