@@ -184,7 +184,7 @@ Below is a list of game engines detected by BinaryObjectScanner. The two columns
 
 | Protection Name | Content Check | Path Check | Notes |
 | --------------- | ------------- | ---------- | ----- |
-| RenderWare | Yes | No | No | |
+| RenderWare | Yes | No | |
 
 ## Container Formats
 
