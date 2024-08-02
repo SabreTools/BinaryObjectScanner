@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Protection
 
             name = pex.InternalName;
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
-            if (!string.IsNullOrEmpty(name) && name!.Contains("skyfall"))
+            if (!string.IsNullOrEmpty(name) && name!.Equals("skyfall"))
                 return "EA Anti Cheat";
 
             // TODO: Add check for "EA SPEAR AntiCheat Engineering" in ASN.1 certificate data. Found in files "EAAntiCheat.GameServiceLauncher.dll", "EAAntiCheat.GameServiceLauncher.exe", "EAAntiCheat.Installer.exe", and "preloader_l.dll".
