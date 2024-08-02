@@ -551,16 +551,26 @@ namespace BinaryObjectScanner.Protection
                 // Version 1.04.000/1.4.0.0 can be found in "cdac01aa.dll" and "cdac01ba.dll" from IA item "ejay_nestle_trial", but needs further research.
                 // Found in Redump entry 83145.
                 "2.11.010"
+
+                    // Found in IA item microsoft-software-jukebox-for-toshiba-1.0.
                     or "2.11.020"
+
+                    // Source not documented.
                     or "2.11.060"
                     or "2.16.050"
+
+                    // Found in Redump entry 90157 / IA item microsoft-software-jukebox-usa-hp-oem.
+                    or "2.41.000"
+
+                    // Source not documented.
                     or "2.60.030"
                     or "2.67.010" => "SafeCast",
 
                 // SafeCast (Unconfirmed)
                 // Found in Adobe Photoshop according to http://www.reversing.be/article.php?story=2006102413541932
-                "2.41.000"
-                    or "2.42.000"
+                "2.42.000"
+
+                    // Source not documented.
                     or "2.50.030"
                     or "2.51.000" => "SafeCast (Unconfirmed - Please report to us on GitHub)",
 
@@ -571,6 +581,8 @@ namespace BinaryObjectScanner.Protection
                 // SafeDisc (Confirmed)
                 // Found in Redump entry 66005.
                 "1.00.025"
+
+                    // Source not documented.
                     or "1.00.026"
                     or "1.00.030"
                     or "1.00.032"
