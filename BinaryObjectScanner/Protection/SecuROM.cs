@@ -26,6 +26,14 @@ namespace BinaryObjectScanner.Protection
             if (name?.Contains("SecuROM PA") == true)
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
+            name = pex.InternalName;
+            if (name?.Equals("paul.dll") == true)
+                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+            else if (name?.Equals("paul_dll_activate_and_play.dll") == true)
+                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+            else if (name?.Equals("paul_dll_preview_and_review.dll") == true)
+                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+
             name = pex.OriginalFilename;
             if (name?.Equals("paul_dll_activate_and_play.dll") == true)
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
