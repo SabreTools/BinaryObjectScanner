@@ -18,7 +18,10 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// Further information and resources:
     /// Macrovision press release that mentions SafeWrap: https://www.sec.gov/Archives/edgar/data/1027443/000100547701501658/ex99-1.txt
+    /// Macrionvision "Tamper-proof" blurb advertising SafeWrap: https://web.archive.org/web/20030412093353/http://www.macrovision.com/solutions/software/tamper.php3
     /// SafeAudio news that mentions SafeWrap: https://www.cdmediaworld.com/hardware/cdrom/news/0201/safeaudio_3.shtml
+    /// The titles for a few audio DRM FAQ's include the text "SafeWrap™ Frequently Asked Questions" in the page title, but this may be a copy-paste error: 
+    /// https://web.archive.org/web/20030324080804/http://www.macrovision.com:80/solutions/audio/images/SafeAudio_FAQ_Public_5-02.pdf + https://web.archive.org/web/20030403050432/http://www.macrovision.com:80/solutions/audio/Audio_protection_FAQ_Public_March2003.pdf
     /// Eclipse SafeAudio news that mentions SafeWrap: http://www.eclipsedata.com/PDFs/21.pdf
     /// Report to congress that mentions SafeWrap: https://www.uspto.gov/sites/default/files/web/offices/dcom/olia/teachreport.pdf
     /// Patent that mentions possibly using SafeWrap: https://patents.google.com/patent/US7493289B2/en
