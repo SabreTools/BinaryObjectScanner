@@ -13,6 +13,8 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// nProtect GameGuard (https://nprotect.com/kr/b2b/prod_gg.html) is anti-cheat software used in a fair amount of online games.
     /// Partial list of games that use GameGuard: https://en.wikipedia.org/wiki/NProtect_GameGuard.
+    /// Known versions of GameGuard:
+    /// "2024.2.27.1" - Found in GameGuard.des in "Soulworker" (Steam Depot 1377581, Manifest 5092481117079359342).
     /// 
     /// nProtect KeyCrypt is an anti-keylogging product that seemingly has other DRM functions as well, such as shutting down processes it deems unnecessary (https://en.wikipedia.org/wiki/INCA_Internet#nProtect_Netizen,_nProtect_Personal,_nProtect_Keycrypt)
     /// TODO: Verify the exact functions of KeyCrypt.
@@ -42,7 +44,7 @@ namespace BinaryObjectScanner.Protection
 
             var name = pex.FileDescription;
 
-            // Found in "GameGuard.des" in Redump entry 90526 and 99598.
+            // Found in "GameGuard.des" in Redump entry 90526 and 99598, and "Soulworker" (Steam Depot 1377581, Manifest 5092481117079359342).
             if (name?.Contains("nProtect GameGuard Launcher") == true)
                 return $"nProtect GameGuard ({pex.GetInternalVersion()})";
 
