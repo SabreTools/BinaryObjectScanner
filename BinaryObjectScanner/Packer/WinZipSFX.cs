@@ -76,7 +76,6 @@ namespace BinaryObjectScanner.Packer
         /// <summary>
         /// Handle common extraction between executable types
         /// </summary>
-        /// <inheritdoc/>
         public static string? Extract(string file, bool includeDebug)
         {
 #if NET462_OR_GREATER || NETCOREAPP
