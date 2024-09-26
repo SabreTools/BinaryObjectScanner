@@ -50,7 +50,14 @@ namespace BinaryObjectScanner.FileType
                             if (entry.Key == null)
                                 continue;
 
+                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(tempPath, entry.Key);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)
