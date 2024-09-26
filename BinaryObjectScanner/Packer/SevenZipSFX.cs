@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 #if NET462_OR_GREATER || NETCOREAPP
