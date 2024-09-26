@@ -56,18 +56,13 @@ namespace BinaryObjectScanner.Packer
             if (!File.Exists(file))
                 return null;
 
-            using var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-            if (stream == null)
-                return null;
-
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
-                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(stream, new ReaderOptions() { LookForHeader = true }))
+                using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(file, new ReaderOptions() { LookForHeader = true }))
                 {
                     foreach (var entry in sevenZipFile.Entries)
                     {
