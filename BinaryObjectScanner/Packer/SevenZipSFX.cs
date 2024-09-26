@@ -62,6 +62,7 @@ namespace BinaryObjectScanner.Packer
                 // Create a temp output directory
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
+
                 using (SevenZipArchive sevenZipFile = SevenZipArchive.Open(file, new ReaderOptions() { LookForHeader = true }))
                 {
                     foreach (var entry in sevenZipFile.Entries)
@@ -76,7 +77,14 @@ namespace BinaryObjectScanner.Packer
                             if (entry.Key == null)
                                 continue;
 
+                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(tempPath, entry.Key);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)
