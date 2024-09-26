@@ -39,15 +39,15 @@ namespace BinaryObjectScanner.Packer
             try
             {
                 // Should be using stream instead of file, but stream fails to extract anything. My guess is that the executable portion of the archive is causing stream to fail, but not file.
-                using (RarArchive zipFile = RarArchive.Open(file, new ReaderOptions() { LookForHeader = true }))
+                using (RarArchive rarFile = RarArchive.Open(file, new ReaderOptions() { LookForHeader = true }))
                 {
-                    if (!zipFile.IsComplete)
+                    if (!rarFile.IsComplete)
                         return null;
 
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                     Directory.CreateDirectory(tempPath);
 
-                    foreach (var entry in zipFile.Entries)
+                    foreach (var entry in rarFile.Entries)
                     {
                         try
                         {
@@ -59,7 +59,14 @@ namespace BinaryObjectScanner.Packer
                             if (entry.Key == null)
                                 continue;
 
+                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(tempPath, entry.Key);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)
