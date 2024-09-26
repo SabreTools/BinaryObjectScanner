@@ -53,21 +53,12 @@ namespace BinaryObjectScanner.Packer
 
         /// <inheritdoc/>
         public string? Extract(string file, PortableExecutable pex, bool includeDebug)
-            => Extract(file, includeDebug);
-
-        /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
         {
             if (!File.Exists(file))
                 return null;
 
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
-        }
+            using var stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-        /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
-        {
             if (stream == null)
                 return null;
 
