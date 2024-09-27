@@ -275,6 +275,8 @@ namespace BinaryObjectScanner.Protection
             if (!string.IsNullOrEmpty(safeDisc))
                 resultsList.Add(safeDisc!);
 
+            // Clean the result list
+            resultsList = CleanResultList(resultsList);
             if (resultsList != null && resultsList.Count > 0)
                 return string.Join(", ", [.. resultsList]);
 
@@ -650,11 +652,24 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        private List<string>? CleanResultList(List<string>? resultsList)
+        private static List<string>? CleanResultList(List<string>? resultsList)
         {
             // If we have an invalid result list
             if (resultsList == null || resultsList.Count == 0)
                 return resultsList;
+
+            // Remove duplicates
+            if (resultsList.Contains("Macrovision Protected Application"))
+            {
+                if (resultsList.Contains("Macrovision Protected Application [Version Expunged]"))
+                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                else if (resultsList.Contains("Macrovision Protected Application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)"))
+                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                else if (resultsList.Contains("Macrovision Protected Application (Generic detection - Report to us on GitHub)"))
+                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                else if (resultsList.Contains("Macrovision Protected Application (Report this to us on GitHub)"))
+                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+            }
 
             // Get distinct and order
             return [.. resultsList.Distinct().OrderBy(s => s)];
