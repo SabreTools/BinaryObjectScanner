@@ -69,7 +69,6 @@
   <!-- Support for old .NET versions -->
   <ItemGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))">
     <PackageReference Include="MinThreadingBridge" Version="0.11.4" />
-    <PackageReference Include="MinTasksExtensionsBridge" Version="0.3.4" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))">
     <PackageReference Include="OpenMcdf" Version="2.3.1" />
