@@ -15,6 +15,7 @@ namespace BinaryObjectScanner.Protection
     /// Assumed to be present on all Kalypso Media games on PC since at least 2011 (as it is present in Redump entry 95617), though this needs to be confirmed.
     /// The internal name of the Kalypso Launcher may be "Styx", as it is present as the File Description and Product Name in various versions of "KalypsoLauncher.dll".
     /// Kalypso FAQ, which includes information about Kalypso Launcher: https://www.kalypsomedia.com/us/frequently-asked-questions
+    /// It was introduced in or before January 2011, based on this forum post introducing it: https://web.archive.org/web/20120524150700/http://forum.kalypsomedia.com/showthread.php?tid=7909
     /// 
     /// Known versions:
     /// 1.2.0.12: Found in Redump entry 95617.
@@ -38,13 +39,13 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name?.Contains("KalypsoLauncher.dll") == true)
-                return $"Kalypso Launcher (Version {pex.GetInternalVersion()})";
+                return $"Kalypso Launcher {pex.GetInternalVersion()}";
 
             name = pex.OriginalFilename;
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name?.Contains("KalypsoLauncher.dll") == true)
-                return $"Kalypso Launcher (Version {pex.GetInternalVersion()})";
+                return $"Kalypso Launcher {pex.GetInternalVersion()}";
 
             // Get the .text section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".rdata");
