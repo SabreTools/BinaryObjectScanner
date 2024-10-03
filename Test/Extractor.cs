@@ -377,7 +377,7 @@ namespace Test
                             if (!string.IsNullOrEmpty(directoryName) && !Directory.Exists(directoryName))
                                 Directory.CreateDirectory(directoryName);
 
-                            (byte[]? fileContents, string? error) = archive.Extract(cfile.Key);
+                            byte[]? fileContents = archive.Extract(cfile.Key, out string? error);
                             if (!string.IsNullOrEmpty(error))
                                 continue;
 

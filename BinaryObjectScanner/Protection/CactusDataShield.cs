@@ -2,6 +2,7 @@
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
 
 namespace BinaryObjectScanner.Protection
 {

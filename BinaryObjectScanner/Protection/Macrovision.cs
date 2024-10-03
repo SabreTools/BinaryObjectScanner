@@ -9,6 +9,8 @@ using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection

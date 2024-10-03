@@ -5,6 +5,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -28,7 +30,6 @@ namespace BinaryObjectScanner.Protection
 
     public class Denuvo : IPathCheck, IPortableExecutableCheck
     {
-
         // TODO: Investigate possible filename checks for Denuvo Anti-Tamper.
         // https://www.pcgamingwiki.com/wiki/Denuvo#Redeem.exe
 

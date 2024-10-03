@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -23,7 +24,6 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public class KalypsoLauncher : IPathCheck, IPortableExecutableCheck
     {
-
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {

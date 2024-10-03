@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner.ProtectionType
+namespace BinaryObjectScanner.Protection
 {
     public class TAGES : IPathCheck, IPortableExecutableCheck
     {

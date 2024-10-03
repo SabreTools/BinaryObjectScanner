@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using SabreTools.Hashing;
 using SabreTools.Matching;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection

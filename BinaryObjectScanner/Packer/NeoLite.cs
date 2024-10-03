@@ -1,5 +1,4 @@
-﻿using System.IO;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer

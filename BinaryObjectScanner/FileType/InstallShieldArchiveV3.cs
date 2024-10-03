@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.FileType
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
 
-                        (byte[]? fileContents, string? error) = archive.Extract(cfile.Key);
+                        byte[]? fileContents = archive.Extract(cfile.Key, out string? error);
                         if (fileContents == null || !string.IsNullOrEmpty(error))
                             continue;
 

@@ -4,8 +4,8 @@ using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using SabreTools.Matching;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection

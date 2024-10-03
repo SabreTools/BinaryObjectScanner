@@ -2,7 +2,7 @@
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner.ProtectionType
+namespace BinaryObjectScanner.Protection
 {
     public class OnlineRegistration : IPortableExecutableCheck
     {

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -289,10 +291,10 @@ namespace BinaryObjectScanner.Protection
                 0x82, 0xD8, 0x0C, 0xAC
             ]);
 
-            (bool success, int position) = matcher.Match(dataSectionRaw);
+            int position = matcher.Match(dataSectionRaw);
 
             // If we can't find the string, we default to generic
-            if (!success)
+            if (position < 0)
                 return "8";
 
 #if NETFRAMEWORK

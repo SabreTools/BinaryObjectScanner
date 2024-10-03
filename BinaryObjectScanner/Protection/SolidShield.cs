@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner.ProtectionType
+namespace BinaryObjectScanner.Protection
 {
     // TODO: Not matching all SolidShield Wrapper v1 (See JackKeane)
     // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)

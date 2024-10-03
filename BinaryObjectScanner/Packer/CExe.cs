@@ -5,6 +5,7 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Compression.zlib;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer

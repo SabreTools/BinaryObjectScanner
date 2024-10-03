@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if ((NETFRAMEWORK && !NET20 && !NET35 && !NET40) || NETCOREAPP) && WIN
+#if (NET452_OR_GREATER || NETCOREAPP) && WIN
 using StormLibSharp;
 #endif
 

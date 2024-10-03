@@ -5,6 +5,7 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
 using SabreTools.Serialization.Wrappers;
 using WiseUnpacker;
 using WiseUnpacker.EWISE;
