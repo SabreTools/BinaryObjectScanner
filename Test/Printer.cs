@@ -29,7 +29,7 @@ namespace Test
         /// <param name="includeDebug">Enable including debug information</param>
         public Printer(bool includeDebug)
         {
-            this._options = new BinaryObjectScanner.Options
+            _options = new BinaryObjectScanner.Options
             {
                 IncludeDebug = includeDebug,
             };
