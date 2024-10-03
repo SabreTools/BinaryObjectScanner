@@ -31,7 +31,7 @@
     <DefineConstants>$(DefineConstants);WIN</DefineConstants>
   </PropertyGroup>
 
-  <!-- Exclude certain parts of external modules for .NET Framework 4.5.2 and above -->
+  <!-- Exclude certain parts of external modules for .NET Framework 4.0 and above -->
   <PropertyGroup>
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
@@ -44,8 +44,8 @@
     </DefaultItemExcludes>
   </PropertyGroup>
 
-  <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, .NET Framework 4.0 or non-Windows builds -->
-  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`)) OR !$(RuntimeIdentifier.StartsWith(`win-`))">
+  <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, or non-Windows builds -->
+  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR !$(RuntimeIdentifier.StartsWith(`win-`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       _EXTERNAL\**
@@ -53,7 +53,7 @@
   </PropertyGroup>
 
   <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND $(RuntimeIdentifier.StartsWith(`win-x86`))">
+  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND $(RuntimeIdentifier.StartsWith(`win-x86`))">
     <Content Include="*.dll">
       <Pack>true</Pack>
       <PackagePath>contentFiles;content</PackagePath>

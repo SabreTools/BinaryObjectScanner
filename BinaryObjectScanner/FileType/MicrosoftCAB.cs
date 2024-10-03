@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if (NET452_OR_GREATER || NETCOREAPP) && WIN
+#if (NET40_OR_GREATER || NETCOREAPP) && WIN
 using LibMSPackN;
 #endif
 
