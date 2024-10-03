@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                string tempPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
                 using (var mpqArchive = new MpqArchive(file, FileAccess.Read))
@@ -64,18 +64,18 @@ namespace BinaryObjectScanner.FileType
                             Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
                             mpqArchive.ExtractFile(sub, tempFile);
                         }
-                        catch (Exception ex)
+                        catch (System.Exception ex)
                         {
-                            if (includeDebug) Console.WriteLine(ex);
+                            if (includeDebug) System.Console.WriteLine(ex);
                         }
                     }
                 }
 
                 return tempPath;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) System.Console.WriteLine(ex);
                 return null;
             }
 #endif

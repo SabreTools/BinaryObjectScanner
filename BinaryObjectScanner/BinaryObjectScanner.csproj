@@ -31,7 +31,7 @@
     <DefineConstants>$(DefineConstants);WIN</DefineConstants>
   </PropertyGroup>
 
-  <!-- Exclude certain parts of external modules for .NET Framework 4.0 and above -->
+  <!-- Exclude certain parts of external modules for by default -->
   <PropertyGroup>
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
@@ -44,8 +44,16 @@
     </DefaultItemExcludes>
   </PropertyGroup>
 
+  <!-- Exclude all StormLibSharp for .NET Framework 4.0 -->
+  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net40`))">
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);
+      _EXTERNAL\stormlibsharp\src\**
+    </DefaultItemExcludes>
+  </PropertyGroup>
+
   <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, or non-Windows builds -->
-  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR !$(RuntimeIdentifier.StartsWith(`win-`))">
+  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR !$(RuntimeIdentifier.StartsWith(`win-x86`))">
     <DefaultItemExcludes>
       $(DefaultItemExcludes);
       _EXTERNAL\**

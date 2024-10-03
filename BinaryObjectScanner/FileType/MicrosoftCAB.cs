@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Extract(Stream? stream, string file, bool includeDebug)
         {
-#if NET20 || NET35 || NET40 || !WIN
+#if NET20 || NET35 || !WIN
             // Not supported for old .NET due to feature requirements
             // Not supported in non-Windows builds due to DLL requirements
             return null;
@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                string tempPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
                 Directory.CreateDirectory(tempPath);
 
                 using (var cabArchive = new MSCabinet(file))
@@ -48,18 +48,18 @@ namespace BinaryObjectScanner.FileType
                             Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
                             compressedFile.ExtractTo(tempFile);
                         }
-                        catch (Exception ex)
+                        catch (System.Exception ex)
                         {
-                            if (includeDebug) Console.WriteLine(ex);
+                            if (includeDebug) System.Console.WriteLine(ex);
                         }
                     }
                 }
 
                 return tempPath;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) System.Console.WriteLine(ex);
                 return null;
             }
 #endif
