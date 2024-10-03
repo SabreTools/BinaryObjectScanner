@@ -67,7 +67,7 @@ namespace BinaryObjectScanner
         /// <param name="fileProgress">Optional progress callback</param>
         public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress>? fileProgress = null)
         {
-            this._options = new Options
+            _options = new Options
             {
                 ScanArchives = scanArchives,
                 ScanContents = scanContents,
@@ -77,7 +77,7 @@ namespace BinaryObjectScanner
                 IncludeDebug = includeDebug,
             };
 
-            this._fileProgress = fileProgress;
+            _fileProgress = fileProgress;
 
 #if NET462_OR_GREATER || NETCOREAPP
             // Register the codepages
@@ -119,7 +119,7 @@ namespace BinaryObjectScanner
             DateTime startTime = DateTime.UtcNow;
 
             // Checkpoint
-            this._fileProgress?.Report(new ProtectionProgress(null, 0, null));
+            _fileProgress?.Report(new ProtectionProgress(null, 0, null));
 
             // Temp variables for reporting
             string tempFilePath = Path.GetTempPath();
@@ -158,7 +158,7 @@ namespace BinaryObjectScanner
                             reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                         // Checkpoint
-                        this._fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
+                        _fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
                         if (ScanPaths)
@@ -187,7 +187,7 @@ namespace BinaryObjectScanner
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
                         var fullProtection = fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", [.. fullProtectionList]) : null;
-                        this._fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
+                        _fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
 
@@ -200,7 +200,7 @@ namespace BinaryObjectScanner
                         reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
 
                     // Checkpoint
-                    this._fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
+                    _fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
                     if (ScanPaths)
@@ -229,7 +229,7 @@ namespace BinaryObjectScanner
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
                     var fullProtection = fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", [.. fullProtectionList]) : null;
-                    this._fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
+                    _fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 
                 // Throw on an invalid path
