@@ -36,21 +36,21 @@ namespace BinaryObjectScanner.Protection
 
             var name = pex.InternalName;
 
-            // Found in "KalypsoLauncher.dll" present in Redump entry 95617.
+            // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name?.Contains("KalypsoLauncher.dll") == true)
-                return $"Kalypso Launcher ({pex.GetInternalVersion()})";
+                return $"Kalypso Launcher (Version {pex.GetInternalVersion()})";
 
             name = pex.OriginalFilename;
 
-            // Found in "KalypsoLauncher.dll" present in Redump entry 95617.
+            // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name?.Contains("KalypsoLauncher.dll") == true)
-                return $"Kalypso Launcher ({pex.GetInternalVersion()})";
+                return $"Kalypso Launcher (Version {pex.GetInternalVersion()})";
 
             // Get the .text section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                // Found in 
+                // Found in "TFT.exe" in Redump entry 95617.
                 if (strs.Any(s => s.Contains("@KalypsoLauncherXml")))
                     return "Kalypso Launcher";
             }
