@@ -96,6 +96,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | IndyVCD | False | True | Unconfirmed¹ |
 | INTENIUM Trial & Buy Protection | True | False | |
 | JoWood X-Prot (v1/v2) / Xtreme-Protector | True | False | |
+| Kalypso Launcher | True | True | |
 | ~~Key2Audio~~ | True | True | Existing checks found to actually be indicators of OpenMG, not key2Audio specifically. |
 | Key-Lock (Dongle) | True | False | Unconfirmed¹ |
 | LabelGate CD | True | True | Currently only LabelGate CD2 is detected. |
