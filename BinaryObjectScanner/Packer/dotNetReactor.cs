@@ -2,6 +2,7 @@
 using SabreTools.Serialization.Wrappers;
 using System.Collections.Generic;
 using SabreTools.Matching;
+using SabreTools.Matching.Content;
 
 namespace BinaryObjectScanner.Packer
 {
