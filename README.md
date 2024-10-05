@@ -154,7 +154,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | Protection Name | Content Check | Path Check | Extractable | Notes |
 | --------------- | ------------- | ---------- | ----------- | ----- |
 | .NET Reactor | Yes | No | No | |
-| 7-zip SFX | Yes | No | No | |
+| 7-zip SFX | Yes | No | Yes | |
 | Advanced Installer / Caphyon Advanced Installer | Yes | No | No | |
 | Armadillo | Yes | No | No | |
 | ASPack | Yes | No | No | |
