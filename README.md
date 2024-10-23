@@ -59,6 +59,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | AegiSoft License Manager | True | True | |
 | Alpha-DVD | False | True | Unconfirmed¹ |
 | Alpha-ROM | True | False | |
+| Armadillo | True | False | | 
 | Bitpool | False | True | |
 | ByteShield | True | True | |
 | C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |
@@ -156,7 +157,6 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | .NET Reactor | Yes | No | No | |
 | 7-zip SFX | Yes | No | Yes | |
 | Advanced Installer / Caphyon Advanced Installer | Yes | No | No | |
-| Armadillo | Yes | No | No | |
 | ASPack | Yes | No | No | |
 | AutoPlay Media Studio | Yes | No | No | |
 | CExe | Yes | No | Yes | |
