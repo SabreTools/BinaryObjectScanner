@@ -41,15 +41,12 @@ namespace BinaryObjectScanner.Protection
 
 
         /// <inheritdoc/>
-        public string?
-            CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug) //Checks for Professional
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)//Checks for Professional
         {
             //I don't need this to check optgraph.dll, that's redundant. Unsure how to exclude that.
             if (pex.OverlayStrings != null)
             {
-                if (pex.OverlayStrings.Any(s =>
-                        s.Contains(
-                            "optgraph.dll"))) //Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
+                if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))//Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
                     // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
                     return "copy-X";
             }
@@ -58,17 +55,14 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckFilePath(string path) //Checks for Professional
+        public string? CheckFilePath(string path)//Checks for Professional
         {
-            if (Path.GetFileName(path)
-                .Equals("optgraph.dll",
-                    StringComparison.OrdinalIgnoreCase)) //Filename check for optgraph.dll disc check
+            if (Path.GetFileName(path).Equals("optgraph.dll", StringComparison.OrdinalIgnoreCase))//Filename check for optgraph.dll disc check
             {
                 return "copy-X";
             }
 
-            if (Path.GetFileName(path)
-                .Equals("iofile.x64", StringComparison.OrdinalIgnoreCase)) //Filename check for seemingly comorbid file.
+            if (Path.GetFileName(path).Equals("iofile.x64", StringComparison.OrdinalIgnoreCase))//Filename check for seemingly comorbid file.
             {
                 return "copy-X";
             }
@@ -83,7 +77,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35
         public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
 #else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files) // Checks for Light
+        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)// Checks for Light
 #endif
         {
 #if NET20 || NET35
@@ -93,9 +87,9 @@ namespace BinaryObjectScanner.Protection
 #endif
             if (files == null)
                 return protections;
-            var zdatFiles = files.Where(f => f.Remove(0, path.Length + 1).StartsWith("ZDAT")); //Gets files in ZDAT*
+            var zdatFiles = files.Where(f => f.Remove(0, path.Length + 1).StartsWith("ZDAT"));//Gets files in ZDAT*
             var fileList = zdatFiles.ToList();
-            fileList.Sort(); // Sorts list of files in ZDAT* so I can just pull the first one, later ones have a chance of the ring intersecting the start of the file.
+            fileList.Sort();// Sorts list of files in ZDAT* so I can just pull the first one, later ones have a chance of the ring intersecting the start of the file.
             if (fileList.Count > 0)
             {
                 FileStream stream = new FileStream(fileList[0], FileMode.Open, FileAccess.Read);
