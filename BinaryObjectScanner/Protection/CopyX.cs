@@ -21,23 +21,13 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string?
             CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug) //checks for Professional
-        {
-            //I need to change this to check all executables, not just portable ones, but including portable ones. I think. I'll figure out how to do that later. Do i need to? does rdata work for this?
-            //i dont need this to check optgraph.dll, that's redundant
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
-            // Get the .rdata section strings, if they exist
-            var name = pex.FileDescription;
-
-
+        { 
+            //i dont need this to check optgraph.dll, that's redundant. Unsure how to exclude that
             if (pex.OverlayStrings != null)
             {
                 if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))
                     return "copy-X";
             }
-
             return null;
         }
 
@@ -65,18 +55,16 @@ namespace BinaryObjectScanner.Protection
             {
                 protections.Enqueue("x-Copy");
             }
-
             return protections;
         }
 
         /// <inheritdoc/>
-        public string? CheckFilePath(string path)
+        public string? CheckFilePath(string path) //checks for Professional
         {
             if (Path.GetFileName(path).Equals("optgraph.dll", StringComparison.OrdinalIgnoreCase))
             {
                 return "copy-X";
             }
-
             return null;
         }
     }
