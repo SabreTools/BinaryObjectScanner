@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Packer
     /// 
     /// Resource that could be useful for extraction: https://github.com/SychicBoy/NETReactorSlayer
     /// </summary>
-    public class dotNetReactor : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class DotNetReactor : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

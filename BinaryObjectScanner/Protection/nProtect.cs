@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
     /// https://nprotect.com/nprotect_pdf/nProtect_KeyCryptV.pdf
     /// https://nprotect.com/nprotect_pdf/nProtect_KeyCrypt.pdf
     /// </summary>
-    public class nProtect : IPathCheck, IPortableExecutableCheck
+    public class NProtect : IPathCheck, IPortableExecutableCheck
     {
         // TODO: Add LE checks for "npkcrypt.vxd" in Redump entry 90526.
         // TODO: Add text check for the string mentioned in https://github.com/mnadareski/BinaryObjectScanner/issues/154.
