@@ -38,6 +38,11 @@ namespace BinaryObjectScanner.Protection
         // Due to gov's minor name variance, sound.x64 sometimes being intersected by a ring at the start, and iofile.x64 being referenced directly in optgraph.x64, I chose to just check iofile.x64.
         // TODO: optgraph.dll also contains DRM to prevent kernel debugger SoftICE from being used, via a process called SoftICE-Test. I don't know if this is specifically part of copy-X, or if it's an external solution employed by both copy-X and also other companies. If it's the latter, it should have its own check. It has none here since it wouldn't be necessary.
 
+
+        // Light:
+        // All instances of light contain 1 or more files in the directory at the end of the image. They all consist of either 0x00, or some data that matches between entries (and also is present in the 3 Professional files), except for the parts with the rings running through them.
+        // TODO: Check the last directory alphabetically and not just ZDAT*
+
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)//Checks for Professional
         {
@@ -71,36 +76,6 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc/>
-        public string? CheckFilePath(string path)//Checks for Professional
-        {
-            // Samples: http://redump.org/disc/108150/, http://redump.org/disc/48393/
-            if (Path.GetFileName(path).Equals("optgraph.dll", StringComparison.OrdinalIgnoreCase))//Filename check for optgraph.dll disc check
-            {
-                return "copy-X";
-            }
-
-            if (Path.GetFileName(path).StartsWith("gov_", StringComparison.OrdinalIgnoreCase) && Path.GetFileName(path).EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
-            {
-                return "copy-X";
-            }
-
-            if (Path.GetFileName(path).Equals("iofile.x64", StringComparison.OrdinalIgnoreCase))//Filename check for seemingly comorbid file.
-            {
-                return "copy-X";
-            }
-
-            if (Path.GetFileName(path).Equals("sound.x64", StringComparison.OrdinalIgnoreCase))
-            {
-                return "copy-X";
-            }
-
-            return null;
-        }
-
-        // Light:
-        // All instances of light contain 1 or more files in the directory at the end of the image. They all consist of either 0x00, or some data that matches between entries (and also is present in the 3 Professional files), except for the parts with the rings running through them.
-        // TODO: Check the last directory alphabetically and not just ZDAT*
         /// <inheritdoc/>
 #if NET20 || NET35
         public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)// Checks for Light
@@ -155,6 +130,33 @@ namespace BinaryObjectScanner.Protection
             }
 
             return protections;
+        }
+
+        /// <inheritdoc/>
+        public string? CheckFilePath(string path)//Checks for Professional
+        {
+            // Samples: http://redump.org/disc/108150/, http://redump.org/disc/48393/
+            if (Path.GetFileName(path).Equals("optgraph.dll", StringComparison.OrdinalIgnoreCase))//Filename check for optgraph.dll disc check
+            {
+                return "copy-X";
+            }
+
+            if (Path.GetFileName(path).StartsWith("gov_", StringComparison.OrdinalIgnoreCase) && Path.GetFileName(path).EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
+            {
+                return "copy-X";
+            }
+
+            if (Path.GetFileName(path).Equals("iofile.x64", StringComparison.OrdinalIgnoreCase))//Filename check for seemingly comorbid file.
+            {
+                return "copy-X";
+            }
+
+            if (Path.GetFileName(path).Equals("sound.x64", StringComparison.OrdinalIgnoreCase))
+            {
+                return "copy-X";
+            }
+
+            return null;
         }
     }
 }
