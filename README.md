@@ -73,6 +73,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Cenga ProtectDVD | True | True | |
 | Channelware | True | True | Version finding and detection of later versions unimplemented |
 | ChosenBytes CodeLock | True | True | Partially unconfirmed² |
+| copy-X | True | True | |
 | CopyKiller | True | True | |
 | CopyLok/CodeLok | True | False | |
 | CrypKey | True | True | |
@@ -133,7 +134,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Sysiphus / Sysiphus DVD | True | False | |
 | TAGES | True | True | Partially unconfirmed² |
 | Themida/WinLicense/Code Virtualizer | True | False | Only certain products/versions currently detected |
-| Tivola Ring Protection | False | True | |
+| ~~Tivola Ring Protection~~ | False | True | Existing checks found to actually be indicators of copy-X, rather than some Tivola-specific ring protection. |
 | TZCopyProtection | False | True | Partially unconfirmed² |
 | Uplay | True | True | |
 | Windows Media Data Session DRM | True | True | |
