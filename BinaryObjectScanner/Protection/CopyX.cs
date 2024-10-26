@@ -9,6 +9,8 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
+using SabreTools.Matching;
+using SabreTools.Matching.Content;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -94,29 +96,31 @@ namespace BinaryObjectScanner.Protection
             fileList.Sort();
             if (fileList.Count > 0)
             {
-                // Checks for whatever this data is.
-                // Samples: Redump ID 84759, Redump ID 107929. Professional discs also have this data, hence the exclusion check.
-                byte[] compareMe = new byte[64]
-                {
-                    0x02, 0xFE, 0x4A, 0x4F, 0x52, 0x4B, 0x1C, 0xE0, 0x79, 0x8C, 0x7F, 0x85, 0x04, 0x00, 0x46, 0x46, 0x49, 0x46, 0x07, 0xF9, 0x9F, 0xA0, 0xA1, 0x9D, 0xDA, 0xB6, 0x2C, 0x2D, 0x2D, 0x2C, 0xFF, 0x00, 0x6F, 0x6E, 0x71, 0x6A, 0xFC, 0x06, 0x64, 0x62, 0x65, 0x5F, 0xFB, 0x06, 0x31, 0x31, 0x31, 0x31, 0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD, 0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34
-                };
                 try
                 {
                     FileStream stream = new FileStream(fileList[0], FileMode.Open, FileAccess.Read);
-                    byte[] block = new byte[64];
-                    stream.Read(block, 0, 64);
-                    // Excludes files with .x64 extension to avoid flagging Professional files.
-                    if (block.SequenceEqual(compareMe) && !fileList[0].EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
+                    byte[] block = new byte[1024];
+                    stream.Read(block, 0, 1024);
+                    // Checks if the file contains 0x00
+                    // Samples: Redump ID 81628
+                    if (block.All(thisByte => thisByte.Equals(0x00)))
                     {
                         protections.Enqueue("copy-X");
                     }
                     else
                     {
-                        // Checks if the file contains 0x00
-                        // Samples: Redump ID 81628
-                        block = new byte[1024];
-                        stream.Read(block, 0, 1024);
-                        if (block.All(thisByte => thisByte.Equals(0x00)))
+                        // Checks for whatever this data is.
+                        // Samples: Redump ID 84759, Redump ID 107929. Professional discs also have this data, hence the exclusion check.
+                        var matchers = new List<ContentMatchSet>
+                        {
+                            new(new byte?[]
+                            {
+                                0x02, 0xFE, 0x4A, 0x4F, 0x52, 0x4B, 0x1C, 0xE0, 0x79, 0x8C, 0x7F, 0x85, 0x04, 0x00, 0x46, 0x46, 0x49, 0x46, 0x07, 0xF9, 0x9F, 0xA0, 0xA1, 0x9D, 0xDA, 0xB6, 0x2C, 0x2D, 0x2D, 0x2C, 0xFF, 0x00, 0x6F, 0x6E, 0x71, 0x6A, 0xFC, 0x06, 0x64, 0x62, 0x65, 0x5F, 0xFB, 0x06, 0x31, 0x31, 0x31, 0x31, 0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD, 0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34
+                            }, "copy-X"),
+                        };
+                        var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, true);
+                        // Excludes files with .x64 extension to avoid flagging Professional files.
+                        if (!string.IsNullOrEmpty(match) && !fileList[0].EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
                         {
                             protections.Enqueue("copy-X");
                         }
