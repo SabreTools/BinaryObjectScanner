@@ -22,14 +22,14 @@ namespace BinaryObjectScanner.Protection
     {
         // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial.
         // audio is Audio CD only and has no data, so it can't be checked for.
-        // I have no samples of Trial at the moment, so it can't be checked for either.
-        // There are two kinds of copy-X that I've observed; those with only rings, and those with rings and a disc check.
-        // I am assuming based on 0 evidence that the former is Light and the latter is Professional.
-        // Because I have no evidence, I am just returning copy-X for now. I have pre-emptively begun seperating the two,
+        // No samples of Trial are known at the moment, so it can't be checked for either.
+        // There are two kinds of copy-X generally observed; those with only rings, and those with rings and a disc check.
+        // These comments assume with 0 evidence that the former is Light and the latter is Professional.
+        // Because there is no evidence, only copy-X is being returned for now. This check has pre-emptively separated the two,
         // just for when a designation can be applied for sure.
 
         // Overall:
-        // Whenever I say "at the end of" or "at the start of" pertaining to the filesystem, I mean alphabetically, because this is how copy-X images seem to be mastered.
+        // Whenever these comments state "at the end of" or "at the start of" pertaining to the filesystem, they refer to alphabetical order, because this is how copy-X images seem to be mastered.
         // Both Light and Professional have a directory at the end of the image. The files within this directory are intersected by the physical ring.
         // This file is usually called ZDAT, but not always. At least one instance of Light calls it ZDATA. At least one instance of Professional calls it System.
         // Seemingly it can be anything. It doesn't help that most known samples are specifically from one company's games, Tivola. Still, most use ZDAT.
@@ -37,8 +37,8 @@ namespace BinaryObjectScanner.Protection
         // Professional:
         // All instances of professional contain a disc check, performed via optgraph.dll. 
         // All instances of professional contain in the directory at the end of the image 3 files. gov_[something].x64, iofile.x64, and sound.x64.
-        // Due to gov's minor name variance, sound.x64 sometimes being intersected by a ring at the start, and iofile.x64 being referenced directly in optgraph.x64, I chose to just check iofile.x64.
-        // TODO: optgraph.dll also contains DRM to prevent kernel debugger SoftICE from being used, via a process called SoftICE-Test. I don't know if this is specifically part of copy-X, or if it's an external solution employed by both copy-X and also other companies. If it's the latter, it should have its own check. It has none here since it wouldn't be necessary.
+        // Due to gov's minor name variance, sound.x64 sometimes being intersected by a ring at the start, and iofile.x64 being referenced directly in optgraph.x64, only iofile.x64 is being checked for now.
+        // TODO: optgraph.dll also contains DRM to prevent kernel debugger SoftICE from being used, via a process called SoftICE-Test. It is not currently known if this is specifically part of copy-X, or if it's an external solution employed by both copy-X and also other companies. If it's the latter, it should have its own check. It has none here since it wouldn't be necessary.
 
 
         // Light:
@@ -48,7 +48,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)//Checks for Professional
         {
-            //I don't need this to check optgraph.dll, that's redundant. Unsure how to exclude that.
             if (pex.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
