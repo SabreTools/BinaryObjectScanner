@@ -55,7 +55,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
                 // This might be better removed later, as Redump ID 82475 is a false positive, and also doesn't actually contain the actual optgraph.dll file.
-                // TODO: Find a way to check for situations like Redump ID 48393/, where the string is spaced out with 0x00 between letters and does not show up on string checks.
+                // TODO: Find a way to check for situations like Redump ID 48393, where the string is spaced out with 0x00 between letters and does not show up on string checks.
                 // TODO: This might need to check every single section. Unsure until more samples are acquired.
                 if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))
                 {
