@@ -20,8 +20,9 @@ namespace BinaryObjectScanner.Protection
     // TODO: add documentation/comments to methods
     public class CopyX : IPathCheck, IPortableExecutableCheck
     {
-        // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial.
-        // audio is Audio CD only and has no data, so it can't be checked for.
+        // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
+        // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial Maker.
+        // audio is for Audio CDs. Might be scannable, might not. Samples needed to confirm
         // No samples of Trial are known at the moment, so it can't be checked for either.
         // There are two kinds of copy-X generally observed; those with only rings, and those with rings and a disc check.
         // These comments assume with 0 evidence that the former is Light and the latter is Professional.
