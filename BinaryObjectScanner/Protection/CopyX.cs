@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
     // TODO: add documentation/comments to methods
     public class CopyX : IPathCheck, IPortableExecutableCheck
     {
-        //There are four kinds of copy-X; Light, Profesisonal, audio, and Trial.
+        // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial.
         // audio is Audio CD only and has no data, so it can't be checked for.
         // I have no samples of Trial at the moment, so it can't be checked for either.
         // There are two kinds of copy-X that I've observed; those with only rings, and those with rings and a disc check.
@@ -50,26 +50,24 @@ namespace BinaryObjectScanner.Protection
             if (pex.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
-                // This might be better removed later, as http://redump.org/disc/82475/ is a false positive, and also doesn't actually contain the actual optgraph.dll file.
-                // TODO: Find a way to check for situations like http://redump.org/disc/48393/, where the string is spaced out with 0x00 between letters and does not show up on string checks.
+                // This might be better removed later, as Redump ID 82475 is a false positive, and also doesn't actually contain the actual optgraph.dll file.
+                // TODO: Find a way to check for situations like Redump ID 48393/, where the string is spaced out with 0x00 between letters and does not show up on string checks.
                 // TODO: This might need to check every single section. Unsure until more samples are acquired.
                 if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))
                 {
                     // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
-                    // Samples: http://redump.org/disc/108150/
+                    // Samples: Redump ID 108150
                     return "copy-X";
                 }
-                else
+            }
+
+            var strs = pex.GetFirstSectionStrings(".rdata");
+            if (strs != null)
+            {
+                if (strs.Any(s => s.Contains("optgraph.dll")))
                 {
-                    var strs = pex.GetFirstSectionStrings(".rdata");
-                    if (strs != null)
-                    {
-                        if (strs.Any(s => s.Contains("optgraph.dll")))
-                        {
-                            // Samples: http://redump.org/disc/82475/ (False positive, but probably catches original Emergency 2), would catch http://redump.org/disc/48393/
-                            return "copy-X";
-                        }
-                    }
+                    // Samples: Redump ID 82475 (False positive, but probably catches original Emergency 2), would catch Redump ID 48393
+                    return "copy-X";
                 }
             }
 
@@ -97,7 +95,7 @@ namespace BinaryObjectScanner.Protection
             if (fileList.Count > 0)
             {
                 // Checks for whatever this data is.
-                // Samples: http://redump.org/disc/84759/, http://redump.org/disc/107929/. Professional discs also have this data, hence the exclusion check.
+                // Samples: Redump ID 84759, Redump ID 107929. Professional discs also have this data, hence the exclusion check.
                 byte[] compareMe = new byte[64]
                 {
                     0x02, 0xFE, 0x4A, 0x4F, 0x52, 0x4B, 0x1C, 0xE0, 0x79, 0x8C, 0x7F, 0x85, 0x04, 0x00, 0x46, 0x46, 0x49, 0x46, 0x07, 0xF9, 0x9F, 0xA0, 0xA1, 0x9D, 0xDA, 0xB6, 0x2C, 0x2D, 0x2D, 0x2C, 0xFF, 0x00, 0x6F, 0x6E, 0x71, 0x6A, 0xFC, 0x06, 0x64, 0x62, 0x65, 0x5F, 0xFB, 0x06, 0x31, 0x31, 0x31, 0x31, 0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD, 0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34
@@ -107,7 +105,7 @@ namespace BinaryObjectScanner.Protection
                     FileStream stream = new FileStream(fileList[0], FileMode.Open, FileAccess.Read);
                     byte[] block = new byte[64];
                     stream.Read(block, 0, 64);
-                    //Excludes files with .x64 extension to avoid flagging Professional files.
+                    // Excludes files with .x64 extension to avoid flagging Professional files.
                     if (block.SequenceEqual(compareMe) && !fileList[0].EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
                     {
                         protections.Enqueue("copy-X");
@@ -115,7 +113,7 @@ namespace BinaryObjectScanner.Protection
                     else
                     {
                         // Checks if the file contains 0x00
-                        // Samples: http://redump.org/disc/81628/
+                        // Samples: Redump ID 81628
                         block = new byte[1024];
                         stream.Read(block, 0, 1024);
                         if (block.All(thisByte => thisByte.Equals(0x00)))
@@ -135,7 +133,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckFilePath(string path)//Checks for Professional
         {
-            // Samples: http://redump.org/disc/108150/, http://redump.org/disc/48393/
+            // Samples: Redump ID 108150, Redump ID 48393
             if (Path.GetFileName(path).Equals("optgraph.dll", StringComparison.OrdinalIgnoreCase))//Filename check for optgraph.dll disc check
             {
                 return "copy-X";
