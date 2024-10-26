@@ -51,96 +51,97 @@ Binary Object Scanner strives to have both full compatibility for scanning acros
 
 Below is a list of protections detected by BinaryObjectScanner. The two columns explain what sort of checks are performed to determine how the protection is detected. Generally speaking, it's better to have a content check than a path check.
 
-| Protection Name | Content Check | Path Check | Notes |
-| --------------- | ------------- | ---------- | ----- |
-| 3PLock | True | False | |
-| 321Studios Online Activation | True | False | |
-| ActiveMARK | True | False | Version 5 unconfirmed²; version finding incomplete |
-| AegiSoft License Manager | True | True | |
-| Alpha-DVD | False | True | Unconfirmed¹ |
-| Alpha-ROM | True | False | |
-| Armadillo | True | False | | 
-| Bitpool | False | True | |
-| ByteShield | True | True | |
-| C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |
-| Cactus Data Shield | True | True | |
-| CD-Cops / DVD-Cops | True | True | Partially unconfirmed² |
-| CD-Guard | True | True | |
-| CD-Lock | True | True | |
-| CD-Protector | False | True | |
-| CD-X | False | True | Unconfirmed¹ |
-| CDSHiELD SE | True | False | |
-| Cenga ProtectDVD | True | True | |
-| Channelware | True | True | Version finding and detection of later versions unimplemented |
-| ChosenBytes CodeLock | True | True | Partially unconfirmed² |
-| CopyKiller | True | True | |
-| CopyLok/CodeLok | True | False | |
-| CrypKey | True | True | |
-| Cucko (EA Custom) | True | False | Does not detect all known cases |
-| Denuvo Anti-Cheat/Anti-Tamper| True | True | |
-| DigiGuard | True | True | |
-| Dinamic Multimedia Protection/LockBlocks | False | True | LockBlocks needs manual confirmation of the presence of 2 rings |
-| DiscGuard | True | True | Partially unconfirmed² |
-| DVD-Movie-PROTECT | False | True | Unconfirmed¹ |
-| DVD Crypt | False | True | Unconfirmed¹ |
-| EA Anti Cheat | True | True | |
-| EA Protections | True | False | Including EA CDKey and EA DRM. |
-| Easy Anti-Cheat | True | True | |
-| Engine32 | True | False | |
-| ~~Executable-Based CD Check~~ | True | False | Disabled due to overly-broad checks |
-| Executable-Based Online Registration | True | False | Possibly too broad |
-| Freelock | False | True | |
-| Games for Windows - Live | True | True | |
-| Gefest Protection System | True | False | |
-| Hexalock AutoLock | True | True | |
-| Impulse Reactor / Stardock Product Activation | True | True | |
-| IndyVCD | False | True | Unconfirmed¹ |
-| INTENIUM Trial & Buy Protection | True | False | |
-| JoWood X-Prot (v1/v2) / Xtreme-Protector | True | False | |
-| Kalypso Launcher | True | True | |
-| ~~Key2Audio~~ | True | True | Existing checks found to actually be indicators of OpenMG, not key2Audio specifically. |
-| Key-Lock (Dongle) | True | False | Unconfirmed¹ |
-| LabelGate CD | True | True | Currently only LabelGate CD2 is detected. |
-| LibCrypt | True | False | Separate subfile scan only |
-| LaserLok | True | True | |
-| MediaCloQ | True | True | |
-| MediaMax CD3 | True | True | |
-| MGI Registration | True | False | |
-| NEAC Protect | True | True | |
-| nProtect GameGuard | True | True | |
-| nProtect KeyCrypt | True | True | |
-| OpenMG | True | True | |
-| Origin | True | True | |
-| phenoProtect | False | False | Text file check only |
-| PlayJ | True | True | |
-| ProtectDISC / VOB ProtectCD/DVD | True | False | |
-| Protect DVD-Video | False | True | Unconfirmed¹ |
-| PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
-| Rainbow Sentinel | True | True | |
-| RealArcade | True | True | |
-| Ring PROTECH / ProRing | True | True | Partially unconfirmed² |
-| RipGuard | True | True | Partially unconfirmed² |
-| Roxxe | True | False | |
-| SafeDisc / SafeCast | True | True | Can't distinguish between some versions of SafeDisc and SafeCast |
-| SafeLock | False | True | |
-| SecuROM | True | True | v8.x and White Label detected partially² |
-| SmartE | True | True | |
-| SoftLock | True | True | |
-| SolidShield | True | True | Some Wrapper v1 not detected² |
-| StarForce | True | False | Partially unconfirmed², commented out issue with `protect.exe` false positives |
-| Steam | True | True | |
-| SVKP (Slovak Protector) | True | True | |
-| Sysiphus / Sysiphus DVD | True | False | |
-| TAGES | True | True | Partially unconfirmed² |
-| Themida/WinLicense/Code Virtualizer | True | False | Only certain products/versions currently detected |
-| Tivola Ring Protection | False | True | |
-| TZCopyProtection | False | True | Partially unconfirmed² |
-| Uplay | True | True | |
-| Windows Media Data Session DRM | True | True | |
-| Winlock | False | True | |
-| WTM CD Protect | True | True | |
-| XCP | True | True | |
-| Zzxzz | False | True | |
+| Protection Name                                               | Content Check | Path Check | Notes                                                                                                                                                                                                                                                              |
+|---------------------------------------------------------------| ------------- | ---------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 3PLock                                                        | True | False |                                                                                                                                                                                                                                                                    |
+| 321Studios Online Activation                                  | True | False |                                                                                                                                                                                                                                                                    |
+| ActiveMARK                                                    | True | False | Version 5 unconfirmed²; version finding incomplete                                                                                                                                                                                                                 |
+| AegiSoft License Manager                                      | True | True |                                                                                                                                                                                                                                                                    |
+| Alpha-DVD                                                     | False | True | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| Alpha-ROM                                                     | True | False |                                                                                                                                                                                                                                                                    |
+| Armadillo                                                     | True | False |                                                                                                                                                                                                                                                                    | 
+| Bitpool                                                       | False | True |                                                                                                                                                                                                                                                                    |
+| ByteShield                                                    | True | True |                                                                                                                                                                                                                                                                    |
+| C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True |                                                                                                                                                                                                                                                                    |
+| Cactus Data Shield                                            | True | True |                                                                                                                                                                                                                                                                    |
+| CD-Cops / DVD-Cops                                            | True | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| CD-Guard                                                      | True | True |                                                                                                                                                                                                                                                                    |
+| CD-Lock                                                       | True | True |                                                                                                                                                                                                                                                                    |
+| CD-Protector                                                  | False | True |                                                                                                                                                                                                                                                                    |
+| CD-X                                                          | False | True | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| CDSHiELD SE                                                   | True | False |                                                                                                                                                                                                                                                                    |
+| Cenga ProtectDVD                                              | True | True |                                                                                                                                                                                                                                                                    |
+| Channelware                                                   | True | True | Version finding and detection of later versions unimplemented                                                                                                                                                                                                      |
+| ChosenBytes CodeLock                                          | True | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| copy-X                                                        | True | True |                                      <br/>                                                                                                                                                                                                                              |
+| CopyKiller                                                    | True | True |                                                                                                                                                                                                                                                                    |
+| CopyLok/CodeLok                                               | True | False |                                                                                                                                                                                                                                                                    |
+| CrypKey                                                       | True | True |                                                                                                                                                                                                                                                                    |
+| Cucko (EA Custom)                                             | True | False | Does not detect all known cases                                                                                                                                                                                                                                    |
+| Denuvo Anti-Cheat/Anti-Tamper                                 | True | True |                                                                                                                                                                                                                                                                    |
+| DigiGuard                                                     | True | True |                                                                                                                                                                                                                                                                    |
+| Dinamic Multimedia Protection/LockBlocks                      | False | True | LockBlocks needs manual confirmation of the presence of 2 rings                                                                                                                                                                                                    |
+| DiscGuard                                                     | True | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| DVD-Movie-PROTECT                                             | False | True | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| DVD Crypt                                                     | False | True | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| EA Anti Cheat                                                 | True | True |                                                                                                                                                                                                                                                                    |
+| EA Protections                                                | True | False | Including EA CDKey and EA DRM.                                                                                                                                                                                                                                     |
+| Easy Anti-Cheat                                               | True | True |                                                                                                                                                                                                                                                                    |
+| Engine32                                                      | True | False |                                                                                                                                                                                                                                                                    |
+| ~~Executable-Based CD Check~~                                 | True | False | Disabled due to overly-broad checks                                                                                                                                                                                                                                |
+| Executable-Based Online Registration                          | True | False | Possibly too broad                                                                                                                                                                                                                                                 |
+| Freelock                                                      | False | True |                                                                                                                                                                                                                                                                    |
+| Games for Windows - Live                                      | True | True |                                                                                                                                                                                                                                                                    |
+| Gefest Protection System                                      | True | False |                                                                                                                                                                                                                                                                    |
+| Hexalock AutoLock                                             | True | True |                                                                                                                                                                                                                                                                    |
+| Impulse Reactor / Stardock Product Activation                 | True | True |                                                                                                                                                                                                                                                                    |
+| IndyVCD                                                       | False | True | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| INTENIUM Trial & Buy Protection                               | True | False |                                                                                                                                                                                                                                                                    |
+| JoWood X-Prot (v1/v2) / Xtreme-Protector                      | True | False |                                                                                                                                                                                                                                                                    |
+| Kalypso Launcher                                              | True | True |                                                                                                                                                                                                                                                                    |
+| ~~Key2Audio~~                                                 | True | True | Existing checks found to actually be indicators of OpenMG, not key2Audio specifically.                                                                                                                                                                             |
+| Key-Lock (Dongle)                                             | True | False | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| LabelGate CD                                                  | True | True | Currently only LabelGate CD2 is detected.                                                                                                                                                                                                                          |
+| LibCrypt                                                      | True | False | Separate subfile scan only                                                                                                                                                                                                                                         |
+| LaserLok                                                      | True | True |                                                                                                                                                                                                                                                                    |
+| MediaCloQ                                                     | True | True |                                                                                                                                                                                                                                                                    |
+| MediaMax CD3                                                  | True | True |                                                                                                                                                                                                                                                                    |
+| MGI Registration                                              | True | False |                                                                                                                                                                                                                                                                    |
+| NEAC Protect                                                  | True | True |                                                                                                                                                                                                                                                                    |
+| nProtect GameGuard                                            | True | True |                                                                                                                                                                                                                                                                    |
+| nProtect KeyCrypt                                             | True | True |                                                                                                                                                                                                                                                                    |
+| OpenMG                                                        | True | True |                                                                                                                                                                                                                                                                    |
+| Origin                                                        | True | True |                                                                                                                                                                                                                                                                    |
+| phenoProtect                                                  | False | False | Text file check only                                                                                                                                                                                                                                               |
+| PlayJ                                                         | True | True |                                                                                                                                                                                                                                                                    |
+| ProtectDISC / VOB ProtectCD/DVD                               | True | False |                                                                                                                                                                                                                                                                    |
+| Protect DVD-Video                                             | False | True | Unconfirmed¹                                                                                                                                                                                                                                                       |
+| PlayStation Anti-modchip                                      | True | False | En/Jp, not "Red Hand"; PSX executables only                                                                                                                                                                                                                        |
+| Rainbow Sentinel                                              | True | True |                                                                                                                                                                                                                                                                    |
+| RealArcade                                                    | True | True |                                                                                                                                                                                                                                                                    |
+| Ring PROTECH / ProRing                                        | True | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| RipGuard                                                      | True | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| Roxxe                                                         | True | False |                                                                                                                                                                                                                                                                    |
+| SafeDisc / SafeCast                                           | True | True | Can't distinguish between some versions of SafeDisc and SafeCast                                                                                                                                                                                                   |
+| SafeLock                                                      | False | True |                                                                                                                                                                                                                                                                    |
+| SecuROM                                                       | True | True | v8.x and White Label detected partially²                                                                                                                                                                                                                           |
+| SmartE                                                        | True | True |                                                                                                                                                                                                                                                                    |
+| SoftLock                                                      | True | True |                                                                                                                                                                                                                                                                    |
+| SolidShield                                                   | True | True | Some Wrapper v1 not detected²                                                                                                                                                                                                                                      |
+| StarForce                                                     | True | False | Partially unconfirmed², commented out issue with `protect.exe` false positives                                                                                                                                                                                     |
+| Steam                                                         | True | True |                                                                                                                                                                                                                                                                    |
+| SVKP (Slovak Protector)                                       | True | True |                                                                                                                                                                                                                                                                    |
+| Sysiphus / Sysiphus DVD                                       | True | False |                                                                                                                                                                                                                                                                    |
+| TAGES                                                         | True | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| Themida/WinLicense/Code Virtualizer                           | True | False | Only certain products/versions currently detected                                                                                                                                                                                                                  |
+| ~~Tivola Ring Protection~~                                    | False | True | Existing checks found to actually be indicators of copy-X, rather than some Tivola-specific ring protection. |
+| TZCopyProtection                                              | False | True | Partially unconfirmed²                                                                                                                                                                                                                                             |
+| Uplay                                                         | True | True |                                                                                                                                                                                                                                                                    |
+| Windows Media Data Session DRM                                | True | True |                                                                                                                                                                                                                                                                    |
+| Winlock                                                       | False | True |                                                                                                                                                                                                                                                                    |
+| WTM CD Protect                                                | True | True |                                                                                                                                                                                                                                                                    |
+| XCP                                                           | True | True |                                                                                                                                                                                                                                                                    |
+| Zzxzz                                                         | False | True |                                                                                                                                                                                                                                                                    |
 
 ### Notes
 
