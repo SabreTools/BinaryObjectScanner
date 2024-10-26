@@ -11,6 +11,7 @@ using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -47,8 +48,9 @@ namespace BinaryObjectScanner.Protection
         // TODO: Check the last directory alphabetically and not just ZDAT*
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)//Checks for Professional
+        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
+            // Checks for Professional
             if (pex.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
@@ -78,7 +80,7 @@ namespace BinaryObjectScanner.Protection
 
         /// <inheritdoc/>
 #if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)// Checks for Light
+        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
 #else
         public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
 #endif
@@ -88,9 +90,12 @@ namespace BinaryObjectScanner.Protection
 #else
             var protections = new ConcurrentQueue<string>();
 #endif
+            // Checks for Light
+
             if (files == null)
                 return protections;
-            var zdatFiles = files.Where(f => f.Remove(0, path.Length + 1).StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase));//Gets files in ZDAT*
+            //Gets files in ZDAT*
+            var zdatFiles = files.Where(f => f.Remove(0, path.Length + 1).StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase));
             var fileList = zdatFiles.ToList();
             // Sorts list of files in ZDAT* so I can just pull the first one, later ones have a chance of the ring intersecting the start of the file.
             fileList.Sort();
@@ -103,6 +108,13 @@ namespace BinaryObjectScanner.Protection
                     stream.Read(block, 0, 1024);
                     // Checks if the file contains 0x00
                     // Samples: Redump ID 81628
+                    var matchers = new List<ContentMatchSet>
+                    {
+                        new(new byte?[]
+                        {
+                            Enumerable<byte>.Repeat(0x00, 1024).ToList();
+                        }, "copy-X"),
+                    };
                     if (block.All(thisByte => thisByte.Equals(0x00)))
                     {
                         protections.Enqueue("copy-X");
@@ -135,30 +147,27 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckFilePath(string path)//Checks for Professional
+        public string? CheckFilePath(string path)
         {
-            // Samples: Redump ID 108150, Redump ID 48393
-            if (Path.GetFileName(path).Equals("optgraph.dll", StringComparison.OrdinalIgnoreCase))//Filename check for optgraph.dll disc check
+            // Checks for Professional
+            var matchers = new List<PathMatchSet>
             {
-                return "copy-X";
-            }
-
-            if (Path.GetFileName(path).StartsWith("gov_", StringComparison.OrdinalIgnoreCase) && Path.GetFileName(path).EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
-            {
-                return "copy-X";
-            }
-
-            if (Path.GetFileName(path).Equals("iofile.x64", StringComparison.OrdinalIgnoreCase))//Filename check for seemingly comorbid file.
-            {
-                return "copy-X";
-            }
-
-            if (Path.GetFileName(path).Equals("sound.x64", StringComparison.OrdinalIgnoreCase))
-            {
-                return "copy-X";
-            }
-
-            return null;
+                // Samples: Redump ID 108150, Redump ID 48393
+                
+                // File responsible for disc check
+                new(new FilePathMatch("optgraph.dll"), "copy-X"),
+                
+                // Seemingly comorbid file, referenced in above file
+                new(new FilePathMatch("iofile.x64"), "copy-X"),
+                
+                // Seemingly comorbid file
+                new(new FilePathMatch("sound.x64"), "copy-X"),
+ 
+                // Seemingly comorbid file
+                // Check commented out until implementation can be decided
+                // new(new FilePathMatch("gov_*.x64"), "copy-X"),
+            };
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }
