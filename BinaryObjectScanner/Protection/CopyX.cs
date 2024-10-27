@@ -64,10 +64,10 @@ namespace BinaryObjectScanner.Protection
         {
 
             // Checks for Professional
-
             var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
+            
             if (pex.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
