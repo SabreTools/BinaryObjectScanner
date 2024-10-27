@@ -143,7 +143,7 @@ namespace BinaryObjectScanner.Protection
                             0xFB, 0x06, 0x33, 0x34
                         }, "copy-X"),
                     };
-                    var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, true);
+                    var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, false);
                     if (!string.IsNullOrEmpty(match))
                     {
                         protections.Enqueue(match);
