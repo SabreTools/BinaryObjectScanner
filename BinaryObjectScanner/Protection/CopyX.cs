@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Protection
     {
         // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
         // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial Maker.
-        // audio is for Audio CDs. Might be scannable, might not. Samples needed to confirm
+        // Audio is for Audio CDs. Might be scannable, might not. Samples needed to confirm.
         // No samples of Trial are known at the moment, so it can't be checked for either.
         // There are two kinds of copy-X generally observed; those with only rings, and those with rings and a disc check.
         // These comments assume with 0 evidence that the former is Light and the latter is Professional.
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
 
         // Overall:
         // Whenever these comments state "at the end of" or "at the start of" pertaining to the filesystem, they refer
-        // to alphabetical order, because this is how copy-X images seem to be mastered.
+        // to alphabetical order, because this is how copy-X images seem to be mastered usually (not always, but w/e).
         // Both Light and Professional have a directory at the end of the image. The files within this directory are
         // intersected by the physical ring.
         // This file is usually called ZDAT, but not always. At least one instance of Light calls it ZDATA. At least one
@@ -64,13 +64,15 @@ namespace BinaryObjectScanner.Protection
         {
 
             // Checks for Professional
+            // PEX checks intentionally only detect Professional
+            
             var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
             
             if (pex.OverlayStrings != null)
             {
-                // Checks if main executable contains reference to optgraph.dll. Emergency 4's is missing this for some reason. 
+                // Checks if main executable contains reference to optgraph.dll. 
                 // This might be better removed later, as Redump ID 82475 is a false positive, and also doesn't actually
                 // contain the actual optgraph.dll file.
                 // TODO: Find a way to check for situations like Redump ID 48393, where the string is spaced out with
@@ -85,7 +87,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                // Samples: Redump ID 82475 (False positive, but probably catches original Emergency 2), would catch Redump ID 48393
+                // Samples: Redump ID 82475, German Emergency 2 Deluxe, Redump ID 48393
                 if (strs.Any(s => s.Contains("optgraph.dll")))
                     return "copy-X";
             }
@@ -107,6 +109,8 @@ namespace BinaryObjectScanner.Protection
 #endif
 
             // Checks for Light
+            // Directory checks intentionally only detect Light
+
             if (files == null)
                 return protections;
 
@@ -164,7 +168,10 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckFilePath(string path)
         {
+
             // Checks for Professional
+            // File Path checks intentionally only detect Professional
+            
             var matchers = new List<PathMatchSet>
             {
                 // Samples: Redump ID 108150, Redump ID 48393
