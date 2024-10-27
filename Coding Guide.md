@@ -211,6 +211,32 @@ This section contains information on code standards regardless of which part of 
     }
     ```
 
+- If comparing against values for assignment, try to use a `switch` expression instead.
+
+    ```c#
+    As an if-else statement:
+    
+    int x;
+    if (value == 1)
+        x = 0;
+    else if (value == 2)
+        x = 1;
+    else if (value == 3)
+        x = 2;
+    else
+        x = -1;
+
+    As a switch statement:
+
+    int x = value switch
+    {
+        1 => 0,
+        2 => 1,
+        3 => 2,
+        _ => -1,
+    }
+    ```
+
 - When using a `switch` statement, if all switch cases are single-expression, they can be written in-line.  You can also add newlines between cases for segmentation or clarity.If the expressions are too complex, they should not be.
 
     ```c#
@@ -221,6 +247,18 @@ This section contains information on code standards regardless of which part of 
         case 3: DoValue3(); break;
 
         default: DoValueDefault(); break;
+    }
+    ```
+
+- When using a `switch` expression, cases that lead to the same value can be combined using `or`. This is not required, especially if readability would be sacrificed.
+
+    ```c#
+    int x = value switch
+    {
+        1 or 2 => 0,
+        3 or 4 => 1,
+        5 or 6 => 2,
+        _ => -1,
     }
     ```
 
