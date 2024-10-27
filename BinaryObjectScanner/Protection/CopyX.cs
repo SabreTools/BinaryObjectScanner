@@ -19,6 +19,9 @@ namespace BinaryObjectScanner.Protection
     // TODO: Figure out if Light and Professional are what designate rings and rings+disccheck
     public class CopyX : IPathCheck, IPortableExecutableCheck
     {
+        // Previous check 'Tivola Ring Protect' removed because it was found to actually be copy-x. 
+        // The checks were for ZDAT/webmast.dxx and ZDAT/webmast.dxx, for Redump IDs 81628 and 116418.   
+        
         // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
         // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial Maker.
         // Audio is for Audio CDs. Might be scannable, might not. Samples needed to confirm.
@@ -76,7 +79,7 @@ namespace BinaryObjectScanner.Protection
                 // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
                 // Samples: Redump ID 108150
                 if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))
-                    return "copy-X";
+                    return "copy-X [Check disc for physical ring]";
             }
 
             var strs = pex.GetFirstSectionStrings(".rdata");
@@ -84,7 +87,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Samples: Redump ID 82475, German Emergency 2 Deluxe, Redump ID 48393
                 if (strs.Any(s => s.Contains("optgraph.dll")))
-                    return "copy-X";
+                    return "copy-X [Check disc for physical ring]";
             }
 
             return null;
@@ -147,7 +150,7 @@ namespace BinaryObjectScanner.Protection
                             0x65, 0x5F, 0xFB, 0x06, 0x31, 0x31, 0x31, 0x31,
                             0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD,
                             0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34,
-                        ], "copy-X"),
+                        ], "copy-X [Check disc for physical ring]"),
                     };
 
                     var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, false);
@@ -171,17 +174,17 @@ namespace BinaryObjectScanner.Protection
                 // Samples: Redump ID 108150, Redump ID 48393
 
                 // File responsible for disc check
-                new(new FilePathMatch("optgraph.dll"), "copy-X"),
+                new(new FilePathMatch("optgraph.dll"), "copy-X [Check disc for physical ring]"),
 
                 // Seemingly comorbid file, referenced in above file
-                new(new FilePathMatch("iofile.x64"), "copy-X"),
+                new(new FilePathMatch("iofile.x64"), "copy-X [Check disc for physical ring]"),
 
                 // Seemingly comorbid file
-                new(new FilePathMatch("sound.x64"), "copy-X"),
+                new(new FilePathMatch("sound.x64"), "copy-X [Check disc for physical ring]"),
 
                 // Seemingly comorbid file
                 // Check commented out until implementation can be decided
-                // new(new FilePathMatch("gov_*.x64"), "copy-X"),
+                // new(new FilePathMatch("gov_*.x64"), "copy-X [Check disc for physical ring]"),
             };
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
