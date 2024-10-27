@@ -5,7 +5,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
-    public class dotFuscator : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class DotFuscator : IExtractablePortableExecutable, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
