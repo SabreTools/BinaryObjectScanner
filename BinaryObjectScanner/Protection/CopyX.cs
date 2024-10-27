@@ -50,8 +50,7 @@ namespace BinaryObjectScanner.Protection
         // SoftICE-Test. It is not currently known if this is specifically part of copy-X, or if it's an external
         // solution employed by both copy-X and also other companies. If it's the latter, it should have its own check.
         // It has none here since it wouldn't be necessary.
-
-
+        
         // Light:
         // All instances of light contain 1 or more files in the directory at the end of the image. They all consist of
         // either 0x00, or some data that matches between entries (and also is present in the 3 Professional files),
