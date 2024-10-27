@@ -21,6 +21,9 @@ namespace BinaryObjectScanner.Protection
     // TODO: Figure out if Light and Professional are what designate rings and rings+disccheck
     public class CopyX : IPathCheck, IPortableExecutableCheck
     {
+        // Previous check 'Tivola Ring Protect' removed because it was found to actually be copy-x. 
+        // The checks were for ZDAT/webmast.dxx and ZDAT/webmast.dxx, for Redump IDs 81628 and 116418.
+        
         // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
         // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial Maker.
         // Audio is for Audio CDs. Might be scannable, might not. Samples needed to confirm.
