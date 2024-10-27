@@ -563,6 +563,9 @@ namespace BinaryObjectScanner.Protection
                     or "2.11.060"
                     or "2.16.050"
 
+                    // Found in IA item CMCD0204 (Software/Demo/3DSMax/3dsmax6.exe).
+                    or "2.20.030"
+
                     // Found in Redump entry 90157 / IA item microsoft-software-jukebox-usa-hp-oem.
                     or "2.41.000"
 
