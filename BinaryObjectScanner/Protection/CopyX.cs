@@ -115,6 +115,7 @@ namespace BinaryObjectScanner.Protection
             var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
                 .Where(f =>
                 {
+                    // TODO: Compensate for the check being run a directory or more higher
                     f = f.Remove(0, path.Length);
                     f = f.TrimStart('/', '\\');
                     return f.StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase);
