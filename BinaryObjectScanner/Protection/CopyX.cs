@@ -19,7 +19,6 @@ namespace BinaryObjectScanner.Protection
     // TODO: Technically not necessary, but just check for light/pro first and only if it isn't found look for the other.
     // It should be an Or situation and not an And situation.
     // TODO: Figure out if Light and Professional are what designate rings and rings+disccheck
-    // TODO: add documentation/comments to methods
     public class CopyX : IPathCheck, IPortableExecutableCheck
     {
         // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
