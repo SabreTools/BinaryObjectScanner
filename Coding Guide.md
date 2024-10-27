@@ -291,6 +291,8 @@ This section contains information on code standards regardless of which part of 
 
 - Comments should be expressive and fully explain what is being described. Try to avoid using slang, "pointed comments" such as "you should" or "we do".
 
+- Comments should avoid the use of first-person writing, such as "I think" or "We found".
+
 - If comments include links, they can either be included as-is or using the `<see href="value"/>` tag
 
     ```c#
