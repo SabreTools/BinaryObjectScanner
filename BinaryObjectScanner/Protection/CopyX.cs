@@ -113,8 +113,9 @@ namespace BinaryObjectScanner.Protection
             if (files == null)
                 return protections;
 
-            // Gets files in ZDAT*
             // Excludes files with .x64 extension to avoid flagging Professional files.
+            // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring 
+            // intersecting the start of the file.
             var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
                 .Where(f =>
                 {
@@ -123,11 +124,9 @@ namespace BinaryObjectScanner.Protection
                     f = f.TrimStart('/', '\\');
                     return f.StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase);
                 })
-
-                // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring
                 .OrderBy(f => f)
                 .ToList();
-            // intersecting the start of the file.
+
             if (fileList.Count > 0)
             {
                 try
