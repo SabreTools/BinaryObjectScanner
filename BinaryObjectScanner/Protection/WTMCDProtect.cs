@@ -10,6 +10,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
+    // TODO: Document and implement support for this better, including version detection.
     public class WTMCDProtect : IPathCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
@@ -80,7 +81,8 @@ namespace BinaryObjectScanner.Protection
             {
                 new(new FilePathMatch("Image.imp"), "WTM CD Protect"),
                 new(new FilePathMatch("Image1.imp"), "WTM CD Protect"),
-                new(new FilePathMatch("imp.dat"), "WTM CD Protect"),
+                // Disabled due to false positives.
+                // new(new FilePathMatch("imp.dat"), "WTM CD Protect"),
                 new(new FilePathMatch("wtmfiles.dat"), "WTM Protection Viewer"),
             };
 
