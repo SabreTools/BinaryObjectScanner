@@ -64,11 +64,11 @@ namespace BinaryObjectScanner.Protection
 
             // Checks for Professional
             // PEX checks intentionally only detect Professional
-            
+
             var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
-            
+
             if (pex.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. 
@@ -123,6 +123,7 @@ namespace BinaryObjectScanner.Protection
                     f = f.TrimStart('/', '\\');
                     return f.StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase);
                 })
+
                 // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring
                 .OrderBy(f => f)
                 .ToList();
@@ -170,7 +171,7 @@ namespace BinaryObjectScanner.Protection
 
             // Checks for Professional
             // File Path checks intentionally only detect Professional
-            
+
             var matchers = new List<PathMatchSet>
             {
                 // Samples: Redump ID 108150, Redump ID 48393
