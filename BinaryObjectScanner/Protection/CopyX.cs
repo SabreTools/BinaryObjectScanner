@@ -62,6 +62,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
+
             // Checks for Professional
 
             var sections = pex.Model.SectionTable;
@@ -151,7 +152,7 @@ namespace BinaryObjectScanner.Protection
                     };
                     var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, false);
                     if (!string.IsNullOrEmpty(match))
-                        protections.Enqueue(match);
+                        protections.Enqueue(match!);
                 }
                 catch { }
             }
