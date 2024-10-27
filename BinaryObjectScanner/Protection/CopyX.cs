@@ -63,6 +63,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Checks for Professional
+
             var sections = pex.Model.SectionTable;
             if (sections == null)
                 return null;
@@ -74,12 +75,10 @@ namespace BinaryObjectScanner.Protection
                 // TODO: Find a way to check for situations like Redump ID 48393, where the string is spaced out with
                 // 0x00 between letters and does not show up on string checks.
                 // TODO: This might need to check every single section. Unsure until more samples are acquired.
+                // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
+                // Samples: Redump ID 108150
                 if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))
-                {
-                    // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
-                    // Samples: Redump ID 108150
                     return "copy-X";
-                }
             }
 
             var strs = pex.GetFirstSectionStrings(".rdata");
@@ -112,13 +111,16 @@ namespace BinaryObjectScanner.Protection
 
             // Gets files in ZDAT*
             // Excludes files with .x64 extension to avoid flagging Professional files.
-            var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase)).Where(f =>
-            {
-                f = f.Remove(0, path.Length);
-                f = f.TrimStart('/', '\\');
-                return f.StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase);
-            }).OrderBy(f => f).ToList();
-            // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring
+            var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
+                .Where(f =>
+                {
+                    f = f.Remove(0, path.Length);
+                    f = f.TrimStart('/', '\\');
+                    return f.StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase);
+                })
+                // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring
+                .OrderBy(f => f)
+                .ToList();
             // intersecting the start of the file.
             if (fileList.Count > 0)
             {
@@ -132,22 +134,24 @@ namespace BinaryObjectScanner.Protection
                         // Checks if the file contains 0x00
                         // Samples: Redump ID 81628
                         new(Enumerable.Repeat<byte?>(0x00, 1024).ToArray(), "copy-X"),
+
                         // Checks for whatever this data is.
                         // Samples: Redump ID 84759, Redump ID 107929. Professional discs also have this data, hence the exclusion check.
-                        new(new byte?[]
-                        {
-                            0x02, 0xFE, 0x4A, 0x4F, 0x52, 0x4B, 0x1C, 0xE0, 0x79, 0x8C, 0x7F, 0x85, 0x04, 0x00, 0x46,
-                            0x46, 0x49, 0x46, 0x07, 0xF9, 0x9F, 0xA0, 0xA1, 0x9D, 0xDA, 0xB6, 0x2C, 0x2D, 0x2D, 0x2C,
-                            0xFF, 0x00, 0x6F, 0x6E, 0x71, 0x6A, 0xFC, 0x06, 0x64, 0x62, 0x65, 0x5F, 0xFB, 0x06, 0x31,
-                            0x31, 0x31, 0x31, 0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD, 0x51, 0x57, 0x56, 0x51,
-                            0xFB, 0x06, 0x33, 0x34
-                        }, "copy-X"),
+                        new(
+                        [
+                            0x02, 0xFE, 0x4A, 0x4F, 0x52, 0x4B, 0x1C, 0xE0,
+                            0x79, 0x8C, 0x7F, 0x85, 0x04, 0x00, 0x46, 0x46,
+                            0x49, 0x46, 0x07, 0xF9, 0x9F, 0xA0, 0xA1, 0x9D,
+                            0xDA, 0xB6, 0x2C, 0x2D, 0x2D, 0x2C, 0xFF, 0x00,
+                            0x6F, 0x6E, 0x71, 0x6A, 0xFC, 0x06, 0x64, 0x62,
+                            0x65, 0x5F, 0xFB, 0x06, 0x31, 0x31, 0x31, 0x31,
+                            0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD,
+                            0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34,
+                        ], "copy-X"),
                     };
                     var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, false);
                     if (!string.IsNullOrEmpty(match))
-                    {
                         protections.Enqueue(match);
-                    }
                 }
                 catch { }
             }
