@@ -4,10 +4,8 @@ using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -50,7 +48,7 @@ namespace BinaryObjectScanner.Protection
         // SoftICE-Test. It is not currently known if this is specifically part of copy-X, or if it's an external
         // solution employed by both copy-X and also other companies. If it's the latter, it should have its own check.
         // It has none here since it wouldn't be necessary.
-        
+
         // Light:
         // All instances of light contain 1 or more files in the directory at the end of the image. They all consist of
         // either 0x00, or some data that matches between entries (and also is present in the 3 Professional files),
@@ -60,7 +58,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-
             // Checks for Professional
             // PEX checks intentionally only detect Professional
 
@@ -105,12 +102,11 @@ namespace BinaryObjectScanner.Protection
 #else
             var protections = new ConcurrentQueue<string>();
 #endif
+            if (files == null)
+                return protections;
 
             // Checks for Light
             // Directory checks intentionally only detect Light
-
-            if (files == null)
-                return protections;
 
             // Excludes files with .x64 extension to avoid flagging Professional files.
             // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring 
@@ -153,6 +149,7 @@ namespace BinaryObjectScanner.Protection
                             0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34,
                         ], "copy-X"),
                     };
+
                     var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, false);
                     if (!string.IsNullOrEmpty(match))
                         protections.Enqueue(match!);
@@ -166,7 +163,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckFilePath(string path)
         {
-
             // Checks for Professional
             // File Path checks intentionally only detect Professional
 
