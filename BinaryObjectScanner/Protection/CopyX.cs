@@ -21,7 +21,7 @@ namespace BinaryObjectScanner.Protection
     {
         // Previous check 'Tivola Ring Protect' removed because it was found to actually be copy-x. 
         // The checks were for ZDAT/webmast.dxx and ZDAT/webmast.dxx, for Redump IDs 81628 and 116418.   
-        
+
         // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
         // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial Maker.
         // Audio is for Audio CDs. Might be scannable, might not. Samples needed to confirm.
@@ -37,14 +37,15 @@ namespace BinaryObjectScanner.Protection
         // Both Light and Professional have a directory at the end of the image. The files within this directory are
         // intersected by the physical ring.
         // This file is usually called ZDAT, but not always. At least one instance of Light calls it ZDATA. At least one
-        // instance of Professional calls it System.
+        // instance of Light calls it System.
         // Seemingly it can be anything. It doesn't help that most known samples are specifically from one company's
         // games, Tivola. Still, most use ZDAT.
 
         // Professional:
         // All instances of professional contain a disc check, performed via optgraph.dll. 
-        // All instances of professional contain in the directory at the end of the image 3 files. gov_[something].x64,
-        // iofile.x64, and sound.x64.
+        // All instances of professional contain in a directory usually (but not always, German Emergency 2 Deluxe has a
+        // Videos folder as well, which isn't involved in rings/protection) at the end of the image, 3 files:
+        // gov_[something].x64, iofile.x64, and sound.x64. So far, they have always been in a directory called "System".
         // Due to gov's minor name variance, sound.x64 sometimes being intersected by a ring at the start, and
         // iofile.x64 being referenced directly in optgraph.x64, only iofile.x64 is being checked for now.
         // TODO: optgraph.dll also contains DRM to prevent kernel debugger SoftICE from being used, via a process called
@@ -53,10 +54,11 @@ namespace BinaryObjectScanner.Protection
         // It has none here since it wouldn't be necessary.
 
         // Light:
-        // All instances of light contain 1 or more files in the directory at the end of the image. They all consist of
-        // either 0x00, or some data that matches between entries (and also is present in the 3 Professional files),
-        // except for the parts with the rings running through them.
-        // TODO: Check the last directory alphabetically and not just ZDAT*
+        // All instances of light contain 1 or more files in the directory usually (but not always; Kenny's Adventure has
+        // uses a System folder, and then has a non-protection Xtras folder on the disc as well) at the end of the image.
+        // They all consist of either 0x00, or some data that matches between entries (and also is present in the 3
+        // Professional files), except for the parts with the rings running through them.
+        // Find a viable way to check the last directory alphabetically and not just ZDAT*
 
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -114,22 +116,32 @@ namespace BinaryObjectScanner.Protection
             // Excludes files with .x64 extension to avoid flagging Professional files.
             // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring 
             // intersecting the start of the file.
-            var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase))
-                .Where(f =>
-                {
-                    // TODO: Compensate for the check being run a directory or more higher
-                    f = f.Remove(0, path.Length);
-                    f = f.TrimStart('/', '\\');
-                    return f.StartsWith("ZDAT", StringComparison.OrdinalIgnoreCase);
-                })
-                .OrderBy(f => f)
-                .ToList();
 
-            if (fileList.Count > 0)
+            // Kenny's Adventure uses System instead of ZDAT.
+            string[] dirs = ["ZDAT", "ZDATA", "System"];
+            List<string>? lightFiles = null;
+
+            // TODO: Compensate for the check being run a directory or more higher
+            var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase));
+            foreach (var dir in dirs)
+            {
+                lightFiles = fileList.Where(f =>
+                    {
+                        f = f.Remove(0, path.Length);
+                        f = f.TrimStart('/', '\\');
+                        return f.StartsWith(dir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                    })
+                    .OrderBy(f => f)
+                    .ToList();
+                if (lightFiles.Count() > 0)
+                    break;
+            }
+
+            if ((lightFiles != null) && (lightFiles.Count > 0))
             {
                 try
                 {
-                    using var stream = File.OpenRead(fileList[0]);
+                    using var stream = File.OpenRead(lightFiles[0]);
                     byte[] block = stream.ReadBytes(1024);
 
                     var matchers = new List<ContentMatchSet>
@@ -153,7 +165,7 @@ namespace BinaryObjectScanner.Protection
                         ], "copy-X [Check disc for physical ring]"),
                     };
 
-                    var match = MatchUtil.GetFirstMatch(fileList[0], block, matchers, false);
+                    var match = MatchUtil.GetFirstMatch(lightFiles[0], block, matchers, false);
                     if (!string.IsNullOrEmpty(match))
                         protections.Enqueue(match!);
                 }
@@ -184,6 +196,7 @@ namespace BinaryObjectScanner.Protection
 
                 // Seemingly comorbid file
                 // Check commented out until implementation can be decided
+                // At least one disc seen online calls it mov_05.x64
                 // new(new FilePathMatch("gov_*.x64"), "copy-X [Check disc for physical ring]"),
             };
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
