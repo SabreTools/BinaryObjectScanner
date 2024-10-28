@@ -133,7 +133,7 @@ namespace BinaryObjectScanner.Protection
                     })
                     .OrderBy(f => f)
                     .ToList();
-                if (lightFiles.Count() > 0)
+                if (lightFiles.Count > 0)
                     break;
             }
 
