@@ -58,7 +58,7 @@ namespace BinaryObjectScanner.Protection
         // uses a System folder, and then has a non-protection Xtras folder on the disc as well) at the end of the image.
         // They all consist of either 0x00, or some data that matches between entries (and also is present in the 3
         // Professional files), except for the parts with the rings running through them.
-        // TODO: Check the last directory alphabetically and not just ZDAT*
+        // Find a viable way to check the last directory alphabetically and not just ZDAT*
 
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -117,7 +117,7 @@ namespace BinaryObjectScanner.Protection
             // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring 
             // intersecting the start of the file.
 
-            string[] dirs = ["ZDAT", "System/", "System\\"];//Kenny's Adventure uses System instead of ZDAT.
+            string[] dirs = ["ZDAT", "ZDATA", "System"];// Kenny's Adventure uses System instead of ZDAT.
             List<string>? lightFiles = null;
             // TODO: Compensate for the check being run a directory or more higher
             var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase));
@@ -128,17 +128,15 @@ namespace BinaryObjectScanner.Protection
                         {
                             f = f.Remove(0, path.Length);
                             f = f.TrimStart('/', '\\');
-                            return f.StartsWith(dir, StringComparison.OrdinalIgnoreCase);
+                            return f.StartsWith(dir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
                         })
                         .OrderBy(f => f)
                         .ToList();
-                    if (lightFiles.Any())
-                    {
+                    if (lightFiles.Count() > 0)
                         break;
-                    }
                 }
             }
-            if (lightFiles.Count > 0)
+            if ((lightFiles != null) && (lightFiles.Count > 0))
             {
                 try
                 {
