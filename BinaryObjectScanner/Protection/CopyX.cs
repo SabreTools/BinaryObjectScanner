@@ -119,23 +119,23 @@ namespace BinaryObjectScanner.Protection
 
             string[] dirs = ["ZDAT", "ZDATA", "System"];// Kenny's Adventure uses System instead of ZDAT.
             List<string>? lightFiles = null;
+
             // TODO: Compensate for the check being run a directory or more higher
             var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase));
+            foreach (var dir in dirs)
             {
-                foreach (var dir in dirs)
-                {
-                    lightFiles = fileList.Where(f =>
-                        {
-                            f = f.Remove(0, path.Length);
-                            f = f.TrimStart('/', '\\');
-                            return f.StartsWith(dir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-                        })
-                        .OrderBy(f => f)
-                        .ToList();
-                    if (lightFiles.Count() > 0)
-                        break;
-                }
+                lightFiles = fileList.Where(f =>
+                    {
+                        f = f.Remove(0, path.Length);
+                        f = f.TrimStart('/', '\\');
+                        return f.StartsWith(dir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+                    })
+                    .OrderBy(f => f)
+                    .ToList();
+                if (lightFiles.Count() > 0)
+                    break;
             }
+
             if ((lightFiles != null) && (lightFiles.Count > 0))
             {
                 try
