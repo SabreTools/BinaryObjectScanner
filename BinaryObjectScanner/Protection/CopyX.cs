@@ -117,7 +117,8 @@ namespace BinaryObjectScanner.Protection
             // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring 
             // intersecting the start of the file.
 
-            string[] dirs = ["ZDAT", "ZDATA", "System"];// Kenny's Adventure uses System instead of ZDAT.
+            // Kenny's Adventure uses System instead of ZDAT.
+            string[] dirs = ["ZDAT", "ZDATA", "System"];
             List<string>? lightFiles = null;
 
             // TODO: Compensate for the check being run a directory or more higher
