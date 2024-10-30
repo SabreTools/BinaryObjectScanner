@@ -15,6 +15,8 @@ namespace BinaryObjectScanner.Protection
     /// <summary>
     /// SafeCast is in the same family of protections as SafeDisc, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
+    /// SafeCast has been confirmed to be present on some programs, such as AutoDesk 3ds Max (IA items CMCD0204 and game-programming-in-c-start-to-finish-2006), Photoshop CS2 (IA item ccd0605), and Boonty Box (IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58).
+    /// TODO: Check Boonty Box samples closer for new possible detections, there are at least more checks for FlexLM possible. 
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
     /// There are multiple different versions of SafeCast out there.
     /// Deep dive of MechWarrior 4 and its expansions, which use SafeDisc, possibly SafeDisc LT, and SafeCast: https://digipres.club/@TheRogueArchivist/110224192068908590
@@ -80,6 +82,7 @@ namespace BinaryObjectScanner.Protection
 
             // TODO: Investigate import hint/name table entry "CdaSysInstall"
             // TODO: Investigate string table entries: "CDWP02DG", "CDWP02DG", "CDWS02DG"
+            // TODO: Invesitgate if the "AdobeLM.dll" file (along with mentions of "AdobeLM" in executables) uniquely identifies SafeCast, or if it can be used with different DRM. (Found in IA item ccd0605)
 
             // Get the import directory table, if it exists
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
