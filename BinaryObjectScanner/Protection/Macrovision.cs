@@ -71,6 +71,9 @@ namespace BinaryObjectScanner.Protection
 
             // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
             // They may indicate SafeWrap, but this hasn't been confirmed yet.
+            // Almost every single sample known has both sections, though one only contains the "stxt371" section. It is unknown if this is intentional, or if the game functions without it.
+            // It is present in the "Texas HoldEm!" game in "boontybox_PCGamer_DVD.exe" in IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58.
+            // Other games in this set also aren't functional despite having the normal layout of stxt sections, and the primary program doesn't install at all due to activation servers being down.
             bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
             bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
             if (stxt371Section || stxt774Section)
@@ -571,6 +574,11 @@ namespace BinaryObjectScanner.Protection
 
                     // Source not documented.
                     or "2.60.030"
+
+                    // Found in IA item game-programming-in-c-start-to-finish-2006 (tools_install/3dsMax8_Demo.zip).
+                    or "2.66.000"
+
+                    // Found in Photoshop CS2 in IA item ccd0605.
                     or "2.67.010" => "SafeCast",
 
                 // SafeCast (Unconfirmed)

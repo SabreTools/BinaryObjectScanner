@@ -131,6 +131,11 @@ namespace BinaryObjectScanner.FileType
                 if (fileContent.Contains("Sentinel Driver Disk"))
                     protections.Add("Rainbow Sentinel");
 
+                // SafeCast
+                // Found in "AdlmLog.xml" in IA item game-programming-in-c-start-to-finish-2006 after installing "3dsMax8_Demo.zip".
+                if (fileContent.Contains("<NAME>SAFECAST</NAME>"))
+                    protections.Add("SafeCast");
+
                 // SafeDisc 
                 // TODO: Add better version parsing.
                 // Found in "Info.plist" in Redump entries 23983, 42762, 72713, 73070, and 89603.
