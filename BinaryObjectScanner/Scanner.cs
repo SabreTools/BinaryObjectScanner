@@ -2,12 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-#if NET462_OR_GREATER || NETCOREAPP
-using System.Text;
-#endif
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Threading.Tasks;
-#endif
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
@@ -76,7 +70,7 @@ namespace BinaryObjectScanner
 
 #if NET462_OR_GREATER || NETCOREAPP
             // Register the codepages
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
         }
 
@@ -466,30 +460,20 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
-            var extractables = classes.Where(c => c is IExtractableMSDOSExecutable).Select(c => c as IExtractableMSDOSExecutable);
-#if NET20 || NET35
-            foreach (var extractable in extractables)
-#else
-            Parallel.ForEach(extractables, extractable =>
-#endif
+            var extractables = classes
+                .Where(c => c is IExtractableMSDOSExecutable)
+                .Select(c => c as IExtractableMSDOSExecutable);
+            extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
                 if (extractable == null)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, mz, this);
                 if (extractedProtections != null)
                     protections.Append(extractedProtections);
-#if NET20 || NET35
-            }
-#else
             });
-#endif
 
             return protections;
         }
@@ -511,30 +495,20 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
-            var extractables = classes.Where(c => c is IExtractableLinearExecutable).Select(c => c as IExtractableLinearExecutable);
-#if NET20 || NET35
-            foreach (var extractable in extractables)
-#else
-            Parallel.ForEach(extractables, extractable =>
-#endif
+            var extractables = classes
+                .Where(c => c is IExtractableLinearExecutable)
+                .Select(c => c as IExtractableLinearExecutable);
+            extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
                 if (extractable == null)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, lex, this);
                 if (extractedProtections != null)
                     protections.Append(extractedProtections);
-#if NET20 || NET35
-            }
-#else
             });
-#endif
 
             return protections;
         }
@@ -556,30 +530,20 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
-            var extractables = classes.Where(c => c is IExtractableNewExecutable).Select(c => c as IExtractableNewExecutable);
-#if NET20 || NET35
-            foreach (var extractable in extractables)
-#else
-            Parallel.ForEach(extractables, extractable =>
-#endif
+            var extractables = classes
+                .Where(c => c is IExtractableNewExecutable)
+                .Select(c => c as IExtractableNewExecutable);
+            extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
                 if (extractable == null)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, nex, this);
                 if (extractedProtections != null)
                     protections.Append(extractedProtections);
-#if NET20 || NET35
-            }
-#else
             });
-#endif
 
             return protections;
         }
@@ -601,30 +565,20 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
-            var extractables = classes.Where(c => c is IExtractablePortableExecutable).Select(c => c as IExtractablePortableExecutable);
-#if NET20 || NET35
-            foreach (var extractable in extractables)
-#else
-            Parallel.ForEach(extractables, extractable =>
-#endif
+            var extractables = classes
+                .Where(c => c is IExtractablePortableExecutable)
+                .Select(c => c as IExtractablePortableExecutable);
+            extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
                 if (extractable == null)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, pex, this);
                 if (extractedProtections != null)
                     protections.Append(extractedProtections);
-#if NET20 || NET35
-            }
-#else
             });
-#endif
 
             return protections;
         }

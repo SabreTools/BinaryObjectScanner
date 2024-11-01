@@ -53,20 +53,12 @@ namespace BinaryObjectScanner
             files = files?.Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?.ToList();
 
             // Iterate through all checks
-#if NET20 || NET35
-            foreach (var checkClass in PathCheckClasses)
-#else
-            Parallel.ForEach(PathCheckClasses, checkClass =>
-#endif
+            PathCheckClasses.IterateWithAction(checkClass =>
             {
                 var subProtections = checkClass?.PerformCheck(path, files);
                 if (subProtections != null)
                     protections.Append(path, subProtections);
-#if NET20 || NET35
-            }
-#else
             });
-#endif
 
             return protections;
         }

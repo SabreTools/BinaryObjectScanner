@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Threading.Tasks;
-#endif
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
@@ -216,44 +213,23 @@ namespace BinaryObjectScanner.FileType
             var protections = new CheckDictionary<IContentCheck>();
 
             // Iterate through all checks
-#if NET20 || NET35
-            foreach (var checkClass in ContentCheckClasses)
-#else
-            Parallel.ForEach(ContentCheckClasses, checkClass =>
-#endif
+            ContentCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckContents(file!, fileContent, includeDebug);
                 if (string.IsNullOrEmpty(protection))
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
-#if NET20 || NET35
-                protections[checkClass] = protection!;
-            }
-#else
-                protections.TryAdd(checkClass, protection!);
+                protections.Append(checkClass, protection);
             });
-#endif
 
             return protections;
         }
@@ -271,44 +247,23 @@ namespace BinaryObjectScanner.FileType
             var protections = new CheckDictionary<ILinearExecutableCheck>();
 
             // Iterate through all checks
-#if NET20 || NET35
-            foreach (var checkClass in LinearExecutableCheckClasses)
-#else
-            Parallel.ForEach(LinearExecutableCheckClasses, checkClass =>
-#endif
+            LinearExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
                 if (string.IsNullOrEmpty(protection))
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
-#if NET20 || NET35
-                protections[checkClass] = protection!;
-            }
-#else
-                protections.TryAdd(checkClass, protection!);
+                protections.Append(checkClass, protection);
             });
-#endif
 
             return protections;
         }
@@ -326,44 +281,23 @@ namespace BinaryObjectScanner.FileType
             var protections = new CheckDictionary<IMSDOSExecutableCheck>();
 
             // Iterate through all checks
-#if NET20 || NET35
-            foreach (var checkClass in MSDOSExecutableCheckClasses)
-#else
-            Parallel.ForEach(MSDOSExecutableCheckClasses, checkClass =>
-#endif
+            MSDOSExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
                 if (string.IsNullOrEmpty(protection))
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
-#if NET20 || NET35
-                protections[checkClass] = protection!;
-            }
-#else
-                protections.TryAdd(checkClass, protection!);
+                protections.Append(checkClass, protection);
             });
-#endif
 
             return protections;
         }
@@ -381,44 +315,23 @@ namespace BinaryObjectScanner.FileType
             var protections = new CheckDictionary<INewExecutableCheck>();
 
             // Iterate through all checks
-#if NET20 || NET35
-            foreach (var checkClass in NewExecutableCheckClasses)
-#else
-            Parallel.ForEach(NewExecutableCheckClasses, checkClass =>
-#endif
+            NewExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
                 if (string.IsNullOrEmpty(protection))
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
-#if NET20 || NET35
-                protections[checkClass] = protection!;
-            }
-#else
-                protections.TryAdd(checkClass, protection!);
+                protections.Append(checkClass, protection);
             });
-#endif
 
             return protections;
         }
@@ -436,44 +349,23 @@ namespace BinaryObjectScanner.FileType
             var protections = new CheckDictionary<IPortableExecutableCheck>();
 
             // Iterate through all checks
-#if NET20 || NET35
-            foreach (var checkClass in PortableExecutableCheckClasses)
-#else
-            Parallel.ForEach(PortableExecutableCheckClasses, checkClass =>
-#endif
+            PortableExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
                 if (string.IsNullOrEmpty(protection))
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on game engines
                 if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
                 // If we are filtering on packers
                 if (CheckIfPacker(checkClass) && !IncludePackers)
-#if NET20 || NET35
-                    continue;
-#else
                     return;
-#endif
 
-#if NET20 || NET35
-                protections[checkClass] = protection!;
-            }
-#else
-                protections.TryAdd(checkClass, protection!);
+                protections.Append(checkClass, protection);
             });
-#endif
 
             return protections;
         }
