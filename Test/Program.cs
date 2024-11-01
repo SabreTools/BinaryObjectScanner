@@ -23,8 +23,6 @@ namespace Test
             if (options == null)
             {
                 Options.DisplayHelp();
-                Console.WriteLine("Press enter to close the program...");
-                Console.ReadLine();
                 return;
             }
 
@@ -63,9 +61,6 @@ namespace Test
                 if (options.EnableScanning)
                     Protector.GetAndWriteProtections(scanner, inputPath);
             }
-
-            Console.WriteLine("Press enter to close the program...");
-            Console.ReadLine();
         }
     }
 }
