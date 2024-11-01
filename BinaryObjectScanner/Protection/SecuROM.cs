@@ -172,21 +172,21 @@ namespace BinaryObjectScanner.Protection
         private static string GetV4Version(PortableExecutable pex)
         {
             int index = 8; // Begin reading after "AddD"
-            char version = (char)pex.OverlayData![index];
+            char major = (char)pex.OverlayData![index];
             index += 2;
 
-            string subVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
+            string minor = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
             index += 3;
 
-            string subSubVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
+            string patch = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
             index += 3;
 
-            string subSubSubVersion = Encoding.ASCII.GetString(pex.OverlayData, index, 4);
+            string revision = Encoding.ASCII.GetString(pex.OverlayData, index, 4);
 
-            if (!char.IsNumber(version))
+            if (!char.IsNumber(major))
                 return "(very old, v3 or less)";
 
-            return $"{version}.{subVersion}.{subSubVersion}.{subSubSubVersion}";
+            return $"{major}.{minor}.{patch}.{revision}";
         }
 
         public static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
@@ -196,34 +196,34 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             int index = positions[0] + 8; // Begin reading after "ÊÝÝ¬"
-            byte version = (byte)(fileContent[index] & 0x0F);
+            byte major = (byte)(fileContent[index] & 0x0F);
             index += 2;
 
-            byte[] subVersion = new byte[2];
-            subVersion[0] = (byte)(fileContent[index] ^ 36);
+            byte[] minor = new byte[2];
+            minor[0] = (byte)(fileContent[index] ^ 36);
             index++;
-            subVersion[1] = (byte)(fileContent[index] ^ 28);
+            minor[1] = (byte)(fileContent[index] ^ 28);
             index += 2;
 
-            byte[] subSubVersion = new byte[2];
-            subSubVersion[0] = (byte)(fileContent[index] ^ 42);
+            byte[] patch = new byte[2];
+            patch[0] = (byte)(fileContent[index] ^ 42);
             index++;
-            subSubVersion[1] = (byte)(fileContent[index] ^ 8);
+            patch[1] = (byte)(fileContent[index] ^ 8);
             index += 2;
 
-            byte[] subSubSubVersion = new byte[4];
-            subSubSubVersion[0] = (byte)(fileContent[index] ^ 16);
+            byte[] revision = new byte[4];
+            revision[0] = (byte)(fileContent[index] ^ 16);
             index++;
-            subSubSubVersion[1] = (byte)(fileContent[index] ^ 116);
+            revision[1] = (byte)(fileContent[index] ^ 116);
             index++;
-            subSubSubVersion[2] = (byte)(fileContent[index] ^ 34);
+            revision[2] = (byte)(fileContent[index] ^ 34);
             index++;
-            subSubSubVersion[3] = (byte)(fileContent[index] ^ 22);
+            revision[3] = (byte)(fileContent[index] ^ 22);
 
-            if (version == 0 || version > 9)
+            if (major == 0 || major > 9)
                 return string.Empty;
 
-            return $"{version}.{subVersion[0]}{subVersion[1]}.{subSubVersion[0]}{subSubVersion[1]}.{subSubSubVersion[0]}{subSubSubVersion[1]}{subSubSubVersion[2]}{subSubSubVersion[3]}";
+            return $"{major}.{minor[0]}{minor[1]}.{patch[0]}{patch[1]}.{revision[0]}{revision[1]}{revision[2]}{revision[3]}";
         }
 
         // These live in the MS-DOS stub, for some reason
