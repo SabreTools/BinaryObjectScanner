@@ -43,11 +43,7 @@ namespace Test
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
-#if NET20 || NET35
-        private static void WriteProtectionResultFile(string path, Dictionary<string, Queue<string>>? protections)
-#else
-        private static void WriteProtectionResultFile(string path, ConcurrentDictionary<string, ConcurrentQueue<string>>? protections)
-#endif
+        private static void WriteProtectionResultFile(string path, ProtectionDictionary? protections)
         {
             if (protections == null)
             {

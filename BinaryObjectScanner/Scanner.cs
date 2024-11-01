@@ -17,7 +17,6 @@ using BinaryObjectScanner.Utilities;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
-using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BinaryObjectScanner
 {
@@ -92,24 +91,14 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET20 || NET35
-        public Dictionary<string, Queue<string>>? GetProtections(string path)
-#else
-        public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(string path)
-#endif
-        {
-            return GetProtections([path]);
-        }
+        public ProtectionDictionary? GetProtections(string path)
+            => GetProtections([path]);
 
         /// <summary>
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET20 || NET35
-        public Dictionary<string, Queue<string>>? GetProtections(List<string>? paths)
-#else
-        public ConcurrentDictionary<string, ConcurrentQueue<string>>? GetProtections(List<string>? paths)
-#endif
+        public ProtectionDictionary? GetProtections(List<string>? paths)
         {
             // If we have no paths, we can't scan
             if (paths == null || !paths.Any())
@@ -126,11 +115,7 @@ namespace BinaryObjectScanner
             string tempFilePathWithGuid = Path.Combine(tempFilePath, Guid.NewGuid().ToString());
 
             // Loop through each path and get the returned values
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
             foreach (string path in paths)
             {
                 // Directories scan each internal file individually
@@ -143,7 +128,7 @@ namespace BinaryObjectScanner
                     if (ScanPaths)
                     {
                         var directoryPathProtections = Handler.HandlePathChecks(path, files);
-                        AppendToDictionary(protections, directoryPathProtections);
+                        protections.Append(directoryPathProtections);
                     }
 
                     // Scan each file in directory separately
@@ -164,25 +149,14 @@ namespace BinaryObjectScanner
                         if (ScanPaths)
                         {
                             var filePathProtections = Handler.HandlePathChecks(file, files: null);
-                            AppendToDictionary(protections, filePathProtections);
+                            if (filePathProtections != null && filePathProtections.Any())
+                                protections.Append(filePathProtections);
                         }
 
                         // Scan for content-detectable protections
                         var fileProtections = GetInternalProtections(file);
                         if (fileProtections != null && fileProtections.Any())
-                        {
-                            foreach (string key in fileProtections.Keys)
-                            {
-                                if (!protections.ContainsKey(key))
-#if NET20 || NET35
-                                    protections[key] = new Queue<string>();
-#else
-                                    protections[key] = new ConcurrentQueue<string>();
-#endif
-
-                                protections[key].AddRange(fileProtections[key]);
-                            }
-                        }
+                            protections.Append(fileProtections);
 
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
@@ -206,25 +180,14 @@ namespace BinaryObjectScanner
                     if (ScanPaths)
                     {
                         var filePathProtections = Handler.HandlePathChecks(path, files: null);
-                        AppendToDictionary(protections, filePathProtections);
+                        if (filePathProtections != null && filePathProtections.Any())
+                            protections.Append(filePathProtections);
                     }
 
                     // Scan for content-detectable protections
                     var fileProtections = GetInternalProtections(path);
                     if (fileProtections != null && fileProtections.Any())
-                    {
-                        foreach (string key in fileProtections.Keys)
-                        {
-                            if (!protections.ContainsKey(key))
-#if NET20 || NET35
-                                protections[key] = new Queue<string>();
-#else
-                                protections[key] = new ConcurrentQueue<string>();
-#endif
-
-                            protections[key].AddRange(fileProtections[key]);
-                        }
-                    }
+                        protections.Append(fileProtections);
 
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
@@ -241,7 +204,7 @@ namespace BinaryObjectScanner
             }
 
             // Clear out any empty keys
-            ClearEmptyKeys(protections);
+            protections.ClearEmptyKeys();
 
             // If we're in debug, output the elasped time to console
             if (IncludeDebug)
@@ -255,11 +218,7 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET20 || NET35
-        private Dictionary<string, Queue<string>>? GetInternalProtections(string file)
-#else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? GetInternalProtections(string file)
-#endif
+        private ProtectionDictionary? GetInternalProtections(string file)
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
@@ -275,13 +234,9 @@ namespace BinaryObjectScanner
             {
                 if (IncludeDebug) Console.WriteLine(ex);
 
-#if NET20 || NET35
-                var protections = new Dictionary<string, Queue<string>>();
-#else
-                var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
-                AppendToDictionary(protections, file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
-                ClearEmptyKeys(protections);
+                var protections = new ProtectionDictionary();
+                protections.Append(file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                protections.ClearEmptyKeys();
                 return protections;
             }
         }
@@ -292,22 +247,14 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-#if NET20 || NET35
-        private Dictionary<string, Queue<string>>? GetInternalProtections(string fileName, Stream stream)
-#else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? GetInternalProtections(string fileName, Stream stream)
-#endif
+        private ProtectionDictionary? GetInternalProtections(string fileName, Stream stream)
         {
             // Quick sanity check before continuing
             if (stream == null || !stream.CanRead || !stream.CanSeek)
                 return null;
 
             // Initialize the protections found
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // Get the extension for certain checks
             string extension = Path.GetExtension(fileName).ToLower().TrimStart('.');
@@ -349,7 +296,7 @@ namespace BinaryObjectScanner
                         executable.IncludePackers = ScanPackers;
                         var subProtections = ProcessExecutable(executable, fileName, stream);
                         if (subProtections != null)
-                            AppendToDictionary(protections, subProtections);
+                            protections.Append(subProtections);
                     }
 
                     // Otherwise, use the default implementation
@@ -357,7 +304,7 @@ namespace BinaryObjectScanner
                     {
                         var subProtections = Handler.HandleDetectable(detectable, fileName, stream, IncludeDebug);
                         if (subProtections != null)
-                            AppendToDictionary(protections, fileName, subProtections);
+                            protections.Append(fileName, subProtections);
                     }
 
                     var subProtection = detectable.Detect(stream, fileName, IncludeDebug);
@@ -367,11 +314,11 @@ namespace BinaryObjectScanner
                         if (subProtection.Contains(';'))
                         {
                             var splitProtections = subProtection!.Split(';');
-                            AppendToDictionary(protections, fileName, splitProtections);
+                            protections.Append(fileName, splitProtections);
                         }
                         else
                         {
-                            AppendToDictionary(protections, fileName, subProtection!);
+                            protections.Append(fileName, subProtection!);
                         }
                     }
                 }
@@ -388,7 +335,7 @@ namespace BinaryObjectScanner
                 {
                     var subProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
                     if (subProtections != null)
-                        AppendToDictionary(protections, subProtections);
+                        protections.Append(subProtections);
                 }
 
                 #endregion
@@ -396,11 +343,11 @@ namespace BinaryObjectScanner
             catch (Exception ex)
             {
                 if (IncludeDebug) Console.WriteLine(ex);
-                AppendToDictionary(protections, fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                protections.Append(fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
             }
 
             // Clear out any empty keys
-            ClearEmptyKeys(protections);
+            protections.ClearEmptyKeys();
 
             return protections;
         }
@@ -419,11 +366,7 @@ namespace BinaryObjectScanner
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
-#if NET20 || NET35
-        private Dictionary<string, Queue<string>>? ProcessExecutable(Executable executable, string fileName, Stream stream)
-#else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? ProcessExecutable(Executable executable, string fileName, Stream stream)
-#endif
+        private ProtectionDictionary? ProcessExecutable(Executable executable, string fileName, Stream stream)
         {
             // Try to create a wrapper for the proper executable type
             IWrapper? wrapper;
@@ -440,18 +383,14 @@ namespace BinaryObjectScanner
             }
 
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // Only use generic content checks if we're in debug mode
             if (IncludeDebug)
             {
                 var subProtections = executable.RunContentChecks(fileName, stream, IncludeDebug);
                 if (subProtections != null)
-                    AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+                    protections.Append(fileName, subProtections.Values.ToArray());
             }
 
             if (wrapper is MSDOS mz)
@@ -461,12 +400,12 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, mz);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
             }
             else if (wrapper is LinearExecutable lex)
             {
@@ -475,12 +414,12 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, lex);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
             }
             else if (wrapper is NewExecutable nex)
             {
@@ -489,12 +428,12 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, nex);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
             }
             else if (wrapper is PortableExecutable pex)
             {
@@ -503,12 +442,12 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                AppendToDictionary(protections, fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values.ToArray());
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, pex);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
             }
 
             return protections;
@@ -522,9 +461,9 @@ namespace BinaryObjectScanner
         /// <param name="mz">MSDOS to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
 #if NET20 || NET35
-        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, MSDOS mz)
+        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, MSDOS mz)
 #else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, MSDOS mz)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, MSDOS mz)
 #endif
         {
             // If we have an invalid set of classes
@@ -532,11 +471,7 @@ namespace BinaryObjectScanner
                 return null;
 
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
             var extractables = classes.Where(c => c is IExtractableMSDOSExecutable).Select(c => c as IExtractableMSDOSExecutable);
@@ -557,7 +492,7 @@ namespace BinaryObjectScanner
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, mz, this);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
 #if NET20 || NET35
             }
 #else
@@ -575,9 +510,9 @@ namespace BinaryObjectScanner
         /// <param name="lex">LinearExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
 #if NET20 || NET35
-        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, LinearExecutable lex)
+        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, LinearExecutable lex)
 #else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, LinearExecutable lex)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, LinearExecutable lex)
 #endif
         {
             // If we have an invalid set of classes
@@ -585,11 +520,7 @@ namespace BinaryObjectScanner
                 return null;
 
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
             var extractables = classes.Where(c => c is IExtractableLinearExecutable).Select(c => c as IExtractableLinearExecutable);
@@ -610,7 +541,7 @@ namespace BinaryObjectScanner
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, lex, this);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
 #if NET20 || NET35
             }
 #else
@@ -628,9 +559,9 @@ namespace BinaryObjectScanner
         /// <param name="nex">NewExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
 #if NET20 || NET35
-        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, NewExecutable nex)
+        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, NewExecutable nex)
 #else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, NewExecutable nex)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, NewExecutable nex)
 #endif
         {
             // If we have an invalid set of classes
@@ -638,11 +569,7 @@ namespace BinaryObjectScanner
                 return null;
 
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
             var extractables = classes.Where(c => c is IExtractableNewExecutable).Select(c => c as IExtractableNewExecutable);
@@ -663,7 +590,7 @@ namespace BinaryObjectScanner
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, nex, this);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
 #if NET20 || NET35
             }
 #else
@@ -681,9 +608,9 @@ namespace BinaryObjectScanner
         /// <param name="pex">PortableExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
 #if NET20 || NET35
-        private Dictionary<string, Queue<string>>? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, PortableExecutable pex)
+        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, PortableExecutable pex)
 #else
-        private ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, PortableExecutable pex)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, PortableExecutable pex)
 #endif
         {
             // If we have an invalid set of classes
@@ -691,11 +618,7 @@ namespace BinaryObjectScanner
                 return null;
 
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // If we have any extractable packers
             var extractables = classes.Where(c => c is IExtractablePortableExecutable).Select(c => c as IExtractablePortableExecutable);
@@ -716,7 +639,7 @@ namespace BinaryObjectScanner
                 // Get the protection for the class, if possible
                 var extractedProtections = Handler.HandleExtractable(extractable, fileName, pex, this);
                 if (extractedProtections != null)
-                    AppendToDictionary(protections, extractedProtections);
+                    protections.Append(extractedProtections);
 #if NET20 || NET35
             }
 #else

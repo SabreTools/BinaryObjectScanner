@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using BinaryObjectScanner.Interfaces;
 using BinaryObjectScanner.Utilities;
 using SabreTools.Serialization.Wrappers;
-using static BinaryObjectScanner.Utilities.Dictionary;
 
 namespace BinaryObjectScanner
 {
@@ -49,18 +48,10 @@ namespace BinaryObjectScanner
         /// <param name="path">Path of the file or directory to check</param>
         /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Dictionary<string, Queue<string>> HandlePathChecks(string path, IEnumerable<string>? files)
-#else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>> HandlePathChecks(string path, IEnumerable<string>? files)
-#endif
+        public static ProtectionDictionary HandlePathChecks(string path, IEnumerable<string>? files)
         {
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<string, Queue<string>>();
-#else
-            var protections = new ConcurrentDictionary<string, ConcurrentQueue<string>>();
-#endif
+            var protections = new ProtectionDictionary();
 
             // Preprocess the list of files
             files = files?.Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?.ToList();
@@ -74,7 +65,7 @@ namespace BinaryObjectScanner
             {
                 var subProtections = checkClass?.PerformCheck(path, files);
                 if (subProtections != null)
-                    AppendToDictionary(protections, path, subProtections);
+                    protections.Append(path, subProtections);
 #if NET20 || NET35
             }
 #else
@@ -114,11 +105,7 @@ namespace BinaryObjectScanner
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream? stream, Scanner scanner)
-#else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractable impl, string fileName, Stream? stream, Scanner scanner)
-#endif
+        public static ProtectionDictionary? HandleExtractable(IExtractable impl, string fileName, Stream? stream, Scanner scanner)
         {
             // If the extractable file itself fails
             try
@@ -142,8 +129,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                StripFromKeys(subProtections, tempPath);
-                PrependToKeys(subProtections, fileName);
+                subProtections.StripFromKeys(tempPath);
+                subProtections.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -162,11 +149,7 @@ namespace BinaryObjectScanner
         /// <param name="mz">MSDOS to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractableMSDOSExecutable impl, string fileName, MSDOS mz, Scanner scanner)
-#else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractableMSDOSExecutable impl, string fileName, MSDOS mz, Scanner scanner)
-#endif
+        public static ProtectionDictionary? HandleExtractable(IExtractableMSDOSExecutable impl, string fileName, MSDOS mz, Scanner scanner)
         {
             // If the extractable file itself fails
             try
@@ -190,8 +173,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                StripFromKeys(subProtections, tempPath);
-                PrependToKeys(subProtections, fileName);
+                subProtections.StripFromKeys(tempPath);
+                subProtections.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -210,11 +193,7 @@ namespace BinaryObjectScanner
         /// <param name="lex">LinearExecutable to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractableLinearExecutable impl, string fileName, LinearExecutable lex, Scanner scanner)
-#else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractableLinearExecutable impl, string fileName, LinearExecutable lex, Scanner scanner)
-#endif
+        public static ProtectionDictionary? HandleExtractable(IExtractableLinearExecutable impl, string fileName, LinearExecutable lex, Scanner scanner)
         {
             // If the extractable file itself fails
             try
@@ -238,8 +217,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                StripFromKeys(subProtections, tempPath);
-                PrependToKeys(subProtections, fileName);
+                subProtections.StripFromKeys(tempPath);
+                subProtections.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -258,11 +237,7 @@ namespace BinaryObjectScanner
         /// <param name="nex">NewExecutable to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractableNewExecutable impl, string fileName, NewExecutable nex, Scanner scanner)
-#else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractableNewExecutable impl, string fileName, NewExecutable nex, Scanner scanner)
-#endif
+        public static ProtectionDictionary? HandleExtractable(IExtractableNewExecutable impl, string fileName, NewExecutable nex, Scanner scanner)
         {
             // If the extractable file itself fails
             try
@@ -286,8 +261,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                StripFromKeys(subProtections, tempPath);
-                PrependToKeys(subProtections, fileName);
+                subProtections.StripFromKeys(tempPath);
+                subProtections.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -306,11 +281,7 @@ namespace BinaryObjectScanner
         /// <param name="pex">PortableExecutable to scan the contents of</param>
         /// <param name="scanner">Scanner object to use on extractable contents</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Dictionary<string, Queue<string>>? HandleExtractable(IExtractablePortableExecutable impl, string fileName, PortableExecutable pex, Scanner scanner)
-#else
-        public static ConcurrentDictionary<string, ConcurrentQueue<string>>? HandleExtractable(IExtractablePortableExecutable impl, string fileName, PortableExecutable pex, Scanner scanner)
-#endif
+        public static ProtectionDictionary? HandleExtractable(IExtractablePortableExecutable impl, string fileName, PortableExecutable pex, Scanner scanner)
         {
             // If the extractable file itself fails
             try
@@ -334,8 +305,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                StripFromKeys(subProtections, tempPath);
-                PrependToKeys(subProtections, fileName);
+                subProtections.StripFromKeys(tempPath);
+                subProtections.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)

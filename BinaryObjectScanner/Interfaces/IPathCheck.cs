@@ -20,7 +20,7 @@ namespace BinaryObjectScanner.Interfaces
         /// <param name="files">Enumerable of strings representing files in a directory</param>
         /// <remarks>This can do some limited content checking as well, but it's suggested to use a content check instead, if possible</remarks>
 #if NET20 || NET35
-        Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files);
+        List<string> CheckDirectoryPath(string path, IEnumerable<string>? files);
 #else
         ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files);
 #endif
