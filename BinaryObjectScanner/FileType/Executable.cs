@@ -6,12 +6,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 #if NET40_OR_GREATER || NETCOREAPP
 using System.Threading.Tasks;
 #endif
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Utilities;
+using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.FileType
@@ -146,44 +145,40 @@ namespace BinaryObjectScanner.FileType
             if (wrapper == null)
                 return null;
 
-            // Create the internal queue
-#if NET20 || NET35
-            var protections = new Queue<string>();
-#else
-            var protections = new ConcurrentQueue<string>();
-#endif
+            // Create the internal list
+            var protections = new List<string>();
 
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
             {
                 var subProtections = RunContentChecks(file, stream, includeDebug);
                 if (subProtections != null)
-                    protections.AddRange(subProtections.Values.ToArray());
+                    protections.AddRange(subProtections.Values);
             }
 
             if (wrapper is MSDOS mz)
             {
                 var subProtections = RunMSDOSExecutableChecks(file, stream, mz, includeDebug);
                 if (subProtections != null)
-                    protections.AddRange(subProtections.Values.ToArray());
+                    protections.AddRange(subProtections.Values);
             }
             else if (wrapper is LinearExecutable lex)
             {
                 var subProtections = RunLinearExecutableChecks(file, stream, lex, includeDebug);
                 if (subProtections != null)
-                    protections.AddRange(subProtections.Values.ToArray());
+                    protections.AddRange(subProtections.Values);
             }
             else if (wrapper is NewExecutable nex)
             {
                 var subProtections = RunNewExecutableChecks(file, stream, nex, includeDebug);
                 if (subProtections != null)
-                    protections.AddRange(subProtections.Values.ToArray());
+                    protections.AddRange(subProtections.Values);
             }
             else if (wrapper is PortableExecutable pex)
             {
                 var subProtections = RunPortableExecutableChecks(file, stream, pex, includeDebug);
                 if (subProtections != null)
-                    protections.AddRange(subProtections.Values.ToArray());
+                    protections.AddRange(subProtections.Values);
             }
 
             return string.Join(";", [.. protections]);
@@ -198,11 +193,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public Dictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
-#else
-        public ConcurrentDictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
-#endif
+        public IDictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
         {
             // If we have an invalid file
             if (string.IsNullOrEmpty(file))
@@ -214,12 +205,7 @@ namespace BinaryObjectScanner.FileType
             byte[] fileContent = [];
             try
             {
-#if NET20 || NET35 || NET40
-                using var br = new BinaryReader(stream, Encoding.Default);
-#else
-                using var br = new BinaryReader(stream, Encoding.Default, true);
-#endif
-                fileContent = br.ReadBytes((int)stream.Length);
+                fileContent = stream.ReadBytes((int)stream.Length);
                 if (fileContent == null)
                     return null;
             }
@@ -286,11 +272,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="lex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public Dictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
-#else
-        public ConcurrentDictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
-#endif
+        public IDictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
         {
             // Create the output dictionary
 #if NET20 || NET35
@@ -349,11 +331,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="mz">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public Dictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
-#else
-        public ConcurrentDictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
-#endif
+        public IDictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
         {
             // Create the output dictionary
 #if NET20 || NET35
@@ -412,11 +390,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="nex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public Dictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
-#else
-        public ConcurrentDictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
-#endif
+        public IDictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
         {
             // Create the output dictionary
 #if NET20 || NET35
@@ -475,11 +449,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="pex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public Dictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
-#else
-        public ConcurrentDictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
-#endif
+        public IDictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
         {
             // Create the output dictionary
 #if NET20 || NET35

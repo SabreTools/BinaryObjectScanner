@@ -1,8 +1,8 @@
-#if NET20 || NET35
-using System.Collections.Generic;
-#else
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
 #endif
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BinaryObjectScanner.Utilities
 {
@@ -36,27 +36,20 @@ namespace BinaryObjectScanner.Utilities
         /// <param name="original">Queue to add data to</param>
         /// <param name="values">Queue to get data from</param>
 #if NET20 || NET35
-        public static void AddRange(this Queue<string> original, Queue<string> values)
+        public static void AddRange(this Queue<string> original, IEnumerable<string> values)
 #else
-        public static void AddRange(this ConcurrentQueue<string> original, ConcurrentQueue<string> values)
+        public static void AddRange(this ConcurrentQueue<string> original, IEnumerable<string> values)
 #endif
         {
-            if (values == null || values.Count == 0)
+            if (values == null || !values.Any())
                 return;
 
-            while (values.Count > 0)
+            foreach (string value in values)
             {
-#if NET20 || NET35
-                original.Enqueue(values.Dequeue());
-#else
-                if (!values.TryDequeue(out var value))
-                    return;
-
                 original.Enqueue(value);
-#endif
             }
         }
 
-#endregion
+        #endregion
     }
 }

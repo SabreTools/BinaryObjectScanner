@@ -1,9 +1,8 @@
 using System;
-#if NET20 || NET35
-using System.Collections.Generic;
-#else
+#if NET40_OR_GREATER || NETCOREAPP
 using System.Collections.Concurrent;
 #endif
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Utilities;
@@ -27,13 +26,7 @@ namespace BinaryObjectScanner
             if (string.IsNullOrEmpty(value))
                 return;
 
-#if NET20 || NET35
-            var values = new Queue<string>();
-#else
-            var values = new ConcurrentQueue<string>();
-#endif
-            values.Enqueue(value);
-            Append(key, values);
+            Append(key, [value]);
         }
 
         /// <summary>
@@ -47,12 +40,7 @@ namespace BinaryObjectScanner
             key ??= "NO FILENAME";
 
             // Add the key if needed and then append the lists
-#if NET20 || NET35
-            if (!ContainsKey(key))
-                this[key] = new Queue<string>();
-#else
-            TryAdd(key, new ConcurrentQueue<string>());
-#endif
+            EnsureKey(key);
             this[key].AddRange(values);
         }
 
@@ -61,22 +49,13 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="key">Key to add information to</param>
         /// <param name="value">String value to add</param>
-#if NET20 || NET35
-        public void Append(string key, Queue<string> values)
-#else
-        public void Append(string key, ConcurrentQueue<string> values)
-#endif
+        public void Append(string key, IEnumerable<string> values)
         {
             // Use a placeholder value if the key is null
             key ??= "NO FILENAME";
 
             // Add the key if needed and then append the lists
-#if NET20 || NET35
-            if (!ContainsKey(key))
-                this[key] = new Queue<string>();
-#else
-            TryAdd(key, new ConcurrentQueue<string>());
-#endif
+            EnsureKey(key);
             this[key].AddRange(values);
         }
 
@@ -93,12 +72,7 @@ namespace BinaryObjectScanner
             // Loop through each of the addition keys and add accordingly
             foreach (string key in addition.Keys)
             {
-#if NET20 || NET35
-                if (!ContainsKey(key))
-                    this[key] = new Queue<string>();
-#else
-                TryAdd(key, new ConcurrentQueue<string>());
-#endif
+                EnsureKey(key);
                 this[key].AddRange(addition[key]);
             }
         }
@@ -188,6 +162,19 @@ namespace BinaryObjectScanner
                 TryRemove(currentKey, out _);
 #endif
             }
+        }
+
+        /// <summary>
+        /// Ensure the collection for the given key exists
+        /// </summary>
+        private void EnsureKey(string key)
+        {
+#if NET20 || NET35
+            if (!ContainsKey(key))
+                this[key] = new Queue<string>();
+#else
+            TryAdd(key, new ConcurrentQueue<string>());
+#endif
         }
     }
 }

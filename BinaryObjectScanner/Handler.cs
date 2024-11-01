@@ -87,11 +87,7 @@ namespace BinaryObjectScanner
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-#if NET20 || NET35
-        public static Queue<string>? HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
-#else
-        public static ConcurrentQueue<string>? HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
-#endif
+        public static List<string>? HandleDetectable(IDetectable impl, string fileName, Stream stream, bool includeDebug)
         {
             var protection = impl.Detect(stream, fileName, includeDebug);
             return ProcessProtectionString(protection);
@@ -129,8 +125,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                subProtections.StripFromKeys(tempPath);
-                subProtections.PrependToKeys(fileName);
+                subProtections?.StripFromKeys(tempPath);
+                subProtections?.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -173,8 +169,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                subProtections.StripFromKeys(tempPath);
-                subProtections.PrependToKeys(fileName);
+                subProtections?.StripFromKeys(tempPath);
+                subProtections?.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -217,8 +213,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                subProtections.StripFromKeys(tempPath);
-                subProtections.PrependToKeys(fileName);
+                subProtections?.StripFromKeys(tempPath);
+                subProtections?.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -261,8 +257,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                subProtections.StripFromKeys(tempPath);
-                subProtections.PrependToKeys(fileName);
+                subProtections?.StripFromKeys(tempPath);
+                subProtections?.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -305,8 +301,8 @@ namespace BinaryObjectScanner
                 }
 
                 // Prepare the returned protections
-                subProtections.StripFromKeys(tempPath);
-                subProtections.PrependToKeys(fileName);
+                subProtections?.StripFromKeys(tempPath);
+                subProtections?.PrependToKeys(fileName);
                 return subProtections;
             }
             catch (Exception ex)
@@ -323,22 +319,14 @@ namespace BinaryObjectScanner
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, null on error</returns>
-#if NET20 || NET35
-        private static Queue<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
-#else
-        private static ConcurrentQueue<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
-#endif
+        private static List<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
         {
             // If we have an invalid path
             if (string.IsNullOrEmpty(path))
                 return null;
 
-            // Setup the output dictionary
-#if NET20 || NET35
-            var protections = new Queue<string>();
-#else
-            var protections = new ConcurrentQueue<string>();
-#endif
+            // Setup the list
+            var protections = new List<string>();
 
             // If we have a file path
             if (File.Exists(path))
@@ -413,22 +401,14 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="protection">Protection string to process</param>
         /// <returns>Set of protections parsed, null on error</returns>
-#if NET20 || NET35
-        private static Queue<string>? ProcessProtectionString(string? protection)
-#else
-        private static ConcurrentQueue<string>? ProcessProtectionString(string? protection)
-#endif
+        private static List<string>? ProcessProtectionString(string? protection)
         {
             // If we have an invalid protection string
             if (string.IsNullOrEmpty(protection))
                 return null;
 
             // Setup the output queue
-#if NET20 || NET35
-            var protections = new Queue<string>();
-#else
-            var protections = new ConcurrentQueue<string>();
-#endif
+            var protections = new List<string>();
 
             // If we have an indicator of multiple protections
             if (protection!.Contains(";"))
@@ -438,7 +418,7 @@ namespace BinaryObjectScanner
             }
             else
             {
-                protections.Enqueue(protection);
+                protections.Add(protection);
             }
 
             return protections;

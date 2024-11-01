@@ -1,7 +1,4 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,7 +10,6 @@ using System.Threading.Tasks;
 #endif
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Utilities;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -390,7 +386,7 @@ namespace BinaryObjectScanner
             {
                 var subProtections = executable.RunContentChecks(fileName, stream, IncludeDebug);
                 if (subProtections != null)
-                    protections.Append(fileName, subProtections.Values.ToArray());
+                    protections.Append(fileName, subProtections.Values);
             }
 
             if (wrapper is MSDOS mz)
@@ -400,7 +396,7 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                protections.Append(fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values);
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, mz);
@@ -414,7 +410,7 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                protections.Append(fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values);
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, lex);
@@ -428,7 +424,7 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                protections.Append(fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values);
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, nex);
@@ -442,7 +438,7 @@ namespace BinaryObjectScanner
                     return protections;
 
                 // Append the returned values
-                protections.Append(fileName, subProtections.Values.ToArray());
+                protections.Append(fileName, subProtections.Values);
 
                 // If we have any extractable packers
                 var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, pex);
@@ -460,11 +456,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="mz">MSDOS to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-#if NET20 || NET35
-        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, MSDOS mz)
-#else
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, MSDOS mz)
-#endif
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IMSDOSExecutableCheck>? classes, string fileName, MSDOS mz)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -509,11 +501,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="lex">LinearExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-#if NET20 || NET35
-        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, LinearExecutable lex)
-#else
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, LinearExecutable lex)
-#endif
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<ILinearExecutableCheck>? classes, string fileName, LinearExecutable lex)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -558,11 +546,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="nex">NewExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-#if NET20 || NET35
-        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, NewExecutable nex)
-#else
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, NewExecutable nex)
-#endif
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<INewExecutableCheck>? classes, string fileName, NewExecutable nex)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -607,11 +591,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="pex">PortableExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-#if NET20 || NET35
-        private ProtectionDictionary? HandleExtractableProtections<T>(Dictionary<T, string>.KeyCollection? classes, string fileName, PortableExecutable pex)
-#else
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<object>? classes, string fileName, PortableExecutable pex)
-#endif
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IPortableExecutableCheck>? classes, string fileName, PortableExecutable pex)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())

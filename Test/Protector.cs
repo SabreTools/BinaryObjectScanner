@@ -1,9 +1,4 @@
 using System;
-#if NET20 || NET35
-using System.Collections.Generic;
-#else
-using System.Collections.Concurrent;
-#endif
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner;
