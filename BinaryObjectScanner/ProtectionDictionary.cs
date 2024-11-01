@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace BinaryObjectScanner
 {
+    /// <summary>
+    /// Represents a mapping from file to a set of protections
+    /// </summary>
 #if NET20 || NET35
     public class ProtectionDictionary : Dictionary<string, Queue<string>>
 #else
