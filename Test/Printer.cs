@@ -38,12 +38,14 @@ namespace Test
             // Register the codepages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
-        }/// <summary>
-         /// Wrapper to print information for a single path
-         /// </summary>
-         /// <param name="path">File or directory path</param>
-         /// <param name="json">Enable JSON output, if supported</param>
-         /// <param name="debug">Enable debug output</param>
+        }
+
+        /// <summary>
+        /// Wrapper to print information for a single path
+        /// </summary>
+        /// <param name="path">File or directory path</param>
+        /// <param name="json">Enable JSON output, if supported</param>
+        /// <param name="debug">Enable debug output</param>
         public void PrintPathInfo(string path, bool json, bool debug)
         {
             Console.WriteLine($"Checking possible path: {path}");
