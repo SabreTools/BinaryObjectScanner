@@ -1,7 +1,4 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;

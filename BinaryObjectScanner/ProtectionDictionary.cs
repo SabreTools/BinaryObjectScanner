@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BinaryObjectScanner.Utilities;
 
 namespace BinaryObjectScanner
 {
@@ -41,7 +40,7 @@ namespace BinaryObjectScanner
 
             // Add the key if needed and then append the lists
             EnsureKey(key);
-            this[key].AddRange(values);
+            AddRangeToKey(key, values);
         }
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace BinaryObjectScanner
 
             // Add the key if needed and then append the lists
             EnsureKey(key);
-            this[key].AddRange(values);
+            AddRangeToKey(key, values);
         }
 
         /// <summary>
@@ -73,7 +72,7 @@ namespace BinaryObjectScanner
             foreach (string key in addition.Keys)
             {
                 EnsureKey(key);
-                this[key].AddRange(addition[key]);
+                AddRangeToKey(key, addition[key]);
             }
         }
 
@@ -161,6 +160,22 @@ namespace BinaryObjectScanner
 #else
                 TryRemove(currentKey, out _);
 #endif
+            }
+        }
+
+        /// <summary>
+        /// Add a range of values from one queue to another
+        /// </summary>
+        /// <param name="original">Queue to add data to</param>
+        /// <param name="values">Queue to get data from</param>
+        private void AddRangeToKey(string key, IEnumerable<string> values)
+        {
+            if (values == null || !values.Any())
+                return;
+
+            foreach (string value in values)
+            {
+                this[key].Enqueue(value);
             }
         }
 
