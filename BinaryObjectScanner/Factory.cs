@@ -10,22 +10,22 @@ namespace BinaryObjectScanner
         /// </summary>
         public static IDetectable? CreateDetectable(WrapperType fileType)
         {
-            switch (fileType)
+            return fileType switch
             {
-                case WrapperType.AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
-                case WrapperType.BDPlusSVM: return new FileType.BDPlusSVM();
-                //case WrapperType.CIA: return new FileType.CIA();
-                case WrapperType.Executable: return new FileType.Executable();
-                case WrapperType.LDSCRYPT: return new FileType.LDSCRYPT();
-                //case WrapperType.N3DS: return new FileType.N3DS();
-                //case WrapperType.Nitro: return new FileType.Nitro();
-                case WrapperType.PlayJAudioFile: return new FileType.PLJ();
-                case WrapperType.RealArcadeInstaller: return new FileType.RealArcadeInstaller();
-                case WrapperType.RealArcadeMezzanine: return new FileType.RealArcadeMezzanine();
-                case WrapperType.SFFS: return new FileType.SFFS();
-                case WrapperType.Textfile: return new FileType.Textfile();
-                default: return null;
-            }
+                WrapperType.AACSMediaKeyBlock => new FileType.AACSMediaKeyBlock(),
+                WrapperType.BDPlusSVM => new FileType.BDPlusSVM(),
+                //WrapperType.CIA => new FileType.CIA(),
+                WrapperType.Executable => new FileType.Executable(),
+                WrapperType.LDSCRYPT => new FileType.LDSCRYPT(),
+                //WrapperType.N3DS => new FileType.N3DS(),
+                //WrapperType.Nitro => new FileType.Nitro(),
+                WrapperType.PlayJAudioFile => new FileType.PLJ(),
+                WrapperType.RealArcadeInstaller => new FileType.RealArcadeInstaller(),
+                WrapperType.RealArcadeMezzanine => new FileType.RealArcadeMezzanine(),
+                WrapperType.SFFS => new FileType.SFFS(),
+                WrapperType.Textfile => new FileType.Textfile(),
+                _ => null,
+            };
         }
 
         /// <summary>
@@ -33,40 +33,40 @@ namespace BinaryObjectScanner
         /// </summary>
         public static IExtractable? CreateExtractable(WrapperType fileType)
         {
-            switch (fileType)
+            return fileType switch
             {
-                case WrapperType.BFPK: return new FileType.BFPK();
-                case WrapperType.BSP: return new FileType.BSP();
-                case WrapperType.BZip2: return new FileType.BZip2();
-                case WrapperType.CFB: return new FileType.CFB();
-                //case WrapperType.CIA: return new FileType.CIA();
-                case WrapperType.GCF: return new FileType.GCF();
-                case WrapperType.GZIP: return new FileType.GZIP();
-                case WrapperType.InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
-                case WrapperType.InstallShieldCAB: return new FileType.InstallShieldCAB();
-                case WrapperType.MicrosoftCAB: return new FileType.MicrosoftCAB();
-                case WrapperType.MicrosoftLZ: return new FileType.MicrosoftLZ();
-                case WrapperType.MoPaQ: return new FileType.MPQ();
-                //case WrapperType.N3DS: return new FileType.N3DS();
-                //case WrapperType.NCF: return new FileType.NCF();
-                //case WrapperType.Nitro: return new FileType.Nitro();
-                case WrapperType.PAK: return new FileType.PAK();
-                case WrapperType.PFF: return new FileType.PFF();
-                case WrapperType.PKZIP: return new FileType.PKZIP();
-                //case WrapperType.PlayJAudioFile: return new FileType.PLJ();
-                //case WrapperType.Quantum: return new FileType.Quantum();
-                case WrapperType.RAR: return new FileType.RAR();
-                case WrapperType.SevenZip: return new FileType.SevenZip();
-                case WrapperType.SFFS: return new FileType.SFFS();
-                case WrapperType.SGA: return new FileType.SGA();
-                case WrapperType.TapeArchive: return new FileType.TapeArchive();
-                case WrapperType.VBSP: return new FileType.VBSP();
-                case WrapperType.VPK: return new FileType.VPK();
-                case WrapperType.WAD: return new FileType.WAD();
-                case WrapperType.XZ: return new FileType.XZ();
-                case WrapperType.XZP: return new FileType.XZP();
-                default: return null;
-            }
+                WrapperType.BFPK => new FileType.BFPK(),
+                WrapperType.BSP => new FileType.BSP(),
+                WrapperType.BZip2 => new FileType.BZip2(),
+                WrapperType.CFB => new FileType.CFB(),
+                //WrapperType.CIA => new FileType.CIA(),
+                WrapperType.GCF => new FileType.GCF(),
+                WrapperType.GZIP => new FileType.GZIP(),
+                WrapperType.InstallShieldArchiveV3 => new FileType.InstallShieldArchiveV3(),
+                WrapperType.InstallShieldCAB => new FileType.InstallShieldCAB(),
+                WrapperType.MicrosoftCAB => new FileType.MicrosoftCAB(),
+                WrapperType.MicrosoftLZ => new FileType.MicrosoftLZ(),
+                WrapperType.MoPaQ => new FileType.MPQ(),
+                //WrapperType.N3DS => new FileType.N3DS(),
+                //WrapperType.NCF => new FileType.NCF(),
+                //WrapperType.Nitro => new FileType.Nitro(),
+                WrapperType.PAK => new FileType.PAK(),
+                WrapperType.PFF => new FileType.PFF(),
+                WrapperType.PKZIP => new FileType.PKZIP(),
+                //WrapperType.PlayJAudioFile => new FileType.PLJ(),
+                //WrapperType.Quantum => new FileType.Quantum(),
+                WrapperType.RAR => new FileType.RAR(),
+                WrapperType.SevenZip => new FileType.SevenZip(),
+                WrapperType.SFFS => new FileType.SFFS(),
+                WrapperType.SGA => new FileType.SGA(),
+                WrapperType.TapeArchive => new FileType.TapeArchive(),
+                WrapperType.VBSP => new FileType.VBSP(),
+                WrapperType.VPK => new FileType.VPK(),
+                WrapperType.WAD => new FileType.WAD(),
+                WrapperType.XZ => new FileType.XZ(),
+                WrapperType.XZP => new FileType.XZP(),
+                _ => null,
+            };
         }
     }
 }
