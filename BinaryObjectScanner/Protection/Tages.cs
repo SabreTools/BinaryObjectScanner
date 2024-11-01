@@ -1,7 +1,4 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
@@ -66,11 +63,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -101,16 +94,16 @@ namespace BinaryObjectScanner.Protection
                 new(new List<PathMatch>
                 {
                     // f82339d797be6da92f5d9dadeae9025385159057
-                    new(Path.Combine("9x", "Tamlx.alf")),
+                    new FilePathMatch(Path.Combine("9x", "Tamlx.alf")),
 
                     // 933c004d3043863f019f5ffaf63402a30e65026c
-                    new(Path.Combine("9x", "Tamlx.apt")),
+                    new FilePathMatch(Path.Combine("9x", "Tamlx.apt")),
 
                     // d45745fa6b0d23fe0ee12e330ab85d5bf4e0e776
-                    new(Path.Combine("NT", "enodpl.sys")),
+                    new FilePathMatch(Path.Combine("NT", "enodpl.sys")),
 
                     // f111eba05ca6e9061c557547420847d7fdee657d
-                    new(Path.Combine("NT", "litdpl.sys")),
+                    new FilePathMatch(Path.Combine("NT", "litdpl.sys")),
                 }, "TAGES"),
 
                 // Currently only known to exist in "XIII" and "Beyond Good & Evil" (Redump entries 8774-8776, 45940-45941, 18690-18693, and presumably 21320, 21321, 21323, and 36124).
@@ -218,7 +211,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
             var version = pex.GetInternalVersion();

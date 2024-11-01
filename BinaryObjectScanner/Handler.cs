@@ -1,14 +1,10 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Utilities;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner

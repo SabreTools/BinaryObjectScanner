@@ -1,7 +1,4 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -23,11 +20,7 @@ namespace BinaryObjectScanner.Protection
     public class SafeLock : IPathCheck
     {
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             // Technically all need to exist but some might be renamed
             var matchers = new List<PathMatchSet>

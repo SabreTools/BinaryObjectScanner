@@ -1,7 +1,4 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -39,11 +36,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             // Previous versions of BOS noted to look at ".PFF" files as possible indicators of CopyKiller, but those files seem unrelated.
             // TODO: Figure out why this doesn't work.

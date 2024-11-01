@@ -71,11 +71,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

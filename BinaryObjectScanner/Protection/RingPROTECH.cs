@@ -1,7 +1,4 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -38,11 +35,7 @@ namespace BinaryObjectScanner.Protection
         // TODO: Confirm if these checks are only for ProRing or if they are also for older Ring PROTECH
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

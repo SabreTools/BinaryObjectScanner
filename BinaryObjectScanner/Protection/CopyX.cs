@@ -1,7 +1,4 @@
 using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -96,17 +93,9 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
-#if NET20 || NET35
-            var protections = new Queue<string>();
-#else
-            var protections = new ConcurrentQueue<string>();
-#endif
+            var protections = new List<string>();
             if (files == null)
                 return protections;
 
@@ -167,7 +156,7 @@ namespace BinaryObjectScanner.Protection
 
                     var match = MatchUtil.GetFirstMatch(lightFiles[0], block, matchers, false);
                     if (!string.IsNullOrEmpty(match))
-                        protections.Enqueue(match!);
+                        protections.Add(match!);
                 }
                 catch { }
             }

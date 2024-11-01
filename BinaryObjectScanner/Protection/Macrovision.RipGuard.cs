@@ -1,7 +1,4 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Hashing;
@@ -62,11 +59,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-#if NET20 || NET35
-        internal Queue<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        internal ConcurrentQueue<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        internal IEnumerable<string> RipGuardCheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

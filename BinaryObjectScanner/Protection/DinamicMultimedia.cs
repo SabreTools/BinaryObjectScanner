@@ -1,7 +1,4 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -25,24 +22,20 @@ namespace BinaryObjectScanner.Protection
         // https://www.gamecopyworld.com/games/pc_pc_calcio_2000.shtml
         // https://www.gamecopyworld.com/games/pc_pc_futbol_2000.shtml
 
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {
                 // Many more checks are likely possible based on the sources, but only ones that have been personally verified are getting added.
 
                 // Uncopyable files found in at least http://redump.org/disc/70531/, and likely in multiple others.
-                new(new PathMatch(Path.Combine("XCONTROL", "COMPPLAY._01").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch(Path.Combine("XCONTROL", "LANDER.DA0").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch(Path.Combine("XCONTROL", "XSMGOP.DAP").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch(Path.Combine("XCONTROL", "XSMGOP.VBX").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch(Path.Combine("XCONTROL", "COMPPLAY._01")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch(Path.Combine("XCONTROL", "LANDER.DA0")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch(Path.Combine("XCONTROL", "XSMGOP.DAP")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch(Path.Combine("XCONTROL", "XSMGOP.VBX")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
 
                 // Copyable file found in http://redump.org/disc/70531/ that seems to be exclusively associated with the protection and other files that are part of the protection.
-                new(new PathMatch(Path.Combine("XCONTROL", "COMPSCO._01").Replace("\\", "/"), useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new PathMatch(Path.Combine("XCONTROL", "COMPSCO._01")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -56,15 +49,15 @@ namespace BinaryObjectScanner.Protection
                 // Many more checks are likely possible based on the sources, but only ones that have been personally verified are getting added.
 
                 // Uncopyable files found in at least http://redump.org/disc/70531/, and likely in multiple others.
-                new(new PathMatch("2kscore.sc0", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("arrcalc.obj", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("bdrvisa.drv", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("gprinter.dll", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("hstadium.ipx", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("omanager.odl", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("opublic.001", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("spland.sc0", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
-                new(new PathMatch("uqprime.ipx", useEndsWith: true), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("2kscore.sc0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("arrcalc.obj"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("bdrvisa.drv"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("gprinter.dll"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("hstadium.ipx"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("omanager.odl"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("opublic.001"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("spland.sc0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("uqprime.ipx"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

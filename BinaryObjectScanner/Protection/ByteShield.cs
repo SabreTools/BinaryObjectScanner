@@ -1,7 +1,4 @@
-﻿#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -133,11 +130,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             // TODO: Investigate reference to "bbz650.tmp" in "Byteshield.dll" (Redump entry 6236)
             // Files with the ".bbz" extension are associated with ByteShield, but the extenstion is known to be used in other places as well.

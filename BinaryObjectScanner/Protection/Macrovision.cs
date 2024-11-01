@@ -1,12 +1,8 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BinaryObjectScanner.Interfaces;
-using BinaryObjectScanner.Utilities;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -169,80 +165,44 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-#if NET20 || NET35
-        public Queue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        public ConcurrentQueue<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
-#if NET20 || NET35
-            var results = new Queue<string>();
-#else
-            var results = new ConcurrentQueue<string>();
-#endif
+            var results = new List<string>();
 
             // Run Macrovision directory checks
             var macrovision = MacrovisionCheckDirectoryPath(path, files);
-#if NET20 || NET35
-            if (macrovision != null && macrovision.Count > 0)
-#else
-            if (macrovision != null && !macrovision.IsEmpty)
-#endif
+            if (macrovision != null)
                 results.AddRange(macrovision);
 
             // Run Cactus Data Shield directory checks
             var cactusDataShield = CactusDataShieldCheckDirectoryPath(path, files);
-#if NET20 || NET35
-            if (cactusDataShield != null && cactusDataShield.Count > 0)
-#else
-            if (cactusDataShield != null && !cactusDataShield.IsEmpty)
-#endif
+            if (cactusDataShield != null)
                 results.AddRange(cactusDataShield);
 
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
-#if NET20 || NET35
-            if (cDilla != null && cDilla.Count > 0)
-#else
-            if (cDilla != null && !cDilla.IsEmpty)
-#endif
+            if (cDilla != null)
                 results.AddRange(cDilla);
 
             // Run RipGuard directory checks
             var ripGuard = RipGuardCheckDirectoryPath(path, files);
-#if NET20 || NET35
-            if (ripGuard != null && ripGuard.Count > 0)
-#else
-            if (ripGuard != null && !ripGuard.IsEmpty)
-#endif
+            if (ripGuard != null)
                 results.AddRange(ripGuard);
 
             // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
-#if NET20 || NET35
-            if (safeCast != null && safeCast.Count > 0)
-#else
-            if (safeCast != null && !safeCast.IsEmpty)
-#endif
+            if (safeCast != null)
                 results.AddRange(safeCast);
 
             // Run SafeDisc directory checks
             var safeDisc = SafeDiscCheckDirectoryPath(path, files);
-#if NET20 || NET35
-            if (safeDisc != null && safeDisc.Count > 0)
-#else
-            if (safeDisc != null && !safeDisc.IsEmpty)
-#endif
+            if (safeDisc != null)
                 results.AddRange(safeDisc);
 
             if (results != null && results.Count > 0)
                 return results;
 
-#if NET20 || NET35
-            return new Queue<string>();
-#else
-            return new ConcurrentQueue<string>();
-#endif
+            return [];
         }
 
         /// <inheritdoc/>
@@ -289,11 +249,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-#if NET20 || NET35
-        internal Queue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
-#else
-        internal ConcurrentQueue<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
-#endif
+        internal IEnumerable<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -436,7 +392,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         // TODO: Combine with filesize version checks if possible.
-        private string GetSecDrvExecutableVersion(PortableExecutable pex)
+        private static string GetSecDrvExecutableVersion(PortableExecutable pex)
         {
             // Different versions of this driver correspond to different SafeDisc versions.
             // TODO: Check if earlier versions of this driver contain the version string in a less obvious place. 
@@ -478,7 +434,7 @@ namespace BinaryObjectScanner.Protection
             return "Unknown Version (Report this to us on GitHub)";
         }
 
-        private string? CheckSectionForProtection(string file, bool includeDebug, List<string>? sectionStrings, byte[]? sectionRaw, bool newVersion)
+        private static string? CheckSectionForProtection(string file, bool includeDebug, List<string>? sectionStrings, byte[]? sectionRaw, bool newVersion)
         {
             // Get the section strings, if they exist
             if (sectionStrings != null)
