@@ -1,7 +1,4 @@
 ﻿using System;
-#if NET40_OR_GREATER || NETCOREAPP
-using System.Collections.Concurrent;
-#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -216,11 +213,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<IContentCheck, string>();
-#else
-            var protections = new ConcurrentDictionary<IContentCheck, string>();
-#endif
+            var protections = new CheckDictionary<IContentCheck>();
 
             // Iterate through all checks
 #if NET20 || NET35
@@ -275,11 +268,7 @@ namespace BinaryObjectScanner.FileType
         public IDictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
         {
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<ILinearExecutableCheck, string>();
-#else
-            var protections = new ConcurrentDictionary<ILinearExecutableCheck, string>();
-#endif
+            var protections = new CheckDictionary<ILinearExecutableCheck>();
 
             // Iterate through all checks
 #if NET20 || NET35
@@ -334,11 +323,7 @@ namespace BinaryObjectScanner.FileType
         public IDictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
         {
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<IMSDOSExecutableCheck, string>();
-#else
-            var protections = new ConcurrentDictionary<IMSDOSExecutableCheck, string>();
-#endif
+            var protections = new CheckDictionary<IMSDOSExecutableCheck>();
 
             // Iterate through all checks
 #if NET20 || NET35
@@ -393,11 +378,7 @@ namespace BinaryObjectScanner.FileType
         public IDictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
         {
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<INewExecutableCheck, string>();
-#else
-            var protections = new ConcurrentDictionary<INewExecutableCheck, string>();
-#endif
+            var protections = new CheckDictionary<INewExecutableCheck>();
 
             // Iterate through all checks
 #if NET20 || NET35
@@ -452,11 +433,7 @@ namespace BinaryObjectScanner.FileType
         public IDictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
         {
             // Create the output dictionary
-#if NET20 || NET35
-            var protections = new Dictionary<IPortableExecutableCheck, string>();
-#else
-            var protections = new ConcurrentDictionary<IPortableExecutableCheck, string>();
-#endif
+            var protections = new CheckDictionary<IPortableExecutableCheck>();
 
             // Iterate through all checks
 #if NET20 || NET35
