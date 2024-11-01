@@ -45,8 +45,8 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("CopyKillerV3"), "CopyKiller V3.62-3.64"),
                 new(new FilePathMatch("CopyKillerV4"), "CopyKiller V3.99-3.99a"),
 
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("ACK3900.ckt"),
                     new FilePathMatch("ACK3999.ckt"),
                     new FilePathMatch("CK100.wzc"),
@@ -56,10 +56,10 @@ namespace BinaryObjectScanner.Protection
                     new FilePathMatch("P261XP.tcck"),
                     new FilePathMatch("WZ200.rwzc"),
                     new FilePathMatch("XCK3900.ck2"),
-                }, "CopyKiller V3.99+"),
+                ], "CopyKiller V3.99+"),
 
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("ACK3900.ckt"),
                     new FilePathMatch("CK100.wzc"),
                     new FilePathMatch("CK2500.ck"),
@@ -68,13 +68,13 @@ namespace BinaryObjectScanner.Protection
                     new FilePathMatch("P261XP.tcck"),
                     new FilePathMatch("WZ200.rwzc"),
                     new FilePathMatch("XCK3900.ck2"),
-                }, "CopyKiller V3.64+"),
+                ], "CopyKiller V3.64+"),
 
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("CK100.wzc"),
                     new FilePathMatch("Engine.wzc"),
-                }, "CopyKiller V3.62+"),
+                ], "CopyKiller V3.62+"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

@@ -64,11 +64,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the Black Lagoon Season 1 DVD steelbook box set (Geneon ID 12970).
-                new(new PathMatch("G23YHWO1.EXE", useEndsWith: true), "RipGuard"),
-                new(new PathMatch("RGASDEV.SYS", useEndsWith: true), "RipGuard"),
+                new(new FilePathMatch("G23YHWO1.EXE"), "RipGuard"),
+                new(new FilePathMatch("RGASDEV.SYS"), "RipGuard"),
 
                 // Mentioned online in https://forum.redfox.bz/threads/resolved-one-on-one-with-tony-horton-vol2-disc3.33901/.
-                new(new PathMatch("9KMJ9G4I.EXE", useEndsWith: true), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
+                new(new FilePathMatch("9KMJ9G4I.EXE"), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -80,11 +80,11 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in the Black Lagoon Season 1 DVD steelbook box set (Geneon ID 12970).
-                new(new PathMatch("G23YHWO1.EXE", useEndsWith: true), "RipGuard"),
-                new(new PathMatch("RGASDEV.SYS", useEndsWith: true), "RipGuard"),
+                new(new FilePathMatch("G23YHWO1.EXE"), "RipGuard"),
+                new(new FilePathMatch("RGASDEV.SYS"), "RipGuard"),
 
                 // Mentioned online in https://forum.redfox.bz/threads/resolved-one-on-one-with-tony-horton-vol2-disc3.33901/.
-                new(new PathMatch("9KMJ9G4I.EXE", useEndsWith: true), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
+                new(new FilePathMatch("9KMJ9G4I.EXE"), "RipGuard (Unconfirmed - Please report to us on GitHub)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

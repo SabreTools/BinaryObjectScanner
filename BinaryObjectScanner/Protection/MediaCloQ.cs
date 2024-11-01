@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Protection
                 // The file "sunncomm.ico" was a previously used file check, but since it's just an icon of the SunnComm logo, it seems too likely to result in false positives.
 
                 // Found on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-                new(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
+                new(new FilePathMatch("scvfy.exe"), "MediaCloQ"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -58,7 +58,7 @@ namespace BinaryObjectScanner.Protection
                 // The file "sunncomm.ico" was a previously used file check, but since it's just an icon of the SunnComm logo, it seems too likely to result in false positives.
 
                 // Found on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-                new(new PathMatch("scvfy.exe", useEndsWith: true), "MediaCloQ"),
+                new(new FilePathMatch("scvfy.exe"), "MediaCloQ"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

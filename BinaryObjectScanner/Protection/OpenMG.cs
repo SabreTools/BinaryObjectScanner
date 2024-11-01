@@ -71,20 +71,20 @@ namespace BinaryObjectScanner.Protection
                 // So far found in every known release that uses OpenMG ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
                 // Files with the extension ".OMA" in the directory "OMGAUDIO" are the encrypted audio files, and files with in the directory "OMGEXTRA" the extension ".000" are bonus content.
                 // TODO: Investigate the consistency of "\OMGEXTRA\INDX0000.XML" and "\OMGEXTRA\INDX0001.XML", they seem to only appear when bonus content is present ("Touch" by Amerie).
-                new(new List<PathMatch>
-                {
-                    new(Path.Combine("OMGAUDIO", "00AUDTOC.DAT")),
-                    new(Path.Combine("OMGAUDIO", "01AUDSTR.DAT")),
-                    new(Path.Combine("OMGAUDIO", "05SRPCDS.DAT")),
-                    new(Path.Combine("OMGEXTRA", "OMGSVC.DAT")),
-                }, "OpenMG"),
+                new(
+                [
+                    new FilePathMatch(Path.Combine("OMGAUDIO", "00AUDTOC.DAT")),
+                    new FilePathMatch(Path.Combine("OMGAUDIO", "01AUDSTR.DAT")),
+                    new FilePathMatch(Path.Combine("OMGAUDIO", "05SRPCDS.DAT")),
+                    new FilePathMatch(Path.Combine("OMGEXTRA", "OMGSVC.DAT")),
+                ], "OpenMG"),
 
                 // Always found together on OpenMG releases ("Touch" by Amerie, Redump entry 95010, and product ID SVWC-7185).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("SDKHM.DLL"),
                     new FilePathMatch("SDKHM.EXE"),
-                }, "OpenMG"),
+                ], "OpenMG"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);

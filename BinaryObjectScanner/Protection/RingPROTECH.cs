@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 94161
-                new(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
+                new(new FilePathMatch("protect.pro"), "Ring PROTECH / ProRing [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -52,7 +52,7 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in Redump entry 94161
-                new(new PathMatch("protect.pro", useEndsWith: true), "Ring PROTECH / ProRing [Check disc for physical ring]"),
+                new(new FilePathMatch("protect.pro"), "Ring PROTECH / ProRing [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

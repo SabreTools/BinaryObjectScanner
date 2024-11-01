@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch(Path.Combine("XCONTROL", "XSMGOP.VBX")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
 
                 // Copyable file found in http://redump.org/disc/70531/ that seems to be exclusively associated with the protection and other files that are part of the protection.
-                new(new PathMatch(Path.Combine("XCONTROL", "COMPSCO._01")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch(Path.Combine("XCONTROL", "COMPSCO._01")), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

@@ -270,21 +270,21 @@ namespace BinaryObjectScanner.Protection
                 // Found in Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
                 // These files are automatically installed into an "Denuvo Anti-Cheat" folder when the game is installed. 
-                new(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat.sys"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-update-service.exe"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-runtime.dll"), "Denuvo Anti-Cheat"),
 
                 // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
-                new(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("Denuvo Anti-Cheat Installer.exe"), "Denuvo Anti-Cheat"),
                 
                 // Found in the Denuvo Anti-Cheat installer on their support website. (https://web.archive.org/web/20240130142033/https://support.codefusion.technology/anti-cheat/?l=ja&s=ac&e=2009)
-                new(new PathMatch("denuvo-anti-cheat-installer.zip", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-installer.zip"), "Denuvo Anti-Cheat"),
 
                 // Found in "denuvo-anti-cheat-installer.zip".
-                new(new PathMatch("Denuvo-Anti-Cheat_install_run_as_Admin.bat", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-crash-report.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-crash-report.exe.config", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-update-service-launcher.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("Denuvo-Anti-Cheat_install_run_as_Admin.bat"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-crash-report.exe"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-crash-report.exe.config"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-update-service-launcher.dll"), "Denuvo Anti-Cheat"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -298,21 +298,21 @@ namespace BinaryObjectScanner.Protection
                 // Found in Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
                 // These files are automatically installed into an "Denuvo Anti-Cheat" folder when the game is installed. 
-                new(new PathMatch("denuvo-anti-cheat.sys", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-update-service.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-runtime.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat.sys"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-update-service.exe"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-runtime.dll"), "Denuvo Anti-Cheat"),
 
                 // This file is a renamed copy of "denuvo-anti-cheat-update-service.exe" which is only seen in the folder of the main game executable after it has been run, but before Denuvo Anti-Cheat is finished installing.
-                new(new PathMatch("Denuvo Anti-Cheat Installer.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("Denuvo Anti-Cheat Installer.exe"), "Denuvo Anti-Cheat"),
                 
                 // Found in the Denuvo Anti-Cheat installer on their support website. (https://web.archive.org/web/20240130142033/https://support.codefusion.technology/anti-cheat/?l=ja&s=ac&e=2009)
-                new(new PathMatch("denuvo-anti-cheat-installer.zip", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-installer.zip"), "Denuvo Anti-Cheat"),
 
                 // Found in "denuvo-anti-cheat-installer.zip".
-                new(new PathMatch("Denuvo-Anti-Cheat_install_run_as_Admin.bat", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-crash-report.exe", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-crash-report.exe.config", useEndsWith: true), "Denuvo Anti-Cheat"),
-                new(new PathMatch("denuvo-anti-cheat-update-service-launcher.dll", useEndsWith: true), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("Denuvo-Anti-Cheat_install_run_as_Admin.bat"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-crash-report.exe"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-crash-report.exe.config"), "Denuvo Anti-Cheat"),
+                new(new FilePathMatch("denuvo-anti-cheat-update-service-launcher.dll"), "Denuvo Anti-Cheat"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

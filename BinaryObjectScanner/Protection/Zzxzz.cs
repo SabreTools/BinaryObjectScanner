@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(new PathMatch("Zzz.aze", useEndsWith: true), "Zzxzz"),
+                new(new FilePathMatch("Zzz.aze"), "Zzxzz"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

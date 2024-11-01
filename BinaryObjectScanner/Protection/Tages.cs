@@ -68,13 +68,13 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // So far, only known to exist in early versions of "Moto Racer 3" (Redump entries 31578 and 34669).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     // d37f70489207014d7d0fbaa43b081a93e8030498
-                    new(Path.Combine("Sys", "Devx.sys")),
+                    new FilePathMatch(Path.Combine("Sys", "Devx.sys")),
 
                     // a0acbc2f8e321e4f30c913c095e28af444058249
-                    new(Path.Combine("Sys", "VtPr.sys")),
+                    new FilePathMatch(Path.Combine("Sys", "VtPr.sys")),
 
                     // SHA-1 is variable, file size is 81,920 bytes
                     new FilePathMatch("Wave.aif"),
@@ -87,12 +87,12 @@ namespace BinaryObjectScanner.Protection
 
                     // SHA-1 is variable, file size is 61,440 bytes
                     new FilePathMatch("Wave.axt"),
-                }, "TAGES"),
+                ], "TAGES"),
 
                 // Currently only found in "Robocop" (Redump entry 35932).
                 // Found in a directory named "System", with an executable named "Setup.exe".
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     // f82339d797be6da92f5d9dadeae9025385159057
                     new FilePathMatch(Path.Combine("9x", "Tamlx.alf")),
 
@@ -104,35 +104,35 @@ namespace BinaryObjectScanner.Protection
 
                     // f111eba05ca6e9061c557547420847d7fdee657d
                     new FilePathMatch(Path.Combine("NT", "litdpl.sys")),
-                }, "TAGES"),
+                ], "TAGES"),
 
                 // Currently only known to exist in "XIII" and "Beyond Good & Evil" (Redump entries 8774-8776, 45940-45941, 18690-18693, and presumably 21320, 21321, 21323, and 36124).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("enodpl.sys"),
                     new FilePathMatch("ENODPL.VXD"),
                     new FilePathMatch("tandpl.sys"),
                     new FilePathMatch("TANDPL.VXD"),
-                }, "TAGES"),
+                ], "TAGES"),
 
                 // The directory of these files has been seen to be named two different things, with two different accompanying executables in the root of the directory.
                 // In the example where the directory is named "Drivers", the executable is named "Silent.exe" (Redump entry 51763).
                 // In the example where the directory is named "ELBdrivers", the executable is name "ELBDrivers.exe" (Redump entry 91090).
                 // The name and file size of the included executable vary, but there should always be one here.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     // 40826e95f3ad8031b6debe15aca052c701288e04
-                    new(Path.Combine("9x", "hwpsgt.vxd")),
+                    new FilePathMatch(Path.Combine("9x", "hwpsgt.vxd")),
 
                     // f82339d797be6da92f5d9dadeae9025385159057
-                    new(Path.Combine("9x", "lemsgt.vxd")),
+                    new FilePathMatch(Path.Combine("9x", "lemsgt.vxd")),
 
                     // 43f407ecdc0d87a3713126b757ccaad07ade285f
-                    new(Path.Combine("NT", "hwpsgt.sys")),
+                    new FilePathMatch(Path.Combine("NT", "hwpsgt.sys")),
 
                     // 548dd6359abbcc8c84ce346d078664eeedc716f7
-                    new(Path.Combine("NT", "lemsgt.sys")),
-                }, "TAGES"),
+                    new FilePathMatch(Path.Combine("NT", "lemsgt.sys")),
+                ], "TAGES"),
 
                 // The following files are supposed to only be found inside the driver setup executables, and are present in at least version 5.2.0.1 (Redump entry 15976).
                 new(new FilePathMatch("ithsgt.sys"), "TAGES Driver"),

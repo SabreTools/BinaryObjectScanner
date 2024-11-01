@@ -120,12 +120,12 @@ namespace BinaryObjectScanner.Protection
                 // TODO: Verify if these are OR or AND
                 new(new FilePathMatch("NOMOUSE.SP"), GetVersion16Bit, "LaserLok [Check disc for physical ring]"),
                 new(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("l16dll.dll"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.in"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.o10"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.o11"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.o12"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.out"), "LaserLok [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -140,12 +140,12 @@ namespace BinaryObjectScanner.Protection
 
                 // TODO: Verify if these are OR or AND
                 new(new FilePathMatch("NOMOUSE.COM"), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("l16dll.dll", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.in", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.o10", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.o11", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.o12", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
-                new(new PathMatch("laserlok.out", useEndsWith: true), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("l16dll.dll"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.in"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.o10"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.o11"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.o12"), "LaserLok [Check disc for physical ring]"),
+                new(new FilePathMatch("laserlok.out"), "LaserLok [Check disc for physical ring]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

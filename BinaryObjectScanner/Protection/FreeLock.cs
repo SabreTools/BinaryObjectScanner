@@ -41,11 +41,11 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("FREELOCK.13"), "Freelock 1.3"),
 
                 // Found in "FREELOCK.IMG" From Freelock 1.3.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("FREELOCK.13"),
                     new FilePathMatch("FL.DAT"),
-                }, "Freelock 1.3"),
+                ], "Freelock 1.3"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);

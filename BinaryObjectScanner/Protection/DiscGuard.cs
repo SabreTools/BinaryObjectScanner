@@ -143,25 +143,25 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found together in seemingly every DiscGuard game (Redump entries 31914, 46743, 46961, 79284, and 79374).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("IOSLINK.VXD"),
                     new FilePathMatch("IOSLINK.SYS"),
-                }, "DiscGuard"),
+                ], "DiscGuard"),
 
                 // Found together in one DiscGuard game (Redump entry 31914).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("TTR1.DLL"),
                     new FilePathMatch("TTR2.DLL"),
-                }, "DiscGuard"),
+                ], "DiscGuard"),
 
                 // Found together in most DiscGuard games (Redump entries 46743, 46961, 79284, and 79374).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("T111.DLL"),
                     new FilePathMatch("T222.DLL"),
-                }, "DiscGuard"),
+                ], "DiscGuard"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);

@@ -54,24 +54,24 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // All found to be present on at multiple albums with LabelGate CD2 (Redump entry 95010 and product ID SVWC-7185), the original version of LabelGate still needs to be investigated.
-                new(new List<PathMatch>
-                {
+                new(
+                [
 #if NET20 || NET35
-                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQ2SETUP.EXE")),
-                    new(Path.Combine(Path.Combine("BIN", "WIN32"), "MQSTART.EXE")),
+                    new FilePathMatch(Path.Combine(Path.Combine("BIN", "WIN32"), "MQ2SETUP.EXE")),
+                    new FilePathMatch(Path.Combine(Path.Combine("BIN", "WIN32"), "MQSTART.EXE")),
 #else
-                    new(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE")),
-                    new(Path.Combine("BIN", "WIN32", "MQSTART.EXE")),
+                    new FilePathMatch(Path.Combine("BIN", "WIN32", "MQ2SETUP.EXE")),
+                    new FilePathMatch(Path.Combine("BIN", "WIN32", "MQSTART.EXE")),
 #endif
-                }, "LabelGate CD2 Media Player"),
+                ], "LabelGate CD2 Media Player"),
 
                 // All of these are also found present on all known LabelGate CD2 releases, though an additional file "RESERVED.DAT" is found in the same directory in at least one release (Product ID SVWC-7185)
-                new(new List<PathMatch>
-                {
-                    new(Path.Combine("MQDISC", "LICENSE.TXT")),
-                    new(Path.Combine("MQDISC", "MQDISC.INI")),
-                    new(Path.Combine("MQDISC", "START.INI")),
-                }, "LabelGate CD2"),
+                new(
+                [
+                    new FilePathMatch(Path.Combine("MQDISC", "LICENSE.TXT")),
+                    new FilePathMatch(Path.Combine("MQDISC", "MQDISC.INI")),
+                    new FilePathMatch(Path.Combine("MQDISC", "START.INI")),
+                ], "LabelGate CD2"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);

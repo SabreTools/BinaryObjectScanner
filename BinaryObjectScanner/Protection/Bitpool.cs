@@ -25,13 +25,13 @@ namespace BinaryObjectScanner.Protection
 
                 // A set of 4 identically sized (within the same game, not between games), corrupted/padded files present in several games (Redump entries 31782 and 35476).
                 // Both examples with only having the first letter uppercase and as the whole file name being uppercase have been seen.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("Crc_a"),
                     new FilePathMatch("Crc_b"),
                     new FilePathMatch("Crc_c"),
                     new FilePathMatch("Crc_d"),
-                }, "Bitpool"),
+                ], "Bitpool"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

@@ -74,15 +74,15 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "prog-17_202403".
-                new(new PathMatch("FlexLM-6.1F", useEndsWith: true), "FlexLM 6.1f"),
-                new(new PathMatch("FlexLM", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("FLexLM_Licensing.wri", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMGR326B.DLL", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("FLEXLM.CPL", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMGRD.EXE", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMGRD95.EXE", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMUTIL.EXE", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("READFLEX.WRI", useEndsWith: true), "FlexLM"),
+                new(new FilePathMatch("FlexLM-6.1F"), "FlexLM 6.1f"),
+                new(new FilePathMatch("FlexLM"), "FlexLM"),
+                new(new FilePathMatch("FLexLM_Licensing.wri"), "FlexLM"),
+                new(new FilePathMatch("LMGR326B.DLL"), "FlexLM"),
+                new(new FilePathMatch("FLEXLM.CPL"), "FlexLM"),
+                new(new FilePathMatch("LMGRD.EXE"), "FlexLM"),
+                new(new FilePathMatch("LMGRD95.EXE"), "FlexLM"),
+                new(new FilePathMatch("LMUTIL.EXE"), "FlexLM"),
+                new(new FilePathMatch("READFLEX.WRI"), "FlexLM"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -94,15 +94,15 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "prog-17_202403".
-                new(new PathMatch("FlexLM-6.1F", useEndsWith: true), "FlexLM 6.1f"),
-                new(new PathMatch("FlexLM", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("FLexLM_Licensing.wri", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMGR326B.DLL", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("FLEXLM.CPL", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMGRD.EXE", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMGRD95.EXE", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("LMUTIL.EXE", useEndsWith: true), "FlexLM"),
-                new(new PathMatch("READFLEX.WRI", useEndsWith: true), "FlexLM"),
+                new(new FilePathMatch("FlexLM-6.1F"), "FlexLM 6.1f"),
+                new(new FilePathMatch("FlexLM"), "FlexLM"),
+                new(new FilePathMatch("FLexLM_Licensing.wri"), "FlexLM"),
+                new(new FilePathMatch("LMGR326B.DLL"), "FlexLM"),
+                new(new FilePathMatch("FLEXLM.CPL"), "FlexLM"),
+                new(new FilePathMatch("LMGRD.EXE"), "FlexLM"),
+                new(new FilePathMatch("LMGRD95.EXE"), "FlexLM"),
+                new(new FilePathMatch("LMUTIL.EXE"), "FlexLM"),
+                new(new FilePathMatch("READFLEX.WRI"), "FlexLM"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

@@ -191,7 +191,7 @@ namespace BinaryObjectScanner.Protection
                 // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
 
                 // Found in Redump entry 84517.
-                new(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
+                new(new FilePathMatch("CDCOPS.DLL"), "CD-Cops"),
                 new(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
                 new(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
 
@@ -211,7 +211,7 @@ namespace BinaryObjectScanner.Protection
                 // Presumably used to increase the amount of data written to the disc to allow DPM checking to be used for the protection. It's unknown if this file is used on any other protected discs.
 
                 // Found in Redump entry 84517.
-                new(new PathMatch("CDCOPS.DLL", useEndsWith: true), "CD-Cops"),
+                new(new FilePathMatch("CDCOPS.DLL"), "CD-Cops"),
                 new(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
                 new(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
 

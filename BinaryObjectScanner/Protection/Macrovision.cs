@@ -253,7 +253,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+                new(new FilePathMatch("00000001.TMP"), Get00000001TMPVersion, string.Empty),
                 new(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 
@@ -265,7 +265,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(new PathMatch("00000001.TMP", useEndsWith: true), Get00000001TMPVersion, string.Empty),
+                new(new FilePathMatch("00000001.TMP"), Get00000001TMPVersion, string.Empty),
                 new(new FilePathMatch("secdrv.sys"), GetSecdrvFileSizeVersion, "Macrovision Security Driver"),
             };
 

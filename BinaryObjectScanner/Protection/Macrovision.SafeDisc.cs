@@ -131,47 +131,47 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("CLCD16.DLL"),
                     new FilePathMatch("CLCD32.DLL"),
                     new FilePathMatch("CLOKSPL.EXE"),
-                    new(".icd", useEndsWith: true),
-                }, "SafeDisc 1/Lite"),
+                    new PathMatch(".icd", useEndsWith: true),
+                ], "SafeDisc 1/Lite"),
 
                 // Check for the original filename used for the SafeDisc splash-screens, new file names are used in later versions.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("00000001.TMP"),
                     new FilePathMatch("SPLSH16.BMP"),
                     new FilePathMatch("SPLSH256.BMP"),
-                }, "SafeDisc 1.00.025-1.01.044"),
+                ], "SafeDisc 1.00.025-1.01.044"),
 
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("00000001.TMP"),
                     // The .016 and .256 files are banners stored in the BMP image format. The 016 and 256 refers to the color depth of the BMP.
                     // There are common file names used, such as 00000407.XXX and 00000409.XXX. Further investigation is needed to determine the consistency of these names.
-                    new(".016", useEndsWith: true),
-                    new(".256", useEndsWith: true),
-                }, "SafeDisc 1.06.000-3.20.024"),
+                    new PathMatch(".016", useEndsWith: true),
+                    new PathMatch(".256", useEndsWith: true),
+                ], "SafeDisc 1.06.000-3.20.024"),
 
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("00000001.TMP"),
                     // The .016 files stop being used as of 4.00.000, while the .256 remain in fairly consistent use.
-                    new(".256", useEndsWith: true),
-                }, "SafeDisc 1.06.000+"),
+                    new PathMatch(".256", useEndsWith: true),
+                ], "SafeDisc 1.06.000+"),
 
                 // The file "mcp.dll" is known to only be used in a specific version range for SafeDisc, but is currently only used in a grouped file name check with other SafeDisc files to prevent false positives.
                 // Found in Redump entries 28810, 30555, 55078, and 62935.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("00000001.TMP"),
                     new FilePathMatch("drvmgt.dll"),
                     new FilePathMatch("mcp.dll"),
                     new FilePathMatch("secdrv.sys"),
-                }, "SafeDisc 1.45.011-1.50.020"),
+                ], "SafeDisc 1.45.011-1.50.020"),
 
                 // Search for the splash screen files known to sometimes contain a generic SafeDisc splash-screen.
                 new(new FilePathMatch("00000000.016"), GetSafeDiscSplshVersion, "SafeDisc"),

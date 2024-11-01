@@ -117,12 +117,12 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 68166.
                 new(new FilePathMatch("tdvm.dll"), "SolidShield"),
                 new(new FilePathMatch("tdvm.vds"), "SolidShield"),
-                new(new PathMatch("vfs20.dll", useEndsWith: true), "SolidShield"),
+                new(new FilePathMatch("vfs20.dll"), "SolidShield"),
 
                 new(new FilePathMatch("dvm.dll"), "SolidShield"),
                 new(new FilePathMatch("hc.dll"), "SolidShield"),
-                new(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-                new(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+                new(new FilePathMatch("solidshield-cd.dll"), "SolidShield"),
+                new(new FilePathMatch("c11prot.dll"), "SolidShield"),
             };
 
             // TODO: Verify if these are OR or AND
@@ -134,10 +134,15 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
+                // Found in Redump entry 68166.
+                new(new FilePathMatch("tdvm.dll"), "SolidShield"),
+                new(new FilePathMatch("tdvm.vds"), "SolidShield"),
+                new(new FilePathMatch("vfs20.dll"), "SolidShield"),
+
                 new(new FilePathMatch("dvm.dll"), "SolidShield"),
                 new(new FilePathMatch("hc.dll"), "SolidShield"),
-                new(new PathMatch("solidshield-cd.dll", useEndsWith: true), "SolidShield"),
-                new(new PathMatch("c11prot.dll", useEndsWith: true), "SolidShield"),
+                new(new FilePathMatch("solidshield-cd.dll"), "SolidShield"),
+                new(new FilePathMatch("c11prot.dll"), "SolidShield"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
