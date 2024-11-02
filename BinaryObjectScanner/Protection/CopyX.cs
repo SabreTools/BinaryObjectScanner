@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Protection
             // intersecting the start of the file.
 
             // Kenny's Adventure uses System instead of ZDAT.
-            string[] dirs = ["ZDAT", "ZDATA", "System"];
+            string[] dirs = ["ZDAT", "ZDATA", "ZZDAT", "ZZDATA", "ZYDAT", "ZYDATA", "System"];
             List<string>? lightFiles = null;
 
             // TODO: Compensate for the check being run a directory or more higher
