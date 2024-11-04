@@ -364,7 +364,8 @@ This section contains information on project and class organization principles t
 | `BinaryObjectScanner/Interfaces` | One file per interface. |
 | `BinaryObjectScanner/Packer` | At least one file per packer type. Partial classes allowed. |
 | `BinaryObjectScanner/Protection` | At least one file per protection type. Partial classes allowed. |
-| `Test` | All functionality lives in `Program.cs`. |
+| `ExtractionTool` | All functionality lives in `Program.cs`. |
+| `ProtectionScan` | All functionality lives in `Program.cs`. |
 
 If the project or directory you are looking for is not included in the above, please consider it to be outside the context of this document.
 
@@ -380,6 +381,7 @@ This section contains information on in-code organization principles that depend
 | `BinaryObjectScanner/Interfaces` | Methods ordered alphabetically. |
 | `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
-| `Test` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
+| `ExtractionTool` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
+| `ProtectionScan` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 
 If the project or directory you are looking for is not included in the above, please consider it to be outside the context of this document.

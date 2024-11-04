@@ -5,14 +5,27 @@
    "version": "0.2.0",
    "configurations": [
         {
-            "name": ".NET Core Launch (Test)",
+            "name": ".NET Core Launch (ProtectionScan)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Test/bin/Debug/net8.0/Test.dll",
+            "program": "${workspaceFolder}/ProtectionScan/bin/Debug/net8.0/ProtectionScan.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Test",
+            "cwd": "${workspaceFolder}/ProtectionScan",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Launch (ExtractionTool)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/ExtractionTool/bin/Debug/net8.0/ExtractionTool.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ExtractionTool",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
