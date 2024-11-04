@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryObjectScanner", "Bina
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtectionScan", "ProtectionScan\ProtectionScan.csproj", "{14CC56E0-7D56-497C-BF3D-4C06FA169831}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractionTool", "ExtractionTool\ExtractionTool.csproj", "{89767A19-043F-4251-805B-B2CBC48E2B79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{14CC56E0-7D56-497C-BF3D-4C06FA169831}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14CC56E0-7D56-497C-BF3D-4C06FA169831}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14CC56E0-7D56-497C-BF3D-4C06FA169831}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89767A19-043F-4251-805B-B2CBC48E2B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89767A19-043F-4251-805B-B2CBC48E2B79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89767A19-043F-4251-805B-B2CBC48E2B79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89767A19-043F-4251-805B-B2CBC48E2B79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
