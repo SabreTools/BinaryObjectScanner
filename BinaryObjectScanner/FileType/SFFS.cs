@@ -17,10 +17,8 @@ namespace BinaryObjectScanner.FileType
             if (!File.Exists(file))
                 return null;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Detect(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return Detect(fs, file, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -43,21 +41,19 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            return null;
+            return false;
         }
     }
 }

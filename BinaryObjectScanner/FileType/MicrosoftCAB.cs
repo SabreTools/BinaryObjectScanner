@@ -14,53 +14,50 @@ namespace BinaryObjectScanner.FileType
     public class MicrosoftCAB : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
 #if NET20 || NET35 || !WIN
             // Not supported for old .NET due to feature requirements
             // Not supported in non-Windows builds due to DLL requirements
-            return null;
+            return false;
 #else
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (var cabArchive = new MSCabinet(file))
+                // Loop over each entry
+                var cabArchive = new MSCabinet(file);
+                foreach (var compressedFile in cabArchive.GetFiles())
                 {
-                    // Loop over each entry
-                    foreach (var compressedFile in cabArchive.GetFiles())
+                    try
                     {
-                        try
-                        {
-                            string tempFile = Path.Combine(tempPath, compressedFile.Filename);
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                            compressedFile.ExtractTo(tempFile);
-                        }
-                        catch (System.Exception ex)
-                        {
-                            if (includeDebug) System.Console.WriteLine(ex);
-                        }
+                        string tempFile = Path.Combine(tempPath, compressedFile.Filename);
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
+
+                        compressedFile.ExtractTo(tempFile);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        if (includeDebug) System.Console.WriteLine(ex);
                     }
                 }
 
-                return tempPath;
+                return true;
             }
             catch (System.Exception ex)
             {
                 if (includeDebug) System.Console.WriteLine(ex);
-                return null;
+                return false;
             }
 #endif
         }

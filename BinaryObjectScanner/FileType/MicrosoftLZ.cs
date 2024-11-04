@@ -12,29 +12,23 @@ namespace BinaryObjectScanner.FileType
     public class MicrosoftLZ : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
                 var data = Decompressor.Decompress(stream);
                 if (data == null)
-                    return null;
+                    return false;
 
                 // Create the temp filename
                 string tempFile = "temp.bin";
@@ -49,20 +43,20 @@ namespace BinaryObjectScanner.FileType
                         tempFile += "l";
                 }
 
-                tempFile = Path.Combine(tempPath, tempFile);
+                tempFile = Path.Combine(outDir, tempFile);
+                var directoryName = Path.GetDirectoryName(tempFile);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                    Directory.CreateDirectory(directoryName);
 
-                // Write the file data to a temp file
-                using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                {
-                    tempStream.Write(data, 0, data.Length);
-                }
+                using Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                tempStream.Write(data, 0, data.Length);
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
     }

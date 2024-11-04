@@ -14,79 +14,75 @@ namespace BinaryObjectScanner.FileType
     public class CFB : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
 #if NET20 || NET35
             // Not supported for .NET Framework 2.0 or .NET Framework 3.5 due to library support
-            return null;
+            return false;
 #else
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (CompoundFile msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default))
+                using var msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default);
+                msi.RootStorage.VisitEntries((e) =>
                 {
-                    msi.RootStorage.VisitEntries((e) =>
+                    try
                     {
-                        try
+                        if (!e.IsStream)
+                            return;
+
+                        var str = msi.RootStorage.GetStream(e.Name);
+                        if (str == null)
+                            return;
+
+                        byte[] strData = str.GetData();
+                        if (strData == null)
+                            return;
+
+                        var decoded = DecodeStreamName(e.Name)?.TrimEnd('\0');
+                        if (decoded == null)
+                            return;
+
+                        byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
+
+                        // UTF-8 encoding of 0x4840.
+                        if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
+                            decoded = decoded.Substring(3);
+
+                        foreach (char c in Path.GetInvalidFileNameChars())
                         {
-                            if (!e.IsStream)
-                                return;
-
-                            var str = msi.RootStorage.GetStream(e.Name);
-                            if (str == null)
-                                return;
-
-                            byte[] strData = str.GetData();
-                            if (strData == null)
-                                return;
-
-                            var decoded = DecodeStreamName(e.Name)?.TrimEnd('\0');
-                            if (decoded == null)
-                                return;
-
-                            byte[] nameBytes = Encoding.UTF8.GetBytes(e.Name);
-
-                            // UTF-8 encoding of 0x4840.
-                            if (nameBytes[0] == 0xe4 && nameBytes[1] == 0xa1 && nameBytes[2] == 0x80)
-                                decoded = decoded.Substring(3);
-
-                            foreach (char c in Path.GetInvalidFileNameChars())
-                            {
-                                decoded = decoded.Replace(c, '_');
-                            }
-
-                            string filename = Path.Combine(tempPath, decoded);
-                            using (Stream fs = File.OpenWrite(filename))
-                            {
-                                fs.Write(strData, 0, strData.Length);
-                            }
+                            decoded = decoded.Replace(c, '_');
                         }
-                        catch (Exception ex)
-                        {
-                            if (includeDebug) Console.WriteLine(ex);
-                        }
-                    }, recursive: true);
-                }
 
-                return tempPath;
+                        string tempFile = Path.Combine(outDir, decoded);
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
+
+                        using Stream fs = File.OpenWrite(tempFile);
+                        fs.Write(strData, 0, strData.Length);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.WriteLine(ex);
+                    }
+                }, recursive: true);
+
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
 #endif
         }

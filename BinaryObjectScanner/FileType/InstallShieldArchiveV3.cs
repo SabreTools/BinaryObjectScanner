@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using ISv3 = UnshieldSharp.Archive.InstallShieldArchiveV3;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -10,30 +11,26 @@ namespace BinaryObjectScanner.FileType
     public class InstallShieldArchiveV3 : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                UnshieldSharp.Archive.InstallShieldArchiveV3 archive = new UnshieldSharp.Archive.InstallShieldArchiveV3(file);
+                var archive = new ISv3(file);
                 foreach (var cfile in archive.Files)
                 {
                     try
                     {
-                        string tempFile = Path.Combine(tempPath, cfile.Key);
+                        string tempFile = Path.Combine(outDir, cfile.Key);
                         var directoryName = Path.GetDirectoryName(tempFile);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
@@ -53,12 +50,12 @@ namespace BinaryObjectScanner.FileType
                     }
                 }
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
     }

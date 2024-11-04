@@ -11,40 +11,35 @@ namespace BinaryObjectScanner.FileType
     public class GCF : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             try
             {
                 // Create the wrapper
                 var gcf = SabreTools.Serialization.Wrappers.GCF.Create(stream);
                 if (gcf == null)
-                    return null;
-
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                    return false;
 
                 // Loop through and extract all files
-                ExtractAll(gcf, tempPath);
+                Directory.CreateDirectory(outDir);
+                ExtractAll(gcf, outDir);
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
 

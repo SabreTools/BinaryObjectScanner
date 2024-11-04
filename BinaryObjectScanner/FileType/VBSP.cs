@@ -10,40 +10,35 @@ namespace BinaryObjectScanner.FileType
     public class VBSP : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
-            using (var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                return Extract(fs, file, includeDebug);
-            }
+            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             try
             {
                 // Create the wrapper
                 var vbsp = SabreTools.Serialization.Wrappers.VBSP.Create(stream);
                 if (vbsp == null)
-                    return null;
-
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                    return false;
 
                 // Loop through and extract all files
-                ExtractAllLumps(vbsp, tempPath);
+                Directory.CreateDirectory(outDir);
+                ExtractAllLumps(vbsp, outDir);
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex.ToString());
-                return null;
+                return false;
             }
         }
 

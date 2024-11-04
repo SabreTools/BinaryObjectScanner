@@ -12,71 +12,68 @@ namespace BinaryObjectScanner.FileType
     public class MPQ : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         // TODO: Add stream opening support
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
 #if NET20 || NET35 || NET40 || !WIN
             // Not supported for old .NET due to feature requirements
             // Not supported in non-Windows builds due to DLL requirements
-            return null;
+            return false;
 #else
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), System.Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                // Try to open the archive and listfile
+                var mpqArchive = new MpqArchive(file, FileAccess.Read);
+                string? listfile = null;
+                MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
 
-                using (var mpqArchive = new MpqArchive(file, FileAccess.Read))
+                // If we can't read the listfile, we just return
+                if (!listStream.CanRead)
+                    return null;
+
+                // Read the listfile in for processing
+                using (var sr = new StreamReader(listStream))
                 {
-                    // Try to open the listfile
-                    string? listfile = null;
-                    MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
+                    listfile = sr.ReadToEnd();
+                }
 
-                    // If we can't read the listfile, we just return
-                    if (!listStream.CanRead)
-                        return null;
+                // Split the listfile by newlines
+                string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
 
-                    // Read the listfile in for processing
-                    using (var sr = new StreamReader(listStream))
+                // Loop over each entry
+                foreach (string sub in listfileLines)
+                {
+                    try
                     {
-                        listfile = sr.ReadToEnd();
+                        string tempFile = Path.Combine(outDir, sub);
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
+
+                        mpqArchive.ExtractFile(sub, tempFile);
                     }
-
-                    // Split the listfile by newlines
-                    string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
-
-                    // Loop over each entry
-                    foreach (string sub in listfileLines)
+                    catch (System.Exception ex)
                     {
-                        try
-                        {
-                            string tempFile = Path.Combine(tempPath, sub);
-                            Directory.CreateDirectory(Path.GetDirectoryName(tempFile));
-                            mpqArchive.ExtractFile(sub, tempFile);
-                        }
-                        catch (System.Exception ex)
-                        {
-                            if (includeDebug) System.Console.WriteLine(ex);
-                        }
+                        if (includeDebug) System.Console.WriteLine(ex);
                     }
                 }
 
-                return tempPath;
+                return true;
             }
             catch (System.Exception ex)
             {
                 if (includeDebug) System.Console.WriteLine(ex);
-                return null;
+                return false;
             }
 #endif
         }

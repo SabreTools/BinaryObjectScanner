@@ -14,46 +14,44 @@ namespace BinaryObjectScanner.FileType
     public class BZip2 : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            if (stream == null)
-                return null;
+            if (stream == null || !stream.CanRead)
+                return false;
 
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                // Try opening the stream
+                using var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true);
 
-                using (var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true))
-                {
-                    string tempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
-                    using (FileStream fs = File.OpenWrite(tempFile))
-                    {
-                        bz2File.CopyTo(fs);
-                    }
-                }
+                // Create the output file path
+                Directory.CreateDirectory(outDir);
+                string tempFile = Path.Combine(outDir, Guid.NewGuid().ToString());
 
-                return tempPath;
+                // Extract the file
+                using FileStream fs = File.OpenWrite(tempFile);
+                bz2File.CopyTo(fs);
+
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
 #else
-            return null;
+            return false;
 #endif
         }
     }

@@ -13,38 +13,35 @@ namespace BinaryObjectScanner.FileType
     public class SGA : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             try
             {
                 // Create the wrapper
                 var sga = SabreTools.Serialization.Wrappers.SGA.Create(stream);
                 if (sga == null)
-                    return null;
-
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                    return false;
 
                 // Loop through and extract all files
-                ExtractAll(sga, tempPath);
+                Directory.CreateDirectory(outDir);
+                ExtractAll(sga, outDir);
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
 

@@ -12,17 +12,17 @@ namespace BinaryObjectScanner.FileType
     public class InstallShieldCAB : IExtractable
     {
         /// <inheritdoc/>
-        public string? Extract(string file, bool includeDebug)
+        public bool Extract(string file, string outDir, bool includeDebug)
         {
             if (!File.Exists(file))
-                return null;
+                return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, includeDebug);
+            return Extract(fs, file, outDir, includeDebug);
         }
 
         /// <inheritdoc/>
-        public string? Extract(Stream? stream, string file, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Get the name of the first cabinet file or header
             var directory = Path.GetDirectoryName(file);
@@ -50,17 +50,13 @@ namespace BinaryObjectScanner.FileType
 
             // If we have anything but the first file
             if (!shouldScanCabinet)
-                return null;
+                return false;
 
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
                 var cabfile = InstallShieldCabinet.Open(file);
                 if (cabfile?.HeaderList == null)
-                    return null;
+                    return false;
 
                 for (int i = 0; i < cabfile.HeaderList.FileCount; i++)
                 {
@@ -74,11 +70,11 @@ namespace BinaryObjectScanner.FileType
                         try
                         {
                             string? filename = cabfile.HeaderList.GetFileName(i);
-                            tempFile = Path.Combine(tempPath, filename ?? string.Empty);
+                            tempFile = Path.Combine(outDir, filename ?? string.Empty);
                         }
                         catch
                         {
-                            tempFile = Path.Combine(tempPath, $"BAD_FILENAME{i}");
+                            tempFile = Path.Combine(outDir, $"BAD_FILENAME{i}");
                         }
 
                         cabfile.FileSave(i, tempFile);
@@ -89,12 +85,12 @@ namespace BinaryObjectScanner.FileType
                     }
                 }
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
     }
