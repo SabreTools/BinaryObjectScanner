@@ -140,7 +140,14 @@ namespace Test
                             if (entry.Key == null)
                                 continue;
 
+                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)
@@ -229,7 +236,9 @@ namespace Test
                 // If an individual entry fails
                 try
                 {
+                    Directory.CreateDirectory(outputDirectory);
                     string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
+
                     using FileStream fs = File.OpenWrite(tempFile);
                     bz2File.CopyTo(fs);
                 }
@@ -679,6 +688,10 @@ namespace Test
                             if (entry.Key == null)
                                 continue;
 
+                            // If the entry is partial due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
                             string? directoryName = Path.GetDirectoryName(tempFile);
                             if (directoryName != null)
@@ -755,7 +768,14 @@ namespace Test
                             if (entry.Key == null)
                                 continue;
 
+                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)
@@ -801,7 +821,7 @@ namespace Test
             }
 
             // Tape Archive
-            else if (ft == WrapperType.RAR)
+            else if (ft == WrapperType.TapeArchive)
             {
                 // Build the archive information
                 Console.WriteLine("Extracting Tape Archive contents");
@@ -828,7 +848,14 @@ namespace Test
                             if (entry.Key == null)
                                 continue;
 
+                            // If we have a partial entry due to an incomplete multi-part archive, skip it
+                            if (!entry.IsComplete)
+                                continue;
+
                             string tempFile = Path.Combine(outputDirectory, entry.Key);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
                             entry.WriteToFile(tempFile);
                         }
                         catch (Exception ex)
@@ -928,7 +955,7 @@ namespace Test
             }
 
             // xz
-            else if (ft == WrapperType.RAR)
+            else if (ft == WrapperType.XZ)
             {
                 // Build the xz information
                 Console.WriteLine("Extracting xz contents");
@@ -942,7 +969,9 @@ namespace Test
                 // If an individual entry fails
                 try
                 {
+                    Directory.CreateDirectory(outputDirectory);
                     string tempFile = Path.Combine(outputDirectory, Guid.NewGuid().ToString());
+
                     using FileStream fs = File.OpenWrite(tempFile);
                     xzFile.CopyTo(fs);
                 }
