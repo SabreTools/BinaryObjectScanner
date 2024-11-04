@@ -9,13 +9,10 @@ namespace Test
     {
         #region Options
 
-        /// <inheritdoc cref="BinaryObjectScanner.Options.IncludeDebug"/>
-        public bool IncludeDebug => _options?.IncludeDebug ?? false;
-
         /// <summary>
-        /// Options object for configuration
+        /// Determines if debug information is output or not
         /// </summary>
-        private readonly BinaryObjectScanner.Options _options;
+        private bool _includeDebug;
 
         #endregion
 
@@ -25,10 +22,7 @@ namespace Test
         /// <param name="includeDebug">Enable including debug information</param>
         public Extractor(bool includeDebug)
         {
-            _options = new BinaryObjectScanner.Options
-            {
-                IncludeDebug = includeDebug,
-            };
+            _includeDebug = includeDebug;
 
 #if NET462_OR_GREATER || NETCOREAPP
             // Register the codepages
@@ -83,7 +77,7 @@ namespace Test
             }
             catch (Exception ex)
             {
-                if (IncludeDebug) Console.WriteLine(ex);
+                if (_includeDebug) Console.WriteLine(ex);
                 return;
             }
 
