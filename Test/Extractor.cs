@@ -5,50 +5,28 @@ using SabreTools.Serialization.Wrappers;
 
 namespace Test
 {
-    internal class Extractor
+    internal static class Extractor
     {
-        #region Options
-
-        /// <summary>
-        /// Determines if debug information is output or not
-        /// </summary>
-        private bool _includeDebug;
-
-        #endregion
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="includeDebug">Enable including debug information</param>
-        public Extractor(bool includeDebug)
-        {
-            _includeDebug = includeDebug;
-
-#if NET462_OR_GREATER || NETCOREAPP
-            // Register the codepages
-            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-#endif
-        }
-
         /// <summary>
         /// Wrapper to extract data for a single path
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="outputDirectory">Output directory path</param>
-        public void ExtractPath(string path, string outputDirectory)
+        /// <param name="includeDebug">Enable including debug information</param>
+        public static void ExtractPath(string path, string outputDirectory, bool includeDebug)
         {
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists
             if (File.Exists(path))
             {
-                ExtractFile(path, outputDirectory);
+                ExtractFile(path, outputDirectory, includeDebug);
             }
             else if (Directory.Exists(path))
             {
                 foreach (string file in IOExtensions.SafeEnumerateFiles(path, "*", SearchOption.AllDirectories))
                 {
-                    ExtractFile(file, outputDirectory);
+                    ExtractFile(file, outputDirectory, includeDebug);
                 }
             }
             else
@@ -60,7 +38,7 @@ namespace Test
         /// <summary>
         /// Print information for a single file, if possible
         /// </summary>
-        private void ExtractFile(string file, string outputDirectory)
+        private static void ExtractFile(string file, string outputDirectory, bool includeDebug)
         {
             Console.WriteLine($"Attempting to extract all files from {file}");
             using Stream stream = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -77,7 +55,7 @@ namespace Test
             }
             catch (Exception ex)
             {
-                if (_includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.WriteLine(ex);
                 return;
             }
 

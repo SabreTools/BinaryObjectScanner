@@ -26,9 +26,6 @@ namespace Test
                 return;
             }
 
-            // Create extractor for all paths
-            var extractor = new Extractor(options.Debug);
-
             // Create scanner for all paths
             var scanner = new Scanner(
                 options.ScanArchives,
@@ -44,7 +41,7 @@ namespace Test
             {
                 // Extraction
                 if (options.EnableExtraction)
-                    extractor.ExtractPath(inputPath, options.OutputPath);
+                    Extractor.ExtractPath(inputPath, options.OutputPath, options.Debug);
 
                 // Scanning
                 if (options.EnableScanning)
