@@ -388,7 +388,7 @@ namespace BinaryObjectScanner.Protection
                  new(new FilePathMatch("F766_SentinelDriverInstall_Start.htm.B391C18A_6953_11D4_82CB_00D0B72E1DB9"), "Rainbow Sentinel"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
