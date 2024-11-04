@@ -45,6 +45,22 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
+                // (.sis/.sim/.sid) - Redump entry 12943
+                new(
+                [
+                    new PathMatch(".sis", matchExact: false, useEndsWith: true),
+                    new PathMatch(".sim", matchExact: false, useEndsWith: true),
+                    new PathMatch(".sid", matchExact: false, useEndsWith: true),
+                ], "Steam (.sis/.sim/.sid)"),
+
+                // (.sis/.csm/.csd) - Redump entry 101916
+                new(
+                [
+                    new PathMatch(".sis", matchExact: false, useEndsWith: true),
+                    new PathMatch(".csm", matchExact: false, useEndsWith: true),
+                    new PathMatch(".csd", matchExact: false, useEndsWith: true),
+                ], "Steam (.sis/.csm/.csd)"),
+
                 // These checks are grouped together due to the names being generic on their own (Redump entry 91450).
                 new(new List<PathMatch>
                 {
