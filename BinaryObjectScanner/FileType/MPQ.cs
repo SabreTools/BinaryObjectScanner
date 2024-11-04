@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.FileType
 
                 // If we can't read the listfile, we just return
                 if (!listStream.CanRead)
-                    return null;
+                    return false;
 
                 // Read the listfile in for processing
                 using (var sr = new StreamReader(listStream))
