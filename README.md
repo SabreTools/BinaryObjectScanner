@@ -114,7 +114,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Origin | True | True | |
 | phenoProtect | False | False | Text file check only |
 | PlayJ | True | True | |
-| ProtectDISC / VOB ProtectCD/DVD | True | False | |
+| ProtectDISC / VOB ProtectCD/DVD | True | True | |
 | Protect DVD-Video | False | True | Unconfirmed¹ |
 | PlayStation Anti-modchip | True | False | En/Jp, not "Red Hand"; PSX executables only |
 | Rainbow Sentinel | True | True | |

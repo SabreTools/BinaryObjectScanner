@@ -4,13 +4,14 @@ using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
     // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6
     // ProtectDISC 9/10 checks for the presence of CSS on the disc to run, but don't encrypt any sectors or check for keys. Confirmed in Redump entries 78367 and 110095.
-    public class ProtectDISC : IPortableExecutableCheck
+    public class ProtectDISC : IPortableExecutableCheck, IPathCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -93,6 +94,30 @@ namespace BinaryObjectScanner.Protection
                 return "VOB ProtectCD";
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                // https://github.com/SabreTools/BinaryObjectScanner/issues/110
+                new(new FilePathMatch("VOB-PCD.KEY"), "VOB ProtectCD/DVD"),
+            };
+
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
+        }
+
+        /// <inheritdoc/>
+        public string? CheckFilePath(string path)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                // https://github.com/SabreTools/BinaryObjectScanner/issues/110
+                new(new FilePathMatch("VOB-PCD.KEY"), "VOB ProtectCD/DVD"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         public static string GetOldVersion(string matchedString)
