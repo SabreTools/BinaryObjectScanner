@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.FileType
                 {
                     try
                     {
-                        string tempFile = Path.Combine(tempPath, compressedFile.Filename);
+                        string tempFile = Path.Combine(outDir, compressedFile.Filename);
                         var directoryName = Path.GetDirectoryName(tempFile);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
