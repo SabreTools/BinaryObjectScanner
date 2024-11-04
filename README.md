@@ -32,6 +32,8 @@ For the most recent stable build, download the latest release here: [Releases Pa
 
 For the latest WIP build here: [Rolling Release](https://github.com/SabreTools/BinaryObjectScanner/releases/tag/rolling)
 
+**NOTE**: If you used the executable information printing functionality in previous releases, that has been extracted as a separate program and included in the [SabreTools.Serialization repository](https://github.com/SabreTools/SabreTools.Serialization). It was formerly included there as a reference program but has since been renamed to **InfoPrint**. This was done to ensure that the latest information printing would be available instead of waiting for it to bubble up to BinaryObjectScanner.
+
 ## Compatibility Notes
 
 Binary Object Scanner strives to have both full compatibility for scanning across .NET versions as well as across OSes. Unfortunately, this is not always the case. Please see the below list for known compatibility issues.

@@ -29,9 +29,6 @@ namespace Test
             // Create extractor for all paths
             var extractor = new Extractor(options.Debug);
 
-            // Create printer for all paths
-            var printer = new Printer(options.Debug);
-
             // Create scanner for all paths
             var scanner = new Scanner(
                 options.ScanArchives,
@@ -48,14 +45,6 @@ namespace Test
                 // Extraction
                 if (options.EnableExtraction)
                     extractor.ExtractPath(inputPath, options.OutputPath);
-
-                // Information printing
-                if (options.EnableInformation)
-#if NETFRAMEWORK
-                    printer.PrintPathInfo(inputPath, false, options.Debug);
-#else
-                    printer.PrintPathInfo(inputPath, options.Json, options.Debug);
-#endif
 
                 // Scanning
                 if (options.EnableScanning)

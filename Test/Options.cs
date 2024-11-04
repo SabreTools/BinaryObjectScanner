@@ -35,22 +35,6 @@ namespace Test
 
         #endregion
 
-        #region Information
-
-        /// <summary>
-        /// Perform information printing
-        /// </summary>
-        public bool EnableInformation { get; private set; } = false;
-
-#if NETCOREAPP3_1_OR_GREATER
-        /// <summary>
-        /// Enable JSON output
-        /// </summary>
-        public bool Json { get; private set; } = false;
-#endif
-
-        #endregion
-
         #region Scanning
 
         /// <summary>
@@ -118,12 +102,6 @@ namespace Test
                         featureFound = true;
                         break;
 
-                    case "-i":
-                    case "--info":
-                        options.EnableInformation = true;
-                        featureFound = true;
-                        break;
-
                     case "-s":
                     case "--scan":
                         options.EnableScanning = true;
@@ -156,20 +134,6 @@ namespace Test
                     case "--outdir":
                         options.OutputPath = index + 1 < args.Length ? args[++index] : string.Empty;
                         break;
-
-                    #endregion
-
-                    #region Information
-
-                    case "-j":
-                    case "--json":
-#if NET6_0_OR_GREATER
-                        options.Json = true;
-#else
-                        Console.WriteLine("JSON output not available in .NET Framework");
-#endif
-                        break;
-
 
                     #endregion
 
@@ -209,7 +173,7 @@ namespace Test
             }
 
             // If we have no features set, enable protection scanning
-            if (!options.EnableExtraction && !options.EnableInformation && !options.EnableScanning)
+            if (!options.EnableExtraction && !options.EnableScanning)
                 options.EnableScanning = true;
 
             // Validate we have any input paths to work on
@@ -241,7 +205,6 @@ namespace Test
             Console.WriteLine();
             Console.WriteLine("Features:");
             Console.WriteLine("-x, --extract            Extract archive formats");
-            Console.WriteLine("-i, --info               Print executable info");
             Console.WriteLine("-s, --scan               Enable protection scanning (default if none)");
             Console.WriteLine();
             Console.WriteLine("Common options:");
@@ -250,11 +213,6 @@ namespace Test
             Console.WriteLine();
             Console.WriteLine("Extraction options:");
             Console.WriteLine("-o, --outdir [PATH]      Set output path for extraction (required)");
-#if NET6_0_OR_GREATER
-            Console.WriteLine();
-            Console.WriteLine("Information options:");
-            Console.WriteLine("-j, --json               Print executable info as JSON");
-#endif
             Console.WriteLine();
             Console.WriteLine("Scanning options:");
             Console.WriteLine("-nc, --no-contents       Disable scanning for content checks");
