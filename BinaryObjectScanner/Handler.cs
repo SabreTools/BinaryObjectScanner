@@ -22,14 +22,15 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
 
             // Preprocess the list of files
-            files = files?.Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?.ToList();
+            files = files?
+                .Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?
+                .ToList();
 
             // Iterate through all checks
             StaticChecks.PathCheckClasses.IterateWithAction(checkClass =>
             {
-                var subProtections = checkClass?.PerformCheck(path, files);
-                if (subProtections != null)
-                    protections.Append(path, subProtections);
+                var subProtections = checkClass.PerformCheck(path, files);
+                protections.Append(path, subProtections);
             });
 
             return protections;
@@ -58,12 +59,12 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
-        /// <returns>Set of protections in path, null on error</returns>
-        private static List<string>? PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
+        /// <returns>Set of protections in path, empty on error</returns>
+        private static List<string> PerformCheck(this IPathCheck impl, string? path, IEnumerable<string>? files)
         {
             // If we have an invalid path
             if (string.IsNullOrEmpty(path))
-                return null;
+                return [];
 
             // Setup the list
             var protections = new List<string>();
