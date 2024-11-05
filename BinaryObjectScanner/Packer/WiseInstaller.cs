@@ -13,7 +13,7 @@ using WiseUnpacker.EWISE;
 namespace BinaryObjectScanner.Packer
 {
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class WiseInstaller : IExtractableNewExecutable, IExtractablePortableExecutable, INewExecutableCheck, IPortableExecutableCheck
+    public class WiseInstaller : IExtractableExecutable<NewExecutable>, IExtractableExecutable<PortableExecutable>, INewExecutableCheck, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)

@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InstallAnywhere : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class InstallAnywhere : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

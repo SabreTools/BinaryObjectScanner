@@ -4,7 +4,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class WinRARSFX : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class WinRARSFX : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

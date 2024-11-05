@@ -9,7 +9,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class UPX : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class UPX : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
     {
         private static readonly Regex _oldUpxVersionMatch = new Regex(@"\$Id: UPX (.*?) Copyright \(C\)", RegexOptions.Compiled);
 

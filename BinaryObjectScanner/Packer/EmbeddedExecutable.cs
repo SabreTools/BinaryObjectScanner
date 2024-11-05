@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Packer
     /// Though not technically a packer, this detection is for any executables that include
     /// others in their resources in some uncompressed manner to be used at runtime.
     /// </summary>
-    public class EmbeddedExecutable : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class EmbeddedExecutable : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

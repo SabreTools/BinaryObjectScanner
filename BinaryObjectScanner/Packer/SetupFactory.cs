@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Add extraction, which is possible but the only tools available that can
     // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class SetupFactory : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class SetupFactory : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
     {
         /// <inheritdoc/>
         public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)

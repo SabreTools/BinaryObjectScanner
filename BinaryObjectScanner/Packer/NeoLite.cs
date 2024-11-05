@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Packer
     /// PEiD scanning definitions that include NeoLite: https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     /// Website listing various packers, including NeoLite: http://protools.narod.ru/packers.htm
     /// </summary>
-    public class NeoLite : IExtractablePortableExecutable, IPortableExecutableCheck
+    public class NeoLite : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
     {
         // TODO: Find samples of NeoLite 1.X.
         /// <inheritdoc/>

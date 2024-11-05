@@ -481,8 +481,8 @@ namespace BinaryObjectScanner
 
             // If we have any extractable packers
             var extractables = classes
-                .Where(c => c is IExtractableMSDOSExecutable)
-                .Select(c => c as IExtractableMSDOSExecutable);
+                .Where(c => c is IExtractableExecutable<MSDOS>)
+                .Select(c => c as IExtractableExecutable<MSDOS>);
             extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
@@ -547,8 +547,8 @@ namespace BinaryObjectScanner
 
             // If we have any extractable packers
             var extractables = classes
-                .Where(c => c is IExtractableLinearExecutable)
-                .Select(c => c as IExtractableLinearExecutable);
+                .Where(c => c is IExtractableExecutable<LinearExecutable>)
+                .Select(c => c as IExtractableExecutable<LinearExecutable>);
             extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
@@ -613,8 +613,8 @@ namespace BinaryObjectScanner
 
             // If we have any extractable packers
             var extractables = classes
-                .Where(c => c is IExtractableNewExecutable)
-                .Select(c => c as IExtractableNewExecutable);
+                .Where(c => c is IExtractableExecutable<NewExecutable>)
+                .Select(c => c as IExtractableExecutable<NewExecutable>);
             extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
@@ -679,8 +679,8 @@ namespace BinaryObjectScanner
 
             // If we have any extractable packers
             var extractables = classes
-                .Where(c => c is IExtractablePortableExecutable)
-                .Select(c => c as IExtractablePortableExecutable);
+                .Where(c => c is IExtractableExecutable<PortableExecutable>)
+                .Select(c => c as IExtractableExecutable<PortableExecutable>);
             extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
