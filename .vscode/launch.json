@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/ProtectionScan/bin/Debug/net8.0/ProtectionScan.dll",
-            "args": [],
+            "args": ["/mnt/b/BurnOutSharp Testing Files/PackerType/NSIS/"],
             "cwd": "${workspaceFolder}/ProtectionScan",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",

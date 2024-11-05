@@ -4,7 +4,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class SevenZipSFX : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
+    public class SevenZipSFX : IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)

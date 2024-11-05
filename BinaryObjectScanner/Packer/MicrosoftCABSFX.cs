@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction, which should be possible with LibMSPackN, but it refuses to extract due to SFX files lacking the typical CAB identifiers.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class MicrosoftCABSFX : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
+    public class MicrosoftCABSFX : IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)

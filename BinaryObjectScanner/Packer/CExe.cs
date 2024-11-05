@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Packer
     // The official website for CExe also includes the source code (which does have to be retrieved by the Wayback Machine)
     // http://www.scottlu.com/Content/CExe.html
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class CExe : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
+    public class CExe : IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)

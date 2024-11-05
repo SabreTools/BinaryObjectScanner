@@ -5,7 +5,7 @@ namespace BinaryObjectScanner.Interfaces
     /// <summary>
     /// Mark an executable type as being able to be extracted
     /// </summary>
-    public interface IExtractableExecutable<T> where T : WrapperBase
+    public interface IExtractableExecutable<T> : IExecutableCheck<T> where T : WrapperBase
     {
         /// <summary>
         /// Extract an Executable to a path, if possible

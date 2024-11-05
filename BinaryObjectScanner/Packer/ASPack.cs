@@ -8,7 +8,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
-    public class ASPack : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
+    public class ASPack : IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)

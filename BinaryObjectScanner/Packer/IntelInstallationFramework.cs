@@ -5,7 +5,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction, seems to primarily use MSZip compression.
-    public class IntelInstallationFramework : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
+    public class IntelInstallationFramework : IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)

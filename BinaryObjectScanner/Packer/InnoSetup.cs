@@ -10,7 +10,6 @@ namespace BinaryObjectScanner.Packer
     // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class InnoSetup : IExecutableCheck<NewExecutable>,
-        IExecutableCheck<PortableExecutable>,
         IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
