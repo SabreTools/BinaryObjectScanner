@@ -5,7 +5,7 @@ using System.Reflection;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner
+namespace BinaryObjectScanner.Data
 {
     public static class Factory
     {
