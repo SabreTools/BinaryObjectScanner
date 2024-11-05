@@ -18,10 +18,10 @@ namespace BinaryObjectScanner.Protection
     // TODO: Add version checking, if possible
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     
-    public class Armadillo : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
+    public class Armadillo : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

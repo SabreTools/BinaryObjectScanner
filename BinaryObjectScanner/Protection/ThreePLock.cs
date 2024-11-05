@@ -8,10 +8,10 @@ namespace BinaryObjectScanner.Protection
     /// There don't seem to be any other signs that this is 3P-Lock anywhere in the example files
     /// No website has been found for 3P-Lock yet
     /// </remarks>
-    public class ThreePLock : IPortableExecutableCheck
+    public class ThreePLock : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

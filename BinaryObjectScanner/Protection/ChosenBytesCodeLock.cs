@@ -20,10 +20,10 @@ namespace BinaryObjectScanner.Protection
     /// Code-Lock FAQ: https://web.archive.org/web/20041205165232/http://www.chosenbytes.com/codefaq.php
     /// Download (Version 2.35 trial): https://web.archive.org/web/20060220121200/http://www.chosenbytes.com:80/Code-Lock_cnet.zip
     /// </summary>
-    public class ChosenBytesCodeLock : IPathCheck, IPortableExecutableCheck
+    public class ChosenBytesCodeLock : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -8,10 +8,10 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Document and implement support for this better, including version detection.
-    public class WTMCDProtect : IPathCheck, IPortableExecutableCheck
+    public class WTMCDProtect : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -25,13 +25,13 @@ namespace BinaryObjectScanner.Protection
     /// https://www.wired.com/story/empress-drm-cracking-denuvo-video-game-piracy/
     /// </summary>
 
-    public class Denuvo : IPathCheck, IPortableExecutableCheck
+    public class Denuvo : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Investigate possible filename checks for Denuvo Anti-Tamper.
         // https://www.pcgamingwiki.com/wiki/Denuvo#Redeem.exe
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

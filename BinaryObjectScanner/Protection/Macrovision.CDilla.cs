@@ -34,8 +34,8 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
-        internal string? CDillaCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
+        internal string? CDillaCheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Implement NE checks for "CDILLA05", "CDILLA10", "CDILLA16", and "CDILLA40".
 
@@ -60,8 +60,8 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-        internal string? CDillaCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
+        internal string? CDillaCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

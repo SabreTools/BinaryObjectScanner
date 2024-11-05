@@ -14,10 +14,10 @@ namespace BinaryObjectScanner.Protection
     /// Known to be used along with MediaMax CD-3 and XCP2, possibly others.
     /// Reference: https://news.microsoft.com/2003/01/20/microsoft-releases-new-windows-media-data-session-toolkit-enabling-second-session-creation/
     /// </summary>
-    public class WMDS : IPathCheck, IPortableExecutableCheck
+    public class WMDS : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

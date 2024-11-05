@@ -19,10 +19,10 @@ namespace BinaryObjectScanner.Protection
     /// https://github.com/SteamDatabase/FileDetectionRuleSets/pull/235
     /// https://www.protondb.com/app/1203220
     /// </summary>
-    public class NEACProtect : IPathCheck, IPortableExecutableCheck
+    public class NEACProtect : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Most of the relevant executables are highly obfuscated, making executable detection mostly impractical.
             // Get the sections from the executable, if possible

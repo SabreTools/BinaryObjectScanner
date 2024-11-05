@@ -6,10 +6,10 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class GenteeInstaller : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
+    public class GenteeInstaller : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

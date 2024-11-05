@@ -13,10 +13,13 @@ using WiseUnpacker.EWISE;
 namespace BinaryObjectScanner.Packer
 {
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class WiseInstaller : IExtractableExecutable<NewExecutable>, IExtractableExecutable<PortableExecutable>, INewExecutableCheck, IPortableExecutableCheck
+    public class WiseInstaller : IExecutableCheck<NewExecutable>,
+        IExecutableCheck<PortableExecutable>,
+        IExtractableExecutable<NewExecutable>,
+        IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // If we match a known header
             if (MatchesNEVersion(nex) != null)
@@ -42,7 +45,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

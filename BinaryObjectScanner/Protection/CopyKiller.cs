@@ -15,10 +15,10 @@ namespace BinaryObjectScanner.Protection
     /// TODO: Add support for the developer's EXE obfuscator, "EXEShield Deluxe". Most, if not all, EXEShield protected files are currently detected as "EXE Stealth" by BOS.
     /// Samples include CopyKiller (Versions 3.64 & 3.99a) and SafeDiscScanner (Version 0.16) (https://archive.org/details/safediscscanner-0.16-webstylerzone-from-unofficial-source).
     /// </summary>
-    public class CopyKiller : IPathCheck, IPortableExecutableCheck
+    public class CopyKiller : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Figure out how to differentiate between V3.99 and V3.99a.
             // Get the sections from the executable, if possible

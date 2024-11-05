@@ -18,10 +18,10 @@ namespace BinaryObjectScanner.Protection
     /// https://pitchbook.com/profiles/company/118805-59
     /// https://web.archive.org/web/19990417191351/http://www.aegisoft.com:80/
     /// </summary>
-    public class AegiSoft : IPathCheck, IPortableExecutableCheck
+    public class AegiSoft : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

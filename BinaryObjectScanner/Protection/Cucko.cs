@@ -10,10 +10,10 @@ namespace BinaryObjectScanner.Protection
     //      - Reference to `EASTL` and `EAStdC` are standard for EA products and does not indicate Cucko by itself
     //      - There's little information outside of PiD detection that actually knows about Cucko
     //      - Cucko is confirmed to, at least, use DMI checks.
-    public class Cucko : IPortableExecutableCheck
+    public class Cucko : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -40,8 +40,8 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="Interfaces.INewExecutableCheck.CheckNewExecutable(string, NewExecutable, bool)"/>
-        internal string? SafeCastCheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
+        internal string? SafeCastCheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Check for the CDAC01AA name string.
             if (nex.Model.ResidentNameTable != null)
@@ -69,8 +69,8 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
         }
 
-        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-        internal string? SafeCastCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
+        internal string? SafeCastCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

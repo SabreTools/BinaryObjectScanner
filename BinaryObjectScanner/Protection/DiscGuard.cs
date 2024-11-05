@@ -35,11 +35,11 @@ namespace BinaryObjectScanner.Protection
     /// https://web.archive.org/web/19990503082646/http://www.ttrtech.com/prmakh.htm
     /// https://web.archive.org/web/19990209180542/http://www.ttrtech.com/pr2cont.htm
     /// </summary>
-    public class DiscGuard : IPathCheck, IPortableExecutableCheck
+    public class DiscGuard : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Add checks for the game executables, which seem likely to contain some kind of indicators that can be checked for. The game executables all seem to import "Ord(1)" from one of the varying DLLs present.
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

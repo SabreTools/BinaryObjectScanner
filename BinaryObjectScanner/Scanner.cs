@@ -468,7 +468,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="mz">MSDOS to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IMSDOSExecutableCheck>? classes,
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<MSDOS>>? classes,
             string fileName,
             MSDOS mz)
         {
@@ -534,7 +534,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="lex">LinearExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<ILinearExecutableCheck>? classes,
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<LinearExecutable>>? classes,
             string fileName,
             LinearExecutable lex)
         {
@@ -600,7 +600,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="nex">NewExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<INewExecutableCheck>? classes,
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<NewExecutable>>? classes,
             string fileName,
             NewExecutable nex)
         {
@@ -666,7 +666,7 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="pex">PortableExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IPortableExecutableCheck>? classes,
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<PortableExecutable>>? classes,
             string fileName,
             PortableExecutable pex)
         {

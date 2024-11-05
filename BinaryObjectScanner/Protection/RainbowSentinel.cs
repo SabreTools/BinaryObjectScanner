@@ -36,10 +36,10 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// Rainbow NetSentinel: IA item "czchip199707cd".
     /// </summary>
-    public class RainbowSentinel : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
+    public class RainbowSentinel : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Don't read entire file
             var data = nex.ReadArbitraryRange();
@@ -133,7 +133,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

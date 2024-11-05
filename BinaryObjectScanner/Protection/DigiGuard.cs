@@ -23,10 +23,10 @@ namespace BinaryObjectScanner.Protection
     /// News article regarding GLFC and Accolade Games: https://www.gamespot.com/articles/accolade-games-on-dvd/1100-2460436/
     /// eBay listing for the "BIGWIG SOFTWARE LOCKER", which very likely contains DigiGuard: https://www.ebay.com/itm/325573968970
     /// </summary>
-    public class DigiGuard : IPathCheck, IPortableExecutableCheck
+    public class DigiGuard : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -18,20 +18,20 @@ namespace BinaryObjectScanner.Protection
     /// Macrovision Corporation CD-ROM Unauthorized Copying Study: https://web.archive.org/web/20011005161810/http://www.macrovision.com/solutions/software/cdrom/images/Games_CD-ROM_Study.PDF
     /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
-    public partial class Macrovision : IPathCheck, INewExecutableCheck, IPortableExecutableCheck
+    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             var resultsList = new List<string>();
 
             // Run C-Dilla NE checks
-            var cDilla = CDillaCheckNewExecutable(file, nex, includeDebug);
+            var cDilla = CDillaCheckExecutable(file, nex, includeDebug);
             if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
 
             // Run SafeCast NE checks
-            var safeCast = SafeCastCheckNewExecutable(file, nex, includeDebug);
+            var safeCast = SafeCastCheckExecutable(file, nex, includeDebug);
             if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
@@ -42,7 +42,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -127,32 +127,32 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Run Cactus Data Shield PE checks
-            var match = CactusDataShieldCheckPortableExecutable(file, pex, includeDebug);
+            var match = CactusDataShieldCheckExecutable(file, pex, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run C-Dilla PE checks
-            match = CDillaCheckPortableExecutable(file, pex, includeDebug);
+            match = CDillaCheckExecutable(file, pex, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run RipGuard PE checks
-            match = RipGuardCheckPortableExecutable(file, pex, includeDebug);
+            match = RipGuardCheckExecutable(file, pex, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeCast PE checks
-            match = SafeCastCheckPortableExecutable(file, pex, includeDebug);
+            match = SafeCastCheckExecutable(file, pex, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeDisc PE checks
-            match = SafeDiscCheckPortableExecutable(file, pex, includeDebug);
+            match = SafeDiscCheckExecutable(file, pex, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run FLEXnet PE checks
-            match = FLEXnetCheckPortableExecutable(file, pex, includeDebug);
+            match = FLEXnetCheckExecutable(file, pex, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 

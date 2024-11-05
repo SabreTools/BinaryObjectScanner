@@ -5,10 +5,10 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class Sysiphus : IPortableExecutableCheck
+    public class Sysiphus : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        public static string GetVersion(string matchedString)
+        private static string GetVersion(string matchedString)
         {
             // The string is reversed
             matchedString = new string(matchedString.Reverse().ToArray()).Trim();

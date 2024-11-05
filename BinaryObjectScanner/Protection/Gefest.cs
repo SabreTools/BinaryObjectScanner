@@ -17,10 +17,10 @@ namespace BinaryObjectScanner.Protection
     /// https://j3qx.wordpress.com/2008/12/20/%D0%BF%D0%B8%D1%80%D0%B0%D1%82%D1%81%D0%BA%D0%B8%D0%B5-%D0%B7%D0%B0%D0%BC%D0%B0%D1%88%D0%BA%D0%B8-%D0%B8%D0%BB%D0%B8-%D0%B7%D0%B0%D1%89%D0%B8%D1%82%D0%B0-%D0%BE%D1%82-7wolf/
     /// http://www.imho.ws/showthread.php?t=34225
     /// </summary>
-    public class Gefest : IPathCheck, IPortableExecutableCheck
+    public class Gefest : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

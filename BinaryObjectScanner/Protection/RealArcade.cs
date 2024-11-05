@@ -14,10 +14,10 @@ namespace BinaryObjectScanner.Protection
     /// https://github.com/lightbulbatelier/RealArcade-DGA
     /// https://archive.org/details/realrcade-games-preservation-project
     /// </summary>
-    public class RealArcade : IPathCheck, IPortableExecutableCheck
+    public class RealArcade : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

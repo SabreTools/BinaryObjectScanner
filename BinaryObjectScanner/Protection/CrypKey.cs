@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
     // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/CrypKey%20Installer.1.sg
     // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/CrypKey.2.sg
     // https://github.com/wolfram77web/app-peid/blob/master/userdb.txt
-    public class CrypKey : IPathCheck, IPortableExecutableCheck
+    public class CrypKey : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

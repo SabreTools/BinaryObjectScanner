@@ -15,10 +15,10 @@ namespace BinaryObjectScanner.GameEngine
     /// RenderWare 3.7 SDK: https://github.com/sigmaco/rwsdk-v37-pc
     /// Wikipedia list of RenderWare games: https://en.wikipedia.org/wiki/Category:RenderWare_games
     /// </summary>
-    public class RenderWare : IPortableExecutableCheck
+    public class RenderWare : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

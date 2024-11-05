@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
     // Interesting note: the former protection "Xtreme-Protector" was found to be a
     // subset of the JoWood X-Prot checks, more specifically the XPROT section check
     // that now outputs a version of v1.4+.
-    public class JoWood : IPortableExecutableCheck
+    public class JoWood : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -13,10 +13,10 @@ namespace BinaryObjectScanner.Protection
     /// The file "engine32.dll" is always present (hence the name), and is where the disc checking logic is present.
     /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/engine32/engine32.md"/>
     /// </summary>
-    public class Engine32 : IPathCheck, IPortableExecutableCheck
+    public class Engine32 : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

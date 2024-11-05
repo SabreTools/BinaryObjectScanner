@@ -14,10 +14,10 @@ namespace BinaryObjectScanner.Protection
     /// List of discs known to contain MediaMax CD-3: https://en.wikipedia.org/wiki/List_of_compact_discs_sold_with_MediaMax_CD-3
     /// TODO: Add support for detecting the Mac version, which is present on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
     /// </summary>
-    public class MediaMax : IPathCheck, IPortableExecutableCheck
+    public class MediaMax : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

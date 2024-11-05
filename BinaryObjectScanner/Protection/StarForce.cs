@@ -8,7 +8,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class StarForce : IPathCheck, IPortableExecutableCheck
+    public class StarForce : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Bring up to par with PiD.
         // Known issues: 
@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
         // "Replay.exe" not detected, doesn't detect "[FL Disc]" (Redump entry 81756).
         // Doesn't detect "[Pro]" (Redump entry 91336).
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

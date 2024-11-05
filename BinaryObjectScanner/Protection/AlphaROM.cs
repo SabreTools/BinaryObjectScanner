@@ -40,10 +40,10 @@ namespace BinaryObjectScanner.Protection
     //      - SETTEC0000SETTEC1111
     //      - SOFTWARE\SETTEC
     // TODO: Are there version numbers?
-    public class AlphaROM : IPortableExecutableCheck
+    public class AlphaROM : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Add support for detecting Alpha-ROM found in older games made with the RealLive engine. 
             // TODO: Add version detection for Alpha-ROM.

@@ -23,10 +23,10 @@ namespace BinaryObjectScanner.Protection
     /// Investigate further ArcSoft programs.
     /// Investigate PUBG (possibly older versions) (https://www.pcgamingwiki.com/wiki/PUBG:_Battlegrounds).
     /// </summary>
-    public class Themida : IPortableExecutableCheck
+    public class Themida : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

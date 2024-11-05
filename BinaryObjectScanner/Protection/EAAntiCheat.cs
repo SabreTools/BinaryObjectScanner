@@ -15,11 +15,11 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// The internal name appears to be "skyfall", as this is the Internal Name set to several EA Anti Cheat files, and the string "C:\dev\gitlab-runner\builds\r5uPUG7E\0\anticheat\skyfall\Build\Retail\EAAntiCheat.Installer.pdb" is present in "EAAntiCheat.Installer.Tool.exe".
     /// </summary>
-    public class EAAntiCheat : IPathCheck, IPortableExecutableCheck
+    public class EAAntiCheat : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Add support for detecting older versions, especially versions made before Easy Anti-Cheat was purchased by Epic Games.
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

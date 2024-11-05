@@ -25,10 +25,10 @@ namespace BinaryObjectScanner.Protection
     /// Possible false positives include Redump entries 51241, 51373, 54397, 76437.
     /// Confirmed to be present on Redump entries 24287, 31615, 34448, 35967, 36627, 37700, 37788, 43221, 55788, and 66749.
     /// </summary>
-    public class CDLock : IPathCheck, IPortableExecutableCheck
+    public class CDLock : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

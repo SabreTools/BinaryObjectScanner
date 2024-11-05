@@ -12,10 +12,10 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// DRML: https://github.com/TheRogueArchivist/DRML/blob/main/entries/Roxxe/Roxxe.md
     /// </summary>
-    public class Roxxe : IPathCheck, IPortableExecutableCheck
+    public class Roxxe : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

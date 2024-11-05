@@ -4,7 +4,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class Intenium : IPortableExecutableCheck
+    public class Intenium : IExecutableCheck<PortableExecutable>
     {
         /*
          * Possible strings for finding INTENIUM Trial & Buy Protection
@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Protection
          */
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

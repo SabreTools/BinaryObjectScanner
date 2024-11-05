@@ -1,4 +1,8 @@
-﻿using BinaryObjectScanner.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner
@@ -67,6 +71,62 @@ namespace BinaryObjectScanner
                 WrapperType.XZP => new FileType.XZP(),
                 _ => null,
             };
+        }
+    
+        /// <summary>
+        /// Initialize all implementations of a type
+        /// </summary>
+        public static List<T>? InitCheckClasses<T>() =>
+            InitCheckClasses<T>(Assembly.GetExecutingAssembly()) ?? [];
+
+        /// <summary>
+        /// Initialize all implementations of a type
+        /// </summary>
+        public static List<T>? InitCheckClasses<T>(Assembly assembly)
+        {
+            List<T> classTypes = [];
+
+            // If not all types can be loaded, use the ones that could be
+            List<Type> assemblyTypes = [];
+            try
+            {
+                assemblyTypes = assembly.GetTypes().ToList<Type>();
+            }
+            catch (ReflectionTypeLoadException rtle)
+            {
+                assemblyTypes = rtle.Types.Where(t => t != null)!.ToList<Type>();
+            }
+
+            // Get information from the type param
+            string interfaceName = typeof(T)!.FullName;
+
+            // Loop through all types 
+            foreach (Type type in assemblyTypes)
+            {
+                // If the type isn't a class
+                if (!type.IsClass)
+                    continue;
+
+                // If the type isn't a class or doesn't implement the interface
+                bool interfaceFound = false;
+                foreach (var ii in type.GetInterfaces())
+                {
+                    if (ii.FullName != interfaceName)
+                        continue;
+
+                    interfaceFound = true;
+                    break;
+                }
+                if (!interfaceFound)
+                    continue;
+
+                // Try to create a concrete instance of the type
+                var instance = (T?)Activator.CreateInstance(type);
+                if (instance != null)
+                    classTypes.Add(instance);
+            }
+
+            return classTypes;
         }
     }
 }

@@ -21,10 +21,10 @@ namespace BinaryObjectScanner.Protection
     /// https://gamecopyworld.com/games/pc_omikron.shtml
     /// https://forum.ixbt.com/topic.cgi?id=31:3985
     /// </summary>
-    public class CDGuard : IPathCheck, IPortableExecutableCheck
+    public class CDGuard : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

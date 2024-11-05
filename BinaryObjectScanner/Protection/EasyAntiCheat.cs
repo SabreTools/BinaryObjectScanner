@@ -18,11 +18,11 @@ namespace BinaryObjectScanner.Protection
     /// https://dev.epicgames.com/docs/services/en-US/GameServices/AntiCheat/index.html
     /// https://www.unknowncheats.me/wiki/Easy_Anti_Cheat
     /// </summary>
-    public class EasyAntiCheat : IPathCheck, IPortableExecutableCheck
+    public class EasyAntiCheat : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Add support for detecting older versions, especially versions made before Easy Anti-Cheat was purchased by Epic Games.
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

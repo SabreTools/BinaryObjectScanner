@@ -12,10 +12,10 @@ namespace BinaryObjectScanner.Protection
     /// <see href="https://bbs.pediy.com/thread-141554.htm"/>
     /// <see href="https://forum.arabhardware.net/showthread.php?t=45360"/>
     /// <see href="https://forum.arabhardware.net/showthread.php?t=45360&p=304085"/>
-    public class SoftLock : IPortableExecutableCheck, IPathCheck
+    public class SoftLock : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

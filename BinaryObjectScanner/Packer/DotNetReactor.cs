@@ -15,10 +15,10 @@ namespace BinaryObjectScanner.Packer
     /// 
     /// Resource that could be useful for extraction: https://github.com/SychicBoy/NETReactorSlayer
     /// </summary>
-    public class DotNetReactor : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
+    public class DotNetReactor : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Detect version
             // TODO: Further refine checks using https://github.com/horsicq/Detect-It-Easy/blob/075a70b1484d1d84d1dc37c86aac16188d5a84e7/db/PE/NetReactor.2.sg and https://github.com/cod3nym/detection-rules/blob/main/yara/dotnet/obf_net_reactor.yar

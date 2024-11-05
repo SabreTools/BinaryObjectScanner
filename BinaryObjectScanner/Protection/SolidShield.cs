@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
 {
     // TODO: Not matching all SolidShield Wrapper v1 (See JackKeane)
     // TODO: Not matching all SolidShield Wrapper v1 (See NFS11)
-    public class SolidShield : IPathCheck, IPortableExecutableCheck
+    public class SolidShield : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
@@ -148,7 +148,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        public static string? GetExeWrapperVersion(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetExeWrapperVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)
@@ -179,7 +179,7 @@ namespace BinaryObjectScanner.Protection
             return string.Empty;
         }
 
-        public static string? GetVersionPlusTages(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetVersionPlusTages(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)

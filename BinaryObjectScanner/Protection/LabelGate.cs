@@ -17,10 +17,10 @@ namespace BinaryObjectScanner.Protection
     /// https://web.archive.org/web/20040407150004/http://www.sonymusic.co.jp/cccd/lgcd2/help/foreign.html
     /// https://vgmdb.net/forums/showthread.php?p=92206
     /// </summary>
-    public class LabelGate : IPathCheck, IPortableExecutableCheck
+    public class LabelGate : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

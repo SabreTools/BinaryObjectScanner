@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class EXEStealth : IContentCheck, IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
+    public class EXEStealth : IContentCheck, IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

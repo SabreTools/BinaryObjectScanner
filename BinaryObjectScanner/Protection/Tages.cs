@@ -9,10 +9,10 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class TAGES : IPathCheck, IPortableExecutableCheck
+    public class TAGES : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -221,7 +221,7 @@ namespace BinaryObjectScanner.Protection
             return "(Unknown Version)";
         }
 
-        public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)

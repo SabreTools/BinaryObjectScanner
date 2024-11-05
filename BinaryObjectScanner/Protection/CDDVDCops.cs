@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
     /// List of applications that have CD/DVD/WEB-Cops relating to a Windows update: https://www.betaarchive.com/wiki/index.php/Microsoft_KB_Archive/924867
     /// </summary>
 
-    public class CDDVDCops : IContentCheck, INewExecutableCheck, IPathCheck, IPortableExecutableCheck
+    public class CDDVDCops : IContentCheck, IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
         /// <inheritdoc/>
@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckNewExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Don't read entire file
             var data = nex.ReadArbitraryRange();
@@ -141,7 +141,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -30,10 +30,10 @@ namespace BinaryObjectScanner.Protection
     ///  https://patentimages.storage.googleapis.com/52/5b/3a/aee21ff4d987e9/US20060123483A1.pdf
     ///  Special thanks to Ribshark for looking into this protection and sharing his research on the topic!
     /// </summary>
-    public class HexalockAutoLock : IPathCheck, IPortableExecutableCheck
+    public class HexalockAutoLock : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
     /// PlayJ (https://web.archive.org/web/20000815053956/http://www.playj.com/) by EverAd was a form of DRM protected audio that was intended to be distributed freely, but that showed advertisements to the listener.
     /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/PlayJ/PlayJ.md"/>
     /// </summary>
-    public class PlayJ : IPathCheck, IPortableExecutableCheck
+    public class PlayJ : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

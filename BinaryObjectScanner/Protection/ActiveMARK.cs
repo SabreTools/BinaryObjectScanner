@@ -9,7 +9,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Figure out how to get version numbers
-    public class ActiveMARK : IContentCheck, IPortableExecutableCheck
+    public class ActiveMARK : IContentCheck, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

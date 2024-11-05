@@ -25,13 +25,13 @@ namespace BinaryObjectScanner.Protection
     /// https://nprotect.com/nprotect_pdf/nProtect_KeyCryptV.pdf
     /// https://nprotect.com/nprotect_pdf/nProtect_KeyCrypt.pdf
     /// </summary>
-    public class NProtect : IPathCheck, IPortableExecutableCheck
+    public class NProtect : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Add LE checks for "npkcrypt.vxd" in Redump entry 90526.
         // TODO: Add text check for the string mentioned in https://github.com/mnadareski/BinaryObjectScanner/issues/154.
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

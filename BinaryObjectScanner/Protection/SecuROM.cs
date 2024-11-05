@@ -11,10 +11,10 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
-    public class SecuROM : IPathCheck, IPortableExecutableCheck
+    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -189,7 +189,7 @@ namespace BinaryObjectScanner.Protection
             return $"{major}.{minor}.{patch}.{revision}";
         }
 
-        public static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)

@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
 {
     // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6
     // ProtectDISC 9/10 checks for the presence of CSS on the disc to run, but don't encrypt any sectors or check for keys. Confirmed in Redump entries 78367 and 110095.
-    public class ProtectDISC : IPortableExecutableCheck, IPathCheck
+    public class ProtectDISC : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -120,7 +120,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        public static string GetOldVersion(string matchedString)
+        private static string GetOldVersion(string matchedString)
         {
             // Remove unnecessary parts
             matchedString = matchedString.Trim()
@@ -140,7 +140,7 @@ namespace BinaryObjectScanner.Protection
             return matchedStringArray[2].TrimStart('V');
         }
 
-        public static string? GetVersion3till6(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetVersion3till6(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)
@@ -153,7 +153,7 @@ namespace BinaryObjectScanner.Protection
             return $"5.9-6.0 {GetVOBBuild(fileContent, positions[0])}";
         }
 
-        public static string? GetVersion6till8(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetVersion6till8(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)
@@ -227,7 +227,7 @@ namespace BinaryObjectScanner.Protection
             }
         }
 
-        public static string? GetVersion76till10(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetVersion76till10(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)

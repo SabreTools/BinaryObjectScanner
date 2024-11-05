@@ -30,8 +30,8 @@ namespace BinaryObjectScanner.Protection
     /// </summary>
     public partial class Macrovision
     {
-        /// <inheritdoc cref="Interfaces.IPortableExecutableCheck.CheckPortableExecutable(string, PortableExecutable, bool)"/>
-        internal string? CactusDataShieldCheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
+        internal string? CactusDataShieldCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -6,11 +6,11 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction - https://github.com/Bioruebe/UniExtract2
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InstallerVISE : IExtractableExecutable<PortableExecutable>, IPortableExecutableCheck
+    public class InstallerVISE : IExecutableCheck<PortableExecutable>, IExtractableExecutable<PortableExecutable>
     {
         //TODO: Add exact version detection for Windows builds, make sure versions before 3.X are detected as well, and detect the Mac builds.
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

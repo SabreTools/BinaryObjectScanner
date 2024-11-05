@@ -20,10 +20,10 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// COPYLOK trademark: https://www.trademarkelite.com/europe/trademark/trademark-detail/000618512/COPYLOK.
     /// </summary>
-    public class CopyLok : IPortableExecutableCheck
+    public class CopyLok : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

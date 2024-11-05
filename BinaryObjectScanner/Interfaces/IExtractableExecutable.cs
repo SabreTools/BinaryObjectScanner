@@ -3,7 +3,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Interfaces
 {
     /// <summary>
-    /// Mark a LinearExecutable type as being able to be extracted
+    /// Mark an executable type as being able to be extracted
     /// </summary>
     public interface IExtractableExecutable<T> where T : WrapperBase
     {

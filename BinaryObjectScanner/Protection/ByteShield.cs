@@ -38,10 +38,10 @@ namespace BinaryObjectScanner.Protection
     /// https://www.ftc.gov/sites/default/files/documents/public_comments/ftc-town-hall-address-digital-rights-management-technologies-event-takes-place-wednesday-march-25/539814-00707.pdf
     /// https://www.gamesindustry.biz/byteshield-drm-system-now-protecting-over-200-games
     /// </summary>
-    public class ByteShield : IPortableExecutableCheck, IPathCheck
+    public class ByteShield : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
     // TODO: Technically not necessary, but just check for light/pro first and only if it isn't found look for the other.
     // It should be an Or situation and not an And situation.
     // TODO: Figure out if Light and Professional are what designate rings and rings+disccheck
-    public class CopyX : IPathCheck, IPortableExecutableCheck
+    public class CopyX : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // Previous check 'Tivola Ring Protect' removed because it was found to actually be copy-x. 
         // The checks were for ZDAT/webmast.dxx and ZDAT/webmast.dxx, for Redump IDs 81628 and 116418.   
@@ -58,7 +58,7 @@ namespace BinaryObjectScanner.Protection
         // Find a viable way to check the last directory alphabetically and not just ZDAT*
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Checks for Professional
             // PEX checks intentionally only detect Professional

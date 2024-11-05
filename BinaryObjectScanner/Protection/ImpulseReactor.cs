@@ -10,10 +10,10 @@ namespace BinaryObjectScanner.Protection
 {
     // Note that this set of checks also contains "Stardock Product Activation"
     // This is intentional, as that protection is highly related to Impulse Reactor
-    public class ImpulseReactor : IPathCheck, IPortableExecutableCheck
+    public class ImpulseReactor : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

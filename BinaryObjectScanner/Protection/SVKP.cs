@@ -19,12 +19,12 @@ namespace BinaryObjectScanner.Protection
     /// Unofficial PEiD detections for SVKP: https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     /// DiE detections for SVKP: https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/SVK%20Protector.2.sg
     /// </summary>
-    public class SVKProtector : IPathCheck, IPortableExecutableCheck
+    public class SVKProtector : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         // TODO: Find 1.4+ samples.
 
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

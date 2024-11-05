@@ -377,10 +377,10 @@ This section contains information on in-code organization principles that depend
 | --- | --- |
 | `BinaryObjectScanner` | Varies from file to file. |
 | `BinaryObjectScanner/FileType` | `IDetectable` implementations, `IExtractable` implementations, helper methods. |
-| `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `IExecutableCheck<LinearExecutable>` implementations, `IExecutableCheck<NewExecutable>` implementations, `IExecutableCheck<PortableExecutable>` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `BinaryObjectScanner/Interfaces` | Methods ordered alphabetically. |
-| `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
-| `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `ILinearExecutableCheck` implementations, `INewExecutableCheck` implementations, `IPortableExecutableCheck` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `IExecutableCheck<LinearExecutable>` implementations, `IExecutableCheck<NewExecutable>` implementations, `IExecutableCheck<PortableExecutable>` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `IExecutableCheck<LinearExecutable>` implementations, `IExecutableCheck<NewExecutable>` implementations, `IExecutableCheck<PortableExecutable>` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
 | `ExtractionTool` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 | `ProtectionScan` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 

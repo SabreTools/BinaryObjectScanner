@@ -20,10 +20,10 @@ namespace BinaryObjectScanner.Protection
     /// Add version detection. Redump entry 116358 is version 1.x and Redump entry 12354 is 2.x, but the file versions are inconsistent. 
     /// Investigate "NetActive Reach", which is is either a newer version of this DRM, or a new DRM created by the same company. (https://web.archive.org/web/20040101162921/http://www.netactive.com/Products/)
     /// </summary>
-    public class Channelware : IPathCheck, IPortableExecutableCheck
+    public class Channelware : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckPortableExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;

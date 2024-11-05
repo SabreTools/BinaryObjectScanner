@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
@@ -33,59 +31,59 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        public static IEnumerable<IContentCheck> ContentCheckClasses
+        public static List<IContentCheck> ContentCheckClasses
         {
             get
             {
-                contentCheckClasses ??= InitCheckClasses<IContentCheck>();
+                contentCheckClasses ??= Factory.InitCheckClasses<IContentCheck>();
                 return contentCheckClasses ?? [];
             }
         }
 
         /// <summary>
-        /// Cache for all ILinearExecutableCheck types
+        /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
-        public static IEnumerable<ILinearExecutableCheck> LinearExecutableCheckClasses
+        public static List<IExecutableCheck<LinearExecutable>> LinearExecutableCheckClasses
         {
             get
             {
-                linearExecutableCheckClasses ??= InitCheckClasses<ILinearExecutableCheck>();
+                linearExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<LinearExecutable>>();
                 return linearExecutableCheckClasses ?? [];
             }
         }
 
         /// <summary>
-        /// Cache for all IMSDOSExecutableCheck types
+        /// Cache for all IExecutableCheck<MSDOS> types
         /// </summary>
-        public static IEnumerable<IMSDOSExecutableCheck> MSDOSExecutableCheckClasses
+        public static List<IExecutableCheck<MSDOS>> MSDOSExecutableCheckClasses
         {
             get
             {
-                msdosExecutableCheckClasses ??= InitCheckClasses<IMSDOSExecutableCheck>();
+                msdosExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<MSDOS>>();
                 return msdosExecutableCheckClasses ?? [];
             }
         }
 
         /// <summary>
-        /// Cache for all INewExecutableCheck types
+        /// Cache for all IExecutableCheck<NewExecutable> types
         /// </summary>
-        public static IEnumerable<INewExecutableCheck> NewExecutableCheckClasses
+        public static List<IExecutableCheck<NewExecutable>> NewExecutableCheckClasses
         {
             get
             {
-                newExecutableCheckClasses ??= InitCheckClasses<INewExecutableCheck>();
+                newExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<NewExecutable>>();
                 return newExecutableCheckClasses ?? [];
             }
         }
 
         /// <summary>
-        /// Cache for all IPortableExecutableCheck types
+        /// Cache for all IExecutableCheck<PortableExecutable> types
         /// </summary>
-        public static IEnumerable<IPortableExecutableCheck> PortableExecutableCheckClasses
+        public static List<IExecutableCheck<PortableExecutable>> PortableExecutableCheckClasses
         {
             get
             {
-                portableExecutableCheckClasses ??= InitCheckClasses<IPortableExecutableCheck>();
+                portableExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<PortableExecutable>>();
                 return portableExecutableCheckClasses ?? [];
             }
         }
@@ -97,27 +95,27 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        private static IEnumerable<IContentCheck>? contentCheckClasses;
+        private static List<IContentCheck>? contentCheckClasses;
 
         /// <summary>
-        /// Cache for all ILinearExecutableCheck types
+        /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
-        private static IEnumerable<ILinearExecutableCheck>? linearExecutableCheckClasses;
+        private static List<IExecutableCheck<LinearExecutable>>? linearExecutableCheckClasses;
 
         /// <summary>
-        /// Cache for all IMSDOSExecutableCheck types
+        /// Cache for all IExecutableCheck<MSDOS> types
         /// </summary>
-        private static IEnumerable<IMSDOSExecutableCheck>? msdosExecutableCheckClasses;
+        private static List<IExecutableCheck<MSDOS>>? msdosExecutableCheckClasses;
 
         /// <summary>
-        /// Cache for all INewExecutableCheck types
+        /// Cache for all IExecutableCheck<NewExecutable> types
         /// </summary>
-        private static IEnumerable<INewExecutableCheck>? newExecutableCheckClasses;
+        private static List<IExecutableCheck<NewExecutable>>? newExecutableCheckClasses;
 
         /// <summary>
-        /// Cache for all IPortableExecutableCheck types
+        /// Cache for all IExecutableCheck<PortableExecutable> types
         /// </summary>
-        private static IEnumerable<IPortableExecutableCheck>? portableExecutableCheckClasses;
+        private static List<IExecutableCheck<PortableExecutable>>? portableExecutableCheckClasses;
 
         #endregion
 
@@ -241,16 +239,16 @@ namespace BinaryObjectScanner.FileType
         /// <param name="lex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<ILinearExecutableCheck, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
+        public IDictionary<IExecutableCheck<LinearExecutable>, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
         {
             // Create the output dictionary
-            var protections = new CheckDictionary<ILinearExecutableCheck>();
+            var protections = new CheckDictionary<IExecutableCheck<LinearExecutable>>();
 
             // Iterate through all checks
             LinearExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckLinearExecutable(file, lex, includeDebug);
+                var protection = checkClass.CheckExecutable(file, lex, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 
@@ -275,16 +273,16 @@ namespace BinaryObjectScanner.FileType
         /// <param name="mz">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IMSDOSExecutableCheck, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
+        public IDictionary<IExecutableCheck<MSDOS>, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
         {
             // Create the output dictionary
-            var protections = new CheckDictionary<IMSDOSExecutableCheck>();
+            var protections = new CheckDictionary<IExecutableCheck<MSDOS>>();
 
             // Iterate through all checks
             MSDOSExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckMSDOSExecutable(file, mz, includeDebug);
+                var protection = checkClass.CheckExecutable(file, mz, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 
@@ -309,16 +307,16 @@ namespace BinaryObjectScanner.FileType
         /// <param name="nex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<INewExecutableCheck, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
+        public IDictionary<IExecutableCheck<NewExecutable>, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
         {
             // Create the output dictionary
-            var protections = new CheckDictionary<INewExecutableCheck>();
+            var protections = new CheckDictionary<IExecutableCheck<NewExecutable>>();
 
             // Iterate through all checks
             NewExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckNewExecutable(file, nex, includeDebug);
+                var protection = checkClass.CheckExecutable(file, nex, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 
@@ -343,16 +341,16 @@ namespace BinaryObjectScanner.FileType
         /// <param name="pex">Executable to scan</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IPortableExecutableCheck, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
+        public IDictionary<IExecutableCheck<PortableExecutable>, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
         {
             // Create the output dictionary
-            var protections = new CheckDictionary<IPortableExecutableCheck>();
+            var protections = new CheckDictionary<IExecutableCheck<PortableExecutable>>();
 
             // Iterate through all checks
             PortableExecutableCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckPortableExecutable(file, pex, includeDebug);
+                var protection = checkClass.CheckExecutable(file, pex, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 
@@ -368,50 +366,6 @@ namespace BinaryObjectScanner.FileType
             });
 
             return protections;
-        }
-
-        #endregion
-
-        #region Initializers
-
-        /// <summary>
-        /// Initialize all implementations of a type
-        /// </summary>
-        private static IEnumerable<T>? InitCheckClasses<T>() =>
-            InitCheckClasses<T>(Assembly.GetExecutingAssembly()) ?? [];
-
-        /// <summary>
-        /// Initialize all implementations of a type
-        /// </summary>
-        private static IEnumerable<T>? InitCheckClasses<T>(Assembly assembly)
-        {
-            List<T> classTypes = [];
-
-            // If not all types can be loaded, use the ones that could be
-            List<Type> assemblyTypes = [];
-            try
-            {
-                assemblyTypes = assembly.GetTypes().ToList<Type>();
-            }
-            catch (ReflectionTypeLoadException rtle)
-            {
-                assemblyTypes = rtle.Types.Where(t => t != null)!.ToList<Type>();
-            }
-
-            // Loop through all types 
-            foreach (Type type in assemblyTypes)
-            {
-                // If the type isn't a class or doesn't implement the interface
-                if (!type.IsClass || type.GetInterface(typeof(T).Name) == null)
-                    continue;
-
-                // Try to create a concrete instance of the type
-                var instance = (T?)Activator.CreateInstance(type);
-                if (instance != null)
-                    classTypes.Add(instance);
-            }
-
-            return classTypes;
         }
 
         #endregion
