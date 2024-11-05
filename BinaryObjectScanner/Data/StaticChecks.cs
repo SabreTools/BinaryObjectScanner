@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -15,7 +18,7 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                contentCheckClasses ??= Factory.InitCheckClasses<IContentCheck>();
+                contentCheckClasses ??= InitCheckClasses<IContentCheck>();
                 return contentCheckClasses ?? [];
             }
         }
@@ -27,7 +30,7 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                linearExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<LinearExecutable>>();
+                linearExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<LinearExecutable>>();
                 return linearExecutableCheckClasses ?? [];
             }
         }
@@ -39,7 +42,7 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                msdosExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<MSDOS>>();
+                msdosExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<MSDOS>>();
                 return msdosExecutableCheckClasses ?? [];
             }
         }
@@ -51,7 +54,7 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                newExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<NewExecutable>>();
+                newExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<NewExecutable>>();
                 return newExecutableCheckClasses ?? [];
             }
         }
@@ -63,7 +66,7 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                pathCheckClasses ??= Factory.InitCheckClasses<IPathCheck>();
+                pathCheckClasses ??= InitCheckClasses<IPathCheck>();
                 return pathCheckClasses ?? [];
             }
         }
@@ -75,7 +78,7 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                portableExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<PortableExecutable>>();
+                portableExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<PortableExecutable>>();
                 return portableExecutableCheckClasses ?? [];
             }
         }
@@ -115,5 +118,61 @@ namespace BinaryObjectScanner.Data
         private static List<IExecutableCheck<PortableExecutable>>? portableExecutableCheckClasses;
 
         #endregion
+
+        /// <summary>
+        /// Initialize all implementations of a type
+        /// </summary>
+        private static List<T>? InitCheckClasses<T>() =>
+            InitCheckClasses<T>(Assembly.GetExecutingAssembly()) ?? [];
+
+        /// <summary>
+        /// Initialize all implementations of a type
+        /// </summary>
+        private static List<T>? InitCheckClasses<T>(Assembly assembly)
+        {
+            List<T> classTypes = [];
+
+            // If not all types can be loaded, use the ones that could be
+            List<Type> assemblyTypes = [];
+            try
+            {
+                assemblyTypes = assembly.GetTypes().ToList<Type>();
+            }
+            catch (ReflectionTypeLoadException rtle)
+            {
+                assemblyTypes = rtle.Types.Where(t => t != null)!.ToList<Type>();
+            }
+
+            // Get information from the type param
+            string interfaceName = typeof(T)!.FullName;
+
+            // Loop through all types 
+            foreach (Type type in assemblyTypes)
+            {
+                // If the type isn't a class
+                if (!type.IsClass)
+                    continue;
+
+                // If the type isn't a class or doesn't implement the interface
+                bool interfaceFound = false;
+                foreach (var ii in type.GetInterfaces())
+                {
+                    if (ii.FullName != interfaceName)
+                        continue;
+
+                    interfaceFound = true;
+                    break;
+                }
+                if (!interfaceFound)
+                    continue;
+
+                // Try to create a concrete instance of the type
+                var instance = (T?)Activator.CreateInstance(type);
+                if (instance != null)
+                    classTypes.Add(instance);
+            }
+
+            return classTypes;
+        }    
     }
 }
