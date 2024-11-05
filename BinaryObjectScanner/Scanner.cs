@@ -273,7 +273,7 @@ namespace BinaryObjectScanner
                         executable.IncludeGameEngines = _options.ScanGameEngines;
                         executable.IncludePackers = _options.ScanPackers;
 
-                        var subProtections = executable.DetectDict(stream, fileName, this, _options.IncludeDebug);
+                        var subProtections = executable.DetectDict(stream, fileName, GetProtections, _options.IncludeDebug);
                         protections.Append(subProtections);
                     }
 

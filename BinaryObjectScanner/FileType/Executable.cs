@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.FileType
         public string? Detect(Stream stream, string file, bool includeDebug)
         {
             // Get all non-nested protections
-            var protections = DetectDict(stream, file, scanner: null, includeDebug);
+            var protections = DetectDict(stream, file, getProtections: null, includeDebug);
             if (protections.Count == 0)
                 return null;
 
@@ -66,7 +66,10 @@ namespace BinaryObjectScanner.FileType
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
-        public ProtectionDictionary DetectDict(Stream stream, string file, Scanner? scanner, bool includeDebug)
+        public ProtectionDictionary DetectDict(Stream stream,
+            string file,
+            Func<string, ProtectionDictionary>? getProtections,
+            bool includeDebug)
         {
             // Create the output dictionary
             var protections = new ProtectionDictionary();
@@ -99,7 +102,7 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, mz, subProtections.Keys, scanner, includeDebug);
+                var extractedProtections = HandleExtractableProtections(file, mz, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
             else if (wrapper is LinearExecutable lex)
@@ -109,7 +112,7 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, lex, subProtections.Keys, scanner, includeDebug);
+                var extractedProtections = HandleExtractableProtections(file, lex, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
             else if (wrapper is NewExecutable nex)
@@ -119,7 +122,7 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, nex, subProtections.Keys, scanner, includeDebug);
+                var extractedProtections = HandleExtractableProtections(file, nex, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
             else if (wrapper is PortableExecutable pex)
@@ -129,7 +132,7 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, pex, subProtections.Keys, scanner, includeDebug);
+                var extractedProtections = HandleExtractableProtections(file, pex, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
 
@@ -236,13 +239,13 @@ namespace BinaryObjectScanner.FileType
         /// <param name="file">Name of the source file of the stream, for tracking</param>
         /// <param name="exe">Executable to scan the contents of</param>
         /// <param name="checks">Set of classes returned from Exectuable scans</param>
-        /// <param name="scanner">Scanner for handling recursive protections</param>
+        /// <param name="getProtections">Optional function for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections found from extraction, empty on error</returns>
         private static ProtectionDictionary HandleExtractableProtections<T, U>(string file,
             T exe,
             IEnumerable<U> checks,
-            Scanner? scanner,
+            Func<string, ProtectionDictionary>? getProtections,
             bool includeDebug)
                 where T : WrapperBase
                 where U : IExecutableCheck<T>
@@ -260,7 +263,7 @@ namespace BinaryObjectScanner.FileType
                 .Select(c => c as IExtractableExecutable<T>);
             extractables.IterateWithAction(extractable =>
             {
-                var subProtections = PerformExtractableCheck(extractable!, file, exe, scanner, includeDebug);
+                var subProtections = PerformExtractableCheck(extractable!, file, exe, getProtections, includeDebug);
                 protections.Append(subProtections);
             });
 
@@ -273,13 +276,13 @@ namespace BinaryObjectScanner.FileType
         /// <param name="file">Name of the source file of the stream, for tracking</param>
         /// <param name="exe">Executable to scan the contents of</param>
         /// <param name="impl">IExtractableExecutable class representing the file type</param>
-        /// <param name="scanner">Scanner for handling recursive protections</param>
+        /// <param name="getProtections">Optional function for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in path, empty on error</returns>
         private static ProtectionDictionary PerformExtractableCheck<T>(IExtractableExecutable<T> impl,
             string file,
             T exe,
-            Scanner? scanner,
+            Func<string, ProtectionDictionary>? getProtections,
             bool includeDebug)
                 where T : WrapperBase
         {
@@ -296,8 +299,8 @@ namespace BinaryObjectScanner.FileType
 
                 // Collect and format all found protections
                 ProtectionDictionary? subProtections = null;
-                if (extracted)
-                    subProtections = scanner?.GetProtections(tempPath);
+                if (extracted && getProtections != null)
+                    subProtections = getProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try
