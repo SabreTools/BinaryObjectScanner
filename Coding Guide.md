@@ -373,14 +373,16 @@ If the project or directory you are looking for is not included in the above, pl
 
 This section contains information on in-code organization principles that depend on the part of the project you are working in. See the following table for details.
 
+Typed checks, such as `IExecutableCheck<T>` should always follow this order: `MSDOS`, `LinearExecutable`, `NewExecutable`, `PortableExecutable`.
+
 | Project | Description |
 | --- | --- |
 | `BinaryObjectScanner` | Varies from file to file. |
 | `BinaryObjectScanner/FileType` | `IDetectable` implementations, `IExtractable` implementations, helper methods. |
-| `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `IExecutableCheck<LinearExecutable>` implementations, `IExecutableCheck<NewExecutable>` implementations, `IExecutableCheck<PortableExecutable>` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, `IExtractableExecutable<T>` implementations, helper methods. |
 | `BinaryObjectScanner/Interfaces` | Methods ordered alphabetically. |
-| `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `IExecutableCheck<LinearExecutable>` implementations, `IExecutableCheck<NewExecutable>` implementations, `IExecutableCheck<PortableExecutable>` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
-| `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `IExecutableCheck<LinearExecutable>` implementations, `IExecutableCheck<NewExecutable>` implementations, `IExecutableCheck<PortableExecutable>` implementations, `IPathCheck` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, `IExtractableExecutable<T>` implementations, helper methods. |
+| `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, `IExtractableExecutable<T>` implementations, helper methods. |
 | `ExtractionTool` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 | `ProtectionScan` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 
