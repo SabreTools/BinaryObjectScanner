@@ -82,9 +82,6 @@
     <PackageReference Include="SharpCompress" Version="0.38.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith(`net4`)) AND !$(TargetFramework.StartsWith(`net40`))">
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SabreTools.Compression" Version="0.5.2" />

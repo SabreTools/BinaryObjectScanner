@@ -94,12 +94,12 @@ namespace BinaryObjectScanner.Packer
 
                         // Trim the buffer to the proper size
                         uint read = zstream.total_out;
-#if NET462_OR_GREATER || NETCOREAPP
-                        data = new ReadOnlySpan<byte>(data, 0, (int)read).ToArray();
-#else
+#if NETFRAMEWORK
                         var temp = new byte[read];
                         Array.Copy(data, 0, temp, 0, read);
                         data = temp;
+#else
+                        data = new ReadOnlySpan<byte>(data, 0, (int)read).ToArray();
 #endif
                     }
                     catch
