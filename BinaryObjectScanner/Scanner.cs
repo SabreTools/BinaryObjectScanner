@@ -15,7 +15,7 @@ namespace BinaryObjectScanner
         #region Options
 
         /// <inheritdoc cref="Options.IncludeDebug"/>
-        public bool IncludeDebug => _options?.IncludeDebug ?? false;
+        public bool IncludeDebug => _options.IncludeDebug;
 
         /// <summary>
         /// Options object for configuration
@@ -182,7 +182,7 @@ namespace BinaryObjectScanner
             protections.ClearEmptyKeys();
 
             // If we're in debug, output the elasped time to console
-            if (IncludeDebug)
+            if (_options.IncludeDebug)
                 Console.WriteLine($"Time elapsed: {DateTime.UtcNow.Subtract(startTime)}");
 
             return protections;
@@ -207,10 +207,10 @@ namespace BinaryObjectScanner
             }
             catch (Exception ex)
             {
-                if (IncludeDebug) Console.WriteLine(ex);
+                if (_options.IncludeDebug) Console.WriteLine(ex);
 
                 var protections = new ProtectionDictionary();
-                protections.Append(file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                protections.Append(file, _options.IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
                 protections.ClearEmptyKeys();
                 return protections;
             }
@@ -246,7 +246,7 @@ namespace BinaryObjectScanner
                 }
                 catch (Exception ex)
                 {
-                    if (IncludeDebug) Console.WriteLine(ex);
+                    if (_options.IncludeDebug) Console.WriteLine(ex);
 
                     return null;
                 }
@@ -277,12 +277,12 @@ namespace BinaryObjectScanner
                     // Otherwise, use the default implementation
                     else
                     {
-                        var subProtections = Handler.HandleDetectable(detectable, fileName, stream, IncludeDebug);
+                        var subProtections = Handler.HandleDetectable(detectable, fileName, stream, _options.IncludeDebug);
                         if (subProtections != null)
                             protections.Append(fileName, subProtections);
                     }
 
-                    var subProtection = detectable.Detect(stream, fileName, IncludeDebug);
+                    var subProtection = detectable.Detect(stream, fileName, _options.IncludeDebug);
                     if (!string.IsNullOrEmpty(subProtection))
                     {
                         // If we have an indicator of multiple protections
@@ -317,8 +317,8 @@ namespace BinaryObjectScanner
             }
             catch (Exception ex)
             {
-                if (IncludeDebug) Console.WriteLine(ex);
-                protections.Append(fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                if (_options.IncludeDebug) Console.WriteLine(ex);
+                protections.Append(fileName, _options.IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
             }
 
             // Clear out any empty keys
@@ -353,7 +353,7 @@ namespace BinaryObjectScanner
             }
             catch (Exception ex)
             {
-                if (IncludeDebug) Console.WriteLine(ex);
+                if (_options.IncludeDebug) Console.WriteLine(ex);
                 return null;
             }
 
@@ -361,16 +361,16 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
 
             // Only use generic content checks if we're in debug mode
-            if (IncludeDebug)
+            if (_options.IncludeDebug)
             {
-                var subProtections = executable.RunContentChecks(fileName, stream, IncludeDebug);
+                var subProtections = executable.RunContentChecks(fileName, stream, _options.IncludeDebug);
                 if (subProtections != null)
                     protections.Append(fileName, subProtections.Values);
             }
 
             if (wrapper is MSDOS mz)
             {
-                var subProtections = executable.RunMSDOSExecutableChecks(fileName, stream, mz, IncludeDebug);
+                var subProtections = executable.RunMSDOSExecutableChecks(fileName, stream, mz, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
@@ -384,7 +384,7 @@ namespace BinaryObjectScanner
             }
             else if (wrapper is LinearExecutable lex)
             {
-                var subProtections = executable.RunLinearExecutableChecks(fileName, stream, lex, IncludeDebug);
+                var subProtections = executable.RunLinearExecutableChecks(fileName, stream, lex, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
@@ -398,7 +398,7 @@ namespace BinaryObjectScanner
             }
             else if (wrapper is NewExecutable nex)
             {
-                var subProtections = executable.RunNewExecutableChecks(fileName, stream, nex, IncludeDebug);
+                var subProtections = executable.RunNewExecutableChecks(fileName, stream, nex, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
@@ -412,7 +412,7 @@ namespace BinaryObjectScanner
             }
             else if (wrapper is PortableExecutable pex)
             {
-                var subProtections = executable.RunPortableExecutableChecks(fileName, stream, pex, IncludeDebug);
+                var subProtections = executable.RunPortableExecutableChecks(fileName, stream, pex, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
