@@ -143,34 +143,29 @@ namespace BinaryObjectScanner.FileType
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
             {
-                var subProtections = RunContentChecks(file, stream, includeDebug);
-                if (subProtections != null)
-                    protections.AddRange(subProtections.Values);
+                var contentProtections = RunContentChecks(file, stream, includeDebug);
+                protections.AddRange(contentProtections.Values);
             }
 
             if (wrapper is MSDOS mz)
             {
-                var subProtections = RunMSDOSExecutableChecks(file, stream, mz, includeDebug);
-                if (subProtections != null)
-                    protections.AddRange(subProtections.Values);
+                var subProtections = RunExecutableChecks(file, mz, MSDOSExecutableCheckClasses, includeDebug);
+                protections.AddRange(subProtections.Values);
             }
             else if (wrapper is LinearExecutable lex)
             {
-                var subProtections = RunLinearExecutableChecks(file, stream, lex, includeDebug);
-                if (subProtections != null)
-                    protections.AddRange(subProtections.Values);
+                var subProtections = RunExecutableChecks(file, lex, LinearExecutableCheckClasses, includeDebug);
+                protections.AddRange(subProtections.Values);
             }
             else if (wrapper is NewExecutable nex)
             {
-                var subProtections = RunNewExecutableChecks(file, stream, nex, includeDebug);
-                if (subProtections != null)
-                    protections.AddRange(subProtections.Values);
+                var subProtections = RunExecutableChecks(file, nex, NewExecutableCheckClasses, includeDebug);
+                protections.AddRange(subProtections.Values);
             }
             else if (wrapper is PortableExecutable pex)
             {
-                var subProtections = RunPortableExecutableChecks(file, stream, pex, includeDebug);
-                if (subProtections != null)
-                    protections.AddRange(subProtections.Values);
+                var subProtections = RunExecutableChecks(file, pex, PortableExecutableCheckClasses, includeDebug);
+                protections.AddRange(subProtections.Values);
             }
 
             return string.Join(";", [.. protections]);
@@ -184,14 +179,17 @@ namespace BinaryObjectScanner.FileType
         /// <param name="file">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IContentCheck, string>? RunContentChecks(string? file, Stream stream, bool includeDebug)
+        /// <returns>Set of protections in file, empty on error</returns>
+        public IDictionary<IContentCheck, string> RunContentChecks(string? file, Stream stream, bool includeDebug)
         {
+            // Create the output dictionary
+            var protections = new CheckDictionary<IContentCheck>();
+
             // If we have an invalid file
             if (string.IsNullOrEmpty(file))
-                return null;
+                return protections;
             else if (!File.Exists(file))
-                return null;
+                return protections;
 
             // Read the file contents
             byte[] fileContent = [];
@@ -199,16 +197,13 @@ namespace BinaryObjectScanner.FileType
             {
                 fileContent = stream.ReadBytes((int)stream.Length);
                 if (fileContent == null)
-                    return null;
+                    return protections;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return protections;
             }
-
-            // Create the output dictionary
-            var protections = new CheckDictionary<IContentCheck>();
 
             // Iterate through all checks
             ContentCheckClasses.IterateWithAction(checkClass =>
@@ -233,124 +228,25 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <summary>
-        /// Handle a single file based on all linear executable check implementations
+        /// Handle a single file based on all executable check implementations
         /// </summary>
         /// <param name="file">Name of the source file of the executable, for tracking</param>
-        /// <param name="lex">Executable to scan</param>
+        /// <param name="exe">Executable to scan</param>
+        /// <param name="checks">Set of checks to use</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IExecutableCheck<LinearExecutable>, string> RunLinearExecutableChecks(string file, Stream stream, LinearExecutable lex, bool includeDebug)
+        /// <returns>Set of protections in file, empty on error</returns>
+        public IDictionary<U, string> RunExecutableChecks<T, U>(string file, T exe, List<U> checks, bool includeDebug)
+            where T : WrapperBase
+            where U : IExecutableCheck<T>
         {
             // Create the output dictionary
-            var protections = new CheckDictionary<IExecutableCheck<LinearExecutable>>();
+            var protections = new CheckDictionary<U>();
 
             // Iterate through all checks
-            LinearExecutableCheckClasses.IterateWithAction(checkClass =>
+            checks.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckExecutable(file, lex, includeDebug);
-                if (string.IsNullOrEmpty(protection))
-                    return;
-
-                // If we are filtering on game engines
-                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-                    return;
-
-                // If we are filtering on packers
-                if (CheckIfPacker(checkClass) && !IncludePackers)
-                    return;
-
-                protections.Append(checkClass, protection);
-            });
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Handle a single file based on all MS-DOS executable check implementations
-        /// </summary>
-        /// <param name="file">Name of the source file of the executable, for tracking</param>
-        /// <param name="mz">Executable to scan</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IExecutableCheck<MSDOS>, string> RunMSDOSExecutableChecks(string file, Stream stream, MSDOS mz, bool includeDebug)
-        {
-            // Create the output dictionary
-            var protections = new CheckDictionary<IExecutableCheck<MSDOS>>();
-
-            // Iterate through all checks
-            MSDOSExecutableCheckClasses.IterateWithAction(checkClass =>
-            {
-                // Get the protection for the class, if possible
-                var protection = checkClass.CheckExecutable(file, mz, includeDebug);
-                if (string.IsNullOrEmpty(protection))
-                    return;
-
-                // If we are filtering on game engines
-                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-                    return;
-
-                // If we are filtering on packers
-                if (CheckIfPacker(checkClass) && !IncludePackers)
-                    return;
-
-                protections.Append(checkClass, protection);
-            });
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Handle a single file based on all new executable check implementations
-        /// </summary>
-        /// <param name="file">Name of the source file of the executable, for tracking</param>
-        /// <param name="nex">Executable to scan</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IExecutableCheck<NewExecutable>, string> RunNewExecutableChecks(string file, Stream stream, NewExecutable nex, bool includeDebug)
-        {
-            // Create the output dictionary
-            var protections = new CheckDictionary<IExecutableCheck<NewExecutable>>();
-
-            // Iterate through all checks
-            NewExecutableCheckClasses.IterateWithAction(checkClass =>
-            {
-                // Get the protection for the class, if possible
-                var protection = checkClass.CheckExecutable(file, nex, includeDebug);
-                if (string.IsNullOrEmpty(protection))
-                    return;
-
-                // If we are filtering on game engines
-                if (CheckIfGameEngine(checkClass) && !IncludeGameEngines)
-                    return;
-
-                // If we are filtering on packers
-                if (CheckIfPacker(checkClass) && !IncludePackers)
-                    return;
-
-                protections.Append(checkClass, protection);
-            });
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Handle a single file based on all portable executable check implementations
-        /// </summary>
-        /// <param name="file">Name of the source file of the executable, for tracking</param>
-        /// <param name="pex">Executable to scan</param>
-        /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <returns>Set of protections in file, null on error</returns>
-        public IDictionary<IExecutableCheck<PortableExecutable>, string> RunPortableExecutableChecks(string file, Stream stream, PortableExecutable pex, bool includeDebug)
-        {
-            // Create the output dictionary
-            var protections = new CheckDictionary<IExecutableCheck<PortableExecutable>>();
-
-            // Iterate through all checks
-            PortableExecutableCheckClasses.IterateWithAction(checkClass =>
-            {
-                // Get the protection for the class, if possible
-                var protection = checkClass.CheckExecutable(file, pex, includeDebug);
+                var protection = checkClass.CheckExecutable(file, exe, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 

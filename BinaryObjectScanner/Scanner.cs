@@ -403,7 +403,7 @@ namespace BinaryObjectScanner
 
             if (wrapper is MSDOS mz)
             {
-                var subProtections = executable.RunMSDOSExecutableChecks(fileName, stream, mz, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, mz, Executable.MSDOSExecutableCheckClasses, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
@@ -417,7 +417,7 @@ namespace BinaryObjectScanner
             }
             else if (wrapper is LinearExecutable lex)
             {
-                var subProtections = executable.RunLinearExecutableChecks(fileName, stream, lex, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, lex, Executable.LinearExecutableCheckClasses, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
@@ -431,7 +431,7 @@ namespace BinaryObjectScanner
             }
             else if (wrapper is NewExecutable nex)
             {
-                var subProtections = executable.RunNewExecutableChecks(fileName, stream, nex, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, nex, Executable.NewExecutableCheckClasses, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
@@ -445,7 +445,7 @@ namespace BinaryObjectScanner
             }
             else if (wrapper is PortableExecutable pex)
             {
-                var subProtections = executable.RunPortableExecutableChecks(fileName, stream, pex, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, pex, Executable.PortableExecutableCheckClasses, _options.IncludeDebug);
                 if (subProtections == null)
                     return protections;
 
