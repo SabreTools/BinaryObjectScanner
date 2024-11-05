@@ -6,7 +6,6 @@ using BinaryObjectScanner.Data;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
-using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner
@@ -70,18 +69,18 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public ProtectionDictionary? GetProtections(string path)
+        public ProtectionDictionary GetProtections(string path)
             => GetProtections([path]);
 
         /// <summary>
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public ProtectionDictionary? GetProtections(List<string>? paths)
+        public ProtectionDictionary GetProtections(List<string>? paths)
         {
             // If we have no paths, we can't scan
             if (paths == null || !paths.Any())
-                return null;
+                return [];
 
             // Set a starting starting time for debug output
             DateTime startTime = DateTime.UtcNow;
@@ -106,7 +105,7 @@ namespace BinaryObjectScanner
                     // Scan for path-detectable protections
                     if (_options.ScanPaths)
                     {
-                        var directoryPathProtections = Handler.HandlePathChecks(path, files);
+                        var directoryPathProtections = HandlePathChecks(path, files);
                         protections.Append(directoryPathProtections);
                     }
 
@@ -127,7 +126,7 @@ namespace BinaryObjectScanner
                         // Scan for path-detectable protections
                         if (_options.ScanPaths)
                         {
-                            var filePathProtections = Handler.HandlePathChecks(file, files: null);
+                            var filePathProtections = HandlePathChecks(file, files: null);
                             if (filePathProtections != null && filePathProtections.Any())
                                 protections.Append(filePathProtections);
                         }
@@ -158,7 +157,7 @@ namespace BinaryObjectScanner
                     // Scan for path-detectable protections
                     if (_options.ScanPaths)
                     {
-                        var filePathProtections = Handler.HandlePathChecks(path, files: null);
+                        var filePathProtections = HandlePathChecks(path, files: null);
                         if (filePathProtections != null && filePathProtections.Any())
                             protections.Append(filePathProtections);
                     }
@@ -197,11 +196,11 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ProtectionDictionary? GetInternalProtections(string file)
+        private ProtectionDictionary GetInternalProtections(string file)
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
-                return null;
+                return [];
 
             // Open the file and begin scanning
             try
@@ -226,11 +225,11 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ProtectionDictionary? GetInternalProtections(string fileName, Stream stream)
+        private ProtectionDictionary GetInternalProtections(string fileName, Stream stream)
         {
             // Quick sanity check before continuing
             if (stream == null || !stream.CanRead || !stream.CanSeek)
-                return null;
+                return [];
 
             // Initialize the protections found
             var protections = new ProtectionDictionary();
@@ -252,13 +251,13 @@ namespace BinaryObjectScanner
                 {
                     if (_options.IncludeDebug) Console.WriteLine(ex);
 
-                    return null;
+                    return [];
                 }
 
                 // Get the file type either from magic number or extension
                 WrapperType fileType = WrapperFactory.GetFileType(magic, extension);
                 if (fileType == WrapperType.UNKNOWN)
-                    return null;
+                    return [];
 
                 #region Non-Archive File Types
 
@@ -273,32 +272,16 @@ namespace BinaryObjectScanner
                     {
                         executable.IncludeGameEngines = _options.ScanGameEngines;
                         executable.IncludePackers = _options.ScanPackers;
-                        var subProtections = ProcessExecutable(executable, fileName, stream);
-                        if (subProtections != null)
-                            protections.Append(subProtections);
+
+                        var subProtections = executable.DetectDict(stream, fileName, this, _options.IncludeDebug);
+                        protections.Append(subProtections);
                     }
 
                     // Otherwise, use the default implementation
                     else
                     {
-                        var subProtections = Handler.HandleDetectable(detectable, fileName, stream, _options.IncludeDebug);
-                        if (subProtections != null)
-                            protections.Append(fileName, subProtections);
-                    }
-
-                    var subProtection = detectable.Detect(stream, fileName, _options.IncludeDebug);
-                    if (!string.IsNullOrEmpty(subProtection))
-                    {
-                        // If we have an indicator of multiple protections
-                        if (subProtection.Contains(';'))
-                        {
-                            var splitProtections = subProtection!.Split(';');
-                            protections.Append(fileName, splitProtections);
-                        }
-                        else
-                        {
-                            protections.Append(fileName, subProtection!);
-                        }
+                        var subProtection = detectable.Detect(stream, fileName, _options.IncludeDebug);
+                        protections.Append(fileName, ProcessProtectionString(subProtection));
                     }
                 }
 
@@ -363,150 +346,96 @@ namespace BinaryObjectScanner
 
         #endregion
 
-        #region Executable Handling
+        #region Path Handling
 
         /// <summary>
-        /// Process scanning for an Executable type
+        /// Handle a single path based on all path check implementations
         /// </summary>
-        /// <param name="executable">Executable instance for processing</param>
-        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
-        /// <param name="stream">Stream to scan the contents of</param>
-        /// <remarks>
-        /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
-        /// but due to the complexity of scanning, this is not currently possible.
-        /// </remarks>
-        private ProtectionDictionary? ProcessExecutable(Executable executable, string fileName, Stream stream)
+        /// <param name="path">Path of the file or directory to check</param>
+        /// <param name="scanner">Scanner object to use for options and scanning</param>
+        /// <returns>Set of protections in file, null on error</returns>
+        private static ProtectionDictionary HandlePathChecks(string path, IEnumerable<string>? files)
         {
-            // Try to create a wrapper for the proper executable type
-            IWrapper? wrapper;
-            try
-            {
-                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-                if (wrapper == null)
-                    return null;
-            }
-            catch (Exception ex)
-            {
-                if (_options.IncludeDebug) Console.WriteLine(ex);
-                return null;
-            }
-
             // Create the output dictionary
             var protections = new ProtectionDictionary();
 
-            // Only use generic content checks if we're in debug mode
-            if (_options.IncludeDebug)
-            {
-                var subProtections = executable.RunContentChecks(fileName, stream, _options.IncludeDebug);
-                protections.Append(fileName, subProtections.Values);
-            }
+            // Preprocess the list of files
+            files = files?
+                .Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?
+                .ToList();
 
-            if (wrapper is MSDOS mz)
+            // Iterate through all checks
+            StaticChecks.PathCheckClasses.IterateWithAction(checkClass =>
             {
-                // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, mz, StaticChecks.MSDOSExecutableCheckClasses, _options.IncludeDebug);
-                protections.Append(fileName, subProtections.Values);
-
-                // Extractable checks
-                var extractedProtections = HandleExtractableProtections(fileName, mz, subProtections.Keys);
-                protections.Append(extractedProtections);
-            }
-            else if (wrapper is LinearExecutable lex)
-            {
-                // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, lex, StaticChecks.LinearExecutableCheckClasses, _options.IncludeDebug);
-                protections.Append(fileName, subProtections.Values);
-
-                // Extractable checks
-                var extractedProtections = HandleExtractableProtections(fileName, lex, subProtections.Keys);
-                protections.Append(extractedProtections);
-            }
-            else if (wrapper is NewExecutable nex)
-            {
-                // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, nex, StaticChecks.NewExecutableCheckClasses, _options.IncludeDebug);
-                protections.Append(fileName, subProtections.Values);
-
-                // Extractable checks
-                var extractedProtections = HandleExtractableProtections(fileName, nex, subProtections.Keys);
-                protections.Append(extractedProtections);
-            }
-            else if (wrapper is PortableExecutable pex)
-            {
-                // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, pex, StaticChecks.PortableExecutableCheckClasses, _options.IncludeDebug);
-                protections.Append(fileName, subProtections.Values);
-
-                // Extractable checks
-                var extractedProtections = HandleExtractableProtections(fileName, pex, subProtections.Keys);
-                protections.Append(extractedProtections);
-            }
+                var subProtections = PerformCheck(checkClass, path, files);
+                protections.Append(path, subProtections);
+            });
 
             return protections;
         }
 
         /// <summary>
-        /// Handle extractable protections, such as executable packers
+        /// Handle files based on an IPathCheck implementation
         /// </summary>
-        /// <param name="file">Name of the source file of the stream, for tracking</param>
-        /// <param name="exe">Executable to scan the contents of</param>
-        /// <param name="checks">Set of classes returned from Exectuable scans</param>
-        /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary HandleExtractableProtections<T, U>(string file, T exe, IEnumerable<U> checks)
-            where T : WrapperBase
-            where U : IExecutableCheck<T>
+        /// <param name="impl">IPathCheck class representing the file type</param>
+        /// <param name="path">Path of the file or directory to check</param>
+        /// <returns>Set of protections in path, empty on error</returns>
+        private static List<string> PerformCheck(IPathCheck impl, string? path, IEnumerable<string>? files)
         {
-            // Create the output dictionary
-            var protections = new ProtectionDictionary();
+            // If we have an invalid path
+            if (string.IsNullOrEmpty(path))
+                return [];
 
-            // If we have an invalid set of classes
-            if (checks == null || !checks.Any())
-                return protections;
+            // Setup the list
+            var protections = new List<string>();
 
-            // If we have any extractable packers
-            var extractables = checks
-                .Where(c => c is IExtractableExecutable<T>)
-                .Select(c => c as IExtractableExecutable<T>);
-            extractables.IterateWithAction(extractable =>
+            // If we have a file path
+            if (File.Exists(path))
             {
-                // If we have an invalid extractable somehow
-                if (extractable == null)
-                    return;
+                var protection = impl.CheckFilePath(path!);
+                var subProtections = ProcessProtectionString(protection);
+                protections.AddRange(subProtections);
+            }
 
-                // If the extractable file itself fails
-                try
-                {
-                    // Extract and get the output path
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    bool extracted = extractable.Extract(file, exe, tempPath, _options.IncludeDebug);
+            // If we have a directory path
+            if (Directory.Exists(path) && files?.Any() == true)
+            {
+                var subProtections = impl.CheckDirectoryPath(path!, files);
+                if (subProtections != null)
+                    protections.AddRange(subProtections);
+            }
 
-                    // Collect and format all found protections
-                    ProtectionDictionary? subProtections = null;
-                    if (extracted)
-                        subProtections = GetProtections(tempPath);
+            return protections;
+        }
 
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        if (Directory.Exists(tempPath))
-                            Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (_options.IncludeDebug) Console.WriteLine(ex);
-                    }
+        #endregion
 
-                    // Prepare the returned protections
-                    subProtections?.StripFromKeys(tempPath);
-                    subProtections?.PrependToKeys(file);
-                    if (subProtections != null)
-                        protections.Append(subProtections);
-                }
-                catch (Exception ex)
-                {
-                    if (_options.IncludeDebug) Console.WriteLine(ex);
-                }
-            });
+        #region Helpers
+
+        /// <summary>
+        /// Process a protection string if it includes multiple protections
+        /// </summary>
+        /// <param name="protection">Protection string to process</param>
+        /// <returns>Set of protections parsed, empty on error</returns>
+        internal static List<string> ProcessProtectionString(string? protection)
+        {
+            // If we have an invalid protection string
+            if (string.IsNullOrEmpty(protection))
+                return [];
+
+            // Setup the output queue
+            var protections = new List<string>();
+
+            // If we have an indicator of multiple protections
+            if (protection!.Contains(";"))
+            {
+                var splitProtections = protection.Split(';');
+                protections.AddRange(splitProtections);
+            }
+            else
+            {
+                protections.Add(protection);
+            }
 
             return protections;
         }

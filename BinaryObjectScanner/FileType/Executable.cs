@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
+using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.FileType
@@ -44,43 +46,94 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Detect(Stream stream, string file, bool includeDebug)
         {
-            // Try to create a wrapper for the proper executable type
-            var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-            if (wrapper == null)
+            // Get all non-nested protections
+            var protections = DetectDict(stream, file, scanner: null, includeDebug);
+            if (protections.Count == 0)
                 return null;
 
             // Create the internal list
-            var protections = new List<string>();
+            var protectionList = new List<string>();
+            foreach (string key in protections.Keys)
+            {
+                protectionList.AddRange(protections[key]);
+            }
+
+            return string.Join(";", [.. protections]);
+        }
+
+        /// <inheritdoc cref="IDetectable.Detect(Stream, string, bool)"/>
+        /// <remarks>
+        /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
+        /// but due to the complexity of scanning, this is not currently possible.
+        /// </remarks>
+        public ProtectionDictionary DetectDict(Stream stream, string file, Scanner? scanner, bool includeDebug)
+        {
+            // Create the output dictionary
+            var protections = new ProtectionDictionary();
+
+            // Try to create a wrapper for the proper executable type
+            IWrapper? wrapper;
+            try
+            {
+                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
+                if (wrapper == null)
+                    return protections;
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return protections;
+            }
 
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
             {
-                var contentProtections = RunContentChecks(file, stream, includeDebug);
-                protections.AddRange(contentProtections.Values);
+                var subProtections = RunContentChecks(file, stream, includeDebug);
+                protections.Append(file, subProtections.Values);
             }
 
             if (wrapper is MSDOS mz)
             {
+                // Standard checks
                 var subProtections = RunExecutableChecks(file, mz, StaticChecks.MSDOSExecutableCheckClasses, includeDebug);
-                protections.AddRange(subProtections.Values);
+                protections.Append(file, subProtections.Values);
+
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(file, mz, subProtections.Keys, scanner, includeDebug);
+                protections.Append(extractedProtections);
             }
             else if (wrapper is LinearExecutable lex)
             {
+                // Standard checks
                 var subProtections = RunExecutableChecks(file, lex, StaticChecks.LinearExecutableCheckClasses, includeDebug);
-                protections.AddRange(subProtections.Values);
+                protections.Append(file, subProtections.Values);
+
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(file, lex, subProtections.Keys, scanner, includeDebug);
+                protections.Append(extractedProtections);
             }
             else if (wrapper is NewExecutable nex)
             {
+                // Standard checks
                 var subProtections = RunExecutableChecks(file, nex, StaticChecks.NewExecutableCheckClasses, includeDebug);
-                protections.AddRange(subProtections.Values);
+                protections.Append(file, subProtections.Values);
+
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(file, nex, subProtections.Keys, scanner, includeDebug);
+                protections.Append(extractedProtections);
             }
             else if (wrapper is PortableExecutable pex)
             {
+                // Standard checks
                 var subProtections = RunExecutableChecks(file, pex, StaticChecks.PortableExecutableCheckClasses, includeDebug);
-                protections.AddRange(subProtections.Values);
+                protections.Append(file, subProtections.Values);
+
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(file, pex, subProtections.Keys, scanner, includeDebug);
+                protections.Append(extractedProtections);
             }
 
-            return string.Join(";", [.. protections]);
+            return protections;
         }
 
         #region Check Runners
@@ -145,6 +198,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="file">Name of the source file of the executable, for tracking</param>
         /// <param name="exe">Executable to scan</param>
         /// <param name="checks">Set of checks to use</param>
+        /// <param name="scanner">Scanner for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
         public IDictionary<U, string> RunExecutableChecks<T, U>(string file, T exe, List<U> checks, bool includeDebug)
@@ -171,6 +225,74 @@ namespace BinaryObjectScanner.FileType
                     return;
 
                 protections.Append(checkClass, protection);
+            });
+
+            return protections;
+        }
+
+        /// <summary>
+        /// Handle extractable protections, such as executable packers
+        /// </summary>
+        /// <param name="file">Name of the source file of the stream, for tracking</param>
+        /// <param name="exe">Executable to scan the contents of</param>
+        /// <param name="checks">Set of classes returned from Exectuable scans</param>
+        /// <param name="scanner">Scanner for handling recursive protections</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>Set of protections found from extraction, empty on error</returns>
+        private ProtectionDictionary HandleExtractableProtections<T, U>(string file, T exe, IEnumerable<U> checks, Scanner? scanner, bool includeDebug)
+            where T : WrapperBase
+            where U : IExecutableCheck<T>
+        {
+            // Create the output dictionary
+            var protections = new ProtectionDictionary();
+
+            // If we have an invalid set of classes
+            if (checks == null || !checks.Any())
+                return protections;
+
+            // If we have any extractable packers
+            var extractables = checks
+                .Where(c => c is IExtractableExecutable<T>)
+                .Select(c => c as IExtractableExecutable<T>);
+            extractables.IterateWithAction(extractable =>
+            {
+                // If we have an invalid extractable somehow
+                if (extractable == null)
+                    return;
+
+                // If the extractable file itself fails
+                try
+                {
+                    // Extract and get the output path
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    bool extracted = extractable.Extract(file, exe, tempPath, includeDebug);
+
+                    // Collect and format all found protections
+                    ProtectionDictionary? subProtections = null;
+                    if (extracted)
+                        subProtections = scanner?.GetProtections(tempPath);
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        if (Directory.Exists(tempPath))
+                            Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.WriteLine(ex);
+                    }
+
+                    // Prepare the returned protections
+                    subProtections?.StripFromKeys(tempPath);
+                    subProtections?.PrependToKeys(file);
+                    if (subProtections != null)
+                        protections.Append(subProtections);
+                }
+                catch (Exception ex)
+                {
+                    if (includeDebug) Console.WriteLine(ex);
+                }
             });
 
             return protections;
