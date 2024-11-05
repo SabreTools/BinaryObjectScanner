@@ -75,52 +75,36 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, NewExecutable nex, bool includeDebug)
+        public bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug)
         {
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(tempPath);
+            Directory.CreateDirectory(outDir);
 
             try
             {
-                // TODO: Try to find where the file data lives and how to get it
-                if (!Extractor.ExtractTo(file, tempPath))
-                {
-                    try
-                    {
-                        Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (includeDebug) Console.WriteLine(ex);
-                    }
-
-                    return null;
-                }
+                return Extractor.ExtractTo(file, outDir);
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
-
-            return tempPath;
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
+        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
         {
             try
             {
                 // Get the matching PE format
                 var format = GetPEFormat(pex);
                 if (format == null)
-                    return null;
+                    return false;
 
                 // Get the overlay data for easier reading
                 int overlayOffset = 0, dataStart = 0;
                 var overlayData = pex.OverlayData;
                 if (overlayData == null)
-                    return null;
+                    return false;
 
                 // Skip over the additional DLL name, if we expect it
                 if (format.Dll)
@@ -175,43 +159,28 @@ namespace BinaryObjectScanner.Packer
                 var magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
                 bool pkzip = magic?.StartsWith(new byte?[] { (byte)'P', (byte)'K' }) ?? false;
 
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                // Create the output directory
+                Directory.CreateDirectory(outDir);
 
                 // If we have PKZIP
                 if (pkzip)
                 {
-                    string tempFile = Path.Combine(tempPath, "WISEDATA.zip");
-                    using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                    {
-                        tempStream.Write(overlayData, overlayOffset, overlayData.Length - overlayOffset);
-                    }
+                    string tempFile = Path.Combine(outDir, "WISEDATA.zip");
+                    using Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                    tempStream.Write(overlayData, overlayOffset, overlayData.Length - overlayOffset);
+                    return true;
                 }
 
                 // If we have DEFLATE -- TODO: Port implementation here or use DeflateStream
                 else
                 {
-                    if (!Extractor.ExtractTo(file, tempPath))
-                    {
-                        try
-                        {
-                            Directory.Delete(tempPath, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (includeDebug) Console.WriteLine(ex);
-                        }
-
-                        return null;
-                    }
+                    return Extractor.ExtractTo(file, outDir);
                 }
-
-                return tempPath;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
 

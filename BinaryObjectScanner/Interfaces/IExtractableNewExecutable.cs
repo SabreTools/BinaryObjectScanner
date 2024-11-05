@@ -12,8 +12,9 @@ namespace BinaryObjectScanner.Interfaces
         /// </summary>
         /// <param name="file">Path to the input file</param>
         /// <param name="nex">NewExecutable representing the read-in file</param>
+        /// <param name="outDir">Path to the output directory</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Path to extracted files, null on error</returns>
-        string? Extract(string file, NewExecutable nex, bool includeDebug);
+        bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug);
     }
 }

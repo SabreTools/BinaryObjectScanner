@@ -51,14 +51,14 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
+        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
         {
             try
             {
                 // Get the first resource of type 99 with index 2
                 var payload = pex.FindResourceByNamedType("99, 2").FirstOrDefault();
                 if (payload == null || payload.Length == 0)
-                    return null;
+                    return false;
 
                 // Determine which compression was used
                 bool zlib = pex.FindResourceByNamedType("99, 1").Any();
@@ -125,27 +125,25 @@ namespace BinaryObjectScanner.Packer
 
                 // If we have no data
                 if (data == null)
-                    return null;
-
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
+                    return false;
 
                 // Create the temp filename
                 string tempFile = string.IsNullOrEmpty(file) ? "temp.sxe" : $"{Path.GetFileNameWithoutExtension(file)}.sxe";
-                tempFile = Path.Combine(tempPath, tempFile);
+                tempFile = Path.Combine(outDir, tempFile);
+                var directoryName = Path.GetDirectoryName(tempFile);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                    Directory.CreateDirectory(directoryName);
 
                 // Write the file data to a temp file
-                using (Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-                {
-                    tempStream.Write(data, 0, data.Length);
-                }
+                var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                tempStream.Write(data, 0, data.Length);
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
     }

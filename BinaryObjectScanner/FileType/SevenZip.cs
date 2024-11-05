@@ -32,8 +32,8 @@ namespace BinaryObjectScanner.FileType
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
-                using var sevenZipFile = SevenZipArchive.Open(stream);
-                foreach (var entry in sevenZipFile.Entries)
+                using var sevenZip = SevenZipArchive.Open(stream);
+                foreach (var entry in sevenZip.Entries)
                 {
                     try
                     {

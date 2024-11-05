@@ -140,17 +140,19 @@ namespace BinaryObjectScanner
             try
             {
                 // Extract and get the output path
-                var tempPath = impl.Extract(fileName, mz, scanner.IncludeDebug);
-                if (tempPath == null)
-                    return null;
-
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                bool extracted = impl.Extract(fileName, mz, tempPath, scanner.IncludeDebug);
+                
                 // Collect and format all found protections
-                var subProtections = scanner.GetProtections(tempPath);
+                ProtectionDictionary? subProtections = null;
+                if (extracted)
+                    subProtections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try
                 {
-                    Directory.Delete(tempPath, true);
+                    if (Directory.Exists(tempPath))
+                        Directory.Delete(tempPath, true);
                 }
                 catch (Exception ex)
                 {
@@ -184,17 +186,19 @@ namespace BinaryObjectScanner
             try
             {
                 // Extract and get the output path
-                var tempPath = impl.Extract(fileName, lex, scanner.IncludeDebug);
-                if (tempPath == null)
-                    return null;
-
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                bool extracted = impl.Extract(fileName, lex, tempPath, scanner.IncludeDebug);
+                
                 // Collect and format all found protections
-                var subProtections = scanner.GetProtections(tempPath);
+                ProtectionDictionary? subProtections = null;
+                if (extracted)
+                    subProtections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try
                 {
-                    Directory.Delete(tempPath, true);
+                    if (Directory.Exists(tempPath))
+                        Directory.Delete(tempPath, true);
                 }
                 catch (Exception ex)
                 {
@@ -228,17 +232,19 @@ namespace BinaryObjectScanner
             try
             {
                 // Extract and get the output path
-                var tempPath = impl.Extract(fileName, nex, scanner.IncludeDebug);
-                if (tempPath == null)
-                    return null;
-
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                bool extracted = impl.Extract(fileName, nex, tempPath, scanner.IncludeDebug);
+                
                 // Collect and format all found protections
-                var subProtections = scanner.GetProtections(tempPath);
+                ProtectionDictionary? subProtections = null;
+                if (extracted)
+                    subProtections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try
                 {
-                    Directory.Delete(tempPath, true);
+                    if (Directory.Exists(tempPath))
+                        Directory.Delete(tempPath, true);
                 }
                 catch (Exception ex)
                 {
@@ -272,17 +278,19 @@ namespace BinaryObjectScanner
             try
             {
                 // Extract and get the output path
-                var tempPath = impl.Extract(fileName, pex, scanner.IncludeDebug);
-                if (tempPath == null)
-                    return null;
-
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                bool extracted = impl.Extract(fileName, pex, tempPath, scanner.IncludeDebug);
+                
                 // Collect and format all found protections
-                var subProtections = scanner.GetProtections(tempPath);
+                ProtectionDictionary? subProtections = null;
+                if (extracted)
+                    subProtections = scanner.GetProtections(tempPath);
 
                 // If temp directory cleanup fails
                 try
                 {
-                    Directory.Delete(tempPath, true);
+                    if (Directory.Exists(tempPath))
+                        Directory.Delete(tempPath, true);
                 }
                 catch (Exception ex)
                 {

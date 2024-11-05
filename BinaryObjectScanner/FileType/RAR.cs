@@ -33,6 +33,9 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 using RarArchive rarFile = RarArchive.Open(stream);
+                if (!rarFile.IsComplete)
+                    return false;
+
                 foreach (var entry in rarFile.Entries)
                 {
                     try

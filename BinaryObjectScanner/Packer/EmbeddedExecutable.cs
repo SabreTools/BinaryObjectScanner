@@ -29,13 +29,13 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
+        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
         {
             try
             {
                 // If there are no resources
                 if (pex.ResourceData == null)
-                    return null;
+                    return false;
 
                 // Get the resources that have an executable signature
                 var resources = pex.ResourceData
@@ -43,9 +43,6 @@ namespace BinaryObjectScanner.Packer
                     .Select(kvp => kvp.Value as byte[])
                     .Where(b => b != null && b.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
                     .ToList();
-
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
 
                 for (int i = 0; i < resources.Count; i++)
                 {
@@ -58,7 +55,10 @@ namespace BinaryObjectScanner.Packer
 
                         // Create the temp filename
                         string tempFile = $"embedded_resource_{i}.bin";
-                        tempFile = Path.Combine(tempPath, tempFile);
+                        tempFile = Path.Combine(outDir, tempFile);
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
 
                         // Write the resource data to a temp file
                         using var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
@@ -70,12 +70,12 @@ namespace BinaryObjectScanner.Packer
                     }
                 }
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
         }
     }

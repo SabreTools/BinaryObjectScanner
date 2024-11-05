@@ -66,65 +66,63 @@ namespace BinaryObjectScanner.Packer
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
 
         /// <inheritdoc/>
-        public string? Extract(string file, NewExecutable nex, bool includeDebug)
-            => Extract(file, includeDebug);
+        public bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug)
+            => Extract(file, outDir, includeDebug);
 
         /// <inheritdoc/>
-        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
-            => Extract(file, includeDebug);
+        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
+            => Extract(file, outDir, includeDebug);
 
         /// <summary>
         /// Handle common extraction between executable types
         /// </summary>
-        public static string? Extract(string file, bool includeDebug)
+        public static bool Extract(string file, string outDir, bool includeDebug)
         {
+            if (!File.Exists(file))
+                return false;
+
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
-                // Create a temp output directory
-                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempPath);
-
-                using (ZipArchive zipFile = ZipArchive.Open(file))
+                using var zipFile = ZipArchive.Open(file);
+                foreach (var entry in zipFile.Entries)
                 {
-                    foreach (var entry in zipFile.Entries)
+                    try
                     {
-                        try
-                        {
-                            // If the entry is a directory
-                            if (entry.IsDirectory)
-                                continue;
+                        // If the entry is a directory
+                        if (entry.IsDirectory)
+                            continue;
 
-                            // If the entry has an invalid key
-                            if (entry.Key == null)
-                                continue;
+                        // If the entry has an invalid key
+                        if (entry.Key == null)
+                            continue;
 
-                            // If we have a partial entry due to an incomplete multi-part archive, skip it
-                            if (!entry.IsComplete)
-                                continue;
+                        // If we have a partial entry due to an incomplete multi-part archive, skip it
+                        if (!entry.IsComplete)
+                            continue;
 
-                            string tempFile = Path.Combine(tempPath, entry.Key);
-                            var directoryName = Path.GetDirectoryName(tempFile);
-                            if (directoryName != null && !Directory.Exists(directoryName))
-                                Directory.CreateDirectory(directoryName);
-                            entry.WriteToFile(tempFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (includeDebug) Console.WriteLine(ex);
-                        }
+                        string tempFile = Path.Combine(outDir, entry.Key);
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
+
+                        entry.WriteToFile(tempFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.WriteLine(ex);
                     }
                 }
 
-                return tempPath;
+                return true;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.WriteLine(ex);
-                return null;
+                return false;
             }
 #else
-            return null;
+            return false;
 #endif
         }
 
@@ -796,14 +794,14 @@ namespace BinaryObjectScanner.Packer
                 "WZIPSE32.exe" => "Unknown Version (32-bit)",// TODO: Find starting version
                 "SI32LPG.SFX" => "Unknown Version (32-bit)",// TODO: Find starting version
                 "ST32E.WZE" => "Unknown Version (32-bit)",// TODO: Find starting version
-                                                          
+
                 // Personal Edition
                 "VW95LE.SFX" => "Unknown Version before Personal Edition Build 1285 (32-bit)",
                 "PE32E.SFX" => "Unknown Version after Personal Edition Build 1285 (32-bit)",
                 "wzsepe32.exe" => "Unknown Version Personal Edition (32-bit)",// TODO: Find starting version
                 "SI32PE.SFX" => "Unknown Version Personal Edition (32-bit)",// TODO: Find starting version
                 "SI32LPE.SFX" => "Unknown Version Personal Edition (32-bit)",// TODO: Find starting version
-                                                                             
+
                 // Software Installation
                 "VW95SRE.SFX" => "Unknown Version before Software Installation 2.1 (32-bit)",
                 "SI32E.SFX" => "Unknown Version after Software Installation 2.1 (32-bit)",

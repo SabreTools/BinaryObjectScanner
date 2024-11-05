@@ -47,9 +47,9 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? Extract(string file, PortableExecutable pex, bool includeDebug)
+        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
         {
-            return null;
+            return false;
         }
 
         private string GetVersion(PortableExecutable pex)
