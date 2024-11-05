@@ -14,21 +14,6 @@ namespace BinaryObjectScanner
     {
         #region Options
 
-        /// <inheritdoc cref="Options.ScanArchives"/>
-        public bool ScanArchives => _options?.ScanArchives ?? false;
-
-        /// <inheritdoc cref="Options.ScanContents"/>
-        public bool ScanContents => _options?.ScanContents ?? false;
-
-        /// <inheritdoc cref="Options.ScanGameEngines"/>
-        public bool ScanGameEngines => _options?.ScanGameEngines ?? false;
-
-        /// <inheritdoc cref="Options.ScanPackers"/>
-        public bool ScanPackers => _options?.ScanPackers ?? false;
-
-        /// <inheritdoc cref="Options.ScanPaths"/>
-        public bool ScanPaths => _options?.ScanPaths ?? false;
-
         /// <inheritdoc cref="Options.IncludeDebug"/>
         public bool IncludeDebug => _options?.IncludeDebug ?? false;
 
@@ -115,7 +100,7 @@ namespace BinaryObjectScanner
                     var files = IOExtensions.SafeEnumerateFiles(path, "*", SearchOption.AllDirectories).ToList();
 
                     // Scan for path-detectable protections
-                    if (ScanPaths)
+                    if (_options.ScanPaths)
                     {
                         var directoryPathProtections = Handler.HandlePathChecks(path, files);
                         protections.Append(directoryPathProtections);
@@ -136,7 +121,7 @@ namespace BinaryObjectScanner
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
-                        if (ScanPaths)
+                        if (_options.ScanPaths)
                         {
                             var filePathProtections = Handler.HandlePathChecks(file, files: null);
                             if (filePathProtections != null && filePathProtections.Any())
@@ -167,7 +152,7 @@ namespace BinaryObjectScanner
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
-                    if (ScanPaths)
+                    if (_options.ScanPaths)
                     {
                         var filePathProtections = Handler.HandlePathChecks(path, files: null);
                         if (filePathProtections != null && filePathProtections.Any())
@@ -277,13 +262,13 @@ namespace BinaryObjectScanner
                 var detectable = Factory.CreateDetectable(fileType);
 
                 // If we're scanning file contents
-                if (detectable != null && ScanContents)
+                if (detectable != null && _options.ScanContents)
                 {
                     // If we have an executable, it needs to bypass normal handling
                     if (detectable is Executable executable)
                     {
-                        executable.IncludeGameEngines = ScanGameEngines;
-                        executable.IncludePackers = ScanPackers;
+                        executable.IncludeGameEngines = _options.ScanGameEngines;
+                        executable.IncludePackers = _options.ScanPackers;
                         var subProtections = ProcessExecutable(executable, fileName, stream);
                         if (subProtections != null)
                             protections.Append(subProtections);
@@ -321,7 +306,7 @@ namespace BinaryObjectScanner
                 var extractable = Factory.CreateExtractable(fileType);
 
                 // If we're scanning archives
-                if (extractable != null && ScanArchives)
+                if (extractable != null && _options.ScanArchives)
                 {
                     var subProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
                     if (subProtections != null)
