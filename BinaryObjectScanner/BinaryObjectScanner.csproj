@@ -11,7 +11,7 @@
     <Nullable>enable</Nullable>
     <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>3.1.15</Version>
+    <Version>3.1.16</Version>
     <!-- Mostly added due to external libraries -->
     <WarningsNotAsErrors>CS0162;CS0612;CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8618;CS8625;CS8634;CS8765;IL3000;NU5100</WarningsNotAsErrors>
   
