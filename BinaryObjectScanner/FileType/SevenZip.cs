@@ -4,6 +4,7 @@ using BinaryObjectScanner.Interfaces;
 #if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Archives;
 using SharpCompress.Archives.SevenZip;
+using SharpCompress.Readers;
 #endif
 
 namespace BinaryObjectScanner.FileType
@@ -15,16 +16,24 @@ namespace BinaryObjectScanner.FileType
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)
+            => Extract(file, outDir, lookForHeader: false, includeDebug);
+
+        /// <inheritdoc cref="IExtractable.Extract(string, string, bool)"/>
+        public bool Extract(string file, string outDir, bool lookForHeader, bool includeDebug)
         {
             if (!File.Exists(file))
                 return false;
 
             using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
+            return Extract(fs, file, outDir, lookForHeader, includeDebug);
         }
 
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+            => Extract(stream, file, outDir, lookForHeader: false, includeDebug);
+
+        /// <inheritdoc cref="IExtractable.Extract(Stream?, string, string, bool)"/>
+        public bool Extract(Stream? stream, string file, string outDir, bool lookForHeader, bool includeDebug)
         {
             if (stream == null || !stream.CanRead)
                 return false;
@@ -32,7 +41,8 @@ namespace BinaryObjectScanner.FileType
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
-                using var sevenZip = SevenZipArchive.Open(stream);
+                var readerOptions = new ReaderOptions() { LookForHeader = lookForHeader };
+                using var sevenZip = SevenZipArchive.Open(stream, readerOptions);
                 foreach (var entry in sevenZip.Entries)
                 {
                     try
