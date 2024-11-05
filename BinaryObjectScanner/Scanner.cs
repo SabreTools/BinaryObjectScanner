@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BinaryObjectScanner.Data;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
@@ -403,7 +404,7 @@ namespace BinaryObjectScanner
             if (wrapper is MSDOS mz)
             {
                 // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, mz, Executable.MSDOSExecutableCheckClasses, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, mz, StaticChecks.MSDOSExecutableCheckClasses, _options.IncludeDebug);
                 protections.Append(fileName, subProtections.Values);
 
                 // Extractable checks
@@ -413,7 +414,7 @@ namespace BinaryObjectScanner
             else if (wrapper is LinearExecutable lex)
             {
                 // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, lex, Executable.LinearExecutableCheckClasses, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, lex, StaticChecks.LinearExecutableCheckClasses, _options.IncludeDebug);
                 protections.Append(fileName, subProtections.Values);
 
                 // Extractable checks
@@ -423,7 +424,7 @@ namespace BinaryObjectScanner
             else if (wrapper is NewExecutable nex)
             {
                 // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, nex, Executable.NewExecutableCheckClasses, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, nex, StaticChecks.NewExecutableCheckClasses, _options.IncludeDebug);
                 protections.Append(fileName, subProtections.Values);
 
                 // Extractable checks
@@ -433,7 +434,7 @@ namespace BinaryObjectScanner
             else if (wrapper is PortableExecutable pex)
             {
                 // Standard checks
-                var subProtections = executable.RunExecutableChecks(fileName, pex, Executable.PortableExecutableCheckClasses, _options.IncludeDebug);
+                var subProtections = executable.RunExecutableChecks(fileName, pex, StaticChecks.PortableExecutableCheckClasses, _options.IncludeDebug);
                 protections.Append(fileName, subProtections.Values);
 
                 // Extractable checks

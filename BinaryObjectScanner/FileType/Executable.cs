@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
@@ -27,95 +28,6 @@ namespace BinaryObjectScanner.FileType
         /// Determines if packers are counted as detected protections or not
         /// </summary>
         public bool IncludePackers { get; set; }
-
-        /// <summary>
-        /// Cache for all IContentCheck types
-        /// </summary>
-        public static List<IContentCheck> ContentCheckClasses
-        {
-            get
-            {
-                contentCheckClasses ??= Factory.InitCheckClasses<IContentCheck>();
-                return contentCheckClasses ?? [];
-            }
-        }
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<LinearExecutable> types
-        /// </summary>
-        public static List<IExecutableCheck<LinearExecutable>> LinearExecutableCheckClasses
-        {
-            get
-            {
-                linearExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<LinearExecutable>>();
-                return linearExecutableCheckClasses ?? [];
-            }
-        }
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<MSDOS> types
-        /// </summary>
-        public static List<IExecutableCheck<MSDOS>> MSDOSExecutableCheckClasses
-        {
-            get
-            {
-                msdosExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<MSDOS>>();
-                return msdosExecutableCheckClasses ?? [];
-            }
-        }
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<NewExecutable> types
-        /// </summary>
-        public static List<IExecutableCheck<NewExecutable>> NewExecutableCheckClasses
-        {
-            get
-            {
-                newExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<NewExecutable>>();
-                return newExecutableCheckClasses ?? [];
-            }
-        }
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<PortableExecutable> types
-        /// </summary>
-        public static List<IExecutableCheck<PortableExecutable>> PortableExecutableCheckClasses
-        {
-            get
-            {
-                portableExecutableCheckClasses ??= Factory.InitCheckClasses<IExecutableCheck<PortableExecutable>>();
-                return portableExecutableCheckClasses ?? [];
-            }
-        }
-
-        #endregion
-
-        #region Internal Instances
-
-        /// <summary>
-        /// Cache for all IContentCheck types
-        /// </summary>
-        private static List<IContentCheck>? contentCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<LinearExecutable> types
-        /// </summary>
-        private static List<IExecutableCheck<LinearExecutable>>? linearExecutableCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<MSDOS> types
-        /// </summary>
-        private static List<IExecutableCheck<MSDOS>>? msdosExecutableCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<NewExecutable> types
-        /// </summary>
-        private static List<IExecutableCheck<NewExecutable>>? newExecutableCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<PortableExecutable> types
-        /// </summary>
-        private static List<IExecutableCheck<PortableExecutable>>? portableExecutableCheckClasses;
 
         #endregion
 
@@ -149,22 +61,22 @@ namespace BinaryObjectScanner.FileType
 
             if (wrapper is MSDOS mz)
             {
-                var subProtections = RunExecutableChecks(file, mz, MSDOSExecutableCheckClasses, includeDebug);
+                var subProtections = RunExecutableChecks(file, mz, StaticChecks.MSDOSExecutableCheckClasses, includeDebug);
                 protections.AddRange(subProtections.Values);
             }
             else if (wrapper is LinearExecutable lex)
             {
-                var subProtections = RunExecutableChecks(file, lex, LinearExecutableCheckClasses, includeDebug);
+                var subProtections = RunExecutableChecks(file, lex, StaticChecks.LinearExecutableCheckClasses, includeDebug);
                 protections.AddRange(subProtections.Values);
             }
             else if (wrapper is NewExecutable nex)
             {
-                var subProtections = RunExecutableChecks(file, nex, NewExecutableCheckClasses, includeDebug);
+                var subProtections = RunExecutableChecks(file, nex, StaticChecks.NewExecutableCheckClasses, includeDebug);
                 protections.AddRange(subProtections.Values);
             }
             else if (wrapper is PortableExecutable pex)
             {
-                var subProtections = RunExecutableChecks(file, pex, PortableExecutableCheckClasses, includeDebug);
+                var subProtections = RunExecutableChecks(file, pex, StaticChecks.PortableExecutableCheckClasses, includeDebug);
                 protections.AddRange(subProtections.Values);
             }
 
@@ -206,7 +118,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Iterate through all checks
-            ContentCheckClasses.IterateWithAction(checkClass =>
+            StaticChecks.ContentCheckClasses.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
                 var protection = checkClass.CheckContents(file!, fileContent, includeDebug);

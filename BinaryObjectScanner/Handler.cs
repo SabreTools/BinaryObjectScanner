@@ -1,37 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner
 {
     internal static class Handler
     {
-        #region Public Collections
-
-        /// <summary>
-        /// Cache for all IPathCheck types
-        /// </summary>
-        public static List<IPathCheck> PathCheckClasses
-        {
-            get
-            {
-                pathCheckClasses ??= Factory.InitCheckClasses<IPathCheck>();
-                return pathCheckClasses ?? [];
-            }
-        }
-
-        #endregion
-
-        #region Internal Instances
-
-        /// <summary>
-        /// Cache for all IPathCheck types
-        /// </summary>
-        private static List<IPathCheck>? pathCheckClasses;
-
-        #endregion
-
         #region Multiple Implementation Wrappers
 
         /// <summary>
@@ -49,7 +25,7 @@ namespace BinaryObjectScanner
             files = files?.Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?.ToList();
 
             // Iterate through all checks
-            PathCheckClasses.IterateWithAction(checkClass =>
+            StaticChecks.PathCheckClasses.IterateWithAction(checkClass =>
             {
                 var subProtections = checkClass?.PerformCheck(path, files);
                 if (subProtections != null)
