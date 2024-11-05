@@ -13,10 +13,6 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
-    /// <remarks>
-    /// Due to the complexity of executables, all extraction handling
-    /// another class that is used by the scanner
-    /// </remarks>
     public class Executable : IDetectable
     {
         #region Properties
