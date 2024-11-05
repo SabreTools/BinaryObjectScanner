@@ -100,7 +100,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("steamxboxutil64.exe"), "Steam"),
             };
 
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
+            return MatchUtil.GetAllMatches(files, matchers, any: false);
         }
 
         /// <inheritdoc/>
