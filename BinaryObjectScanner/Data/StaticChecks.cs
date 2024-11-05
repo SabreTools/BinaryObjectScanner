@@ -144,7 +144,7 @@ namespace BinaryObjectScanner.Data
             }
 
             // Get information from the type param
-            string interfaceName = typeof(T)!.FullName;
+            string interfaceName = typeof(T)!.FullName!;
 
             // Loop through all types 
             foreach (Type type in assemblyTypes)

@@ -367,7 +367,7 @@ namespace BinaryObjectScanner
             // Iterate through all checks
             StaticChecks.PathCheckClasses.IterateWithAction(checkClass =>
             {
-                var subProtections = PerformCheck(checkClass, path, files);
+                var subProtections = PerformPathCheck(checkClass, path, files);
                 protections.Append(path, subProtections);
             });
 
@@ -380,7 +380,7 @@ namespace BinaryObjectScanner
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, empty on error</returns>
-        private static List<string> PerformCheck(IPathCheck impl, string? path, IEnumerable<string>? files)
+        private static List<string> PerformPathCheck(IPathCheck impl, string? path, IEnumerable<string>? files)
         {
             // If we have an invalid path
             if (string.IsNullOrEmpty(path))
