@@ -14,9 +14,6 @@ namespace BinaryObjectScanner
     {
         #region Options
 
-        /// <inheritdoc cref="Options.IncludeDebug"/>
-        public bool IncludeDebug => _options.IncludeDebug;
-
         /// <summary>
         /// Options object for configuration
         /// </summary>
@@ -39,7 +36,13 @@ namespace BinaryObjectScanner
         /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
-        public Scanner(bool scanArchives, bool scanContents, bool scanGameEngines, bool scanPackers, bool scanPaths, bool includeDebug, IProgress<ProtectionProgress>? fileProgress = null)
+        public Scanner(bool scanArchives,
+            bool scanContents,
+            bool scanGameEngines,
+            bool scanPackers,
+            bool scanPaths,
+            bool includeDebug,
+            IProgress<ProtectionProgress>? fileProgress = null)
         {
             _options = new Options
             {
@@ -308,9 +311,39 @@ namespace BinaryObjectScanner
                 // If we're scanning archives
                 if (extractable != null && _options.ScanArchives)
                 {
-                    var subProtections = Handler.HandleExtractable(extractable, fileName, stream, this);
-                    if (subProtections != null)
-                        protections.Append(subProtections);
+                    // If the extractable file itself fails
+                    try
+                    {
+                        // Extract and get the output path
+                        string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                        bool extracted = extractable.Extract(stream, fileName, tempPath, _options.IncludeDebug);
+
+                        // Collect and format all found protections
+                        ProtectionDictionary? subProtections = null;
+                        if (extracted)
+                            subProtections = GetProtections(tempPath);
+
+                        // If temp directory cleanup fails
+                        try
+                        {
+                            if (Directory.Exists(tempPath))
+                                Directory.Delete(tempPath, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (_options.IncludeDebug) Console.WriteLine(ex);
+                        }
+
+                        // Prepare the returned protections
+                        subProtections?.StripFromKeys(tempPath);
+                        subProtections?.PrependToKeys(fileName);
+                        if (subProtections != null)
+                            protections.Append(subProtections);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_options.IncludeDebug) Console.WriteLine(ex);
+                    }
                 }
 
                 #endregion
@@ -435,7 +468,9 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="mz">MSDOS to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IMSDOSExecutableCheck>? classes, string fileName, MSDOS mz)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IMSDOSExecutableCheck>? classes,
+            string fileName,
+            MSDOS mz)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -454,10 +489,39 @@ namespace BinaryObjectScanner
                 if (extractable == null)
                     return;
 
-                // Get the protection for the class, if possible
-                var extractedProtections = Handler.HandleExtractable(extractable, fileName, mz, this);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // If the extractable file itself fails
+                try
+                {
+                    // Extract and get the output path
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    bool extracted = extractable.Extract(fileName, mz, tempPath, _options.IncludeDebug);
+
+                    // Collect and format all found protections
+                    ProtectionDictionary? subProtections = null;
+                    if (extracted)
+                        subProtections = GetProtections(tempPath);
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        if (Directory.Exists(tempPath))
+                            Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_options.IncludeDebug) Console.WriteLine(ex);
+                    }
+
+                    // Prepare the returned protections
+                    subProtections?.StripFromKeys(tempPath);
+                    subProtections?.PrependToKeys(fileName);
+                    if (subProtections != null)
+                        protections.Append(subProtections);
+                }
+                catch (Exception ex)
+                {
+                    if (_options.IncludeDebug) Console.WriteLine(ex);
+                }
             });
 
             return protections;
@@ -470,7 +534,9 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="lex">LinearExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<ILinearExecutableCheck>? classes, string fileName, LinearExecutable lex)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<ILinearExecutableCheck>? classes,
+            string fileName,
+            LinearExecutable lex)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -489,10 +555,39 @@ namespace BinaryObjectScanner
                 if (extractable == null)
                     return;
 
-                // Get the protection for the class, if possible
-                var extractedProtections = Handler.HandleExtractable(extractable, fileName, lex, this);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // If the extractable file itself fails
+                try
+                {
+                    // Extract and get the output path
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    bool extracted = extractable.Extract(fileName, lex, tempPath, _options.IncludeDebug);
+
+                    // Collect and format all found protections
+                    ProtectionDictionary? subProtections = null;
+                    if (extracted)
+                        subProtections = GetProtections(tempPath);
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        if (Directory.Exists(tempPath))
+                            Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_options.IncludeDebug) Console.WriteLine(ex);
+                    }
+
+                    // Prepare the returned protections
+                    subProtections?.StripFromKeys(tempPath);
+                    subProtections?.PrependToKeys(fileName);
+                    if (subProtections != null)
+                        protections.Append(subProtections);
+                }
+                catch (Exception ex)
+                {
+                    if (_options.IncludeDebug) Console.WriteLine(ex);
+                }
             });
 
             return protections;
@@ -505,7 +600,9 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="nex">NewExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<INewExecutableCheck>? classes, string fileName, NewExecutable nex)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<INewExecutableCheck>? classes,
+            string fileName,
+            NewExecutable nex)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -524,10 +621,39 @@ namespace BinaryObjectScanner
                 if (extractable == null)
                     return;
 
-                // Get the protection for the class, if possible
-                var extractedProtections = Handler.HandleExtractable(extractable, fileName, nex, this);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // If the extractable file itself fails
+                try
+                {
+                    // Extract and get the output path
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    bool extracted = extractable.Extract(fileName, nex, tempPath, _options.IncludeDebug);
+
+                    // Collect and format all found protections
+                    ProtectionDictionary? subProtections = null;
+                    if (extracted)
+                        subProtections = GetProtections(tempPath);
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        if (Directory.Exists(tempPath))
+                            Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_options.IncludeDebug) Console.WriteLine(ex);
+                    }
+
+                    // Prepare the returned protections
+                    subProtections?.StripFromKeys(tempPath);
+                    subProtections?.PrependToKeys(fileName);
+                    if (subProtections != null)
+                        protections.Append(subProtections);
+                }
+                catch (Exception ex)
+                {
+                    if (_options.IncludeDebug) Console.WriteLine(ex);
+                }
             });
 
             return protections;
@@ -540,7 +666,9 @@ namespace BinaryObjectScanner
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="pex">PortableExecutable to scan the contents of</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IPortableExecutableCheck>? classes, string fileName, PortableExecutable pex)
+        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IPortableExecutableCheck>? classes,
+            string fileName,
+            PortableExecutable pex)
         {
             // If we have an invalid set of classes
             if (classes == null || !classes.Any())
@@ -559,10 +687,39 @@ namespace BinaryObjectScanner
                 if (extractable == null)
                     return;
 
-                // Get the protection for the class, if possible
-                var extractedProtections = Handler.HandleExtractable(extractable, fileName, pex, this);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // If the extractable file itself fails
+                try
+                {
+                    // Extract and get the output path
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    bool extracted = extractable.Extract(fileName, pex, tempPath, _options.IncludeDebug);
+
+                    // Collect and format all found protections
+                    ProtectionDictionary? subProtections = null;
+                    if (extracted)
+                        subProtections = GetProtections(tempPath);
+
+                    // If temp directory cleanup fails
+                    try
+                    {
+                        if (Directory.Exists(tempPath))
+                            Directory.Delete(tempPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_options.IncludeDebug) Console.WriteLine(ex);
+                    }
+
+                    // Prepare the returned protections
+                    subProtections?.StripFromKeys(tempPath);
+                    subProtections?.PrependToKeys(fileName);
+                    if (subProtections != null)
+                        protections.Append(subProtections);
+                }
+                catch (Exception ex)
+                {
+                    if (_options.IncludeDebug) Console.WriteLine(ex);
+                }
             });
 
             return protections;
