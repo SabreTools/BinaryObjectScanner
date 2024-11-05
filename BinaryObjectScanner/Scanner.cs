@@ -397,65 +397,48 @@ namespace BinaryObjectScanner
             if (_options.IncludeDebug)
             {
                 var subProtections = executable.RunContentChecks(fileName, stream, _options.IncludeDebug);
-                if (subProtections != null)
-                    protections.Append(fileName, subProtections.Values);
+                protections.Append(fileName, subProtections.Values);
             }
 
             if (wrapper is MSDOS mz)
             {
+                // Standard checks
                 var subProtections = executable.RunExecutableChecks(fileName, mz, Executable.MSDOSExecutableCheckClasses, _options.IncludeDebug);
-                if (subProtections == null)
-                    return protections;
-
-                // Append the returned values
                 protections.Append(fileName, subProtections.Values);
 
-                // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, mz);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(fileName, mz, subProtections.Keys);
+                protections.Append(extractedProtections);
             }
             else if (wrapper is LinearExecutable lex)
             {
+                // Standard checks
                 var subProtections = executable.RunExecutableChecks(fileName, lex, Executable.LinearExecutableCheckClasses, _options.IncludeDebug);
-                if (subProtections == null)
-                    return protections;
-
-                // Append the returned values
                 protections.Append(fileName, subProtections.Values);
 
-                // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, lex);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(fileName, lex, subProtections.Keys);
+                protections.Append(extractedProtections);
             }
             else if (wrapper is NewExecutable nex)
             {
+                // Standard checks
                 var subProtections = executable.RunExecutableChecks(fileName, nex, Executable.NewExecutableCheckClasses, _options.IncludeDebug);
-                if (subProtections == null)
-                    return protections;
-
-                // Append the returned values
                 protections.Append(fileName, subProtections.Values);
 
-                // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, nex);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(fileName, nex, subProtections.Keys);
+                protections.Append(extractedProtections);
             }
             else if (wrapper is PortableExecutable pex)
             {
+                // Standard checks
                 var subProtections = executable.RunExecutableChecks(fileName, pex, Executable.PortableExecutableCheckClasses, _options.IncludeDebug);
-                if (subProtections == null)
-                    return protections;
-
-                // Append the returned values
                 protections.Append(fileName, subProtections.Values);
 
-                // If we have any extractable packers
-                var extractedProtections = HandleExtractableProtections(subProtections.Keys, fileName, pex);
-                if (extractedProtections != null)
-                    protections.Append(extractedProtections);
+                // Extractable checks
+                var extractedProtections = HandleExtractableProtections(fileName, pex, subProtections.Keys);
+                protections.Append(extractedProtections);
             }
 
             return protections;
@@ -464,25 +447,25 @@ namespace BinaryObjectScanner
         /// <summary>
         /// Handle extractable protections, such as executable packers
         /// </summary>
-        /// <param name="classes">Set of classes returned from Exectuable scans</param>
-        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
-        /// <param name="mz">MSDOS to scan the contents of</param>
+        /// <param name="file">Name of the source file of the stream, for tracking</param>
+        /// <param name="exe">Executable to scan the contents of</param>
+        /// <param name="checks">Set of classes returned from Exectuable scans</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<MSDOS>>? classes,
-            string fileName,
-            MSDOS mz)
+        public ProtectionDictionary HandleExtractableProtections<T, U>(string file, T exe, IEnumerable<U> checks)
+            where T : WrapperBase
+            where U : IExecutableCheck<T>
         {
-            // If we have an invalid set of classes
-            if (classes == null || !classes.Any())
-                return null;
-
             // Create the output dictionary
             var protections = new ProtectionDictionary();
 
+            // If we have an invalid set of classes
+            if (checks == null || !checks.Any())
+                return protections;
+
             // If we have any extractable packers
-            var extractables = classes
-                .Where(c => c is IExtractableExecutable<MSDOS>)
-                .Select(c => c as IExtractableExecutable<MSDOS>);
+            var extractables = checks
+                .Where(c => c is IExtractableExecutable<T>)
+                .Select(c => c as IExtractableExecutable<T>);
             extractables.IterateWithAction(extractable =>
             {
                 // If we have an invalid extractable somehow
@@ -494,7 +477,7 @@ namespace BinaryObjectScanner
                 {
                     // Extract and get the output path
                     string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    bool extracted = extractable.Extract(fileName, mz, tempPath, _options.IncludeDebug);
+                    bool extracted = extractable.Extract(file, exe, tempPath, _options.IncludeDebug);
 
                     // Collect and format all found protections
                     ProtectionDictionary? subProtections = null;
@@ -514,205 +497,7 @@ namespace BinaryObjectScanner
 
                     // Prepare the returned protections
                     subProtections?.StripFromKeys(tempPath);
-                    subProtections?.PrependToKeys(fileName);
-                    if (subProtections != null)
-                        protections.Append(subProtections);
-                }
-                catch (Exception ex)
-                {
-                    if (_options.IncludeDebug) Console.WriteLine(ex);
-                }
-            });
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Handle extractable protections, such as executable packers
-        /// </summary>
-        /// <param name="classes">Set of classes returned from Exectuable scans</param>
-        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
-        /// <param name="lex">LinearExecutable to scan the contents of</param>
-        /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<LinearExecutable>>? classes,
-            string fileName,
-            LinearExecutable lex)
-        {
-            // If we have an invalid set of classes
-            if (classes == null || !classes.Any())
-                return null;
-
-            // Create the output dictionary
-            var protections = new ProtectionDictionary();
-
-            // If we have any extractable packers
-            var extractables = classes
-                .Where(c => c is IExtractableExecutable<LinearExecutable>)
-                .Select(c => c as IExtractableExecutable<LinearExecutable>);
-            extractables.IterateWithAction(extractable =>
-            {
-                // If we have an invalid extractable somehow
-                if (extractable == null)
-                    return;
-
-                // If the extractable file itself fails
-                try
-                {
-                    // Extract and get the output path
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    bool extracted = extractable.Extract(fileName, lex, tempPath, _options.IncludeDebug);
-
-                    // Collect and format all found protections
-                    ProtectionDictionary? subProtections = null;
-                    if (extracted)
-                        subProtections = GetProtections(tempPath);
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        if (Directory.Exists(tempPath))
-                            Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (_options.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    // Prepare the returned protections
-                    subProtections?.StripFromKeys(tempPath);
-                    subProtections?.PrependToKeys(fileName);
-                    if (subProtections != null)
-                        protections.Append(subProtections);
-                }
-                catch (Exception ex)
-                {
-                    if (_options.IncludeDebug) Console.WriteLine(ex);
-                }
-            });
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Handle extractable protections, such as executable packers
-        /// </summary>
-        /// <param name="classes">Set of classes returned from Exectuable scans</param>
-        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
-        /// <param name="nex">NewExecutable to scan the contents of</param>
-        /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<NewExecutable>>? classes,
-            string fileName,
-            NewExecutable nex)
-        {
-            // If we have an invalid set of classes
-            if (classes == null || !classes.Any())
-                return null;
-
-            // Create the output dictionary
-            var protections = new ProtectionDictionary();
-
-            // If we have any extractable packers
-            var extractables = classes
-                .Where(c => c is IExtractableExecutable<NewExecutable>)
-                .Select(c => c as IExtractableExecutable<NewExecutable>);
-            extractables.IterateWithAction(extractable =>
-            {
-                // If we have an invalid extractable somehow
-                if (extractable == null)
-                    return;
-
-                // If the extractable file itself fails
-                try
-                {
-                    // Extract and get the output path
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    bool extracted = extractable.Extract(fileName, nex, tempPath, _options.IncludeDebug);
-
-                    // Collect and format all found protections
-                    ProtectionDictionary? subProtections = null;
-                    if (extracted)
-                        subProtections = GetProtections(tempPath);
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        if (Directory.Exists(tempPath))
-                            Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (_options.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    // Prepare the returned protections
-                    subProtections?.StripFromKeys(tempPath);
-                    subProtections?.PrependToKeys(fileName);
-                    if (subProtections != null)
-                        protections.Append(subProtections);
-                }
-                catch (Exception ex)
-                {
-                    if (_options.IncludeDebug) Console.WriteLine(ex);
-                }
-            });
-
-            return protections;
-        }
-
-        /// <summary>
-        /// Handle extractable protections, such as executable packers
-        /// </summary>
-        /// <param name="classes">Set of classes returned from Exectuable scans</param>
-        /// <param name="fileName">Name of the source file of the stream, for tracking</param>
-        /// <param name="pex">PortableExecutable to scan the contents of</param>
-        /// <returns>Set of protections found from extraction, null on error</returns>
-        private ProtectionDictionary? HandleExtractableProtections(IEnumerable<IExecutableCheck<PortableExecutable>>? classes,
-            string fileName,
-            PortableExecutable pex)
-        {
-            // If we have an invalid set of classes
-            if (classes == null || !classes.Any())
-                return null;
-
-            // Create the output dictionary
-            var protections = new ProtectionDictionary();
-
-            // If we have any extractable packers
-            var extractables = classes
-                .Where(c => c is IExtractableExecutable<PortableExecutable>)
-                .Select(c => c as IExtractableExecutable<PortableExecutable>);
-            extractables.IterateWithAction(extractable =>
-            {
-                // If we have an invalid extractable somehow
-                if (extractable == null)
-                    return;
-
-                // If the extractable file itself fails
-                try
-                {
-                    // Extract and get the output path
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                    bool extracted = extractable.Extract(fileName, pex, tempPath, _options.IncludeDebug);
-
-                    // Collect and format all found protections
-                    ProtectionDictionary? subProtections = null;
-                    if (extracted)
-                        subProtections = GetProtections(tempPath);
-
-                    // If temp directory cleanup fails
-                    try
-                    {
-                        if (Directory.Exists(tempPath))
-                            Directory.Delete(tempPath, true);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (_options.IncludeDebug) Console.WriteLine(ex);
-                    }
-
-                    // Prepare the returned protections
-                    subProtections?.StripFromKeys(tempPath);
-                    subProtections?.PrependToKeys(fileName);
+                    subProtections?.PrependToKeys(file);
                     if (subProtections != null)
                         protections.Append(subProtections);
                 }

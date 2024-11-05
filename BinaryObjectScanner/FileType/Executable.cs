@@ -274,7 +274,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="impl">Implementation that was last used to check</param>
         private static bool CheckIfGameEngine(object impl)
         {
-            return impl?.GetType()?.Namespace?.ToLowerInvariant()?.Contains("gameengine") ?? false;
+            return impl.GetType().Namespace?.ToLowerInvariant()?.Contains("gameengine") ?? false;
         }
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="impl">Implementation that was last used to check</param>
         private static bool CheckIfPacker(object impl)
         {
-            return impl.GetType()?.Namespace?.ToLowerInvariant()?.Contains("packer") ?? false;
+            return impl.GetType().Namespace?.ToLowerInvariant()?.Contains("packer") ?? false;
         }
 
         #endregion
