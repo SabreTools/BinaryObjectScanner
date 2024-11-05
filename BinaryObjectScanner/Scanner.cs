@@ -451,7 +451,7 @@ namespace BinaryObjectScanner
         /// <param name="exe">Executable to scan the contents of</param>
         /// <param name="checks">Set of classes returned from Exectuable scans</param>
         /// <returns>Set of protections found from extraction, null on error</returns>
-        public ProtectionDictionary HandleExtractableProtections<T, U>(string file, T exe, IEnumerable<U> checks)
+        private ProtectionDictionary HandleExtractableProtections<T, U>(string file, T exe, IEnumerable<U> checks)
             where T : WrapperBase
             where U : IExecutableCheck<T>
         {
