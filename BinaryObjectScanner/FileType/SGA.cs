@@ -162,7 +162,7 @@ namespace BinaryObjectScanner.FileType
                 filename = Path.Combine(filename, parentNames[i]);
             }
 #else
-            filename = Path.Combine(parentNames);
+            filename = Path.Combine([.. parentNames]);
 #endif
 
             // Get the file offset

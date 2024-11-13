@@ -73,13 +73,10 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             int position = positions[0];
-#if NET20 || NET35 || NET40
+            
             byte[] versionBytes = new byte[8];
             Array.Copy(fileContent, position + 67, versionBytes, 0, 8);
             char[] version = Array.ConvertAll(versionBytes, b => (char)b);
-#else
-            char[] version = new ArraySegment<byte>(fileContent, position + 67, 8).Select(b => (char)b).ToArray();
-#endif
             return new string(version);
         }
     }
