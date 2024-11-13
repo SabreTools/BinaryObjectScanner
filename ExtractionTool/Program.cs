@@ -76,7 +76,7 @@ namespace ExtractionTool
             byte[] magic = new byte[16];
             try
             {
-                stream.Read(magic, 0, 16);
+                int read = stream.Read(magic, 0, 16);
                 stream.Seek(0, SeekOrigin.Begin);
             }
             catch (Exception ex)

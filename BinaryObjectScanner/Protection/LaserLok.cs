@@ -64,7 +64,11 @@ namespace BinaryObjectScanner.Protection
             ];
             int endDosStub = (int)(pex.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
             int position = -1;
+#if NET20
+            bool containsCheck = Extensions.FirstPosition(pex.StubExecutableData ?? [], check, out position);
+#else
             bool containsCheck = pex.StubExecutableData?.FirstPosition(check, out position) ?? false;
+#endif
 
             // Check the executable tables
             bool containsCheck2 = Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
@@ -90,7 +94,11 @@ namespace BinaryObjectScanner.Protection
                     0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C,
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 ];
+#if NET20
+                containsCheck2 = Extensions.FirstPosition(pex.GetFirstSectionData(".text") ?? [], check2, out position2);
+#else
                 containsCheck2 = pex.GetFirstSectionData(".text")?.FirstPosition(check2, out position2) ?? false;
+#endif
             }
             else
             {
@@ -161,7 +169,11 @@ namespace BinaryObjectScanner.Protection
                 0x55, 0x6E, 0x6B, 0x6F, 0x77, 0x6E, 0x00, 0x55,
                 0x6E, 0x6B, 0x6F, 0x77, 0x6E
             ];
+#if NET20
+            if (!Extensions.FirstPosition(sectionContent, check, out int position))
+#else
             if (!sectionContent.FirstPosition(check, out int position))
+#endif
                 return "(Build unknown)";
 
             string year, month, day;

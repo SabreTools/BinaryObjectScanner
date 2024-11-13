@@ -156,7 +156,11 @@ namespace BinaryObjectScanner.Packer
 
                 // If the first entry is PKZIP, we assume it's an embedded zipfile
                 var magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
+#if NET20
+                bool pkzip = Extensions.StartsWith(magic, new byte?[] { (byte)'P', (byte)'K' });
+#else
                 bool pkzip = magic?.StartsWith(new byte?[] { (byte)'P', (byte)'K' }) ?? false;
+#endif
 
                 // Create the output directory
                 Directory.CreateDirectory(outDir);

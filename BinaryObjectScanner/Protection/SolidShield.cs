@@ -210,7 +210,11 @@ namespace BinaryObjectScanner.Protection
                     0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F,
                     0x6E, 0x00, 0x00, 0x00, 0x00
                 ];
+#if NET20
+                if (Extensions.FirstPosition(fileContent, check2, out int position2))
+#else
                 if (fileContent.FirstPosition(check2, out int position2))
+#endif
                 {
                     position2--; // TODO: Verify this subtract
                     return $"2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}";
