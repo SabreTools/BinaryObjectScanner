@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ProtectionScan/bin/Debug/net8.0/ProtectionScan.dll",
+            "program": "${workspaceFolder}/ProtectionScan/bin/Debug/net9.0/ProtectionScan.dll",
             "args": [],
             "cwd": "${workspaceFolder}/ProtectionScan",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
@@ -23,7 +23,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ExtractionTool/bin/Debug/net8.0/ExtractionTool.dll",
+            "program": "${workspaceFolder}/ExtractionTool/bin/Debug/net9.0/ExtractionTool.dll",
             "args": [],
             "cwd": "${workspaceFolder}/ExtractionTool",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console

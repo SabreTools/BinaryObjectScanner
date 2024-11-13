@@ -1,97 +1,111 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <!-- Assembly Properties -->
-    <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64</RuntimeIdentifiers>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>3.1.16</Version>
-    <!-- Mostly added due to external libraries -->
-    <WarningsNotAsErrors>CS0162;CS0612;CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8618;CS8625;CS8634;CS8765;IL3000;NU5100</WarningsNotAsErrors>
-  
-    <!-- Package Properties -->
-    <Authors>Matt Nadareski</Authors>
-    <Description>Protection scanning library</Description>
-    <Copyright>Copyright (c)2018-2024 Matt Nadareski</Copyright>
-    <PackageProjectUrl>https://github.com/SabreTools/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/SabreTools/BinaryObjectScanner</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>protection copy-protection scanning packer</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+    <PropertyGroup>
+        <!-- Assembly Properties -->
+        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <CheckEolTargetFramework>false</CheckEolTargetFramework>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <Version>3.1.16</Version>
+        <!-- Mostly added due to external libraries -->
+        <WarningsNotAsErrors>CS0162;CS0612;CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8618;CS8625;CS8634;CS8765;IL3000;NU5100</WarningsNotAsErrors>
 
-  <!-- Set a build flag for Windows specifically -->
-  <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-    <DefineConstants>$(DefineConstants);WIN</DefineConstants>
-  </PropertyGroup>
+        <!-- Package Properties -->
+        <Authors>Matt Nadareski</Authors>
+        <Description>Protection scanning library</Description>
+        <Copyright>Copyright (c)2018-2024 Matt Nadareski</Copyright>
+        <PackageProjectUrl>https://github.com/SabreTools/</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/SabreTools/BinaryObjectScanner</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>protection copy-protection scanning packer</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
 
-  <!-- Exclude certain parts of external modules for by default -->
-  <PropertyGroup>
-    <DefaultItemExcludes>
-      $(DefaultItemExcludes);
-      **\AssemblyInfo.cs;
-      _EXTERNAL\LessIO\src\LessIO.Tests\**;
-      _EXTERNAL\libmspack4n\lib\**;
-      _EXTERNAL\libmspack4n\libmspack4ntest\**;
-      _EXTERNAL\stormlibsharp\lib\**;
-      _EXTERNAL\stormlibsharp\src\TestConsole\**
-    </DefaultItemExcludes>
-  </PropertyGroup>
+    <!-- Support All Frameworks -->
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net4`))">
+        <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`netcoreapp`)) OR $(TargetFramework.StartsWith(`net5`))">
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net6`)) OR $(TargetFramework.StartsWith(`net7`)) OR $(TargetFramework.StartsWith(`net8`)) OR $(TargetFramework.StartsWith(`net9`))">
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`osx-arm`))">
+        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+    </PropertyGroup>
 
-  <!-- Exclude all StormLibSharp for .NET Framework 4.0 -->
-  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net40`))">
-    <DefaultItemExcludes>
-      $(DefaultItemExcludes);
-      _EXTERNAL\stormlibsharp\src\**
-    </DefaultItemExcludes>
-  </PropertyGroup>
+    <!-- Set a build flag for Windows specifically -->
+    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
+        <DefineConstants>$(DefineConstants);WIN</DefineConstants>
+    </PropertyGroup>
 
-  <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, or non-Windows builds -->
-  <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR !$(RuntimeIdentifier.StartsWith(`win-x86`))">
-    <DefaultItemExcludes>
-      $(DefaultItemExcludes);
-      _EXTERNAL\**
-    </DefaultItemExcludes>
-  </PropertyGroup>
+    <!-- Exclude certain parts of external modules for by default -->
+    <PropertyGroup>
+        <DefaultItemExcludes>
+            $(DefaultItemExcludes);
+            **\AssemblyInfo.cs;
+            _EXTERNAL\LessIO\src\LessIO.Tests\**;
+            _EXTERNAL\libmspack4n\lib\**;
+            _EXTERNAL\libmspack4n\libmspack4ntest\**;
+            _EXTERNAL\stormlibsharp\lib\**;
+            _EXTERNAL\stormlibsharp\src\TestConsole\**
+        </DefaultItemExcludes>
+    </PropertyGroup>
 
-  <!-- These are needed for dealing with native Windows DLLs -->
-  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND $(RuntimeIdentifier.StartsWith(`win-x86`))">
-    <Content Include="*.dll">
-      <Pack>true</Pack>
-      <PackagePath>contentFiles;content</PackagePath>
-      <IncludeInPackage>true</IncludeInPackage>
-      <CopyToOutput>true</CopyToOutput>
-      <BuildAction>Content</BuildAction>
-      <copyToOutput>true</copyToOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
+    <!-- Exclude all StormLibSharp for .NET Framework 4.0 -->
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net40`))">
+        <DefaultItemExcludes>
+            $(DefaultItemExcludes);
+            _EXTERNAL\stormlibsharp\src\**
+        </DefaultItemExcludes>
+    </PropertyGroup>
 
-  <!-- Support for old .NET versions -->
-  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))">
-    <PackageReference Include="OpenMcdf" Version="2.3.1" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
-    <PackageReference Include="SharpCompress" Version="0.38.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
-  </ItemGroup>
+    <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, or non-Windows
+    builds -->
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR !$(RuntimeIdentifier.StartsWith(`win-x86`))">
+        <DefaultItemExcludes>
+            $(DefaultItemExcludes);
+            _EXTERNAL\**
+        </DefaultItemExcludes>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SabreTools.Compression" Version="0.5.2" />
-    <PackageReference Include="SabreTools.Hashing" Version="1.2.2" />
-    <PackageReference Include="SabreTools.IO" Version="1.4.13" />
-    <PackageReference Include="SabreTools.Matching" Version="1.3.3" />
-    <PackageReference Include="SabreTools.Models" Version="1.4.11" />
-    <PackageReference Include="SabreTools.Serialization" Version="1.6.9" />
-    <PackageReference Include="UnshieldSharp" Version="1.8.5" />
-    <PackageReference Include="WiseUnpacker" Version="1.4.4" />
-  </ItemGroup>
+    <!-- These are needed for dealing with native Windows DLLs -->
+    <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND $(RuntimeIdentifier.StartsWith(`win-x86`))">
+        <Content Include="*.dll">
+            <Pack>true</Pack>
+            <PackagePath>contentFiles;content</PackagePath>
+            <IncludeInPackage>true</IncludeInPackage>
+            <CopyToOutput>true</CopyToOutput>
+            <BuildAction>Content</BuildAction>
+            <copyToOutput>true</copyToOutput>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+
+    <!-- Support for old .NET versions -->
+    <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))">
+        <PackageReference Include="OpenMcdf" Version="2.3.1" />
+    </ItemGroup>
+    <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
+        <PackageReference Include="SharpCompress" Version="0.38.0" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SabreTools.Compression" Version="0.6.0" />
+        <PackageReference Include="SabreTools.Hashing" Version="1.4.0" />
+        <PackageReference Include="SabreTools.IO" Version="1.5.0" />
+        <PackageReference Include="SabreTools.Matching" Version="1.4.0" />
+        <PackageReference Include="SabreTools.Models" Version="1.5.0" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.7.0" />
+        <PackageReference Include="UnshieldSharp" Version="1.9.0" />
+        <PackageReference Include="WiseUnpacker" Version="1.5.0" />
+    </ItemGroup>
 
 </Project>

@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 byte[] magic = new byte[16];
-                stream.Read(magic, 0, 16);
+                int read = stream.Read(magic, 0, 16);
 
                 if (magic.StartsWith(new byte?[] { 0x53, 0x46, 0x46, 0x53 }))
                     return "StarForce Filesystem Container";

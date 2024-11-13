@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 byte[] magic = new byte[16];
-                stream.Read(magic, 0, 16);
+                int read = stream.Read(magic, 0, 16);
 
                 if (magic.StartsWith(new byte?[] { 0xFF, 0x9D, 0x53, 0x4B }))
                     return "PlayJ Audio File";
