@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -27,7 +26,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("~0017.tmp")))
+                if (strs.Exists(s => s.Contains("~0017.tmp")))
                     return "CDSHiELD SE";
             }
 

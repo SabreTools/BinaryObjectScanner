@@ -46,11 +46,9 @@ namespace BinaryObjectScanner.Protection
             // Check for the CDAC01AA name string.
             if (nex.Model.ResidentNameTable != null)
             {
-                bool cdac01aaNameFound = nex.Model.ResidentNameTable
-                .Select(rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString))
-                .Any(s => s.Contains("CDAC01AA"));
-
-                if (cdac01aaNameFound)
+                var residentNames = Array.ConvertAll(nex.Model.ResidentNameTable,
+                    rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
+                if (Array.Exists(residentNames, s => s.Contains("CDAC01AA")))
                     return "SafeCast";
             }
 
@@ -84,8 +82,11 @@ namespace BinaryObjectScanner.Protection
             // Get the import directory table, if it exists
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
+                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable,
+                    idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
+                {
                     return "SafeCast";
+                }
             }
 
             // Get the dialog box resources
@@ -99,7 +100,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
-                if (strs.Any(s => s.Contains("SOFTWARE\\C-Dilla\\SafeCast")))
+                if (strs.Exists(s => s.Contains("SOFTWARE\\C-Dilla\\SafeCast")))
                     return "SafeCast";
             }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -40,7 +39,7 @@ namespace BinaryObjectScanner.Packer
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                var str = strs.FirstOrDefault(s => s.StartsWith("Inno Setup Setup Data"));
+                var str = strs.Find(s => s.StartsWith("Inno Setup Setup Data"));
                 if (str != null)
                 {
                     return str.Replace("Inno Setup Setup Data", "Inno Setup")

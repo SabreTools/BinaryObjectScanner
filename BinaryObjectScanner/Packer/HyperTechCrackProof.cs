@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -22,7 +22,8 @@ namespace BinaryObjectScanner.Packer
             // This check may be overly limiting, as it excludes the sample provided to DiE (https://github.com/horsicq/Detect-It-Easy/issues/102).
             // TODO: Find further samples and invesitgate if the "peC" section is only present on specific versions.
             bool peCSection = pex.ContainsSection("peC", exact: true);
-            bool importTableMatch = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "KeRnEl32.dLl") ?? false);
+            bool importTableMatch = Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [],
+                idte => idte?.Name == "KeRnEl32.dLl");
 
             if (peCSection && importTableMatch)
                 return "HyperTech CrackProof";

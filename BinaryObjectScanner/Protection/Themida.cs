@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -39,7 +38,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Found in "uDigital Theatre.exe" in http://downloads.fyxm.net/ArcSoft-TotalMedia-23085.html (https://web.archive.org/web/20221114042838/http://files.fyxm.net/23/23085/totalmediatheatre3platinum_retail_tbyb_all.exe).
                 // TODO: Investigate "uDRMCheck.dll" in the same product to see if it's related to Themida, or if it's a different form of DRM.
-                if (strs.Any(s => s.Contains("Themida")))
+                if (strs.Exists(s => s.Contains("Themida")))
                     return "Themida";
             }
 

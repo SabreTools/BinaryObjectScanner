@@ -440,11 +440,11 @@ namespace BinaryObjectScanner.Protection
             if (sectionStrings != null)
             {
                 // If we don't have the "BoG_" string, the section isn't protected.
-                if (!sectionStrings.Any(s => s.Contains("BoG_")))
+                if (!sectionStrings.Exists(s => s.Contains("BoG_")))
                     return null;
 
                 // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
-                if (!sectionStrings.Any(s => s.Contains("BoG_ *90.0&!!  Yy>")))
+                if (!sectionStrings.Exists(s => s.Contains("BoG_ *90.0&!!  Yy>")))
                     return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
             }
 
@@ -631,13 +631,13 @@ namespace BinaryObjectScanner.Protection
             if (resultsList.Contains("Macrovision Protected Application"))
             {
                 if (resultsList.Contains("Macrovision Protected Application [Version Expunged]"))
-                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                    resultsList = resultsList.FindAll(r => r != "Macrovision Protected Application");
                 else if (resultsList.Contains("Macrovision Protected Application (Entry point not present in the stxt371 section. Executable is either unprotected or nonfunctional)"))
-                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                    resultsList = resultsList.FindAll(r => r != "Macrovision Protected Application");
                 else if (resultsList.Contains("Macrovision Protected Application (Generic detection - Report to us on GitHub)"))
-                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                    resultsList = resultsList.FindAll(r => r != "Macrovision Protected Application");
                 else if (resultsList.Contains("Macrovision Protected Application (Report this to us on GitHub)"))
-                    resultsList = resultsList.Where(r => r != "Macrovision Protected Application").ToList();
+                    resultsList = resultsList.FindAll(r => r != "Macrovision Protected Application");
             }
 
             // Get distinct and order

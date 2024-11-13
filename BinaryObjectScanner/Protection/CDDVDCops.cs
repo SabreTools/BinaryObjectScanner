@@ -231,7 +231,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
             byte[] versionBytes = new byte[4];
             Array.Copy(fileContent, positions[0] + 15, versionBytes, 0, 4);
-            char[] version = versionBytes.Select(b => (char)b).ToArray();
+            char[] version = Array.ConvertAll(versionBytes, b => (char)b);
 #else
             char[] version = new ArraySegment<byte>(fileContent, positions[0] + 15, 4).Select(b => (char)b).ToArray();
 #endif

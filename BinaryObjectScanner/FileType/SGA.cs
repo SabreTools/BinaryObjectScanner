@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Compression.zlib;
 
@@ -52,16 +51,15 @@ namespace BinaryObjectScanner.FileType
         /// <returns>True if all files extracted, false otherwise</returns>
         public static bool ExtractAll(SabreTools.Serialization.Wrappers.SGA item, string outputDirectory)
         {
-            // Get the number of files
-            int filesLength;
-            switch (item.Model.Header?.MajorVersion)
+            // Get the file count
+            int filesLength = item.Model.Directory switch
             {
-                case 4: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?.Length ?? 0; break;
-                case 5: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory5)?.Files?.Length ?? 0; break;
-                case 6: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory6)?.Files?.Length ?? 0; break;
-                case 7: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory7)?.Files?.Length ?? 0; break;
-                default: return false;
-            }
+                SabreTools.Models.SGA.Directory4 d4 => filesLength = d4.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory5 d5 => filesLength = d5.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory6 d6 => filesLength = d6.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory7 d7 => filesLength = d7.Files?.Length ?? 0,
+                _ => 0,
+            };
 
             // If we have no files
             if (filesLength == 0)
@@ -85,16 +83,15 @@ namespace BinaryObjectScanner.FileType
         /// <returns>True if the file extracted, false otherwise</returns>
         public static bool ExtractFile(SabreTools.Serialization.Wrappers.SGA item, int index, string outputDirectory)
         {
-            // Get the number of files
-            int filesLength;
-            switch (item.Model.Header?.MajorVersion)
+            // Get the file count
+            int filesLength = item.Model.Directory switch
             {
-                case 4: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?.Length ?? 0; break;
-                case 5: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory5)?.Files?.Length ?? 0; break;
-                case 6: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory6)?.Files?.Length ?? 0; break;
-                case 7: filesLength = (item.Model.Directory as SabreTools.Models.SGA.Directory7)?.Files?.Length ?? 0; break;
-                default: return false;
-            }
+                SabreTools.Models.SGA.Directory4 d4 => filesLength = d4.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory5 d5 => filesLength = d5.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory6 d6 => filesLength = d6.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory7 d7 => filesLength = d7.Files?.Length ?? 0,
+                _ => 0,
+            };
 
             // If we have no files
             if (filesLength == 0)
@@ -105,55 +102,53 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Get the files
-            object? file;
-            switch (item.Model.Header?.MajorVersion)
+            object? file = item.Model.Directory switch
             {
-                case 4: file = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Files?[index]; break;
-                case 5: file = (item.Model.Directory as SabreTools.Models.SGA.Directory5)?.Files?[index]; break;
-                case 6: file = (item.Model.Directory as SabreTools.Models.SGA.Directory6)?.Files?[index]; break;
-                case 7: file = (item.Model.Directory as SabreTools.Models.SGA.Directory7)?.Files?[index]; break;
-                default: return false;
-            }
+                SabreTools.Models.SGA.Directory4 d4 => d4.Files![index],
+                SabreTools.Models.SGA.Directory5 d5 => d5.Files![index],
+                SabreTools.Models.SGA.Directory6 d6 => d6.Files![index],
+                SabreTools.Models.SGA.Directory7 d7 => d7.Files![index],
+                _ => null,
+            };
 
+            // If the file is invalid
             if (file == null)
                 return false;
 
             // Create the filename
-            var filename = string.Empty;
-            switch (item.Model.Header?.MajorVersion)
+            var filename = file switch
             {
-                case 4:
-                case 5: filename = (file as SabreTools.Models.SGA.File4)?.Name; break;
-                case 6: filename = (file as SabreTools.Models.SGA.File6)?.Name; break;
-                case 7: filename = (file as SabreTools.Models.SGA.File7)?.Name; break;
-                default: return false;
-            }
+                SabreTools.Models.SGA.File4 f4 => f4.Name,
+                _ => null,
+            };
+
+            // If the filename is invalid
+            if (filename == null)
+                return false;
 
             // Loop through and get all parent directories
-            var parentNames = new List<string?> { filename };
+            var parentNames = new List<string> { filename };
 
             // Get the parent directory
-            var folder = default(object);
-            switch (item.Model.Header?.MajorVersion)
+            var folder = item.Model.Directory switch
             {
-                case 4: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory4)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 5: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory5)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 6: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory6)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                case 7: folder = (item.Model.Directory as SabreTools.Models.SGA.Directory7)?.Folders?.FirstOrDefault(f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex); break;
-                default: return false;
-            }
+                SabreTools.Models.SGA.Directory4 d4 => Array.Find(d4.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
+                SabreTools.Models.SGA.Directory5 d5 => Array.Find(d5.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
+                SabreTools.Models.SGA.Directory6 d6 => Array.Find(d6.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
+                SabreTools.Models.SGA.Directory7 d7 => Array.Find(d7.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
+                _ => default(object),
+            };
 
             // If we have a parent folder
             if (folder != null)
             {
-                switch (item.Model.Header?.MajorVersion)
+                string folderName = folder switch
                 {
-                    case 4: parentNames.Add((folder as SabreTools.Models.SGA.Folder4)?.Name); break;
-                    case 5:
-                    case 6:
-                    case 7: parentNames.Add((folder as SabreTools.Models.SGA.Folder5)?.Name); break;
-                    default: return false;
-                }
+                    SabreTools.Models.SGA.Folder4 f4 => f4.Name ?? string.Empty,
+                    SabreTools.Models.SGA.Folder5 f5 => f5.Name ?? string.Empty,
+                    _ => string.Empty,
+                };
+                parentNames.Add(folderName);
             }
 
             // TODO: Should the section name/alias be used in the path as well?
@@ -161,55 +156,45 @@ namespace BinaryObjectScanner.FileType
             // Reverse and assemble the filename
             parentNames.Reverse();
 #if NET20 || NET35
-            var parentNamesArray = parentNames.Cast<string>().ToArray();
-            filename = parentNamesArray[0];
-            for (int i = 1; i < parentNamesArray.Length; i++)
+            filename = parentNames[0];
+            for (int i = 1; i < parentNames.Count; i++)
             {
-                filename = Path.Combine(filename, parentNamesArray[i]);
+                filename = Path.Combine(filename, parentNames[i]);
             }
 #else
-            filename = Path.Combine(parentNames.Cast<string>().ToArray());
+            filename = Path.Combine(parentNames);
 #endif
 
             // Get the file offset
-            long fileOffset;
-            switch (item.Model.Header?.MajorVersion)
+            long fileOffset = file switch
             {
-                case 4:
-                case 5: fileOffset = (file as SabreTools.Models.SGA.File4)?.Offset ?? 0; break;
-                case 6: fileOffset = (file as SabreTools.Models.SGA.File6)?.Offset ?? 0; break;
-                case 7: fileOffset = (file as SabreTools.Models.SGA.File7)?.Offset ?? 0; break;
-                default: return false;
-            }
+                SabreTools.Models.SGA.File4 f4 => f4.Offset,
+                _ => -1,
+            };
 
             // Adjust the file offset
-            switch (item.Model.Header?.MajorVersion)
+            fileOffset += item.Model.Header switch
             {
-                case 4: fileOffset += (item.Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset ?? 0; break;
-                case 5: fileOffset += (item.Model.Header as SabreTools.Models.SGA.Header4)?.FileDataOffset ?? 0; break;
-                case 6: fileOffset += (item.Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset ?? 0; break;
-                case 7: fileOffset += (item.Model.Header as SabreTools.Models.SGA.Header6)?.FileDataOffset ?? 0; break;
-                default: return false;
+                SabreTools.Models.SGA.Header4 h4 => h4.FileDataOffset,
+                SabreTools.Models.SGA.Header6 h6 => h6.FileDataOffset,
+                _ => -1,
             };
+
+            // If the offset is invalid
+            if (fileOffset < 0)
+                return false;
 
             // Get the file sizes
             long fileSize, outputFileSize;
-            switch (item.Model.Header?.MajorVersion)
+            switch (file)
             {
-                case 4:
-                case 5:
-                    fileSize = (file as SabreTools.Models.SGA.File4)?.SizeOnDisk ?? 0;
-                    outputFileSize = (file as SabreTools.Models.SGA.File4)?.Size ?? 0;
+                case SabreTools.Models.SGA.File4 f4:
+                    fileSize = f4.SizeOnDisk;
+                    outputFileSize = f4.Size;
                     break;
-                case 6:
-                    fileSize = (file as SabreTools.Models.SGA.File6)?.SizeOnDisk ?? 0;
-                    outputFileSize = (file as SabreTools.Models.SGA.File6)?.Size ?? 0;
-                    break;
-                case 7:
-                    fileSize = (file as SabreTools.Models.SGA.File7)?.SizeOnDisk ?? 0;
-                    outputFileSize = (file as SabreTools.Models.SGA.File7)?.Size ?? 0;
-                    break;
-                default: return false;
+
+                default:
+                    return false;
             }
 
             // Read the compressed data directly

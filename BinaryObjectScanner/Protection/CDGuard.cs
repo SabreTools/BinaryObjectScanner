@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -46,7 +45,7 @@ namespace BinaryObjectScanner.Protection
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
                 // Found in "Randevu.exe" in Redump entry 97142.
-                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name != null && idte.Name.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase));
+                bool match = Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name != null && idte.Name.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase));
                 if (match)
                       return "CD-Guard Copy Protection System";
             }

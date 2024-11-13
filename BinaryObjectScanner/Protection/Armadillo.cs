@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -36,13 +36,13 @@ namespace BinaryObjectScanner.Protection
             // Loop through all "extension" sections -- usually .data1 or .text1
             if (pex.SectionNames != null)
             {
-                foreach (var sectionName in pex.SectionNames.Where(s => s != null && s.EndsWith("1")))
+                foreach (var sectionName in Array.FindAll(pex.SectionNames, s => s != null && s.EndsWith("1")))
                 {
                     // Get the section strings, if they exist
                     var strs = pex.GetFirstSectionStrings(sectionName);
                     if (strs != null)
                     {
-                        if (strs.Any(s => s.Contains("ARMDEBUG")))
+                        if (strs.Exists(s => s.Contains("ARMDEBUG")))
                             return "Armadillo";
                     }
                 }

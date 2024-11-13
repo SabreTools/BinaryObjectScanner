@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 
@@ -138,7 +137,7 @@ namespace BinaryObjectScanner.FileType
 
                 // If we have preload data, prepend it
                 if (data != null && directoryItem.PreloadData != null)
-                    data = directoryItem.PreloadData.Concat(data).ToArray();
+                    data = [.. directoryItem.PreloadData, .. data];
             }
 
             // If there is nothing to write out

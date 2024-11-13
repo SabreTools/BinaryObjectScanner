@@ -82,8 +82,8 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetLastSectionStrings(".data");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("MPRMMGVA"))
-                    && strs.Any(s => s.Contains("This application cannot run with an active debugger in memory.")))
+                if (strs.Exists(s => s.Contains("MPRMMGVA"))
+                    && strs.Exists(s => s.Contains("This application cannot run with an active debugger in memory.")))
                 {
                     return "ActiveMARK 6.x";
                 }
@@ -103,7 +103,7 @@ namespace BinaryObjectScanner.Protection
             // Get the overlay data, if it exists
             if (pex.OverlayStrings != null)
             {
-                if (pex.OverlayStrings.Any(s => s.Contains("TMSAMVOH")))
+                if (pex.OverlayStrings.Exists(s => s.Contains("TMSAMVOH")))
                     return "ActiveMARK";
             }
 
@@ -111,7 +111,7 @@ namespace BinaryObjectScanner.Protection
             strs = pex.GetLastSectionStrings(".bss");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("TMSAMVOF")))
+                if (strs.Exists(s => s.Contains("TMSAMVOF")))
                     return "ActiveMARK";
             }
 

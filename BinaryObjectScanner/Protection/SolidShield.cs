@@ -84,7 +84,7 @@ namespace BinaryObjectScanner.Protection
                 var strs = pex.GetSectionStrings(i);
                 if (strs != null)
                 {
-                    var str = strs.FirstOrDefault(s => s.Contains("Solidshield "));
+                    var str = strs.Find(s => s.Contains("Solidshield "));
                     if (str != null)
                         return $"SolidShield EXE Wrapper {str.Substring("Solidshield ".Length)}";
                 }
@@ -93,16 +93,13 @@ namespace BinaryObjectScanner.Protection
             // Get the import directory table, if it exists
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "dvm.dll");
-                if (match)
+                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
                     return "SolidShield EXE Wrapper v1";
 
-                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "activation.x86.dll");
-                if (match)
+                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
                     return "SolidShield EXE Wrapper v2";
 
-                match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "activation.x64.dll");
-                if (match)
+                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
                     return "SolidShield EXE Wrapper v2";
             }
 

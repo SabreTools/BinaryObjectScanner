@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Protection
                 var strs = pex.GetSectionStrings(sections.Length - 2);
                 if (strs != null)
                 {
-                    var str = strs.FirstOrDefault(s => s.Contains("VOB ProtectCD"));
+                    var str = strs.Find(s => s.Contains("VOB ProtectCD"));
                     if (str != null)
                         return $"VOB ProtectCD {GetOldVersion(str)}";
                 }
@@ -177,7 +177,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
                 temp = new byte[6];
                 Array.Copy(fileContent, index, temp, 0, 6);
-                if (new string(temp.Select(b => (char)b).ToArray()) == "Henrik")
+                if (new string(Array.ConvertAll(temp, b => (char)b)) == "Henrik")
 #else
                 if (new string(new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray()) == "Henrik")
 #endif
@@ -206,7 +206,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
                 temp = new byte[6];
                 Array.Copy(fileContent, index, temp, 0, 6);
-                char[] arrBuild = temp.Select(b => (char)b).ToArray();
+                char[] arrBuild = Array.ConvertAll(temp, b => (char)b);
 #else
                 char[] arrBuild = new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray();
 #endif

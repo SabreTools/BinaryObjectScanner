@@ -50,13 +50,11 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Found in Redump entry 57986.
-            bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable?.Any(ihne => ihne?.Name == "LTDLL_Authenticate") ?? false;
-            if (hintNameTableMatch)
+            if (Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], ihne => ihne?.Name == "LTDLL_Authenticate"))
                 return "SafeDisc Lite";
 
             // Found in Redump entry 57986.
-            bool importTableMatch = pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "ltdll.dll") ?? false;
-            if (importTableMatch)
+            if (Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "ltdll.dll"))
                 return "SafeDisc Lite";
 
             // Get the .data/DATA section strings, if they exist
@@ -64,15 +62,15 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in Redump entries 14928, 25579, 32751.
-                if (strs.Any(s => s.Contains("LTDLL_Initialise")))
+                if (strs.Exists(s => s.Contains("LTDLL_Initialise")))
                     return "SafeDisc Lite";
-                if (strs.Any(s => s.Contains("LTDLL_Authenticate")))
+                if (strs.Exists(s => s.Contains("LTDLL_Authenticate")))
                     return "SafeDisc Lite";
-                if (strs.Any(s => s.Contains("LTDLL_Unwrap")))
+                if (strs.Exists(s => s.Contains("LTDLL_Unwrap")))
                     return "SafeDisc Lite";
 
                 // Present in "Setup.exe" from the earlier "safedisc.exe" driver update provided by Macrovision.
-                if (strs.Any(s => s.Contains("Failed to get the DRVMGT.DLL Setup API address")))
+                if (strs.Exists(s => s.Contains("Failed to get the DRVMGT.DLL Setup API address")))
                     return "Macrovision SecDrv Update Installer";
             }
 

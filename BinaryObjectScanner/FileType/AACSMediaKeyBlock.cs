@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
@@ -32,7 +31,7 @@ namespace BinaryObjectScanner.FileType
                     return null;
 
                 // Derive the version, if possible
-                var typeAndVersion = mkb.Model.Records?.FirstOrDefault(r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
+                var typeAndVersion = Array.Find(mkb.Model.Records ?? [], r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
                 if (typeAndVersion == null)
                     return "AACS (Unknown Version)";
                 else

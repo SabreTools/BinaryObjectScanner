@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
@@ -19,7 +18,7 @@ namespace BinaryObjectScanner.Packer
             var strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("DotfuscatorAttribute")))
+                if (strs.Exists(s => s.Contains("DotfuscatorAttribute")))
                     return "dotFuscator";
             }
 

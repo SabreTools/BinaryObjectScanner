@@ -1,4 +1,3 @@
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -23,7 +22,7 @@ namespace BinaryObjectScanner.Packer
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("NullsoftInst")))
+                if (strs.Exists(s => s.Contains("NullsoftInst")))
                     return "NSIS";
             }
 

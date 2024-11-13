@@ -209,11 +209,11 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "ADESKSYS.DLL"/"WINADMIN.EXE"/"WINQUERY.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
-                if (strs.Any(s => s.Contains("Rainbow SentinelSuperPro")))
+                if (strs.Exists(s => s.Contains("Rainbow SentinelSuperPro")))
                     return "Rainbow Sentinel SuperPro";
 
                 // Found in "SETUPAXP.EXE", "SETUPMPS.EXE", and "SETUPPPC.EXE" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("Sentinel Driver Setup Program")))
+                if (strs.Exists(s => s.Contains("Sentinel Driver Setup Program")))
                     return "Rainbow Sentinel";
             }
 
@@ -222,23 +222,23 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "SP32W.DLL" in IA item "pcwkcd-1296".
-                if (strs.Any(s => s.Contains("SentinelPro WIN32 DLL")))
+                if (strs.Exists(s => s.Contains("SentinelPro WIN32 DLL")))
                     return "Rainbow SentinelPro";
 
                 // Found in "NKWIN32.DLL" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("NetSentinel-C Windows NT Driver DLL")))
+                if (strs.Exists(s => s.Contains("NetSentinel-C Windows NT Driver DLL")))
                     return "Rainbow NetSentinel-C Windows NT Driver";
 
                 // Found in "NSLMS32.DLL" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("NetSentinel 32-Bit Windows DLL")))
+                if (strs.Exists(s => s.Contains("NetSentinel 32-Bit Windows DLL")))
                     return "Rainbow NetSentinel Win32 Driver";
 
                 // Found in "W32EDITD.EXE" and "W32EDITO.EXE" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("NetSentinel-C Editor for Windows")))
+                if (strs.Exists(s => s.Contains("NetSentinel-C Editor for Windows")))
                     return "NetSentinel-C Editor for Win32";
 
                 // Generic case to catch undetected versions.
-                if (strs.Any(s => s.Contains("SentinelPro")))
+                if (strs.Exists(s => s.Contains("SentinelPro")))
                     return "Rainbow SentinelPro (Unknown Version - Please report to us on GitHub)";
             }
 
@@ -247,7 +247,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "WINMON.exe" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("NetSentinel Monitor")))
+                if (strs.Exists(s => s.Contains("NetSentinel Monitor")))
                     return "Rainbow NetSentinel Monitor";
             }
 
@@ -257,28 +257,28 @@ namespace BinaryObjectScanner.Protection
             {
                 // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
                 // Found in "ACAD.HWL" in BA entry "Autodesk AutoCAD r14 (1997)" and IA item "auto-cad-r14-cdrom".
-                if (strs.Any(s => s.Contains("\\\\.\\SENTINEL.VXD")))
+                if (strs.Exists(s => s.Contains("\\\\.\\SENTINEL.VXD")))
                     return "Rainbow Sentinel";
 
                 // Found in "ADESKSYS.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
                 // TODO: Investigate "Elan License Manager" mentioned here.
-                if (strs.Any(s => s.Contains("Rainbow SentinelSuperPro")))
+                if (strs.Exists(s => s.Contains("Rainbow SentinelSuperPro")))
                     return "Rainbow Sentinel SuperPro";
 
                 // Found in "F1321_dorapro.exe" in IA item "chip-cds-2001-08".
-                if (strs.Any(s => s.Contains("modSentinelSuperPro")))
+                if (strs.Exists(s => s.Contains("modSentinelSuperPro")))
                     return "Rainbow Sentinel SuperPro";
 
                 // Found in "F1321_dorapro.exe" in IA item "chip-cds-2001-08".
-                if (strs.Any(s => s.Contains("clsSentinelSuperPro")))
+                if (strs.Exists(s => s.Contains("clsSentinelSuperPro")))
                     return "Rainbow Sentinel SuperPro";
 
                 // Found in "SENTSTRT.EXE" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("Sentinel Driver Startup Program")))
+                if (strs.Exists(s => s.Contains("Sentinel Driver Startup Program")))
                     return "Rainbow Sentinel";
 
                 // Found in "SETUPX86.EXE" in IA item "czchip199707cd".
-                if (strs.Any(s => s.Contains("Sentinel Windows NT Driver Setup")))
+                if (strs.Exists(s => s.Contains("Sentinel Windows NT Driver Setup")))
                     return "Rainbow Sentinel";
             }
 

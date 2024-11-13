@@ -23,16 +23,16 @@ namespace BinaryObjectScanner.Protection
             List<string>? strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("XCP.DAT")))
+                if (strs.Exists(s => s.Contains("XCP.DAT")))
                     return "XCP";
 
-                if (strs.Any(s => s.Contains("xcpdrive")))
+                if (strs.Exists(s => s.Contains("xcpdrive")))
                     return "XCP";
 
-                if (strs.Any(s => s.Contains("XCPPlugins.dll")))
+                if (strs.Exists(s => s.Contains("XCPPlugins.dll")))
                     return "XCP";
 
-                if (strs.Any(s => s.Contains("XCPPhoenix.dll")))
+                if (strs.Exists(s => s.Contains("XCPPhoenix.dll")))
                     return "XCP";
             }
 

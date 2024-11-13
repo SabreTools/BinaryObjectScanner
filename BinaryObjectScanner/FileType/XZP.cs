@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
@@ -90,7 +89,7 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Get the associated directory item
-            var directoryItem = item.Model.DirectoryItems.Where(di => di?.FileNameCRC == directoryEntry.FileNameCRC).FirstOrDefault();
+            var directoryItem = Array.Find(item.Model.DirectoryItems, di => di?.FileNameCRC == directoryEntry.FileNameCRC);
             if (directoryItem == null)
                 return false;
 

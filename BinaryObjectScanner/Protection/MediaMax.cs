@@ -48,14 +48,14 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("CD3 Launch Error")))
+                if (strs.Exists(s => s.Contains("CD3 Launch Error")))
                     return "MediaMax CD-3";
             }
 
             // Get the export name table
             if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
-                if (pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "DllInstallSbcp"))
+                if (Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
                     return "MediaMax CD-3";
             }
 

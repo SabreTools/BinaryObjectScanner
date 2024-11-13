@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -83,7 +82,7 @@ namespace BinaryObjectScanner.Protection
             if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
                 // TODO: Should we just check for "PSA_*" instead of a single entry?
-                if (pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "PSA_GetDiscLabel"))
+                if (Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s == "PSA_GetDiscLabel"))
                     return $"StarForce {pex.GetInternalVersion()}";
             }
 

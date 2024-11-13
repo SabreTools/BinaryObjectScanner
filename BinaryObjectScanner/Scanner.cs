@@ -79,7 +79,7 @@ namespace BinaryObjectScanner
         public ProtectionDictionary GetProtections(List<string>? paths)
         {
             // If we have no paths, we can't scan
-            if (paths == null || !paths.Any())
+            if (paths == null || paths.Count == 0)
                 return [];
 
             // Set a starting starting time for debug output
@@ -100,7 +100,7 @@ namespace BinaryObjectScanner
                 if (Directory.Exists(path))
                 {
                     // Enumerate all files at first for easier access
-                    var files = IOExtensions.SafeEnumerateFiles(path, "*", SearchOption.AllDirectories).ToList();
+                    var files = IOExtensions.SafeGetFiles(path, "*", SearchOption.AllDirectories).ToList();
 
                     // Scan for path-detectable protections
                     if (_options.ScanPaths)
@@ -127,18 +127,20 @@ namespace BinaryObjectScanner
                         if (_options.ScanPaths)
                         {
                             var filePathProtections = HandlePathChecks(file, files: null);
-                            if (filePathProtections != null && filePathProtections.Any())
+                            if (filePathProtections != null && filePathProtections.Count > 0)
                                 protections.Append(filePathProtections);
                         }
 
                         // Scan for content-detectable protections
                         var fileProtections = GetInternalProtections(file);
-                        if (fileProtections != null && fileProtections.Any())
+                        if (fileProtections != null && fileProtections.Count > 0)
                             protections.Append(fileProtections);
 
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
-                        var fullProtection = fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", [.. fullProtectionList]) : null;
+                        var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
+                            ? string.Join(", ", [.. fullProtectionList])
+                            : null;
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
@@ -158,18 +160,20 @@ namespace BinaryObjectScanner
                     if (_options.ScanPaths)
                     {
                         var filePathProtections = HandlePathChecks(path, files: null);
-                        if (filePathProtections != null && filePathProtections.Any())
+                        if (filePathProtections != null && filePathProtections.Count > 0)
                             protections.Append(filePathProtections);
                     }
 
                     // Scan for content-detectable protections
                     var fileProtections = GetInternalProtections(path);
-                    if (fileProtections != null && fileProtections.Any())
+                    if (fileProtections != null && fileProtections.Count > 0)
                         protections.Append(fileProtections);
 
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
-                    var fullProtection = fullProtectionList != null && fullProtectionList.Any() ? string.Join(", ", [.. fullProtectionList]) : null;
+                    var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
+                        ? string.Join(", ", [.. fullProtectionList])
+                        : null;
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
                 }
 
@@ -354,15 +358,14 @@ namespace BinaryObjectScanner
         /// <param name="path">Path of the file or directory to check</param>
         /// <param name="scanner">Scanner object to use for options and scanning</param>
         /// <returns>Set of protections in file, null on error</returns>
-        private static ProtectionDictionary HandlePathChecks(string path, IEnumerable<string>? files)
+        private static ProtectionDictionary HandlePathChecks(string path, List<string>? files)
         {
             // Create the output dictionary
             var protections = new ProtectionDictionary();
 
             // Preprocess the list of files
             files = files?
-                .Select(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))?
-                .ToList();
+                .ConvertAll(f => f.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
 
             // Iterate through all checks
             StaticChecks.PathCheckClasses.IterateWithAction(checkClass =>
@@ -380,7 +383,7 @@ namespace BinaryObjectScanner
         /// <param name="impl">IPathCheck class representing the file type</param>
         /// <param name="path">Path of the file or directory to check</param>
         /// <returns>Set of protections in path, empty on error</returns>
-        private static List<string> PerformPathCheck(IPathCheck impl, string? path, IEnumerable<string>? files)
+        private static List<string> PerformPathCheck(IPathCheck impl, string? path, List<string>? files)
         {
             // If we have an invalid path
             if (string.IsNullOrEmpty(path))
@@ -398,7 +401,7 @@ namespace BinaryObjectScanner
             }
 
             // If we have a directory path
-            if (Directory.Exists(path) && files?.Any() == true)
+            if (Directory.Exists(path) && files != null && files.Count > 0)
             {
                 var subProtections = impl.CheckDirectoryPath(path!, files);
                 if (subProtections != null)

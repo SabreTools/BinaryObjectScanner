@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -60,7 +59,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "The Sudoku Challenge Collection.exe" in "The Sudoku Challenge! Collection" by Play at Joe's.
-                if (strs.Any(s => s.Contains("mfint.dll")))
+                if (strs.Exists(s => s.Contains("mfint.dll")))
                     return "Hexalock Autolock";
             }
 

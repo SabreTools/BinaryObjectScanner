@@ -42,10 +42,10 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("\\*.CDS")))
+                if (strs.Exists(s => s.Contains("\\*.CDS")))
                     return "Cactus Data Shield 200";
 
-                if (strs.Any(s => s.Contains("DATA.CDS")))
+                if (strs.Exists(s => s.Contains("DATA.CDS")))
                     return "Cactus Data Shield 200";
             }
 

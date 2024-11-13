@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -29,7 +28,7 @@ namespace BinaryObjectScanner.Packer
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("wextract_cleanup")))
+                if (strs.Exists(s => s.Contains("wextract_cleanup")))
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
 
@@ -39,7 +38,7 @@ namespace BinaryObjectScanner.Packer
             {
                 // This detects a different but similar type of SFX that uses Microsoft CAB files.
                 // Further research is needed to see if it's just a different version or entirely separate.
-                if (strs.Any(s => s.Contains("MSCFu")))
+                if (strs.Exists(s => s.Contains("MSCFu")))
                     return $"Microsoft CAB SFX {GetVersion(pex)}";
             }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
@@ -59,7 +58,7 @@ namespace BinaryObjectScanner.Packer
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("WiseMain")))
+                if (strs.Exists(s => s.Contains("WiseMain")))
                     return "Wise Installation Wizard Module";
             }
 
@@ -67,7 +66,7 @@ namespace BinaryObjectScanner.Packer
             strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("WiseMain")))
+                if (strs.Exists(s => s.Contains("WiseMain")))
                     return "Wise Installation Wizard Module";
             }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -49,7 +48,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "TFT.exe" in Redump entry 95617.
-                if (strs.Any(s => s.Contains("@KalypsoLauncherXml")))
+                if (strs.Exists(s => s.Contains("@KalypsoLauncherXml")))
                     return "Kalypso Launcher";
             }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -24,8 +23,8 @@ namespace BinaryObjectScanner.Protection
             // Get the .ext     section, if it exists
             if (pex.ContainsSection(".ext    ", exact: true))
             {
-                bool importTableMatches = (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "kernel32.dll") ?? false)
-                    && (pex.Model.ImportTable?.HintNameTable?.Any(s => s?.Name == "VirtualProtect") ?? false);
+                bool importTableMatches = Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "kernel32.dll")
+                    && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], s => s?.Name == "VirtualProtect");
 
                 // Get the .dcrtext section, if it exists
                 if (pex.ContainsSection(".dcrtext") && importTableMatches)
@@ -77,7 +76,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
             byte[] versionBytes = new byte[8];
             Array.Copy(fileContent, position + 67, versionBytes, 0, 8);
-            char[] version = versionBytes.Select(b => (char)b).ToArray();
+            char[] version = Array.ConvertAll(versionBytes, b => (char)b);
 #else
             char[] version = new ArraySegment<byte>(fileContent, position + 67, 8).Select(b => (char)b).ToArray();
 #endif

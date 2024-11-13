@@ -69,10 +69,10 @@ namespace BinaryObjectScanner.Protection
 
             // Get strings from .section, if possible
             var strings = pex.GetFirstSectionStrings(".section");
-            if (strings != null && strings.Any())
+            if (strings != null && strings.Count > 0)
             {
                 // Found in "TafseerVer4.exe" in IA item "TAFSEERVER4SETUP"
-                if (strings.Any(s => s?.Contains("SOFTLOCKPROTECTION") == true))
+                if (strings.Exists(s => s?.Contains("SOFTLOCKPROTECTION") == true))
                     return "SoftLock";
             }
 

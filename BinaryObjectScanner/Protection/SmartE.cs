@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -21,7 +20,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetSectionStrings(sections.Length - 1);
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("BITARTS")))
+                if (strs.Exists(s => s.Contains("BITARTS")))
                     return "SmartE";
             }
 

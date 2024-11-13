@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "Owar.exe" in IA item "game4u-22-cd".
-                if (strs.Any(s => s.Contains("TRCHANGER.INI")))
+                if (strs.Exists(s => s.Contains("TRCHANGER.INI")))
                     return "Roxxe";
             }
 
@@ -38,14 +38,14 @@ namespace BinaryObjectScanner.Protection
             {
                 // Found in "Owar.exe" in IA items "game4u-22-cd" and "original-war".
                 // These checks are less reliable, as they are still found in a version of the game that appears to have patched out Roxxe (the version present in IA item "original-war").
-                if (strs.Any(s => s.Contains("PRRT01")))
+                if (strs.Exists(s => s.Contains("PRRT01")))
                     return "Roxxe (Possibly remnants)";
                 
-                if (strs.Any(s => s.Contains("CommonPRRT")))
+                if (strs.Exists(s => s.Contains("CommonPRRT")))
                     return "Roxxe (Possibly remnants)";
 
                 // Currently overmatches, will likely be a viable check when better Delphi executable parsing is available.
-                // if (strs.Any(s => s.Contains("roxe")))
+                // if (strs.Exists(s => s.Contains("roxe")))
                 //     return "Roxxe (Possibly remnants)";
             }
 

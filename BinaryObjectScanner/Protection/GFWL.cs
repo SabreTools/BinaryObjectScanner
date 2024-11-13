@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -27,8 +26,7 @@ namespace BinaryObjectScanner.Protection
             // Get the import directory table
             if (pex.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                bool match = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name == "xlive.dll");
-                if (match)
+                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "xlive.dll"))
                     return "Games for Windows LIVE";
             }
 

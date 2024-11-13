@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -29,7 +28,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "rebound.exe" in the installation directory for "Rebound" in IA item "Nova_RealArcadeCD_USA".
-                if (strs.Any(s => s.Contains("RngInterstitialDLL")))
+                if (strs.Exists(s => s.Contains("RngInterstitialDLL")))
                     return "RealArcade";
             }
 

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -33,16 +33,16 @@ namespace BinaryObjectScanner.Protection
                 return $"Stardock Product Activation {pex.GetInternalVersion()}";
 
             // TODO: Check for CVP* instead?
-            bool containsCheck = pex.Model.ExportTable?.ExportNameTable?.Strings?.Any(s => s?.StartsWith("CVPInitializeClient") ?? false) ?? false;
+            bool containsCheck = Array.Exists(pex.Model.ExportTable?.ExportNameTable?.Strings ?? [], s => s?.StartsWith("CVPInitializeClient") ?? false);
             bool containsCheck2 = false;
 
             // Get the .rdata section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                containsCheck2 = strs.Any(s => s.EndsWith("ATTLIST"))
-                    && strs.Any(s => s.Equals("ELEMENT"))
-                    && strs.Any(s => s.StartsWith("NOTATION"));
+                containsCheck2 = strs.Exists(s => s.EndsWith("ATTLIST"))
+                    && strs.Exists(s => s.Equals("ELEMENT"))
+                    && strs.Exists(s => s.StartsWith("NOTATION"));
             }
 
             if (containsCheck && containsCheck2)

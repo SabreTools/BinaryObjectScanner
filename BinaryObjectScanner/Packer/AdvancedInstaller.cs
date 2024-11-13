@@ -1,4 +1,3 @@
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -20,7 +19,7 @@ namespace BinaryObjectScanner.Packer
             var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("Software\\Caphyon\\Advanced Installer")))
+                if (strs.Exists(s => s.Contains("Software\\Caphyon\\Advanced Installer")))
                     return "Caphyon Advanced Installer";
             }
 

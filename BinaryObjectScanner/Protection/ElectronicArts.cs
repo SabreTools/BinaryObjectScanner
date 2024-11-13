@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("EReg Config Form")))
+                if (strs.Exists(s => s.Contains("EReg Config Form")))
                     return "EA CdKey Registration Module";
             }
 
@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Protection
             strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("GenericEA")) && strs.Any(s => s.Contains("Activation")))
+                if (strs.Exists(s => s.Contains("GenericEA")) && strs.Exists(s => s.Contains("Activation")))
                     return "EA DRM Protection";
             }
 
@@ -52,7 +52,7 @@ namespace BinaryObjectScanner.Protection
             strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("GenericEA")) && strs.Any(s => s.Contains("Activation")))
+                if (strs.Exists(s => s.Contains("GenericEA")) && strs.Exists(s => s.Contains("Activation")))
                     return "EA DRM Protection";
             }
 

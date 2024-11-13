@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -68,10 +67,10 @@ namespace BinaryObjectScanner.Protection
             bool containsCheck = pex.StubExecutableData?.FirstPosition(check, out position) ?? false;
 
             // Check the executable tables
-            bool containsCheck2 = (pex.Model.ImportTable?.HintNameTable?.Any(hnte => hnte?.Name == "GetModuleHandleA") ?? false)
-                && (pex.Model.ImportTable?.HintNameTable?.Any(hnte => hnte?.Name == "GetProcAddress") ?? false)
-                && (pex.Model.ImportTable?.HintNameTable?.Any(hnte => hnte?.Name == "LoadLibraryA") ?? false)
-                && (pex.Model.ImportTable?.ImportDirectoryTable?.Any(idte => idte?.Name == "KERNEL32.dll") ?? false);
+            bool containsCheck2 = Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
+                && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
+                && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
+                && Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
 
             int position2 = -1;
 
@@ -172,13 +171,13 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
                 byte[] temp = new byte[2];
                 Array.Copy(sectionContent, index, temp, 0, 2);
-                day = new string(temp.Select(b => (char)b).ToArray());
+                day = new string(Array.ConvertAll(temp, b => (char)b));
                 index += 3;
                 Array.Copy(sectionContent, index, temp, 0, 2);
-                month = new string(temp.Select(b => (char)b).ToArray());
+                month = new string(Array.ConvertAll(temp, b => (char)b));
                 index += 3;
                 Array.Copy(sectionContent, index, temp, 0, 2);
-                year = "20" + new string(temp.Select(b => (char)b).ToArray());
+                year = "20" + new string(Array.ConvertAll(temp, b => (char)b));
 #else
                 day = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
@@ -193,13 +192,13 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
                 byte[] temp = new byte[2];
                 Array.Copy(sectionContent, index, temp, 0, 2);
-                day = new string(temp.Select(b => (char)b).ToArray());
+                day = new string(Array.ConvertAll(temp, b => (char)b));
                 index += 3;
                 Array.Copy(sectionContent, index, temp, 0, 2);
-                month = new string(temp.Select(b => (char)b).ToArray());
+                month = new string(Array.ConvertAll(temp, b => (char)b));
                 index += 3;
                 Array.Copy(sectionContent, index, temp, 0, 2);
-                year = "20" + new string(temp.Select(b => (char)b).ToArray());
+                year = "20" + new string(Array.ConvertAll(temp, b => (char)b));
 #else
                 day = new string(new ArraySegment<byte>(sectionContent, index, 2).Select(b => (char)b).ToArray());
                 index += 3;
@@ -221,7 +220,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
             byte[] temp = new byte[4];
             Array.Copy(sectionContent, position + 76, temp, 0, 4);
-            return new string(temp.Select(b => (char)b).ToArray());
+            return new string(Array.ConvertAll(temp, b => (char)b));
 #else
             return new string(new ArraySegment<byte>(sectionContent, position + 76, 4).Select(b => (char)b).ToArray());
 #endif
@@ -242,7 +241,7 @@ namespace BinaryObjectScanner.Protection
 #if NET20 || NET35 || NET40
             byte[] temp = new byte[7];
             Array.Copy(fileContent, 71, temp, 0, 7);
-            char[] version = temp.Select(b => (char)b).ToArray();
+            char[] version = Array.ConvertAll(temp, b => (char)b);
 #else
             char[] version = new ArraySegment<byte>(fileContent, 71, 7).Select(b => (char)b).ToArray();
 #endif

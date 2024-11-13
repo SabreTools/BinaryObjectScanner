@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -41,7 +40,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "START.EXE" (Redump entry 95010 and product ID SVWC-7185).
-                if (strs.Any(s => s.Contains("LGCD2_LAUNCH")))
+                if (strs.Exists(s => s.Contains("LGCD2_LAUNCH")))
                     return "LabelGate CD2";
             }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -28,8 +27,8 @@ namespace BinaryObjectScanner.Protection
             // Detects Engine32 within the game executables that contain it.
             if (pex.Model.ImportTable?.ImportDirectoryTable != null && pex.Model.ImportTable?.HintNameTable != null)
             {
-                bool importDirectoryTableMatch = pex.Model.ImportTable.ImportDirectoryTable.Any(idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
-                bool hintNameTableMatch = pex.Model.ImportTable?.HintNameTable.Any(ihne => ihne?.Name == "InitEngine") ?? false;
+                bool importDirectoryTableMatch = Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
+                bool hintNameTableMatch = Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], ihne => ihne?.Name == "InitEngine");
 
                 // The Hint/Name Table Entry "DeinitEngine" is present in every tested sample, aside from TOCA Race Driver 2 (Redump entries 104593-104596).
 
@@ -40,8 +39,8 @@ namespace BinaryObjectScanner.Protection
             // Detects Engine32 within the file "engine32.dll".
             if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
-                bool exportNameTableMatch1 = pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "engine32.dll");
-                bool exportNameTableMatch2 = pex.Model.ExportTable.ExportNameTable.Strings.Any(s => s == "DeinitEngine");
+                bool exportNameTableMatch1 = Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s == "engine32.dll");
+                bool exportNameTableMatch2 = Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s == "DeinitEngine");
 
                 if (exportNameTableMatch1 && exportNameTableMatch2)
                     return "Engine32";

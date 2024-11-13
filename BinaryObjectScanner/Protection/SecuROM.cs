@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -63,7 +62,7 @@ namespace BinaryObjectScanner.Protection
             // Search after the last section
             if (pex.OverlayStrings != null)
             {
-                if (pex.OverlayStrings.Any(s => s == "AddD"))
+                if (pex.OverlayStrings.Exists(s => s == "AddD"))
                     return $"SecuROM {GetV4Version(pex)}";
             }
 
@@ -102,9 +101,9 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`
-                if (strs.Any(s => s.Contains("/secuexp")))
+                if (strs.Exists(s => s.Contains("/secuexp")))
                     return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
-                else if (strs.Any(s => s.Contains("SecuExp.exe")))
+                else if (strs.Exists(s => s.Contains("SecuExp.exe")))
                     return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
             }
 

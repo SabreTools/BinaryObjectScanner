@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -29,15 +28,15 @@ namespace BinaryObjectScanner.Protection
                 // Full string:
                 // *CrypKey Instant 2.0 security i(32 - bit)  *
                 // *Copyright(c) 1996 Kenonic Controls Ltd.  *
-                if (strs.Any(s => s.Contains("CrypKey Instant 2.0 security")))
+                if (strs.Exists(s => s.Contains("CrypKey Instant 2.0 security")))
                     return "CrypKey Instant 2.0";
 
                 // Generic check to catch unknown CrypKey Instant versions.
-                if (strs.Any(s => s.Contains("CrypKey Instant")))
+                if (strs.Exists(s => s.Contains("CrypKey Instant")))
                     return "CrypKey Instant (Unknown version - Please report to us on GitHub)";
 
                 // Generic check to catch unknown CrypKey products.
-                if (strs.Any(s => s.Contains("CrypKey")))
+                if (strs.Exists(s => s.Contains("CrypKey")))
                     return "CrypKey (Unknown version - Please report to us on GitHub)";
             }
 

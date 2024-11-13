@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -30,7 +29,7 @@ namespace BinaryObjectScanner.Protection
             // Get the header padding strings, if it exists
             if (pex.HeaderPaddingStrings != null)
             {
-                var match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("Gefest Protection System"));
+                var match = pex.HeaderPaddingStrings.Find(s => s.Contains("Gefest Protection System"));
                 if (match != null)
                     return $"Gefest Protection System {GetVersion(match)}";
             }

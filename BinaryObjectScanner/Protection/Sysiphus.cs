@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -19,7 +18,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                var str = strs.FirstOrDefault(s => s.Contains("V SUHPISYS"));
+                var str = strs.Find(s => s.Contains("V SUHPISYS"));
                 if (str != null)
                     return $"Sysiphus {GetVersion(str)}";
             }
@@ -30,7 +29,9 @@ namespace BinaryObjectScanner.Protection
         private static string GetVersion(string matchedString)
         {
             // The string is reversed
-            matchedString = new string(matchedString.Reverse().ToArray()).Trim();
+            var matchedChars = matchedString.ToCharArray();
+            Array.Reverse(matchedChars);
+            matchedString = new string(matchedChars).Trim();
 
             // Check for the DVD extra string
             bool isDVD = matchedString.StartsWith("DVD");

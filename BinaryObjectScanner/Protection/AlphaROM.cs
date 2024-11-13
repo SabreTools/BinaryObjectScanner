@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -57,10 +56,10 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("\\SETTEC")))
+                if (strs.Exists(s => s.Contains("\\SETTEC")))
                     return "Alpha-ROM";
 
-                if (strs.Any(s => s.Contains("SETTEC0000")))
+                if (strs.Exists(s => s.Contains("SETTEC0000")))
                     return "Alpha-ROM";
             }
 
@@ -68,13 +67,13 @@ namespace BinaryObjectScanner.Protection
             strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("This Game is Japan Only")))
+                if (strs.Exists(s => s.Contains("This Game is Japan Only")))
                     return "Alpha-ROM";
                 // Found in "Filechk.exe" in Redump entry 115358.
-                if (strs.Any(s => s.Contains("AlphaCheck.exe")))
+                if (strs.Exists(s => s.Contains("AlphaCheck.exe")))
                     return "Alpha-ROM";
                 // Found in "Uninstall.exe" in Redump entry 115358.
-                if (strs.Any(s => s.Contains("AlphaCheck.dat")))
+                if (strs.Exists(s => s.Contains("AlphaCheck.dat")))
                     return "Alpha-ROM";
             }
 
@@ -82,7 +81,7 @@ namespace BinaryObjectScanner.Protection
             if (pex.OverlayStrings != null)
             {
                 // Found in Redump entry 84122.
-                if (pex.OverlayStrings.Any(s => s.Contains("SETTEC0000")))
+                if (pex.OverlayStrings.Exists(s => s.Contains("SETTEC0000")))
                     return "Alpha-ROM";
             }
 

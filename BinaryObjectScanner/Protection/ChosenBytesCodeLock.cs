@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -40,13 +39,13 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("CODE-LOCK.OCX")))
+                if (strs.Exists(s => s.Contains("CODE-LOCK.OCX")))
                     return "ChosenBytes Code-Lock";
 
-                if (strs.Any(s => s.Contains("Code-Lock.ocx")))
+                if (strs.Exists(s => s.Contains("Code-Lock.ocx")))
                     return "ChosenBytes Code-Lock";
 
-                if (strs.Any(s => s.Contains("CodeLock.Secure")))
+                if (strs.Exists(s => s.Contains("CodeLock.Secure")))
                     return "ChosenBytes Code-Lock";
             }
 

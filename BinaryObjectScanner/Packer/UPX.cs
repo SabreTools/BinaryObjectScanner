@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
@@ -24,13 +23,13 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Check header padding strings
-            if (pex.HeaderPaddingStrings?.Any() == true)
+            if (pex.HeaderPaddingStrings != null && pex.HeaderPaddingStrings.Count > 0)
             {
-                var match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.Contains("UPX!"));
+                var match = pex.HeaderPaddingStrings.Find(s => s.Contains("UPX!"));
                 //if (match != null)
                 //    return "UPX";
 
-                match = pex.HeaderPaddingStrings.FirstOrDefault(s => s.StartsWith("$Id: UPX"));
+                match = pex.HeaderPaddingStrings.Find(s => s.StartsWith("$Id: UPX"));
                 if (match != null)
                 {
                     var regexMatch = _oldUpxVersionMatch.Match(match);
@@ -40,8 +39,8 @@ namespace BinaryObjectScanner.Packer
                         return "UPX (Unknown Version)";
                 }
 
-                match = pex.HeaderPaddingStrings.FirstOrDefault(s => _upxVersionMatch.IsMatch(s));
-                if (match != null && pex.HeaderPaddingStrings.Any(s => s == "UPX!"))
+                match = pex.HeaderPaddingStrings.Find(s => _upxVersionMatch.IsMatch(s));
+                if (match != null && pex.HeaderPaddingStrings.Exists(s => s == "UPX!"))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)
@@ -49,7 +48,7 @@ namespace BinaryObjectScanner.Packer
                     else
                         return "UPX (Unknown Version)";
                 }
-                else if (match != null && pex.HeaderPaddingStrings.Any(s => s == "NOS "))
+                else if (match != null && pex.HeaderPaddingStrings.Exists(s => s == "NOS "))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)

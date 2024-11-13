@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace BinaryObjectScanner
 {
@@ -85,7 +84,7 @@ namespace BinaryObjectScanner
         public void ClearEmptyKeys()
         {
             // Get a list of all of the keys
-            var keys = Keys.ToList();
+            List<string> keys = [.. Keys];
 
             // Iterate and reset keys
             for (int i = 0; i < keys.Count; i++)
@@ -94,7 +93,7 @@ namespace BinaryObjectScanner
                 string key = keys[i];
 
                 // If the key is empty, remove it
-                if (this[key] == null || !this[key].Any())
+                if (this[key] == null || this[key].Count == 0)
 #if NET20 || NET35
                     Remove(key);
 #else
@@ -113,7 +112,7 @@ namespace BinaryObjectScanner
             pathToPrepend = (pathToPrepend ?? "ARCHIVE").TrimEnd(Path.DirectorySeparatorChar);
 
             // Get a list of all of the keys
-            var keys = Keys.ToList();
+            List<string> keys = [.. Keys];
 
             // Iterate and reset keys
             for (int i = 0; i < keys.Count; i++)
@@ -143,7 +142,7 @@ namespace BinaryObjectScanner
                 return;
 
             // Get a list of all of the keys
-            var keys = Keys.ToList();
+            List<string> keys = [.. Keys];
 
             // Iterate and reset keys
             for (int i = 0; i < keys.Count; i++)
@@ -173,7 +172,7 @@ namespace BinaryObjectScanner
         /// <param name="values">Queue to get data from</param>
         private void AddRangeToKey(string key, IEnumerable<string> values)
         {
-            if (values == null || !values.Any())
+            if (values == null)
                 return;
 
             foreach (string value in values)

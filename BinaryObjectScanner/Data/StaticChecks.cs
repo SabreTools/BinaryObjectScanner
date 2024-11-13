@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -133,22 +132,26 @@ namespace BinaryObjectScanner.Data
             List<T> classTypes = [];
 
             // If not all types can be loaded, use the ones that could be
-            List<Type> assemblyTypes = [];
+            Type?[] assemblyTypes = [];
             try
             {
-                assemblyTypes = assembly.GetTypes().ToList<Type>();
+                assemblyTypes = assembly.GetTypes();
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                assemblyTypes = rtle.Types.Where(t => t != null)!.ToList<Type>();
+                assemblyTypes = [.. rtle.Types];
             }
 
             // Get information from the type param
             string interfaceName = typeof(T)!.FullName!;
 
             // Loop through all types 
-            foreach (Type type in assemblyTypes)
+            foreach (Type? type in assemblyTypes)
             {
+                // Skip invalid types
+                if (type == null)
+                    continue;
+
                 // If the type isn't a class
                 if (!type.IsClass)
                     continue;

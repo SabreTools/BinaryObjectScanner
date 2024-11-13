@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -34,7 +33,7 @@ namespace BinaryObjectScanner.Protection
             var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("wtmdum.imp")))
+                if (strs.Exists(s => s.Contains("wtmdum.imp")))
                     return "WTM CD Protect";
             }
 
@@ -42,9 +41,9 @@ namespace BinaryObjectScanner.Protection
             strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
-                if (strs.Any(s => s.Contains("WTM DIGITAL Photo Protect")))
+                if (strs.Exists(s => s.Contains("WTM DIGITAL Photo Protect")))
                     return "WTM Protection Viewer";
-                else if (strs.Any(s => s.Contains("WTM Copy Protection Viewer")))
+                else if (strs.Exists(s => s.Contains("WTM Copy Protection Viewer")))
                     return "WTM Protection Viewer";
             }
 

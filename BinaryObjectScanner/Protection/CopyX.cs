@@ -77,7 +77,7 @@ namespace BinaryObjectScanner.Protection
                 // TODO: This might need to check every single section. Unsure until more samples are acquired.
                 // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
                 // Samples: Redump ID 108150
-                if (pex.OverlayStrings.Any(s => s.Contains("optgraph.dll")))
+                if (pex.OverlayStrings.Exists(s => s.Contains("optgraph.dll")))
                     return "copy-X [Check disc for physical ring]";
             }
 
@@ -85,7 +85,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Samples: Redump ID 82475, German Emergency 2 Deluxe, Redump ID 48393
-                if (strs.Any(s => s.Contains("optgraph.dll")))
+                if (strs.Exists(s => s.Contains("optgraph.dll")))
                     return "copy-X [Check disc for physical ring]";
             }
 

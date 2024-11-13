@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
@@ -61,7 +60,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "FLEXLM.CPL", "INSTALLS.EXE", "LMGR326B.DLL", "LMGRD.EXE", and "TAKEFIVE.EXE" in IA item "prog-17_202403".
-                if (strs.Any(s => s.Contains("FLEXlm License Manager")))
+                if (strs.Exists(s => s.Contains("FLEXlm License Manager")))
                     return "FlexLM";
             }
 

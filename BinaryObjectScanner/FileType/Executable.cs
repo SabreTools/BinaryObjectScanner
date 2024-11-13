@@ -250,7 +250,7 @@ namespace BinaryObjectScanner.FileType
             var protections = new ProtectionDictionary();
 
             // If we have an invalid set of classes
-            if (checks == null || !checks.Any())
+            if (checks == null)
                 return protections;
 
             // If we have any extractable packers

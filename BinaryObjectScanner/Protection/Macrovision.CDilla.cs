@@ -138,7 +138,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
-                if (strs.Any(s => s.Contains("SOFTWARE\\C-Dilla\\RTS")))
+                if (strs.Exists(s => s.Contains("SOFTWARE\\C-Dilla\\RTS")))
                     return "C-Dilla License Management System";
             }
 
