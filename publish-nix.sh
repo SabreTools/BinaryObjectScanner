@@ -44,7 +44,7 @@ echo "  No archive (-a)                       $NO_ARCHIVE"
 echo " "
 
 # Create the build matrix arrays
-FRAMEWORKS=("9.0")
+FRAMEWORKS=("net9.0")
 RUNTIMES=("win-x86" "win-x64" "win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
 
 # Use expanded lists, if requested
