@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
@@ -100,7 +99,7 @@ namespace BinaryObjectScanner
                 if (Directory.Exists(path))
                 {
                     // Enumerate all files at first for easier access
-                    var files = IOExtensions.SafeGetFiles(path, "*", SearchOption.AllDirectories).ToList();
+                    List<string> files = [.. IOExtensions.SafeGetFiles(path, "*", SearchOption.AllDirectories)];
 
                     // Scan for path-detectable protections
                     if (_options.ScanPaths)
@@ -113,7 +112,7 @@ namespace BinaryObjectScanner
                     for (int i = 0; i < files.Count; i++)
                     {
                         // Get the current file
-                        string file = files.ElementAt(i);
+                        string file = files[i];
 
                         // Get the reportable file name
                         string reportableFileName = file;
