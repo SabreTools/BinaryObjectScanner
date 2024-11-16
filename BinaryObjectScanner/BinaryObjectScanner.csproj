@@ -82,6 +82,9 @@
     <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))">
         <PackageReference Include="OpenMcdf" Version="2.3.1" />
     </ItemGroup>
+    <ItemGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))">
+        <PackageReference Include="MinAsyncBridge" Version="0.12.4" />
+    </ItemGroup>
     <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))">
         <PackageReference Include="SharpCompress" Version="0.38.0" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />

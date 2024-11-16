@@ -8,16 +8,6 @@ using System.Diagnostics;
 
 namespace System
 {
-    /// <summary>Defines a provider for progress updates.</summary>
-    /// <typeparam name="T">The type of progress update value.</typeparam>
-    /// <see href="https://github.com/dotnet/runtime/blob/main/src/libraries/System.Private.CoreLib/src/System/IProgress.cs"/>
-    public interface IProgress<in T>
-    {
-        /// <summary>Reports a progress update.</summary>
-        /// <param name="value">The value of the updated progress.</param>
-        void Report(T value);
-    }
-
     /// <summary>
     /// Provides an IProgress{T} that invokes callbacks for each reported progress value.
     /// </summary>
