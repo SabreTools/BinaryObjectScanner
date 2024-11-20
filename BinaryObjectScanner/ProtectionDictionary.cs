@@ -50,7 +50,7 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="key">Key to add information to</param>
         /// <param name="value">String value to add</param>
-        public void Append(string key, IEnumerable<string> values)
+        public void Append(string key, ICollection<string> values)
         {
             // Use a placeholder value if the key is null
             key ??= "NO FILENAME";

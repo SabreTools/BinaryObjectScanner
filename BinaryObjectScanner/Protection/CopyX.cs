@@ -93,7 +93,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public IEnumerable<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
         {
             var protections = new List<string>();
             if (files == null)
