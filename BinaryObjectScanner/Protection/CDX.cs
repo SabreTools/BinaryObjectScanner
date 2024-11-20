@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Protection
     public class CDX : IPathCheck
     {
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>

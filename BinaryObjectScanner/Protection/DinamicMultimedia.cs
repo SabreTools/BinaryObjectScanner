@@ -22,7 +22,7 @@ namespace BinaryObjectScanner.Protection
         // https://www.gamecopyworld.com/games/pc_pc_calcio_2000.shtml
         // https://www.gamecopyworld.com/games/pc_pc_futbol_2000.shtml
 
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

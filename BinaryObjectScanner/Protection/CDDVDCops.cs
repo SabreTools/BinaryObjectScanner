@@ -182,7 +182,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             // TODO: Original had "CDCOPS.DLL" required and all the rest in a combined OR
             var matchers = new List<PathMatchSet>

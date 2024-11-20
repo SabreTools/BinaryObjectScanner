@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
         // TODO: Confirm if these checks are only for ProRing or if they are also for older Ring PROTECH
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

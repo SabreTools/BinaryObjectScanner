@@ -9,7 +9,7 @@ namespace BinaryObjectScanner.Protection
     public class ProtectDVDVideo : IPathCheck
     {
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var protections = new List<string>();
             if (files == null)

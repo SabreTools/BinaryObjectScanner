@@ -42,7 +42,10 @@ namespace BinaryObjectScanner
 
             // Add the key if needed and then append the lists
             EnsureKey(key);
-            AddRangeToKey(key, values);
+            foreach (string value in values)
+            {
+                this[key].Enqueue(value);
+            }
         }
 
         /// <summary>

@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             // Previous versions of BOS noted to look at ".PFF" files as possible indicators of CopyKiller, but those files seem unrelated.
             // TODO: Figure out why this doesn't work.

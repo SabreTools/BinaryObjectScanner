@@ -80,7 +80,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             // TODO: Search for the presence of the folder "EasyAntiCheat" specifically, which is present in every checked version so far.
             var matchers = new List<PathMatchSet>

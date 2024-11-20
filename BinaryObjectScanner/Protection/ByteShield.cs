@@ -130,7 +130,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, IEnumerable<string>? files)
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             // TODO: Investigate reference to "bbz650.tmp" in "Byteshield.dll" (Redump entry 6236)
             // Files with the ".bbz" extension are associated with ByteShield, but the extenstion is known to be used in other places as well.
