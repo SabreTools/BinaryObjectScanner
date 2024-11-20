@@ -78,6 +78,7 @@
     <!-- Support for old .NET versions -->
     <ItemGroup Condition="$(TargetFramework.StartsWith(`net2`))">
         <PackageReference Include="Net30.LinqBridge" Version="1.3.0" />
+        <PackageReference Include="Net35.Actions" Version="1.1.0" />
     </ItemGroup>
     <ItemGroup Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))">
         <PackageReference Include="OpenMcdf" Version="2.3.1" />
