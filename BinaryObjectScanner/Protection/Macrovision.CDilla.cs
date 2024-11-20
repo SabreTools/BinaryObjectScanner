@@ -147,8 +147,8 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-        internal IEnumerable<string> CDillaCheckDirectoryPath(string path, IEnumerable<string>? files)
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, List{string})"/>
+        internal List<string> CDillaCheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

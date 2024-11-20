@@ -248,8 +248,8 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-        internal IEnumerable<string> MacrovisionCheckDirectoryPath(string path, IEnumerable<string>? files)
+        /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, List{string})"/>
+        internal List<string> MacrovisionCheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {

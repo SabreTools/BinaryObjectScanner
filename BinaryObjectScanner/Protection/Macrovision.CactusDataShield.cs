@@ -63,8 +63,8 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
 
-        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, IEnumerable{string})"/>
-        internal IEnumerable<string> CactusDataShieldCheckDirectoryPath(string path, IEnumerable<string>? files)
+        /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, List{string})"/>
+        internal List<string> CactusDataShieldCheckDirectoryPath(string path, List<string>? files)
         {
             // TODO: Verify if these are OR or AND
             var matchers = new List<PathMatchSet>
