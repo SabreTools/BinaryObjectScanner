@@ -305,7 +305,7 @@ namespace ExtractionTool
                 Console.WriteLine("Extracting MoPaQ contents");
                 Console.WriteLine();
 
-#if NET20 || NET35 || NET40 || !WIN
+#if NET20 || NET35 || !WIN
                 Console.WriteLine("Extraction is not supported for this framework!");
                 Console.WriteLine();
 #else
