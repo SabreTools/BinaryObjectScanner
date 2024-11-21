@@ -9,6 +9,7 @@
         <Nullable>enable</Nullable>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <Version>3.2.2</Version>
     </PropertyGroup>
 
     <!-- Support All Frameworks -->
