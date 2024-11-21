@@ -32,11 +32,7 @@ namespace BinaryObjectScanner.FileType
 
                 // XZip2.0
                 // Found in the ".mez" files in IA item "Nova_RealArcadeCD_USA".
-#if NET20
-                if (Extensions.StartsWith(magic, new byte?[] { 0x58, 0x5A, 0x69, 0x70, 0x32, 0x2E, 0x30 }))
-#else
                 if (magic.StartsWith(new byte?[] { 0x58, 0x5A, 0x69, 0x70, 0x32, 0x2E, 0x30 }))
-#endif
                     return "RealArcade Mezzanine";
             }
             catch (Exception ex)

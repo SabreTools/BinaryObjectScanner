@@ -37,74 +37,42 @@ namespace BinaryObjectScanner.Protection
             if (pex.EntryPointData != null)
             {
                 // Found in the SVKP 1.05 demo.
-#if NET20
-                if (Extensions.StartsWith(pex.EntryPointData, new byte?[]
-#else
                 if (pex.EntryPointData.StartsWith(new byte?[]
-#endif
                 {
                     0xEB, 0x03, 0xC7, 0x84, 0xE8, 0x60, 0xEB, 0x03,
                     0xC7, 0x84, 0xE8, 0xEB, 0x03, 0xC7, 0x84, 0x9A,
                     0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81, 0xED,
                     0x15, 0x00, 0x00, 0x00, 0xEB, 0x03, 0xC7, 0x84,
                     0xE9, 0x64, 0xA0
-#if NET20
                 }))
-#else
-                }))
-#endif
                     return "SVKP v1.05";
 
                 // Found in the SVKP 1.051 demo.
-#if NET20
-                if (Extensions.StartsWith(pex.EntryPointData, new byte?[]
-#else
                 if (pex.EntryPointData.StartsWith(new byte?[]
-#endif
                 {
                     0x60, 0xEB, 0x03, 0xC7, 0x84, 0xE8, 0xEB, 0x03,
                     0xC7, 0x84, 0x9A, 0xE8, 0x00, 0x00, 0x00, 0x00,
                     0x5D, 0x81, 0xED, 0x10, 0x00, 0x00, 0x00, 0xEB,
                     0x03, 0xC7, 0x84, 0xE9, 0x64, 0xA0, 0x23, 0x00,
                     0x00, 0x00, 0xEB
-#if NET20
                 }))
-#else
-                }))
-#endif
                     return "SVKP v1.051";
 
                 // Found in the SVKP 1.11 demo.
-#if NET20
-                if (Extensions.StartsWith(pex.EntryPointData, new byte?[]
-#else
                 if (pex.EntryPointData.StartsWith(new byte?[]
-#endif
                 {
                     0x60, 0xE8, null, null, null, null, 0x5D, 0x81,
                     0xED, 0x06, null, null, null, 0x64, 0xA0, 0x23
-#if NET20
                 }))
-#else
-                }))
-#endif
                     return "SVKP v1.11";
 
                 // Found in the SVKP 1.32 demo and Redump entry 84122.
-#if NET20
-                if (Extensions.StartsWith(pex.EntryPointData, new byte?[]
-#else
                 if (pex.EntryPointData.StartsWith(new byte?[]
-#endif
                 {
                     0x60, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81,
                     0xED, 0x06, 0x00, 0x00, 0x00, 0xEB, 0x05, 0xB8,
                     null, null, null, null, 0x64, 0xA0, 0x23
-#if NET20
                 }))
-#else
-                }))
-#endif
                     return "SVKP v1.3+";
             }
 

@@ -28,12 +28,8 @@ namespace BinaryObjectScanner.FileType
                 byte[] magic = new byte[16];
                 int read = stream.Read(magic, 0, 16);
 
-#if NET20
-                if (Extensions.StartsWith(magic, new byte?[] { 0x4C, 0x44, 0x53, 0x43, 0x52, 0x59, 0x50, 0x54 }))
-#else
                 if (magic.StartsWith(new byte?[] { 0x4C, 0x44, 0x53, 0x43, 0x52, 0x59, 0x50, 0x54 }))
-#endif
-                return "Link Data Security encrypted file";
+                    return "Link Data Security encrypted file";
             }
             catch (Exception ex)
             {

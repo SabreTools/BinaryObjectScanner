@@ -88,7 +88,7 @@ namespace ProtectionScan
             foreach (string key in protections.Keys.OrderBy(k => k))
             {
                 // Skip over files with no protection
-                if (protections[key] == null || !protections[key].Any())
+                if (protections[key] == null || protections[key].Count == 0)
                     continue;
 
                 string line = $"{key}: {string.Join(", ", [.. protections[key].OrderBy(p => p)])}";

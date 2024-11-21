@@ -245,7 +245,7 @@ namespace BinaryObjectScanner.FileType
         /// <returns>Set of protections found from extraction, empty on error</returns>
         private static ProtectionDictionary HandleExtractableProtections<T, U>(string file,
             T exe,
-            IEnumerable<U> checks,
+            ICollection<U> checks,
             Func<string, ProtectionDictionary>? getProtections,
             bool includeDebug)
                 where T : WrapperBase

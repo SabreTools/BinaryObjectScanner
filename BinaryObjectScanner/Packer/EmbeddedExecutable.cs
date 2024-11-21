@@ -23,11 +23,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the resources that have an executable signature
             if (pex.ResourceData?.Any(kvp => kvp.Value is byte[] ba
-#if NET20
-                && Extensions.StartsWith(ba, SabreTools.Models.MSDOS.Constants.SignatureBytes)) == true)
-#else
                 && ba.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes)) == true)
-#endif
             {
                 return "Embedded Executable";
             }
@@ -48,11 +44,7 @@ namespace BinaryObjectScanner.Packer
                 var resources = pex.ResourceData
                     .Where(kvp => kvp.Value != null && kvp.Value is byte[])
                     .Select(kvp => kvp.Value as byte[])
-#if NET20
-                    .Where(b => b != null && Extensions.StartsWith(b, SabreTools.Models.MSDOS.Constants.SignatureBytes))
-#else
                     .Where(b => b != null && b.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
-#endif
                     .ToList();
 
                 for (int i = 0; i < resources.Count; i++)
