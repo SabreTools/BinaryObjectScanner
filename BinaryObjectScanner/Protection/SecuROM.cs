@@ -73,11 +73,7 @@ namespace BinaryObjectScanner.Protection
                 if (nthSection == null)
                     continue;
 
-#if NET20 || NET35 || NET40 || NET452
                 string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? []).TrimEnd('\0');
-#else
-                string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? Array.Empty<byte>()).TrimEnd('\0');
-#endif
                 if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
                     var nthSectionData = pex.GetFirstSectionData(nthSectionName);
@@ -228,41 +224,36 @@ namespace BinaryObjectScanner.Protection
         // These live in the MS-DOS stub, for some reason
         private static string GetV7Version(PortableExecutable pex)
         {
-            try
-            {
-                int index = 172; // 64 bytes for DOS stub, 236 bytes in total
-#if NETFRAMEWORK
-                byte[] bytes = new byte[4];
-                Array.Copy(pex.StubExecutableData, index, bytes, 0, 4);
-#else
-                byte[] bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 4).ToArray();
-#endif
-
-                //SecuROM 7 new and 8
-                if (bytes[3] == 0x5C) // if (bytes[0] == 0xED && bytes[3] == 0x5C {
-                {
-                    return $"{bytes[0] ^ 0xEA}.{bytes[1] ^ 0x2C:00}.{bytes[2] ^ 0x8:0000}";
-                }
-
-                // SecuROM 7 old
-                else
-                {
-                    index = 58; // 64 bytes for DOS stub, 122 bytes in total
-#if NETFRAMEWORK
-                    bytes = new byte[2];
-                    Array.Copy(pex.StubExecutableData, index, bytes, 0, 2);
-#else
-                    bytes = new ReadOnlySpan<byte>(pex.StubExecutableData, index, 2).ToArray();
-#endif
-                    return $"7.{bytes[0] ^ 0x10:00}.{bytes[1] ^ 0x10:0000}"; //return "7.01-7.10"
-                }
-            }
-            catch (ArgumentException)
-            {
-                // If SecuROM is stripped, the MS-DOS stub might be shorter.
-                // We then know that SecuROM -was- there, but we don't know what exact version.
+            // If SecuROM is stripped, the MS-DOS stub might be shorter.
+            // We then know that SecuROM -was- there, but we don't know what exact version.
+            if (pex.StubExecutableData == null)
                 return "7 remnants";
+
+            //SecuROM 7 new and 8 -- 64 bytes for DOS stub, 236 bytes in total
+            int index = 172;
+            if (pex.StubExecutableData.Length >= 176 && pex.StubExecutableData[index + 3] == 0x5C)
+            {
+                int major = pex.StubExecutableData[index + 0] ^ 0xEA;
+                int minor = pex.StubExecutableData[index + 1] ^ 0x2C;
+                int patch = pex.StubExecutableData[index + 2] ^ 0x08;
+
+                return $"{major}.{minor:00}.{patch:0000}";
             }
+
+            // SecuROM 7 old -- 64 bytes for DOS stub, 122 bytes in total
+            index = 58;
+            if (pex.StubExecutableData.Length >= 62)
+            {
+                int minor = pex.StubExecutableData[index + 0] ^ 0x10;
+                int patch = pex.StubExecutableData[index + 1] ^ 0x10;
+
+                //return "7.01-7.10"
+                return $"7.{minor:00}.{patch:0000}";
+            }
+
+            // If SecuROM is stripped, the MS-DOS stub might be shorter.
+            // We then know that SecuROM -was- there, but we don't know what exact version.
+            return "7 remnants";
         }
 
         private static string GetV8WhiteLabelVersion(PortableExecutable pex)
@@ -289,14 +280,11 @@ namespace BinaryObjectScanner.Protection
             if (position < 0)
                 return "8";
 
-#if NETFRAMEWORK
-                byte[] bytes = new byte[3];
-                Array.Copy(dataSectionRaw, position + 0xAC, bytes, 0, 3);
-#else
-                byte[] bytes = new ReadOnlySpan<byte>(dataSectionRaw, position + 0xAC, 3).ToArray();
-#endif
+            int major = dataSectionRaw[position + 0xAC + 0] ^ 0xCA;
+            int minor = dataSectionRaw[position + 0xAC + 1] ^ 0x39;
+            int patch = dataSectionRaw[position + 0xAC + 2] ^ 0x51;
 
-            return $"{bytes[0] ^ 0xCA}.{bytes[1] ^ 0x39:00}.{bytes[2] ^ 0x51:0000}";
+            return $"{major}.{minor:00}.{patch:0000}";
         }
     }
 }
