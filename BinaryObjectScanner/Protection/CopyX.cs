@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
@@ -133,12 +132,12 @@ namespace BinaryObjectScanner.Protection
                     using var stream = File.OpenRead(lightFiles[0]);
                     byte[] block = stream.ReadBytes(1024);
 
+                    // Samples: Redump ID 81628
+                    if (Array.TrueForAll(block, b => b == 0))
+                        protections.Add("copy-X");
+
                     var matchers = new List<ContentMatchSet>
                     {
-                        // Checks if the file contains 0x00
-                        // Samples: Redump ID 81628
-                        new(Enumerable.Repeat<byte?>(0x00, 1024).ToArray(), "copy-X"),
-
                         // Checks for whatever this data is.
                         // Samples: Redump ID 84759, Redump ID 107929. Professional discs also have this data, hence the exclusion check.
                         new(

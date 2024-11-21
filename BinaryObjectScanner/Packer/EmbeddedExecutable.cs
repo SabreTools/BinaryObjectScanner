@@ -22,8 +22,9 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Get the resources that have an executable signature
-            if (pex.ResourceData?.Any(kvp => kvp.Value is byte[] ba
-                && ba.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes)) == true)
+            if (pex.ResourceData != null
+                && pex.ResourceData.Values.Any(v => v is byte[] ba
+                    && ba.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes)))
             {
                 return "Embedded Executable";
             }

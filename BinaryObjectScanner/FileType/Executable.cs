@@ -94,41 +94,49 @@ namespace BinaryObjectScanner.FileType
             if (wrapper is MSDOS mz)
             {
                 // Standard checks
-                var subProtections = RunExecutableChecks(file, mz, StaticChecks.MSDOSExecutableCheckClasses, includeDebug);
+                var subProtections
+                    = RunExecutableChecks(file, mz, StaticChecks.MSDOSExecutableCheckClasses, includeDebug);
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, mz, subProtections.Keys, getProtections, includeDebug);
+                var extractedProtections
+                    = HandleExtractableProtections(file, mz, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
             else if (wrapper is LinearExecutable lex)
             {
                 // Standard checks
-                var subProtections = RunExecutableChecks(file, lex, StaticChecks.LinearExecutableCheckClasses, includeDebug);
+                var subProtections
+                    = RunExecutableChecks(file, lex, StaticChecks.LinearExecutableCheckClasses, includeDebug);
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, lex, subProtections.Keys, getProtections, includeDebug);
+                var extractedProtections
+                    = HandleExtractableProtections(file, lex, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
             else if (wrapper is NewExecutable nex)
             {
                 // Standard checks
-                var subProtections = RunExecutableChecks(file, nex, StaticChecks.NewExecutableCheckClasses, includeDebug);
+                var subProtections
+                    = RunExecutableChecks(file, nex, StaticChecks.NewExecutableCheckClasses, includeDebug);
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, nex, subProtections.Keys, getProtections, includeDebug);
+                var extractedProtections
+                    = HandleExtractableProtections(file, nex, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
             else if (wrapper is PortableExecutable pex)
             {
                 // Standard checks
-                var subProtections = RunExecutableChecks(file, pex, StaticChecks.PortableExecutableCheckClasses, includeDebug);
+                var subProtections
+                    = RunExecutableChecks(file, pex, StaticChecks.PortableExecutableCheckClasses, includeDebug);
                 protections.Append(file, subProtections.Values);
 
                 // Extractable checks
-                var extractedProtections = HandleExtractableProtections(file, pex, subProtections.Keys, getProtections, includeDebug);
+                var extractedProtections
+                    = HandleExtractableProtections(file, pex, subProtections.Keys, getProtections, includeDebug);
                 protections.Append(extractedProtections);
             }
 

@@ -22,8 +22,9 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Get the resources that have a PKZIP signature
-            if (pex.ResourceData?.Any(kvp => kvp.Value is byte[] ba
-                && ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes)) == true)
+            if (pex.ResourceData != null
+                && pex.ResourceData.Values.Any(v => v is byte[] ba
+                    && ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes)))
             {
                 return "Embedded Archive";
             }

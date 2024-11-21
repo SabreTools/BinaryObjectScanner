@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -160,17 +159,11 @@ namespace BinaryObjectScanner.Protection
             if (fileContent == null)
                 return null;
 
-            string version, strBuild = string.Empty;
+            string version;
             int index = positions[0] - 12;
 
             // Version 6-7 with Build Number in plain text
-#if NET20 || NET35 || NET40
-            byte[] temp = new byte[4];
-            Array.Copy(fileContent, index, temp, 0, 4);
-            if (temp.SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D }))
-#else
-            if (new ArraySegment<byte>(fileContent, index, 4).SequenceEqual(new byte[] { 0x0A, 0x0D, 0x0A, 0x0D }))
-#endif
+            if (fileContent[index] == 0x0A && fileContent[index + 1] == 0x0D && fileContent[index + 2] == 0x0A && fileContent[index + 3] == 0x0D)
             {
                 index = positions[0] - 12 - 6;
 
@@ -198,7 +191,7 @@ namespace BinaryObjectScanner.Protection
                     index -= 5;
                 }
 
-                strBuild = Encoding.ASCII.GetString(fileContent, index, 6).Trim();
+                string strBuild = Encoding.ASCII.GetString(fileContent, index, 6).Trim();
                 if (!int.TryParse(strBuild, out int intBuild))
                     strBuild = $"[Build {strBuild}]";
                 else

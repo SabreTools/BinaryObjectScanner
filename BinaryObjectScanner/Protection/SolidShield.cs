@@ -162,15 +162,16 @@ namespace BinaryObjectScanner.Protection
             var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
 #endif
 
-            if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
+            if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
+                && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
+            {
                 return "v1";
-            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }
+            }
+            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 })
+                && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // [0xDB, 0xC5, 0x20, 0x3A, 0xB9]
+            {
                 return "v2"; // TODO: Verify against other SolidShield 2 discs
-
-            if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 }) && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
-                return "v1";
-            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 }) && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // new byte[] { 0xDB, 0xC5, 0x20, 0x3A, 0xB9 }
-                return "v2"; // TODO: Verify against other SolidShield 2 discs
+            }
 
             return string.Empty;
         }
@@ -209,11 +210,7 @@ namespace BinaryObjectScanner.Protection
                     0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F,
                     0x6E, 0x00, 0x00, 0x00, 0x00
                 ];
-#if NET20
-                if (Extensions.FirstPosition(fileContent, check2, out int position2))
-#else
                 if (fileContent.FirstPosition(check2, out int position2))
-#endif
                 {
                     position2--; // TODO: Verify this subtract
                     return $"2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}";
