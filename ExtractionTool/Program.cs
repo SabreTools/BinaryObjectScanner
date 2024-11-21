@@ -388,15 +388,15 @@ namespace ExtractionTool
                 vpk.Extract(stream, file, outputDirectory, includeDebug: true);
             }
 
-            // WAD
+            // WAD3
             else if (ft == WrapperType.WAD)
             {
                 // Build the archive information
-                Console.WriteLine("Extracting WAD contents");
+                Console.WriteLine("Extracting WAD3 contents");
                 Console.WriteLine();
 
                 // Extract using the FileType
-                var wad = new WAD();
+                var wad = new WAD3();
                 wad.Extract(stream, file, outputDirectory, includeDebug: true);
             }
 

@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Half-Life Texture Package File
     /// </summary>
-    public class WAD : IExtractable
+    public class WAD3 : IExtractable
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)
@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Create the wrapper
-                var wad = SabreTools.Serialization.Wrappers.WAD.Create(stream);
+                var wad = SabreTools.Serialization.Wrappers.WAD3.Create(stream);
                 if (wad == null)
                     return false;
 
@@ -43,19 +43,19 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <summary>
-        /// Extract all lumps from the WAD to an output directory
+        /// Extract all lumps from the WAD3 to an output directory
         /// </summary>
         /// <param name="outputDirectory">Output directory to write to</param>
         /// <returns>True if all lumps extracted, false otherwise</returns>
-        public static bool ExtractAllLumps(SabreTools.Serialization.Wrappers.WAD item, string outputDirectory)
+        public static bool ExtractAllLumps(SabreTools.Serialization.Wrappers.WAD3 item, string outputDirectory)
         {
             // If we have no lumps
-            if (item.Model.Lumps == null || item.Model.Lumps.Length == 0)
+            if (item.Model.DirEntries == null || item.Model.DirEntries.Length == 0)
                 return false;
 
             // Loop through and extract all lumps to the output
             bool allExtracted = true;
-            for (int i = 0; i < item.Model.Lumps.Length; i++)
+            for (int i = 0; i < item.Model.DirEntries.Length; i++)
             {
                 allExtracted &= ExtractLump(item, i, outputDirectory);
             }
@@ -64,23 +64,23 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <summary>
-        /// Extract a lump from the WAD to an output directory by index
+        /// Extract a lump from the WAD3 to an output directory by index
         /// </summary>
         /// <param name="index">Lump index to extract</param>
         /// <param name="outputDirectory">Output directory to write to</param>
         /// <returns>True if the lump extracted, false otherwise</returns>
-        public static bool ExtractLump(SabreTools.Serialization.Wrappers.WAD item, int index, string outputDirectory)
+        public static bool ExtractLump(SabreTools.Serialization.Wrappers.WAD3 item, int index, string outputDirectory)
         {
             // If we have no lumps
-            if (item.Model.Lumps == null || item.Model.Lumps.Length == 0)
+            if (item.Model.DirEntries == null || item.Model.DirEntries.Length == 0)
                 return false;
 
             // If the lumps index is invalid
-            if (index < 0 || index >= item.Model.Lumps.Length)
+            if (index < 0 || index >= item.Model.DirEntries.Length)
                 return false;
 
             // Get the lump
-            var lump = item.Model.Lumps[index];
+            var lump = item.Model.DirEntries[index];
             if (lump == null)
                 return false;
 
@@ -108,10 +108,8 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Open the output file for writing
-                using (Stream fs = File.OpenWrite(filename))
-                {
-                    fs.Write(data, 0, data.Length);
-                }
+                using Stream fs = File.OpenWrite(filename);
+                fs.Write(data, 0, data.Length);
             }
             catch
             {

@@ -36,7 +36,7 @@
 
     <ItemGroup>
         <PackageReference Include="SabreTools.IO" Version="1.5.1" />
-        <PackageReference Include="SabreTools.Serialization" Version="1.7.5" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.7.6" />
     </ItemGroup>
 
 </Project>

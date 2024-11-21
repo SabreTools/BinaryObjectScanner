@@ -209,7 +209,7 @@ Below is a list of container formats that are supported in some way:
 | Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
 | Half-Life Level (BSP) | Yes | Yes | Yes | |
 | Half-Life Package File (PAK) | Yes | Yes | Yes | |
-| Half-Life Texture Package File (WAD) | Yes | Yes | Yes | |
+| Half-Life Texture Package File (WAD3) | Yes | Yes | Yes | |
 | Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
 | INI configuration file | No | No | No | Used in other detections currently |
 | InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |

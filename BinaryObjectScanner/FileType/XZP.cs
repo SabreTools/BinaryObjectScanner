@@ -117,10 +117,8 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Open the output file for writing
-                using (Stream fs = File.OpenWrite(filename))
-                {
-                    fs.Write(data, 0, data.Length);
-                }
+                using Stream fs = File.OpenWrite(filename);
+                fs.Write(data, 0, data.Length);
             }
             catch
             {

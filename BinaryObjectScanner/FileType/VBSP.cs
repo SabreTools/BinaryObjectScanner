@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Models.BSP;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -28,6 +29,8 @@ namespace BinaryObjectScanner.FileType
                 var vbsp = SabreTools.Serialization.Wrappers.VBSP.Create(stream);
                 if (vbsp == null)
                     return false;
+
+                // TODO: Introduce helper methods for all specialty lump types
 
                 // Loop through and extract all files
                 Directory.CreateDirectory(outDir);
@@ -91,12 +94,12 @@ namespace BinaryObjectScanner.FileType
 
             // Create the filename
             string filename = $"lump_{index}.bin";
-            switch (index)
+            switch ((LumpType)index)
             {
-                case SabreTools.Models.VBSP.Constants.HL_VBSP_LUMP_ENTITIES:
+                case LumpType.LUMP_ENTITIES:
                     filename = "entities.ent";
                     break;
-                case SabreTools.Models.VBSP.Constants.HL_VBSP_LUMP_PAKFILE:
+                case LumpType.LUMP_PAKFILE:
                     filename = "pakfile.zip";
                     break;
             }
@@ -117,10 +120,8 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Open the output file for writing
-                using (Stream fs = File.OpenWrite(filename))
-                {
-                    fs.Write(data, 0, data.Length);
-                }
+                using Stream fs = File.OpenWrite(filename);
+                fs.Write(data, 0, data.Length);
             }
             catch
             {

@@ -126,19 +126,18 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 // Open the output file for writing
-                using (Stream fs = File.OpenWrite(filename))
-                {
-                    // Now read the data sequentially and write out while we have data left
-                    long fileSize = file.Size;
-                    for (int i = 0; i < dataBlockOffsets.Count; i++)
-                    {
-                        int readSize = (int)Math.Min(item.Model.DataBlockHeader?.BlockSize ?? 0, fileSize);
-                        var data = item.ReadFromDataSource((int)dataBlockOffsets[i], readSize);
-                        if (data == null)
-                            return false;
+                using Stream fs = File.OpenWrite(filename);
 
-                        fs.Write(data, 0, data.Length);
-                    }
+                // Now read the data sequentially and write out while we have data left
+                long fileSize = file.Size;
+                for (int i = 0; i < dataBlockOffsets.Count; i++)
+                {
+                    int readSize = (int)Math.Min(item.Model.DataBlockHeader?.BlockSize ?? 0, fileSize);
+                    var data = item.ReadFromDataSource((int)dataBlockOffsets[i], readSize);
+                    if (data == null)
+                        return false;
+
+                    fs.Write(data, 0, data.Length);
                 }
             }
             catch

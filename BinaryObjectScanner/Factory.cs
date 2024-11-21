@@ -62,7 +62,7 @@ namespace BinaryObjectScanner
                 WrapperType.TapeArchive => new FileType.TapeArchive(),
                 WrapperType.VBSP => new FileType.VBSP(),
                 WrapperType.VPK => new FileType.VPK(),
-                WrapperType.WAD => new FileType.WAD(),
+                WrapperType.WAD => new FileType.WAD3(),
                 WrapperType.XZ => new FileType.XZ(),
                 WrapperType.XZP => new FileType.XZP(),
                 _ => null,
