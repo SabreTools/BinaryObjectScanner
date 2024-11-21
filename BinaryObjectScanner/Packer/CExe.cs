@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.Packer
                         uint read = zstream.total_out;
 #if NETFRAMEWORK
                         var temp = new byte[read];
-                        Array.Copy(data, 0, temp, 0, read);
+                        Array.Copy(data, temp, read);
                         data = temp;
 #else
                         data = new ReadOnlySpan<byte>(data, 0, (int)read).ToArray();
