@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -41,7 +40,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get string table resources
             var resource = pex.FindStringTableByEntry("AegiSoft License Manager");
-            if (resource.Any())
+            if (resource.Count > 0)
                 return "AegiSoft License Manager";
 
             // Get the .data/DATA section, if it exists

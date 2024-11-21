@@ -44,15 +44,13 @@ namespace BinaryObjectScanner.Protection
             {
                 if (strs.Exists(s => s.Contains("\\*.CDS")))
                     return "Cactus Data Shield 200";
-
                 if (strs.Exists(s => s.Contains("DATA.CDS")))
                     return "Cactus Data Shield 200";
             }
 
             // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
             // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
-            var resources = pex.FindGenericResource("CactusPJ");
-            if (resources != null && resources.Any())
+            if (pex.FindGenericResource("CactusPJ").Count > 0)
                 return "PlayJ Music Player (Cactus Data Shield 200)";
 
             // Found in various files in "Les Paul & Friends" (Barcode 4 98806 834170).

@@ -1,4 +1,3 @@
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -37,7 +36,7 @@ namespace BinaryObjectScanner.Packer
                 return "7-Zip SFX";
 
             // If any dialog boxes match
-            if (pex.FindDialogByTitle("7-Zip self-extracting archive").Any())
+            if (pex.FindDialogByTitle("7-Zip self-extracting archive").Count > 0)
                 return "7-Zip SFX";
 
             return null;

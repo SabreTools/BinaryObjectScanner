@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -66,11 +65,14 @@ namespace BinaryObjectScanner.Protection
                 return "DiscGuard";
 
             // Found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
-            var resources = pex.FindStringTableByEntry("DiscGuard")
-                .Concat(pex.FindStringTableByEntry("The file Dg.vbn was not found."))
-                .Concat(pex.FindStringTableByEntry("The file IosLink.VxD was not found."))
-                .Concat(pex.FindStringTableByEntry("The file IosLink.sys was not found."));
-            if (resources.Any())
+            List<Dictionary<int, string?>?> resources =
+            [
+                .. pex.FindStringTableByEntry("DiscGuard"),
+                .. pex.FindStringTableByEntry("The file Dg.vbn was not found."),
+                .. pex.FindStringTableByEntry("The file IosLink.VxD was not found."),
+                .. pex.FindStringTableByEntry("The file IosLink.sys was not found."),
+            ];
+            if (resources.Count > 0)
                 return "DiscGuard";
 
             // Get the .vbn section, if it exists

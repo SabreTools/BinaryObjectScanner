@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using SabreTools.Hashing;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -106,7 +105,9 @@ namespace BinaryObjectScanner.Protection
             // Get the debug data
             try
             {
-                if (pex.FindCodeViewDebugTableByPath("SafeDisc").Any() || pex.FindCodeViewDebugTableByPath("Safedisk").Any())
+                if (pex.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
+                    return "SafeDisc";
+                if (pex.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
                     return "SafeDisc";
             }
             catch { }

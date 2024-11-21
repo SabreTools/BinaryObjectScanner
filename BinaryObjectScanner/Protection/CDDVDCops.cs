@@ -122,19 +122,18 @@ namespace BinaryObjectScanner.Protection
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
-            bool importedNameTableEntries = nex.Model.ImportedNameTable?
-                .Select(kvp => kvp.Value)
+            bool intMatch = nex.Model.ImportedNameTable?.Values?
                 .Select(inte => inte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(inte.NameString))
                 .Any(s => s.Contains("CDCOPS")) ?? false;
-            if (importedNameTableEntries)
+            if (intMatch)
                 return "CD-Cops";
 
             // Check the nonresident-name table
             // Found in "CDCOPS.DLL" in Redump entry 85077.
-            bool nonresidentNameTableEntries = nex.Model.NonResidentNameTable?
+            bool nrntMatch = nex.Model.NonResidentNameTable?
                 .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
                 .Any(s => s.Contains("CDcops assembly-language DLL")) ?? false;
-            if (nonresidentNameTableEntries)
+            if (nrntMatch)
                 return "CD-Cops";
 
             return null;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -174,13 +175,7 @@ namespace BinaryObjectScanner.Protection
                 index = positions[0] - 12 - 6;
 
                 // Version 7
-#if NET20 || NET35 || NET40
-                temp = new byte[6];
-                Array.Copy(fileContent, index, temp, 0, 6);
-                if (new string(Array.ConvertAll(temp, b => (char)b)) == "Henrik")
-#else
-                if (new string(new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray()) == "Henrik")
-#endif
+                if (Encoding.ASCII.GetString(fileContent, index, 6) == "Henrik")
                 {
                     version = "7.1-7.5";
                     index = positions[0] - 12 - 6 - 6;
@@ -194,7 +189,7 @@ namespace BinaryObjectScanner.Protection
                     index = positions[0] - 12 - 10;
                     while (true) //search for e.g. "Build 050913 -  September 2005"
                     {
-                        if (Char.IsNumber((char)fileContent[index]))
+                        if (char.IsNumber((char)fileContent[index]))
                             break;
 
                         index--; // Search upwards
@@ -203,15 +198,9 @@ namespace BinaryObjectScanner.Protection
                     index -= 5;
                 }
 
-#if NET20 || NET35 || NET40
-                temp = new byte[6];
-                Array.Copy(fileContent, index, temp, 0, 6);
-                char[] arrBuild = Array.ConvertAll(temp, b => (char)b);
-#else
-                char[] arrBuild = new ArraySegment<byte>(fileContent, index, 6).Select(b => (char)b).ToArray();
-#endif
-                if (!Int32.TryParse(new string(arrBuild), out int intBuild))
-                    strBuild = $"[Build {new string(arrBuild).Trim()}]";
+                strBuild = Encoding.ASCII.GetString(fileContent, index, 6).Trim();
+                if (!int.TryParse(strBuild, out int intBuild))
+                    strBuild = $"[Build {strBuild}]";
                 else
                     strBuild = $"[Build 0x{intBuild:X} / {intBuild}]";
 

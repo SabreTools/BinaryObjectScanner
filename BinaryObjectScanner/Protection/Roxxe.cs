@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -51,10 +50,10 @@ namespace BinaryObjectScanner.Protection
 
             // If any dialog boxes match
             // Found in "Data6.OWP" in IA item "game4u-22-cd".
-            if (pex.FindDialogBoxByItemTitle("SharpTiny Version 1.0").Any())
+            if (pex.FindDialogBoxByItemTitle("SharpTiny Version 1.0").Count > 0)
                 return "Roxxe";
             // Found in "Data8.OWP" in IA item "game4u-22-cd".
-            else if (pex.FindDialogBoxByItemTitle("T32xWin Version 1.0").Any())
+            else if (pex.FindDialogBoxByItemTitle("T32xWin Version 1.0").Count > 0)
                 return "Roxxe";
 
             return null;

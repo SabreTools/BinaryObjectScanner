@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -33,48 +32,38 @@ namespace BinaryObjectScanner.Protection
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            var stMatch = pex.FindStringTableByEntry("Softlock CD");
-            if (stMatch.Any())
+            if (pex.FindStringTableByEntry("Softlock CD").Count > 0)
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            stMatch = pex.FindStringTableByEntry("Softlock USB Key");
-            if (stMatch.Any())
+            if (pex.FindStringTableByEntry("Softlock USB Key").Count > 0)
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            var dbMatch = pex.FindDialogByTitle("Softlock Protection Kit");
-            if (dbMatch.Any())
+            if (pex.FindDialogByTitle("Softlock Protection Kit").Count > 0)
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            dbMatch = pex.FindDialogByTitle("About Softlock Protected Application");
-            if (dbMatch.Any())
+            if (pex.FindDialogByTitle("About Softlock Protected Application").Count > 0)
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            dbMatch = pex.FindDialogBoxByItemTitle("www.softlock.net");
-            if (dbMatch.Any())
+            if (pex.FindDialogBoxByItemTitle("www.softlock.net").Count > 0)
                 return "SoftLock";
 
             // TODO: See if the version number is anywhere else
             // TODO: Parse the version number out of the dialog box item
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            dbMatch = pex.FindDialogBoxByItemTitle("Softlock Protected Application Version 1.0");
-            if (dbMatch.Any())
+            if (pex.FindDialogBoxByItemTitle("Softlock Protected Application Version 1.0").Count > 0)
                 return "SoftLock";
 
             // There are many mentions of USB dongle and CD protection in the various string tables
             // and dialog boxes. See if any of those are unique to SoftLock.
 
-            // Get strings from .section, if possible
-            var strings = pex.GetFirstSectionStrings(".section");
-            if (strings != null && strings.Count > 0)
-            {
-                // Found in "TafseerVer4.exe" in IA item "TAFSEERVER4SETUP"
-                if (strings.Exists(s => s?.Contains("SOFTLOCKPROTECTION") == true))
-                    return "SoftLock";
-            }
+            // Found in "TafseerVer4.exe" in IA item "TAFSEERVER4SETUP"
+            var strings = pex.GetFirstSectionStrings(".section") ?? [];
+            if (strings.Exists(s => s?.Contains("SOFTLOCKPROTECTION") == true))
+                return "SoftLock";
 
             // Investigate if the ".section" section is an indicator of SoftLock
 

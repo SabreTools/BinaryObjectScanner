@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -105,26 +104,21 @@ namespace BinaryObjectScanner.Protection
             if (!string.IsNullOrEmpty(match))
                 return match;
 
+            // Get the resident and non-resident name table strings
+            var nrntStrs = Array.ConvertAll(nex.Model.NonResidentNameTable ?? [],
+                rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
+
             // Check the nonresident-name table
             // Found in "SSWIN.dll" in IA item "pcwkcd-1296".
-            bool nonresidentNameTableEntries = nex.Model.NonResidentNameTable?
-                .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
-                .Any(s => s.Contains("SentinelPro Windows Driver DLL")) ?? false;
-            if (nonresidentNameTableEntries)
+            if (Array.Exists(nrntStrs, s => s.Contains("SentinelPro Windows Driver DLL")))
                 return "Rainbow SentinelPro";
 
             // Found in "INSTALL.EXE" in IA item "czchip199707cd".
-            nonresidentNameTableEntries = nex.Model.NonResidentNameTable?
-                .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
-                .Any(s => s.Contains("Rainbow Technologies Installation Program")) ?? false;
-            if (nonresidentNameTableEntries)
+            if (Array.Exists(nrntStrs, s => s.Contains("Rainbow Technologies Installation Program")))
                 return "Rainbow Sentinel";
 
             // Found in "WNCEDITD.EXE" and "WNCEDITO.EXE" in IA item "czchip199707cd".
-            nonresidentNameTableEntries = nex.Model.NonResidentNameTable?
-                .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
-                .Any(s => s.Contains("NetSentinel-C Editor for Windows")) ?? false;
-            if (nonresidentNameTableEntries)
+            if (Array.Exists(nrntStrs, s => s.Contains("NetSentinel-C Editor for Windows")))
                 return "NetSentinel-C Editor for Windows";
 
             // TODO: Investigate "SentinelScribe Windows Driver DLL" found in "NKWIN.DLL" in IA item "czchip199707cd".

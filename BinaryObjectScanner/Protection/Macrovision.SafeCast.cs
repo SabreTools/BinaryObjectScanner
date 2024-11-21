@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -91,8 +90,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the dialog box resources
             // Found in "CDAC21BA.DLL" in Redump entry 95524.
-            var resource = pex.FindDialogByTitle("SafeCast API");
-            if (resource.Any())
+            if (pex.FindDialogByTitle("SafeCast API").Count > 0)
                 return "SafeCast";
 
             // Get the .data/DATA section strings, if they exist

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO;
 using SabreTools.Serialization.Wrappers;
@@ -47,10 +46,10 @@ namespace BinaryObjectScanner.Protection
                 return protections;
 
             // TODO: Verify if these are OR or AND
-            if (files.Any(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
-                || files.Any(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)))
+            if (files.Exists(f => Path.GetFileName(f).Equals("XCP.DAT", StringComparison.OrdinalIgnoreCase))
+                || files.Exists(f => Path.GetFileName(f).Equals("ECDPlayerControl.ocx", StringComparison.OrdinalIgnoreCase)))
             {
-                var versionDatPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
+                var versionDatPath = files.Find(f => Path.GetFileName(f).Equals("VERSION.DAT", StringComparison.OrdinalIgnoreCase));
                 if (!string.IsNullOrEmpty(versionDatPath))
                 {
                     var xcpVersion = GetDatVersion(versionDatPath);

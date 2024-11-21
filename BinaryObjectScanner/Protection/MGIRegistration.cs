@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -22,13 +21,11 @@ namespace BinaryObjectScanner.Protection
                 return $"MGI Registration {pex.GetInternalVersion()}";
 
             // Found in "Register.dll" from "VideoWaveIII" in IA item "mgi-videowave-iii-version-3.00-mgi-software-2000".
-            var resources = pex.FindStringTableByEntry("MGI Registration");
-            if (resources.Any())
+            if (pex.FindStringTableByEntry("MGI Registration").Count > 0)
                 return "MGI Registration";
 
             // Found in "Register.dll" in IA item "MGIPhotoSuite4.0AndPhotoVista2.02001".
-            resources = pex.FindStringTableByEntry("Register@register.mgisoft.com");
-            if (resources.Any())
+            if (pex.FindStringTableByEntry("Register@register.mgisoft.com").Count > 0)
                 return "MGI Registration";
 
             return null;

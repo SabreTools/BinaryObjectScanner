@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -27,9 +26,9 @@ namespace BinaryObjectScanner.Protection
             if (name?.Equals("CDCode", StringComparison.Ordinal) == true)
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
 
-            if (pex.FindDialogByTitle("About CDKey").Any())
+            if (pex.FindDialogByTitle("About CDKey").Count > 0)
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
-            else if (pex.FindGenericResource("About CDKey").Any())
+            else if (pex.FindGenericResource("About CDKey").Count > 0)
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
 
             // Get the .data/DATA section strings, if they exist

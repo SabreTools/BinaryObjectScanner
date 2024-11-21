@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
@@ -101,36 +100,21 @@ namespace BinaryObjectScanner.Protection
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Get string table resources
-            var resource = pex.FindStringTableByEntry("C-Dilla Licence Management System");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("C-Dilla Licence Management System").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("C-DiIla Licence Management System");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("C-DiIla Licence Management System").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("C-DILLA_BITMAP_NAMES_TAG");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("C-DILLA_BITMAP_NAMES_TAG").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("C-DILLA_EDITABLE_STRINGS_TAG");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("C-DILLA_EDITABLE_STRINGS_TAG").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("CdaLMS.exe");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("CdaLMS.exe").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("cdilla51.dll");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("cdilla51.dll").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("cdilla52.dll");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("cdilla52.dll").Count > 0)
                 return $"C-Dilla License Management System";
-
-            resource = pex.FindStringTableByEntry("http://www.c-dilla.com/support/lms.html");
-            if (resource.Any())
+            if (pex.FindStringTableByEntry("http://www.c-dilla.com/support/lms.html").Count > 0)
                 return $"C-Dilla License Management System";
 
             // Get the .data/DATA section strings, if they exist

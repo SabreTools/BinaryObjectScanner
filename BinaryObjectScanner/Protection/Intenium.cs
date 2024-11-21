@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -30,8 +29,7 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            var fileNameResource = pex.FindGenericResource("NO NESTED PRMS SUPPORTED");
-            if (fileNameResource.Any())
+            if (pex.FindGenericResource("NO NESTED PRMS SUPPORTED").Count > 0)
                 return "INTENIUM Trial & Buy Protection";
 
             return null;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -30,13 +29,11 @@ namespace BinaryObjectScanner.Protection
                 return "Windows Media Data Session DRM";
 
             // Found in "autorun.exe" ("Touch" by Amerie).
-            var resource = pex.FindDialogBoxByItemTitle("If you attempt to play this content on a computer without a license, you will first have to acquire a license before it will play.");
-            if (resource.Any())
+            if (pex.FindDialogBoxByItemTitle("If you attempt to play this content on a computer without a license, you will first have to acquire a license before it will play.").Count > 0)
                 return "Windows Media Data Session DRM";
 
             // Found in "autorun.exe" ("Touch" by Amerie).
-            resource = pex.FindDialogBoxByItemTitle("You cannot generate a licence to play the protected Windows Media files without an original disc.");
-            if (resource.Any())
+            if (pex.FindDialogBoxByItemTitle("You cannot generate a licence to play the protected Windows Media files without an original disc.").Count > 0)
                 return "Windows Media Data Session DRM";
 
             return null;

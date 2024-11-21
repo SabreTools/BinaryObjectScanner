@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -15,9 +14,9 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Check the dialog box resources
-            if (pex.FindDialogByTitle("321Studios Activation").Any())
+            if (pex.FindDialogByTitle("321Studios Activation").Count > 0)
                 return $"321Studios Online Activation";
-            else if (pex.FindDialogByTitle("321Studios Phone Activation").Any())
+            else if (pex.FindDialogByTitle("321Studios Phone Activation").Count > 0)
                 return $"321Studios Online Activation";
 
             return null;

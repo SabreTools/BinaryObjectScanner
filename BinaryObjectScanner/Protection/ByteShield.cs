@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -74,20 +73,17 @@ namespace BinaryObjectScanner.Protection
                 return "ByteShield Component Module";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            var stMatch = pex.FindStringTableByEntry("ByteShield");
-            if (stMatch.Any())
+            if (pex.FindStringTableByEntry("ByteShield").Count > 0)
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            var dbMatch = pex.FindDialogByTitle("About ByteShield");
-            if (dbMatch.Any())
+            if (pex.FindDialogByTitle("About ByteShield").Count > 0)
                 return "ByteShield";
 
             // TODO: See if the version number is anywhere else
             // TODO: Parse the version number out of the dialog box item
             // Found in "LineRider2.exe" in Redump entry 6236
-            dbMatch = pex.FindDialogBoxByItemTitle("ByteShield Version 1.0");
-            if (dbMatch.Any())
+            if (pex.FindDialogBoxByItemTitle("ByteShield Version 1.0").Count > 0)
                 return "ByteShield";
 
             // Get the .data/DATA section strings, if they exist

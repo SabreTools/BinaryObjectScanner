@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -33,12 +32,10 @@ namespace BinaryObjectScanner.Protection
             if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
                 return $"MediaMax CD-3";
 
-            var cd3CtrlResources = pex.FindGenericResource("Cd3Ctl");
-            if (cd3CtrlResources.Any())
+            if (pex.FindGenericResource("Cd3Ctl").Count > 0)
                 return $"MediaMax CD-3";
 
-            var limitedProductionResources = pex.FindDialogBoxByItemTitle("This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players.");
-            if (limitedProductionResources.Any())
+            if (pex.FindDialogBoxByItemTitle("This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players.").Count > 0)
                 return $"MediaMax CD-3";
 
             // TODO: Investigate the following dialog item title resource

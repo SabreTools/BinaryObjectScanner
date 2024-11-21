@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.Protection
@@ -17,8 +16,8 @@ namespace BinaryObjectScanner.Protection
 
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
             {
-                string[] bupfiles = files.Where(s => s.EndsWith(".bup")).ToArray();
-                for (int i = 0; i < bupfiles.Length; i++)
+                var bupfiles = files.FindAll(s => s.EndsWith(".bup"));
+                for (int i = 0; i < bupfiles.Count; i++)
                 {
                     var bupfile = new FileInfo(bupfiles[i]);
                     if (bupfile.DirectoryName == null)

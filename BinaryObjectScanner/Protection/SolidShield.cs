@@ -73,8 +73,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the wrapper resource, if it exists
-            var wrapperResources = pex.FindResourceByNamedType("BIN, IDR_SGT");
-            if (wrapperResources != null && wrapperResources.Any())
+            if (pex.FindResourceByNamedType("BIN, IDR_SGT").Count > 0)
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections

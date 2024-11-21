@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Compression.zlib;
 using SabreTools.Matching;
@@ -24,7 +23,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // If there are exactly 2 resources with type 99
-            if (pex.FindResourceByNamedType("99, ").Count() == 2)
+            if (pex.FindResourceByNamedType("99, ").Count == 2)
                 return "CExe";
 
             if (pex.StubExecutableData != null)
@@ -55,13 +54,18 @@ namespace BinaryObjectScanner.Packer
         {
             try
             {
+                // Get all resources of type 99 with index 2
+                var resources = pex.FindResourceByNamedType("99, 2");
+                if (resources == null || resources.Count == 0)
+                    return false;
+
                 // Get the first resource of type 99 with index 2
-                var payload = pex.FindResourceByNamedType("99, 2").FirstOrDefault();
+                var payload = resources[0];
                 if (payload == null || payload.Length == 0)
                     return false;
 
                 // Determine which compression was used
-                bool zlib = pex.FindResourceByNamedType("99, 1").Any();
+                bool zlib = pex.FindResourceByNamedType("99, 1").Count > 0;
 
                 // Create the output data buffer
                 var data = new byte[0];

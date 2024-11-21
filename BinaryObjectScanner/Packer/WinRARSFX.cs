@@ -1,4 +1,3 @@
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -18,8 +17,7 @@ namespace BinaryObjectScanner.Packer
             if (name?.Contains("WinRAR archiver") == true)
                 return "WinRAR SFX";
 
-            var resources = pex.FindDialogByTitle("WinRAR self-extracting archive");
-            if (resources.Any())
+            if (pex.FindDialogByTitle("WinRAR self-extracting archive").Count > 0)
                 return "WinRAR SFX";
 
             return null;

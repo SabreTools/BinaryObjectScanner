@@ -111,17 +111,17 @@ namespace BinaryObjectScanner.Protection
             List<string>? lightFiles = null;
 
             // TODO: Compensate for the check being run a directory or more higher
-            var fileList = files.Where(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase));
+            var fileList = files.FindAll(f => !f.EndsWith(".x64", StringComparison.OrdinalIgnoreCase));
             foreach (var dir in dirs)
             {
-                lightFiles = fileList.Where(f =>
+                lightFiles = fileList.FindAll(f =>
                     {
                         f = f.Remove(0, path.Length);
                         f = f.TrimStart('/', '\\');
                         return f.StartsWith(dir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
-                    })
-                    .OrderBy(f => f)
-                    .ToList();
+                    });
+                lightFiles.Sort();
+
                 if (lightFiles.Count > 0)
                     break;
             }

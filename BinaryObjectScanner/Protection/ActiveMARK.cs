@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -79,11 +78,11 @@ namespace BinaryObjectScanner.Protection
 
             // Get "REGISTRY, AMINTERNETPROTOCOL" resource items
             var resources = pex.FindResourceByNamedType("REGISTRY, AMINTERNETPROTOCOL");
-            if (resources.Any())
+            if (resources.Count > 0)
             {
                 bool match = resources
-                    .Select(r => r == null ? string.Empty : Encoding.ASCII.GetString(r))
-                    .Any(r => r.Contains("ActiveMARK"));
+                    .ConvertAll(r => r == null ? string.Empty : Encoding.ASCII.GetString(r))
+                    .FindIndex(r => r.Contains("ActiveMARK")) > -1;
                 if (match)
                     return "ActiveMARK";
             }

@@ -1,4 +1,4 @@
-using System.Linq;
+using System;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -14,13 +14,15 @@ namespace BinaryObjectScanner.Packer
             if (nex.Model.ResidentNameTable == null)
                 return null;
 
+            // Get the resident and non-resident name table strings
+            var rntStrs = Array.ConvertAll(nex.Model.ResidentNameTable,
+                rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
+            var nrntStrs = Array.ConvertAll(nex.Model.NonResidentNameTable ?? [],
+                nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
+
             // Check for the WinZip name strings
-            bool winZipNameFound = nex.Model.ResidentNameTable
-                .Select(rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString))
-                .Any(s => s.Contains("WZ-SE-01"));
-            winZipNameFound |= nex.Model.NonResidentNameTable?
-                .Select(nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString))
-                .Any(s => s.Contains("WinZip(R) Self-Extractor")) ?? false;
+            bool winZipNameFound = Array.Exists(rntStrs, s => s.Contains("WZ-SE-01"));
+            winZipNameFound |= Array.Exists(nrntStrs, s => s.Contains("WinZip(R) Self-Extractor"));
 
             // If we didn't find it
             if (!winZipNameFound)

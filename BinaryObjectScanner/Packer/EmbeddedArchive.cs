@@ -41,9 +41,9 @@ namespace BinaryObjectScanner.Packer
                     return false;
 
                 // Get the resources that have a PKZIP signature
-                var resources = pex.ResourceData
-                    .Where(kvp => kvp.Value != null && kvp.Value is byte[])
-                    .Select(kvp => kvp.Value as byte[])
+                var resources = pex.ResourceData.Values
+                    .Where(v => v != null && v is byte[])
+                    .Select(v => v as byte[])
                     .Where(b => b != null && b.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
                     .ToList();
 
