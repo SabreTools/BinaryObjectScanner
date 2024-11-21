@@ -182,31 +182,38 @@ namespace ExtractionTool
 
                 // 7-zip SFX
                 var szsfx = new SevenZipSFX();
-                szsfx.Extract(file, pex, outputDirectory, includeDebug);
+                if (szsfx.CheckExecutable(file, pex, includeDebug) != null)
+                    szsfx.Extract(file, pex, outputDirectory, includeDebug);
 
                 // CExe
                 var ce = new CExe();
-                ce.Extract(file, pex, outputDirectory, includeDebug);
+                if (ce.CheckExecutable(file, pex, includeDebug) != null)
+                    ce.Extract(file, pex, outputDirectory, includeDebug);
 
                 // Embedded archives
                 var ea = new EmbeddedArchive();
-                ea.Extract(file, pex, outputDirectory, includeDebug);
+                if (ea.CheckExecutable(file, pex, includeDebug) != null)
+                    ea.Extract(file, pex, outputDirectory, includeDebug);
 
                 // Embedded executables
                 var ee = new EmbeddedExecutable();
-                ee.Extract(file, pex, outputDirectory, includeDebug);
+                if (ee.CheckExecutable(file, pex, includeDebug) != null)
+                    ee.Extract(file, pex, outputDirectory, includeDebug);
 
                 // WinRAR SFX
                 var wrsfx = new WinRARSFX();
-                wrsfx.Extract(file, pex, outputDirectory, includeDebug);
+                if (wrsfx.CheckExecutable(file, pex, includeDebug) != null)
+                    wrsfx.Extract(file, pex, outputDirectory, includeDebug);
 
                 // WinZip SFX
                 var wzsfx = new WinZipSFX();
-                wzsfx.Extract(file, pex, outputDirectory, includeDebug);
+                if (wzsfx.CheckExecutable(file, pex, includeDebug) != null)
+                    wzsfx.Extract(file, pex, outputDirectory, includeDebug);
 
                 // Wise Installer
                 var wi = new WiseInstaller();
-                wi.Extract(file, pex, outputDirectory, includeDebug);
+                if (wi.CheckExecutable(file, pex, includeDebug) != null)
+                    wi.Extract(file, pex, outputDirectory, includeDebug);
             }
 
             // GCF
