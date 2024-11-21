@@ -19,8 +19,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Get the .aspack section, if it exists
-            bool aspackSection = pex.ContainsSection(".aspack", exact: true);
-            if (aspackSection)
+            if (pex.ContainsSection(".aspack", exact: true))
                 return "ASPack 2.29";
 
             // TODO: Re-enable all Entry Point checks after implementing
@@ -60,10 +59,10 @@ namespace BinaryObjectScanner.Packer
         /// Generate the set of matchers used for each section
         /// </summary>
         /// <returns></returns>
-        private List<ContentMatchSet> GenerateMatchers()
+        private static List<ContentMatchSet> GenerateMatchers()
         {
-            return new List<ContentMatchSet>
-            {
+            return
+            [
                 #region No Wildcards (Long)
 
                 new(new byte?[]
@@ -641,7 +640,7 @@ namespace BinaryObjectScanner.Packer
                 new(new byte?[] { 0x60, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81, 0xED }, "ASPack 1.02b/1.08.03"),
 
                 #endregion
-            };
+            ];
         }
     }
 }

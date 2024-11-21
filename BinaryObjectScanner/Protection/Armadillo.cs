@@ -29,14 +29,13 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Get the .nicode section, if it exists
-            bool nicodeSection = pex.ContainsSection(".nicode", exact: true);
-            if (nicodeSection)
+            if (pex.ContainsSection(".nicode", exact: true))
                 return "Armadillo";
 
             // Loop through all "extension" sections -- usually .data1 or .text1
             if (pex.SectionNames != null)
             {
-                foreach (var sectionName in Array.FindAll(pex.SectionNames, s => s != null && s.EndsWith("1")))
+                foreach (var sectionName in Array.FindAll(pex.SectionNames ?? [], s => s != null && s.EndsWith("1")))
                 {
                     // Get the section strings, if they exist
                     var strs = pex.GetFirstSectionStrings(sectionName);

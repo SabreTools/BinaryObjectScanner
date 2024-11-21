@@ -90,13 +90,11 @@ namespace BinaryObjectScanner.Protection
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/StarForce.2.sg
 
             // Get the .brick section, if it exists
-            bool brickSection = pex.ContainsSection(".brick", exact: true);
-            if (brickSection)
+            if (pex.ContainsSection(".brick", exact: true))
                 return "StarForce 3-5";
 
             // Get the .sforce* section, if it exists
-            bool sforceSection = pex.ContainsSection(".sforce", exact: false);
-            if (sforceSection)
+            if (pex.ContainsSection(".sforce", exact: false))
                 return "StarForce 3-5";
 
             return null;

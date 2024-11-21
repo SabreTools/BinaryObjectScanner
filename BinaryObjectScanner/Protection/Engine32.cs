@@ -27,11 +27,12 @@ namespace BinaryObjectScanner.Protection
             // Detects Engine32 within the game executables that contain it.
             if (pex.Model.ImportTable?.ImportDirectoryTable != null && pex.Model.ImportTable?.HintNameTable != null)
             {
-                bool importDirectoryTableMatch = Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
-                bool hintNameTableMatch = Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], ihne => ihne?.Name == "InitEngine");
+                bool importDirectoryTableMatch = Array.Exists(pex.Model.ImportTable.ImportDirectoryTable,
+                    idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
+                bool hintNameTableMatch = Array.Exists(pex.Model.ImportTable.HintNameTable,
+                    ihne => ihne?.Name == "InitEngine");
 
                 // The Hint/Name Table Entry "DeinitEngine" is present in every tested sample, aside from TOCA Race Driver 2 (Redump entries 104593-104596).
-
                 if (hintNameTableMatch && importDirectoryTableMatch)
                     return "Engine32";
             }

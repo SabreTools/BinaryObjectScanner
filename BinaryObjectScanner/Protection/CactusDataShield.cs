@@ -10,23 +10,22 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
+            // Only allow during debug
+            if (!includeDebug)
+                return null;
+
             // TODO: Limit these checks to Mac binaries
             // TODO: Obtain a sample to find where this string is in a typical executable
-            if (includeDebug)
+            var contentMatchSets = new List<ContentMatchSet>
             {
-                var contentMatchSets = new List<ContentMatchSet>
-                {
-                    // CDSPlayer
-                    new([0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72], "Cactus Data Shield 200"),
+                // CDSPlayer
+                new([0x43, 0x44, 0x53, 0x50, 0x6C, 0x61, 0x79, 0x65, 0x72], "Cactus Data Shield 200"),
 
-                    // yucca.cds
-                    new([0x79, 0x75, 0x63, 0x63, 0x61, 0x2E, 0x63, 0x64, 0x73], "Cactus Data Shield 200"),
-                };
+                // yucca.cds
+                new([0x79, 0x75, 0x63, 0x63, 0x61, 0x2E, 0x63, 0x64, 0x73], "Cactus Data Shield 200"),
+            };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
     }
 }

@@ -82,8 +82,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .svkp section, if it exists.
             // This section is present in at least versions 1.05-1.32, but isn't present in every known sample of these versions. Removing this section name may be a perk of the licensed version.
-            bool neolitSection = pex.ContainsSection(".svkp", exact: true);
-            if (neolitSection)
+            if (pex.ContainsSection(".svkp", exact: true))
                 return "SVKP";
 
             return null;

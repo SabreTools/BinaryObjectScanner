@@ -17,21 +17,21 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Autorun Setup"))
+            if (name?.Contains("Steam Autorun Setup") == true)
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client API"))
+            else if (name?.Contains("Steam Client API") == true)
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client Engine"))
+            else if (name?.Contains("Steam Client Engine") == true)
                 return $"Steam Client Engine {pex.GetInternalVersion()}";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client Service"))
+            else if (name?.Contains("Steam Client Service") == true)
                 return "Steam";
 
             name = pex.ProductName;
-            if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Autorun Setup"))
+            if (name?.Contains("Steam Autorun Setup") == true)
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client API"))
+            else if (name?.Contains("Steam Client API") == true)
                 return "Steam";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Steam Client Service"))
+            else if (name?.Contains("Steam Client Service") == true)
                 return "Steam";
 
             /// TODO: Add entry point checks

@@ -69,31 +69,30 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
+            // Only allow during debug
+            if (!includeDebug)
+                return null;
+
             // TODO: Obtain a sample to find where this string is in a typical executable
-            if (includeDebug)
+            var contentMatchSets = new List<ContentMatchSet>
             {
-                var contentMatchSets = new List<ContentMatchSet>
+                // TODO: Remove from here once it's confirmed that no PE executables contain this string
+                // CD-Cops,  ver. 
+                new(new byte?[]
                 {
-                    // TODO: Remove from here once it's confirmed that no PE executables contain this string
-                    // CD-Cops,  ver. 
-                    new(new byte?[]
-                    {
-                        0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
-                        0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                    }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                    0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
 
-                    // // DVD-Cops,  ver. 
-                    new(new byte?[]
-                    {
-                        0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
-                        0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                    }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
-                };
+                // // DVD-Cops,  ver. 
+                new(new byte?[]
+                {
+                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
+            };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -152,14 +151,14 @@ namespace BinaryObjectScanner.Protection
             if (pex.StubExecutableData != null)
             {
                 var matchers = new List<ContentMatchSet>
-            {
-                // WEBCOPS
-                // Found in "HyperBowl.C_S" in https://web.archive.org/web/20120616074941/http://icm.games.tucows.com/files2/HyperDemo-109a.exe.
-                new(new byte?[]
                 {
-                    0x57, 0x45, 0x42, 0x43, 0x4F, 0x50, 0x53
-                }, "WEB-Cops")
-            };
+                    // WEBCOPS
+                    // Found in "HyperBowl.C_S" in https://web.archive.org/web/20120616074941/http://icm.games.tucows.com/files2/HyperDemo-109a.exe.
+                    new(new byte?[]
+                    {
+                        0x57, 0x45, 0x42, 0x43, 0x4F, 0x50, 0x53
+                    }, "WEB-Cops")
+                };
 
                 var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
                 if (!string.IsNullOrEmpty(match))
@@ -168,14 +167,12 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .grand section, if it exists
             // Found in "AGENTHUG.QZ_" in Redump entry 84517 and "h3blade.QZ_" in Redump entry 85077.
-            bool grandSection = pex.ContainsSection(".grand", exact: true);
-            if (grandSection)
+            if (pex.ContainsSection(".grand", exact: true))
                 return "CD/DVD/WEB-Cops";
 
             // Get the UNICops section, if it exists
             // Found in "FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
-            bool UNICopsSection = pex.ContainsSection("UNICops", exact: true);
-            if (UNICopsSection)
+            if (pex.ContainsSection("UNICops", exact: true))
                 return "UNI-Cops";
 
             return null;
@@ -228,14 +225,11 @@ namespace BinaryObjectScanner.Protection
             if (fileContent == null)
                 return null;
 
-            byte[] versionBytes = new byte[4];
-            Array.Copy(fileContent, positions[0] + 15, versionBytes, 0, 4);
-            char[] version = Array.ConvertAll(versionBytes, b => (char)b);
-
+            string version = Encoding.ASCII.GetString(fileContent, positions[0] + 15, 4);
             if (version[0] == 0x00)
                 return string.Empty;
 
-            return new string(version);
+            return version;
         }
     }
 }

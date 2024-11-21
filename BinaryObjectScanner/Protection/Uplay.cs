@@ -18,26 +18,26 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect Installer"))
+            if (name?.Contains("Ubisoft Connect Installer") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect Service"))
+            else if (name?.Contains("Ubisoft Connect Service") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect WebCore"))
+            else if (name?.Contains("Ubisoft Connect WebCore") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Crash Reporter"))
+            else if (name?.Contains("Ubisoft Crash Reporter") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Game Launcher"))
+            else if (name?.Contains("Ubisoft Game Launcher") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Uplay Installer"))
+            else if (name?.Contains("Ubisoft Uplay Installer") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Uplay launcher"))
+            else if (name?.Contains("Uplay launcher") == true)
                 return "Uplay / Ubisoft Connect";
 
             // There's also a variant that looks like "Uplay <version> installer"
             name = pex.ProductName;
-            if (!string.IsNullOrEmpty(name) && name!.Contains("Ubisoft Connect"))
+            if (name?.Contains("Ubisoft Connect") == true)
                 return "Uplay / Ubisoft Connect";
-            else if (!string.IsNullOrEmpty(name) && name!.Contains("Uplay"))
+            else if (name?.Contains("Uplay") == true)
                 return "Uplay / Ubisoft Connect";
 
             return null;

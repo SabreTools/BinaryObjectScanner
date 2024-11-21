@@ -26,8 +26,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .neolit section, if it exists.
             // TODO: Check if this section is also present in NeoLite 1.X.
-            bool neolitSection = pex.ContainsSection(".neolit", exact: true);
-            if (neolitSection)
+            if (pex.ContainsSection(".neolit", exact: true))
                 return "NeoLite";
 
             // If more specific or additional checks are needed, "NeoLite Executable File Compressor" should be present

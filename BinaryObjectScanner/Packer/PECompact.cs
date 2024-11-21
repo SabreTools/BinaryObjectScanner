@@ -23,13 +23,12 @@ namespace BinaryObjectScanner.Packer
             // on the data in the file. This may be related to information in other fields
 
             // Get the pec1 section, if it exists
-            bool pec1Section = pex.ContainsSection("pec1", exact: true);
-            if (pec1Section)
+            if (pex.ContainsSection("pec1", exact: true))
                 return "PE Compact v1.x";
 
             // Get the PEC2 section, if it exists -- TODO: Verify this comment since it's pulling the .text section
             var textSection = pex.GetFirstSection(".text", exact: true);
-            if (textSection != null && textSection.PointerToRelocations == 0x32434550)
+            if (textSection?.PointerToRelocations == 0x32434550)
             {
                 if (textSection.PointerToLinenumbers != 0)
                     return $"PE Compact v{textSection.PointerToLinenumbers} (internal version)";

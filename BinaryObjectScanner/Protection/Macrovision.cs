@@ -70,23 +70,17 @@ namespace BinaryObjectScanner.Protection
             // Almost every single sample known has both sections, though one only contains the "stxt371" section. It is unknown if this is intentional, or if the game functions without it.
             // It is present in the "Texas HoldEm!" game in "boontybox_PCGamer_DVD.exe" in IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58.
             // Other games in this set also aren't functional despite having the normal layout of stxt sections, and the primary program doesn't install at all due to activation servers being down.
-            bool stxt371Section = pex.ContainsSection("stxt371", exact: true);
-            bool stxt774Section = pex.ContainsSection("stxt774", exact: true);
-            if (stxt371Section || stxt774Section)
+            if (pex.ContainsSection("stxt371", exact: true) || pex.ContainsSection("stxt774", exact: true))
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
-                if (!string.IsNullOrEmpty(sectionMatch))
-                {
+                if (sectionMatch != null)
+                    resultsList.Add(sectionMatch);
+
+                // Get the .data section, if it exists, for protected sections.
+                sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
+                if (sectionMatch != null)
                     resultsList.Add(sectionMatch!);
-                }
-                else
-                {
-                    // Get the .data section, if it exists, for protected sections.
-                    sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
-                    if (!string.IsNullOrEmpty(sectionMatch))
-                        resultsList.Add(sectionMatch!);
-                }
 
                 int entryPointIndex = pex.FindEntryPointSectionIndex();
                 var entryPointSectionName = pex.SectionNames?[entryPointIndex];
@@ -113,17 +107,13 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
-                if (!string.IsNullOrEmpty(sectionMatch))
-                {
-                    resultsList.Add(sectionMatch!);
-                }
-                else
-                {
-                    // Check the .data section, if it exists, for protected sections.
-                    sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
-                    if (!string.IsNullOrEmpty(sectionMatch))
-                        resultsList.Add(sectionMatch!);
-                }
+                if (sectionMatch != null)
+                    resultsList.Add(sectionMatch);
+
+                // Check the .data section, if it exists, for protected sections.
+                sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
+                if (sectionMatch != null)
+                    resultsList.Add(sectionMatch);
             }
 
             // Run Cactus Data Shield PE checks
@@ -249,7 +239,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, List{string})"/>
-        internal List<string> MacrovisionCheckDirectoryPath(string path, List<string>? files)
+        internal static List<string> MacrovisionCheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -261,7 +251,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="IPathCheck.CheckFilePath(string)"/>
-        internal string? MacrovisionCheckFilePath(string path)
+        internal static string? MacrovisionCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>
             {

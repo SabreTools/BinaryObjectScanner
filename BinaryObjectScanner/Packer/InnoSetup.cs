@@ -15,13 +15,17 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // Check for "Inno" in the reserved words
-            if (nex.Model.Stub?.Header?.Reserved2?[4] == 0x6E49 && nex.Model.Stub?.Header?.Reserved2?[5] == 0x6F6E)
+            var reserved2 = nex.Model.Stub?.Header?.Reserved2;
+            if (reserved2 != null && reserved2.Length > 5)
             {
-                string version = GetOldVersion(file, nex);
-                if (!string.IsNullOrEmpty(version))
-                    return $"Inno Setup {version}";
-                
-                return "Inno Setup (Unknown Version)";
+                if (reserved2[4] == 0x6E49 && reserved2[5] == 0x6F6E)
+                {
+                    string version = GetOldVersion(file, nex);
+                    if (!string.IsNullOrEmpty(version))
+                        return $"Inno Setup {version}";
+
+                    return "Inno Setup (Unknown Version)";
+                }
             }
 
             return null;
@@ -78,8 +82,8 @@ namespace BinaryObjectScanner.Packer
 
                 return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";
             }
-            
-            return "Unknown 1.X"; 
+
+            return "Unknown 1.X";
         }
     }
 }

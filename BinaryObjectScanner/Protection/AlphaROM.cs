@@ -69,9 +69,11 @@ namespace BinaryObjectScanner.Protection
             {
                 if (strs.Exists(s => s.Contains("This Game is Japan Only")))
                     return "Alpha-ROM";
+
                 // Found in "Filechk.exe" in Redump entry 115358.
                 if (strs.Exists(s => s.Contains("AlphaCheck.exe")))
                     return "Alpha-ROM";
+
                 // Found in "Uninstall.exe" in Redump entry 115358.
                 if (strs.Exists(s => s.Contains("AlphaCheck.dat")))
                     return "Alpha-ROM";

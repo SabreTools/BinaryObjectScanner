@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal string? CDillaCheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        internal static string? CDillaCheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Implement NE checks for "CDILLA05", "CDILLA10", "CDILLA16", and "CDILLA40".
 
@@ -60,7 +60,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal string? CDillaCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? CDillaCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -132,7 +132,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, List{string})"/>
-        internal List<string> CDillaCheckDirectoryPath(string path, List<string>? files)
+        internal static List<string> CDillaCheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -175,7 +175,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
-        internal string? CDillaCheckFilePath(string path)
+        internal static string? CDillaCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>
             {

@@ -16,9 +16,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Get the .shrink0 and .shrink2 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            bool shrink0Section = pex.ContainsSection(".shrink0", true);
-            bool shrink2Section = pex.ContainsSection(".shrink2", true);
-            if (shrink0Section || shrink2Section)
+            if (pex.ContainsSection(".shrink0", true) || pex.ContainsSection(".shrink2", true))
                 return "Shrinker";
 
             return null;

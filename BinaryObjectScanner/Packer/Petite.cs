@@ -16,8 +16,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             // Get the .petite section, if it exists -- TODO: Is there a version number that can be found?
-            bool petiteSection = pex.ContainsSection(".petite", exact: true);
-            if (petiteSection)
+            if (pex.ContainsSection(".petite", exact: true))
                 return "PEtite";
 
             return null;

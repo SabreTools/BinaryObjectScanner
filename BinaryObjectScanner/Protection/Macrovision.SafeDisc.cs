@@ -41,7 +41,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal string? SafeDiscCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? SafeDiscCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the sections from the executable, if possible
             var sections = pex.Model.SectionTable;
@@ -49,12 +49,18 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Found in Redump entry 57986.
-            if (Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], ihne => ihne?.Name == "LTDLL_Authenticate"))
-                return "SafeDisc Lite";
+            if (pex.Model.ImportTable?.HintNameTable != null)
+            {
+                if (Array.Exists(pex.Model.ImportTable.HintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
+                    return "SafeDisc Lite";
+            }
 
             // Found in Redump entry 57986.
-            if (Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "ltdll.dll"))
-                return "SafeDisc Lite";
+            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
+            {
+                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
+                    return "SafeDisc Lite";
+            }
 
             // Get the .data/DATA section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
@@ -103,14 +109,10 @@ namespace BinaryObjectScanner.Protection
 
             // Found in Redump entries 20729 and 65569.
             // Get the debug data
-            try
-            {
-                if (pex.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
-                    return "SafeDisc";
-                if (pex.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
-                    return "SafeDisc";
-            }
-            catch { }
+            if (pex.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
+                return "SafeDisc";
+            if (pex.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
+                return "SafeDisc";
 
             // TODO: Investigate various section names:
             // "STLPORT_" - Found in Redump entry 11638.
@@ -126,7 +128,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckDirectoryPath(string, List{string})"/>
-        internal List<string> SafeDiscCheckDirectoryPath(string path, List<string>? files)
+        internal static List<string> SafeDiscCheckDirectoryPath(string path, List<string>? files)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -264,7 +266,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IPathCheck.CheckFilePath(string)"/>
-        internal string? SafeDiscCheckFilePath(string path)
+        internal static string? SafeDiscCheckFilePath(string path)
         {
             var matchers = new List<PathMatchSet>
             {
@@ -927,7 +929,7 @@ namespace BinaryObjectScanner.Protection
             // "SPLSH256.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
         }
 
-        private string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
+        private static string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
         {
             // Different versions of this executable correspond to different SafeDisc versions.
             var version = pex.FileVersion;

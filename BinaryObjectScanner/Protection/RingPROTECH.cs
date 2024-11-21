@@ -13,23 +13,22 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
+            // Only allow during debug
+            if (!includeDebug)
+                return null;
+
             // TODO: Obtain a sample to find where this string is in a typical executable
-            if (includeDebug)
+            var contentMatchSets = new List<ContentMatchSet>
             {
-                var contentMatchSets = new List<ContentMatchSet>
+                // (char)0x00 + Allocator + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
+                new(new byte?[]
                 {
-                    // (char)0x00 + Allocator + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
-                    new(new byte?[]
-                    {
-                        0x00, 0x41, 0x6C, 0x6C, 0x6F, 0x63, 0x61, 0x74,
-                        0x6F, 0x72, 0x00, 0x00, 0x00, 0x00
-                    }, "Ring PROTECH / ProRing [Check disc for physical ring] (Unconfirmed - Please report to us on Github)"),
-                };
+                    0x00, 0x41, 0x6C, 0x6C, 0x6F, 0x63, 0x61, 0x74,
+                    0x6F, 0x72, 0x00, 0x00, 0x00, 0x00
+                }, "Ring PROTECH / ProRing [Check disc for physical ring] (Unconfirmed - Please report to us on Github)"),
+            };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         // TODO: Confirm if these checks are only for ProRing or if they are also for older Ring PROTECH

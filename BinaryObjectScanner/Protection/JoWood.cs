@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -72,12 +73,7 @@ namespace BinaryObjectScanner.Protection
             if (fileContent == null)
                 return null;
 
-            int position = positions[0];
-            
-            byte[] versionBytes = new byte[8];
-            Array.Copy(fileContent, position + 67, versionBytes, 0, 8);
-            char[] version = Array.ConvertAll(versionBytes, b => (char)b);
-            return new string(version);
+            return Encoding.ASCII.GetString(fileContent, positions[0] + 67, 8);
         }
     }
 }

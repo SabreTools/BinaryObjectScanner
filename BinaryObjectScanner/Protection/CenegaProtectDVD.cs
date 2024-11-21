@@ -32,21 +32,15 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .cenega section, if it exists. Seems to be found in the protected game executable ("game.exe" in Redump entry 31422 and "Classic Car Racing.exe" in IA item "speed-pack").
-            bool cenegaSection = pex.ContainsSection(".cenega", exact: true);
-            if (cenegaSection)
+            if (pex.ContainsSection(".cenega", exact: true))
                 return "Cenega ProtectDVD";
 
             // Get the .cenega0 through .cenega2 sections, if they exists. Found in "cenega.dll" in Redump entry 31422 and IA item "speed-pack".
-            cenegaSection = pex.ContainsSection(".cenega0", exact: true);
-            if (cenegaSection)
+            if (pex.ContainsSection(".cenega0", exact: true))
                 return "Cenega ProtectDVD";
-
-            cenegaSection = pex.ContainsSection(".cenega1", exact: true);
-            if (cenegaSection)
+            if (pex.ContainsSection(".cenega1", exact: true))
                 return "Cenega ProtectDVD";
-
-            cenegaSection = pex.ContainsSection(".cenega2", exact: true);
-            if (cenegaSection)
+            if (pex.ContainsSection(".cenega2", exact: true))
                 return "Cenega ProtectDVD";
 
             return null;

@@ -33,10 +33,12 @@ namespace BinaryObjectScanner.Protection
                 return $"Stardock Product Activation {pex.GetInternalVersion()}";
 
             // TODO: Check for CVP* instead?
-            bool containsCheck = Array.Exists(pex.Model.ExportTable?.ExportNameTable?.Strings ?? [], s => s?.StartsWith("CVPInitializeClient") ?? false);
-            bool containsCheck2 = false;
+            bool containsCheck = false;
+            if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
+                containsCheck = Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s?.StartsWith("CVPInitializeClient") ?? false);
 
             // Get the .rdata section strings, if they exist
+            bool containsCheck2 = false;
             var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {

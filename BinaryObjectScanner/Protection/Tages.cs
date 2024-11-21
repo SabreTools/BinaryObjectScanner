@@ -51,7 +51,11 @@ namespace BinaryObjectScanner.Protection
                 var matchers = new List<ContentMatchSet>
                 {
                     // (char)0xE8 + u + (char)0x00 + (char)0x00 + (char)0x00 + (char)0xE8 + ?? + ?? + (char)0xFF + (char)0xFF + "h"
-                    new(new byte?[] { 0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8, null, null, 0xFF, 0xFF, 0x68 }, GetVersion, "TAGES"),
+                    new(new byte?[]
+                    {
+                        0xE8, 0x75, 0x00, 0x00, 0x00, 0xE8, null, null,
+                        0xFF, 0xFF, 0x68
+                    }, GetVersion, "TAGES"),
                 };
 
                 var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);

@@ -73,10 +73,13 @@ namespace BinaryObjectScanner.Packer
             {
                 // Check the normal version location first
                 int index = positions[0] - 5;
-                string versionString = Encoding.ASCII.GetString(fileContent, index, 4);
-                if (char.IsNumber(versionString[0]))
-                    return versionString;
-                
+                if (index >= 0 && index < fileContent.Length - 4)
+                {
+                    string versionString = Encoding.ASCII.GetString(fileContent, index, 4);
+                    if (char.IsNumber(versionString[0]))
+                        return versionString;
+                }
+
                 // Check for the old-style string
                 //
                 // Example:
@@ -84,9 +87,12 @@ namespace BinaryObjectScanner.Packer
                 // $Id: UPX 1.02 Copyright (C) 1996-2000 the UPX Team. All Rights Reserved. $
                 // UPX!
                 index = positions[0] - 67;
-                versionString = Encoding.ASCII.GetString(fileContent, index, 4);
-                if (char.IsNumber(versionString[0]))
-                    return versionString;
+                if (index >= 0 && index < fileContent.Length - 4)
+                {
+                    string versionString = Encoding.ASCII.GetString(fileContent, index, 4);
+                    if (char.IsNumber(versionString[0]))
+                        return versionString;
+                }
 
                 return "(Unknown Version)";
             }

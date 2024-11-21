@@ -188,7 +188,7 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// <param name="nex">New executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-        private FormatProperty? MatchesNEVersion(NewExecutable nex)
+        private static FormatProperty? MatchesNEVersion(NewExecutable nex)
         {
             // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
             switch (nex.Model.Stub?.Header?.NewExeHeaderAddr)
@@ -245,7 +245,7 @@ namespace BinaryObjectScanner.Packer
         /// </summary>
         /// <param name="pex">Portable executable to check</param>
         /// <returns>True if it matches a known version, false otherwise</returns>
-        private FormatProperty? GetPEFormat(PortableExecutable pex)
+        private static FormatProperty? GetPEFormat(PortableExecutable pex)
         {
             if (pex.OverlayAddress == 0x6e00
                 && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4

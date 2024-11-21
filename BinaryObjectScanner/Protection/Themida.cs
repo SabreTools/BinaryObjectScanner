@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -33,7 +32,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Get the "Arcsoft " section strings, if they exist
-            List<string>? strs = pex.GetFirstSectionStrings("Arcsoft ");
+            var strs = pex.GetFirstSectionStrings("Arcsoft ");
             if (strs != null)
             {
                 // Found in "uDigital Theatre.exe" in http://downloads.fyxm.net/ArcSoft-TotalMedia-23085.html (https://web.archive.org/web/20221114042838/http://files.fyxm.net/23/23085/totalmediatheatre3platinum_retail_tbyb_all.exe).

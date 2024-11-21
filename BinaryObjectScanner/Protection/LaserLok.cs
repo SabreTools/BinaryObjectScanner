@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
@@ -164,35 +166,11 @@ namespace BinaryObjectScanner.Protection
             if (!sectionContent.FirstPosition(check, out int position))
                 return "(Build unknown)";
 
-            string year, month, day;
-            if (versionTwo)
-            {
-                int index = position + 14;
+            int index = versionTwo ? position + 14 : position + 13;
 
-                byte[] temp = new byte[2];
-                Array.Copy(sectionContent, index, temp, 0, 2);
-                day = new string(Array.ConvertAll(temp, b => (char)b));
-                index += 3;
-                Array.Copy(sectionContent, index, temp, 0, 2);
-                month = new string(Array.ConvertAll(temp, b => (char)b));
-                index += 3;
-                Array.Copy(sectionContent, index, temp, 0, 2);
-                year = "20" + new string(Array.ConvertAll(temp, b => (char)b));
-            }
-            else
-            {
-                int index = position + 13;
-
-                byte[] temp = new byte[2];
-                Array.Copy(sectionContent, index, temp, 0, 2);
-                day = new string(Array.ConvertAll(temp, b => (char)b));
-                index += 3;
-                Array.Copy(sectionContent, index, temp, 0, 2);
-                month = new string(Array.ConvertAll(temp, b => (char)b));
-                index += 3;
-                Array.Copy(sectionContent, index, temp, 0, 2);
-                year = "20" + new string(Array.ConvertAll(temp, b => (char)b));
-            }
+            string day = Encoding.ASCII.GetString(sectionContent, index + 0, 2);
+            string month = Encoding.ASCII.GetString(sectionContent, index + 3, 2);
+            string year = "20" + Encoding.ASCII.GetString(sectionContent, index + 6, 2);
 
             return $"(Build {year}-{month}-{day})";
         }
@@ -203,9 +181,7 @@ namespace BinaryObjectScanner.Protection
             if (sectionContent == null)
                 return null;
 
-            byte[] temp = new byte[4];
-            Array.Copy(sectionContent, position + 76, temp, 0, 4);
-            return new string(Array.ConvertAll(temp, b => (char)b));
+            return Encoding.ASCII.GetString(sectionContent, position + 76, 4);
         }
 
         public static string? GetVersion16Bit(string firstMatchedString, IEnumerable<string>? files)
@@ -214,16 +190,12 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             using var fs = File.Open(firstMatchedString, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using var br = new BinaryReader(fs);
-            return GetVersion16Bit(br.ReadBytes((int)fs.Length));
+            return GetVersion16Bit(fs.ReadBytes((int)fs.Length));
         }
 
         private static string GetVersion16Bit(byte[] fileContent)
         {
-            byte[] temp = new byte[7];
-            Array.Copy(fileContent, 71, temp, 0, 7);
-            char[] version = Array.ConvertAll(temp, b => (char)b);
-
+            string version = Encoding.ASCII.GetString(fileContent, 71, 7);
             if (char.IsNumber(version[0]) && char.IsNumber(version[2]) && char.IsNumber(version[3]))
             {
                 if (char.IsNumber(version[5]) && char.IsNumber(version[6]))

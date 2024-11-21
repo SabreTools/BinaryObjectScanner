@@ -648,8 +648,10 @@ namespace BinaryObjectScanner.Packer
             string assemblyVersion = pex.AssemblyVersion ?? "Unknown Version";
 
             // Standard
-            if (sfxFileName == "VW95SE.SFX" || sfxFileName == "ST32E.SFX"
-                || sfxFileName == "WZIPSE32.exe" || sfxFileName == "SI32LPG.SFX"
+            if (sfxFileName == "VW95SE.SFX"
+                || sfxFileName == "ST32E.SFX"
+                || sfxFileName == "WZIPSE32.exe"
+                || sfxFileName == "SI32LPG.SFX"
                 || sfxFileName == "ST32E.WZE")
             {
                 return sfxTimeDateStamp switch
@@ -672,8 +674,10 @@ namespace BinaryObjectScanner.Packer
             }
 
             // Personal Edition
-            if (sfxFileName == "VW95LE.SFX" || sfxFileName == "PE32E.SFX"
-                || sfxFileName == "wzsepe32.exe" || sfxFileName == "SI32PE.SFX"
+            if (sfxFileName == "VW95LE.SFX"
+                || sfxFileName == "PE32E.SFX"
+                || sfxFileName == "wzsepe32.exe"
+                || sfxFileName == "SI32PE.SFX"
                 || sfxFileName == "SI32LPE.SFX")
             {
                 return sfxTimeDateStamp switch
@@ -715,7 +719,8 @@ namespace BinaryObjectScanner.Packer
             }
 
             // Software Installation
-            else if (sfxFileName == "VW95SRE.SFX" || sfxFileName == "SI32E.SFX"
+            else if (sfxFileName == "VW95SRE.SFX"
+                || sfxFileName == "SI32E.SFX"
                 || sfxFileName == "SI32E.WZE")
             {
                 return sfxTimeDateStamp switch

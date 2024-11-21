@@ -29,17 +29,17 @@ namespace BinaryObjectScanner.Packer
             if (pex.StubExecutableData != null)
             {
                 var matchers = new List<ContentMatchSet>
-            {
-                new(new byte?[]
                 {
-                    0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
-                    0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
-                    0x61, 0x36, 0x00, 0x92, 0x7B, 0x36, 0x01, 0x92,
-                    0x03, 0x29, 0x12, 0x92, 0x66, 0x36, 0x01, 0x92,
-                    0x89, 0x29, 0x0A, 0x92, 0x60, 0x36, 0x01, 0x92,
-                    0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92
-                }, "CExe")
-            };
+                    new(new byte?[]
+                    {
+                        0x25, 0x57, 0x6F, 0xC1, 0x61, 0x36, 0x01, 0x92,
+                        0x61, 0x36, 0x01, 0x92, 0x61, 0x36, 0x01, 0x92,
+                        0x61, 0x36, 0x00, 0x92, 0x7B, 0x36, 0x01, 0x92,
+                        0x03, 0x29, 0x12, 0x92, 0x66, 0x36, 0x01, 0x92,
+                        0x89, 0x29, 0x0A, 0x92, 0x60, 0x36, 0x01, 0x92,
+                        0xD9, 0x30, 0x07, 0x92, 0x60, 0x36, 0x01, 0x92
+                    }, "CExe")
+                };
 
                 var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
                 if (!string.IsNullOrEmpty(match))
@@ -64,14 +64,11 @@ namespace BinaryObjectScanner.Packer
                 if (payload == null || payload.Length == 0)
                     return false;
 
-                // Determine which compression was used
-                bool zlib = pex.FindResourceByNamedType("99, 1").Count > 0;
-
                 // Create the output data buffer
-                var data = new byte[0];
+                byte[]? data = [];
 
                 // If we had the decompression DLL included, it's zlib
-                if (zlib)
+                if (pex.FindResourceByNamedType("99, 1").Count > 0)
                 {
                     try
                     {

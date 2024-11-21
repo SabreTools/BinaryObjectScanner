@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -77,7 +76,7 @@ namespace BinaryObjectScanner.Protection
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
-            for (int i = (pex.SectionNames != null && pex.SectionNames.Length >= 2 ? pex.SectionNames.Length - 2 : 0); i < (pex.SectionNames?.Length ?? 0); i++)
+            for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)
             {
                 // Get the nth section strings, if they exist
                 var strs = pex.GetSectionStrings(i);
@@ -152,23 +151,18 @@ namespace BinaryObjectScanner.Protection
 
             int position = positions[0];
 
-#if NET20 || NET35 || NET40
             byte[] id1 = new byte[3];
             Array.Copy(fileContent, position + 5, id1, 0, 3);
             byte[] id2 = new byte[4];
             Array.Copy(fileContent, position + 16, id2, 0, 3);
-#else
-            var id1 = new ArraySegment<byte>(fileContent, position + 5, 3);
-            var id2 = new ArraySegment<byte>(fileContent, position + 16, 4);
-#endif
 
-            if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
-                && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
+            if (id1[0] == 0x00 && id1[1] == 0x00 && id1[2] == 0x00
+                && id2[0] == 0x00 && id2[1] == 0x10 && id2[2] == 0x00 && id2[3] == 0x00)
             {
                 return "v1";
             }
-            else if (id1.SequenceEqual(new byte[] { 0x2E, 0x6F, 0x26 })
-                && id2.SequenceEqual(new byte[] { 0xDB, 0xC5, 0x20, 0x3A })) // [0xDB, 0xC5, 0x20, 0x3A, 0xB9]
+            else if (id1[0] == 0x2E && id1[1] == 0x6F && id1[2] == 0x26
+                && id2[0] == 0xDB && id2[1] == 0xC5 && id2[2] == 0x20 && id2[3] == 0x3A) // [0xDB, 0xC5, 0x20, 0x3A, 0xB9]
             {
                 return "v2"; // TODO: Verify against other SolidShield 2 discs
             }
@@ -183,24 +177,20 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             int position = positions[0];
-#if NET20 || NET35 || NET40
+
             byte[] id1 = new byte[3];
             Array.Copy(fileContent, position + 4, id1, 0, 3);
             byte[] id2 = new byte[4];
             Array.Copy(fileContent, position + 15, id2, 0, 3);
-#else
-            var id1 = new ArraySegment<byte>(fileContent, position + 4, 3);
-            var id2 = new ArraySegment<byte>(fileContent, position + 15, 4);
-#endif
 
             if ((fileContent[position + 3] == 0x04 || fileContent[position + 3] == 0x05)
-                && id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
-                && id2.SequenceEqual(new byte[] { 0x00, 0x10, 0x00, 0x00 }))
+                && id1[0] == 0x00 && id1[1] == 0x00 && id1[2] == 0x00
+                && id2[0] == 0x00 && id2[1] == 0x10 && id2[2] == 0x00 && id2[3] == 0x00)
             {
                 return "2 (SolidShield v2 EXE Wrapper)";
             }
-            else if (id1.SequenceEqual(new byte[] { 0x00, 0x00, 0x00 })
-                && id2.SequenceEqual(new byte[] { 0x00, 0x00, 0x00, 0x00 }))
+            else if (id1[0] == 0x00 && id1[1] == 0x00 && id1[2] == 0x00
+                && id2[0] == 0x00 && id2[1] == 0x10 && id2[2] == 0x00 && id2[3] == 0x00)
             {
                 // "T" + (char)0x00 + "a" + (char)0x00 + "g" + (char)0x00 + "e" + (char)0x00 + "s" + (char)0x00 + "S" + (char)0x00 + "e" + (char)0x00 + "t" + (char)0x00 + "u" + (char)0x00 + "p" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + "0" + (char)0x00 + (char)0x8 + (char)0x00 + (char)0x1 + (char)0x0 + "F" + (char)0x00 + "i" + (char)0x00 + "l" + (char)0x00 + "e" + (char)0x00 + "V" + (char)0x00 + "e" + (char)0x00 + "r" + (char)0x00 + "s" + (char)0x00 + "i" + (char)0x00 + "o" + (char)0x00 + "n" + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00
                 byte?[] check2 =

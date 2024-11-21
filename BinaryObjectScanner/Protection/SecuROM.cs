@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -41,22 +40,18 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
             // Get the matrosch section, if it exists
-            bool matroschSection = pex.ContainsSection("matrosch", exact: true);
-            if (matroschSection)
+            if (pex.ContainsSection("matrosch", exact: true))
                 return $"SecuROM Matroschka Package";
 
-            bool dsstextSection = pex.ContainsSection(".dsstext", exact: true);
-            if (dsstextSection)
+            if (pex.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
 
             // Get the .securom section, if it exists
-            bool securomSection = pex.ContainsSection(".securom", exact: true);
-            if (securomSection)
+            if (pex.ContainsSection(".securom", exact: true))
                 return $"SecuROM {GetV7Version(pex)}";
 
             // Get the .sll section, if it exists
-            bool sllSection = pex.ContainsSection(".sll", exact: true);
-            if (sllSection)
+            if (pex.ContainsSection(".sll", exact: true))
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
@@ -73,7 +68,7 @@ namespace BinaryObjectScanner.Protection
                 if (nthSection == null)
                     continue;
 
-                string nthSectionName = Encoding.UTF8.GetString(nthSection.Name ?? []).TrimEnd('\0');
+                string nthSectionName = Encoding.ASCII.GetString(nthSection.Name ?? []).TrimEnd('\0');
                 if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
                     var nthSectionData = pex.GetFirstSectionData(nthSectionName);
@@ -104,9 +99,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            bool cmsdSection = pex.ContainsSection(".cmd_d", true);
-            bool cmstSection = pex.ContainsSection(".cms_t", true);
-            if (cmsdSection || cmstSection)
+            if (pex.ContainsSection(".cmd_d", true) || pex.ContainsSection(".cms_t", true))
                 return $"SecuROM 1-3";
 
             return null;

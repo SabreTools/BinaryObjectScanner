@@ -15,26 +15,25 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
+            // Only allow during debug
+            if (!includeDebug)
+                return null;
+
             // TODO: Obtain a sample to find where this string is in a typical executable
-            if (includeDebug)
+            var contentMatchSets = new List<ContentMatchSet>
             {
-                var contentMatchSets = new List<ContentMatchSet>
-                 {
-                     // ??[[__[[_ + (char)0x00 + {{ + (char)0x0 + (char)0x00 + {{ + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x0 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + ?;??;??
-                     new(new byte?[]
-                     {
-                         0x3F, 0x3F, 0x5B, 0x5B, 0x5F, 0x5F, 0x5B, 0x5B,
-                         0x5F, 0x00, 0x7B, 0x7B, 0x00, 0x00, 0x7B, 0x7B,
-                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                         0x00, 0x20, 0x3F, 0x3B, 0x3F, 0x3F, 0x3B, 0x3F,
-                         0x3F
-                     }, "EXE Stealth"),
-                 };
+                // ??[[__[[_ + (char)0x00 + {{ + (char)0x0 + (char)0x00 + {{ + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x0 + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + ?;??;??
+                new(new byte?[]
+                {
+                    0x3F, 0x3F, 0x5B, 0x5B, 0x5F, 0x5F, 0x5B, 0x5B,
+                    0x5F, 0x00, 0x7B, 0x7B, 0x00, 0x00, 0x7B, 0x7B,
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x20, 0x3F, 0x3B, 0x3F, 0x3F, 0x3B, 0x3F,
+                    0x3F
+                }, "EXE Stealth"),
+            };
 
-                return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-            }
-
-            return null;
+            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
         }
 
         /// <inheritdoc/>
@@ -57,18 +56,17 @@ namespace BinaryObjectScanner.Packer
             //  `ExeStealth V2 Shareware not for public - This text not in registered version - www.webtoolmaster.com`
 
             // Get the ExeS/EXES section, if it exists
-            bool exesSection = pex.ContainsSection("ExeS", exact: true) || pex.ContainsSection("EXES", exact: true);
-            if (exesSection)
+            if (pex.ContainsSection("ExeS", exact: true))
+                return "EXE Stealth 2.41-2.75";
+            if (pex.ContainsSection("EXES", exact: true))
                 return "EXE Stealth 2.41-2.75";
 
             // Get the mtw section, if it exists
-            bool mtwSection = pex.ContainsSection("mtw", exact: true);
-            if (mtwSection)
+            if (pex.ContainsSection("mtw", exact: true))
                 return "EXE Stealth 1.1";
 
             // Get the rsrr section, if it exists
-            bool rsrrSection = pex.ContainsSection("rsrr", exact: true);
-            if (rsrrSection)
+            if (pex.ContainsSection("rsrr", exact: true))
                 return "EXE Stealth 2.76";
 
             return null;

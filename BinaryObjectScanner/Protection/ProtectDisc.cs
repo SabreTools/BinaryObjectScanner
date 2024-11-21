@@ -89,8 +89,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .vob.pcd section, if it exists
-            bool vobpcdSection = pex.ContainsSection(".vob.pcd", exact: true);
-            if (vobpcdSection)
+            if (pex.ContainsSection(".vob.pcd", exact: true))
                 return "VOB ProtectCD";
 
             return null;
@@ -217,16 +216,22 @@ namespace BinaryObjectScanner.Protection
 
             int index = positions[0] + 37;
             byte subversion = fileContent[index];
+
             index += 2;
             byte version = fileContent[index];
+
             index = positions[0] + 49;
             int irefBuild = BitConverter.ToInt32(fileContent, index);
+
             index = positions[0] + 53;
             byte versionindicatorPD9 = fileContent[index];
+
             index = positions[0] + 0x40;
             byte subsubversionPD9x = fileContent[index];
+
             index++;
             byte subversionPD9x2 = fileContent[index];
+
             index++;
             byte subversionPD9x1 = fileContent[index];
 
@@ -308,10 +313,11 @@ namespace BinaryObjectScanner.Protection
         // TODO: Ensure that this version finding works for all known versions
         private static string GetVOBVersion(byte[] fileContent, int position)
         {
-            byte version = fileContent[position - 2];
-            byte subVersion = (byte)((fileContent[position - 3] & 0xF0) >> 4);
-            byte subSubVersion = (byte)((fileContent[position - 4] & 0xF0) >> 4);
-            return $"{version}.{subVersion}.{subSubVersion}";
+            byte major = fileContent[position - 2];
+            byte minor = (byte)((fileContent[position - 3] & 0xF0) >> 4);
+            byte patch = (byte)((fileContent[position - 4] & 0xF0) >> 4);
+
+            return $"{major}.{minor}.{patch}";
         }
     }
 }

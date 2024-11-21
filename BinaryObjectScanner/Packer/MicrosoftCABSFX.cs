@@ -51,7 +51,7 @@ namespace BinaryObjectScanner.Packer
             return false;
         }
 
-        private string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable pex)
         {
             // Check the internal versions
             var version = pex.GetInternalVersion();
