@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.FileType;
+using BinaryObjectScanner.Packer;
 using SabreTools.IO.Extensions;
 using WrapperFactory = SabreTools.Serialization.Wrappers.WrapperFactory;
 using WrapperType = SabreTools.Serialization.Wrappers.WrapperType;
@@ -88,9 +89,6 @@ namespace ExtractionTool
             // Get the file type
             WrapperType ft = WrapperFactory.GetFileType(magic, extension);
 
-            // Executables technically can be "extracted", but let's ignore that
-            // TODO: Support executables that include other stuff
-
             // 7-zip
             if (ft == WrapperType.SevenZip)
             {
@@ -164,6 +162,51 @@ namespace ExtractionTool
                 var cfb = new CFB();
                 cfb.Extract(stream, file, outputDirectory, includeDebug: true);
 #endif
+            }
+
+            // Executable
+            else if (ft == WrapperType.Executable)
+            {
+                // Build the executable information
+                Console.WriteLine("Extracting executable contents");
+                Console.WriteLine();
+
+                // Extract using the FileType
+                var exe = WrapperFactory.CreateExecutableWrapper(stream);
+                if (exe == null || exe is not SabreTools.Serialization.Wrappers.PortableExecutable pex)
+                {
+                    Console.WriteLine("Only portable executables are supported");
+                    Console.WriteLine();
+                    return;
+                }
+
+                // 7-zip SFX
+                var szsfx = new SevenZipSFX();
+                szsfx.Extract(file, pex, outputDirectory, includeDebug);
+
+                // CExe
+                var ce = new CExe();
+                ce.Extract(file, pex, outputDirectory, includeDebug);
+
+                // Embedded archives
+                var ea = new EmbeddedArchive();
+                ea.Extract(file, pex, outputDirectory, includeDebug);
+
+                // Embedded executables
+                var ee = new EmbeddedExecutable();
+                ee.Extract(file, pex, outputDirectory, includeDebug);
+
+                // WinRAR SFX
+                var wrsfx = new WinRARSFX();
+                wrsfx.Extract(file, pex, outputDirectory, includeDebug);
+
+                // WinZip SFX
+                var wzsfx = new WinZipSFX();
+                wzsfx.Extract(file, pex, outputDirectory, includeDebug);
+
+                // Wise Installer
+                var wi = new WiseInstaller();
+                wi.Extract(file, pex, outputDirectory, includeDebug);
             }
 
             // GCF
