@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+#if NET35_OR_GREATER || NETCOREAPP
 using System.Linq;
+#endif
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
@@ -631,7 +633,19 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get distinct and order
+#if NET20
+            var distinct = new List<string>();
+            foreach (string result in resultsList)
+            {
+                if (!distinct.Contains(result))
+                    distinct.Add(result);
+            }
+
+            distinct.Sort();
+            return distinct;
+#else
             return [.. resultsList.Distinct().OrderBy(s => s)];
+#endif
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NET35_OR_GREATER || NETCOREAPP
 using System.Linq;
+#endif
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
@@ -125,9 +127,28 @@ namespace BinaryObjectScanner.Protection
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
+#if NET20
+            bool intMatch = false;
+            if (nex.Model.ImportedNameTable?.Values != null)
+            {
+                foreach (var inte in nex.Model.ImportedNameTable.Values)
+                {
+                    if (inte?.NameString == null || inte.NameString.Length == 0)
+                        continue;
+
+                    string ns = Encoding.ASCII.GetString(inte.NameString);
+                    if (ns.Contains("CDCOPS"))
+                    {
+                        intMatch = true;
+                        break;
+                    }
+                }
+            }
+#else
             bool intMatch = nex.Model.ImportedNameTable?.Values?
                 .Select(inte => inte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(inte.NameString))
                 .Any(s => s.Contains("CDCOPS")) ?? false;
+#endif
             if (intMatch)
                 return "CD-Cops";
 

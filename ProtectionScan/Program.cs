@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+#if NET35_OR_GREATER || NETCOREAPP
 using System.Linq;
+#endif
 using BinaryObjectScanner;
 
 namespace ProtectionScan
@@ -85,13 +87,26 @@ namespace ProtectionScan
             }
 
             using var sw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
+#if NET20
+            var keysArr = new string[protections.Keys.Count];
+            protections.Keys.CopyTo(keysArr, 0);
+            Array.Sort(keysArr);
+            foreach (string key in keysArr)
+#else
             foreach (string key in protections.Keys.OrderBy(k => k))
+#endif
             {
                 // Skip over files with no protection
                 if (protections[key] == null || protections[key].Count == 0)
                     continue;
 
-                string line = $"{key}: {string.Join(", ", [.. protections[key].OrderBy(p => p)])}";
+#if NET20
+                string[] fileProtections = [.. protections[key]];
+                Array.Sort(fileProtections);
+#else
+                string[] fileProtections = [.. protections[key].OrderBy(p => p)];
+#endif
+                string line = $"{key}: {string.Join(", ", fileProtections)}";
                 Console.WriteLine(line);
                 sw.WriteLine(line);
             }

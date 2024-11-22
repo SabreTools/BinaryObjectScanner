@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+#if NET35_OR_GREATER || NETCOREAPP
 using System.Linq;
+#endif
 using System.Text;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -121,10 +123,22 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             // Find the version.txt file first
+#if NET20
+            string? versionPath = null;
+            foreach (string file in files)
+            {
+                if (Path.GetFileName(file).Equals("version.txt", StringComparison.OrdinalIgnoreCase))
+                {
+                    versionPath = file;
+                    break;
+                }
+            }
+#else
             var versionPath = files.FirstOrDefault(f => Path.GetFileName(f).Equals("version.txt", StringComparison.OrdinalIgnoreCase));
+#endif
             if (!string.IsNullOrEmpty(versionPath))
             {
-                var version = GetCactusDataShieldInternalVersion(versionPath);
+                var version = GetCactusDataShieldInternalVersion(versionPath!);
                 if (!string.IsNullOrEmpty(version))
                     return version!;
             }
