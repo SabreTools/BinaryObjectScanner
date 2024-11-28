@@ -54,10 +54,10 @@ namespace BinaryObjectScanner.FileType
             // Get the file count
             int filesLength = item.Model.Directory switch
             {
-                SabreTools.Models.SGA.Directory4 d4 => filesLength = d4.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory5 d5 => filesLength = d5.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory6 d6 => filesLength = d6.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory7 d7 => filesLength = d7.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory4 d4 => d4.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory5 d5 => d5.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory6 d6 => d6.Files?.Length ?? 0,
+                SabreTools.Models.SGA.Directory7 d7 => d7.Files?.Length ?? 0,
                 _ => 0,
             };
 
