@@ -68,7 +68,8 @@ namespace BinaryObjectScanner.Protection
             int position = -1;
 
             // Check the executable tables
-            bool containsCheck = pex.StubExecutableData?.FirstPosition(check, out position) ?? false;
+            position = pex.StubExecutableData?.FirstPosition(check) ?? -1;
+            bool containsCheck = position > -1;
             bool containsCheck2 = Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
                 && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
                 && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
@@ -92,7 +93,9 @@ namespace BinaryObjectScanner.Protection
                     0x45, 0x4C, 0x33, 0x32, 0x2E, 0x64, 0x6C, 0x6C,
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 ];
-                containsCheck2 = pex.GetFirstSectionData(".text")?.FirstPosition(check2, out position2) ?? false;
+
+                position2 = pex.GetFirstSectionData(".text")?.FirstPosition(check2) ?? -1;
+                containsCheck2 = position2 > -1;
             }
             else
             {
@@ -163,7 +166,8 @@ namespace BinaryObjectScanner.Protection
                 0x55, 0x6E, 0x6B, 0x6F, 0x77, 0x6E, 0x00, 0x55,
                 0x6E, 0x6B, 0x6F, 0x77, 0x6E
             ];
-            if (!sectionContent.FirstPosition(check, out int position))
+            int position = sectionContent.FirstPosition(check);
+            if (position == -1)
                 return "(Build unknown)";
 
             int index = versionTwo ? position + 14 : position + 13;

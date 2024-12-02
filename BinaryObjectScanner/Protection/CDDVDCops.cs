@@ -210,11 +210,11 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 84517.
                 new(new FilePathMatch("CDCOPS.DLL"), "CD-Cops"),
-                new(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
-                new(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch(".W_X", matchCase: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch(".QZ_", matchCase: true, useEndsWith: true), "CD/DVD-Cops"),
 
-                new(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                new(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".GZ_", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".Qz", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -230,11 +230,11 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 84517.
                 new(new FilePathMatch("CDCOPS.DLL"), "CD-Cops"),
-                new(new PathMatch(".W_X", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
-                new(new PathMatch(".QZ_", matchExact: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch(".W_X", matchCase: true, useEndsWith: true), "CD/DVD-Cops"),
+                new(new PathMatch(".QZ_", matchCase: true, useEndsWith: true), "CD/DVD-Cops"),
 
-                new(new PathMatch(".GZ_", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                new(new PathMatch(".Qz", matchExact: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".GZ_", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                new(new PathMatch(".Qz", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);

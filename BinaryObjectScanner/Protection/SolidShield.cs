@@ -200,7 +200,9 @@ namespace BinaryObjectScanner.Protection
                     0x6C, 0x65, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6F,
                     0x6E, 0x00, 0x00, 0x00, 0x00
                 ];
-                if (fileContent.FirstPosition(check2, out int position2))
+
+                int position2 = fileContent.FirstPosition(check2);
+                if (position2 > -1)
                 {
                     position2--; // TODO: Verify this subtract
                     return $"2 + Tagès {fileContent[position2 + 0x38]}.{fileContent[position2 + 0x38 + 4]}.{fileContent[position2 + 0x38 + 8]}.{fileContent[position + 0x38 + 12]}";

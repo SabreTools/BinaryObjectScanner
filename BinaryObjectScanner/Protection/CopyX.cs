@@ -141,7 +141,7 @@ namespace BinaryObjectScanner.Protection
                         // Checks for whatever this data is.
                         // Samples: Redump ID 84759, Redump ID 107929. Professional discs also have this data, hence the exclusion check.
                         new(
-                        [
+                        new byte[] {
                             0x02, 0xFE, 0x4A, 0x4F, 0x52, 0x4B, 0x1C, 0xE0,
                             0x79, 0x8C, 0x7F, 0x85, 0x04, 0x00, 0x46, 0x46,
                             0x49, 0x46, 0x07, 0xF9, 0x9F, 0xA0, 0xA1, 0x9D,
@@ -150,7 +150,7 @@ namespace BinaryObjectScanner.Protection
                             0x65, 0x5F, 0xFB, 0x06, 0x31, 0x31, 0x31, 0x31,
                             0x00, 0x00, 0x1D, 0x1D, 0x1F, 0x1D, 0xFE, 0xFD,
                             0x51, 0x57, 0x56, 0x51, 0xFB, 0x06, 0x33, 0x34,
-                        ], "copy-X [Check disc for physical ring]"),
+                    }, "copy-X [Check disc for physical ring]"),
                     };
 
                     var match = MatchUtil.GetFirstMatch(lightFiles[0], block, matchers, false);

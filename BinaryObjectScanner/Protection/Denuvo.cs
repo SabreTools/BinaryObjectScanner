@@ -86,10 +86,10 @@ namespace BinaryObjectScanner.Protection
             {
                 // Denuvo Timing
                 new(
-                    [
+                    new byte[] {
                         0x44, 0x65, 0x6E, 0x75, 0x76, 0x6F, 0x20, 0x54,
                         0x69, 0x6D, 0x69, 0x6E, 0x67,
-                    ], "Denuvo")
+            }, "Denuvo")
             };
             var timingMatch = MatchUtil.GetFirstMatch(file, pex.EntryPointData, timingMatchers, includeDebug);
 
