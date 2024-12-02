@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Test.FileType
         }
 
         [Fact]
-        public void ExtractStream_Empty_False()
+        public void ExtractStream_Empty_True()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.Test.FileType
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
 
-            // TODO: Unexpected result -- Empty file recognized as valid
+            // Unexpected result -- Empty file recognized as valid in SharpCompress
             Assert.True(actual);
         }
     }
