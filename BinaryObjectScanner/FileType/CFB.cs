@@ -88,7 +88,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
-        public static string? DecodeStreamName(string input)
+        private static string? DecodeStreamName(string input)
         {
             if (input == null)
                 return null;
