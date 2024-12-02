@@ -165,14 +165,14 @@ namespace BinaryObjectScanner.FileType
             else if (!File.Exists(file))
                 return protections;
 
-            // If the stream isn't seekable
-            if (!stream.CanSeek)
-                return protections;
-
             // Read the file contents
             byte[] fileContent = [];
             try
             {
+                // If the stream isn't seekable
+                if (!stream.CanSeek)
+                    return protections;
+
                 stream.Seek(0, SeekOrigin.Begin);
                 fileContent = stream.ReadBytes((int)stream.Length);
                 if (fileContent == null)

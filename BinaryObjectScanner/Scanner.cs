@@ -231,7 +231,7 @@ namespace BinaryObjectScanner
         private ProtectionDictionary GetInternalProtections(string fileName, Stream stream)
         {
             // Quick sanity check before continuing
-            if (stream == null || !stream.CanRead || !stream.CanSeek)
+            if (!stream.CanRead)
                 return [];
 
             // Initialize the protections found
