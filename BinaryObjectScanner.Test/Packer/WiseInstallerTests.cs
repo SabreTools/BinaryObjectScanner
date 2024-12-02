@@ -7,6 +7,19 @@ namespace BinaryObjectScanner.Test.Packer
     public class WiseInstallerTests
     {
         [Fact]
+        public void CheckNewExecutableTest()
+        {
+            string file = "filename";
+            SabreTools.Models.NewExecutable.Executable model = new();
+            Stream source = new MemoryStream();
+            SabreTools.Serialization.Wrappers.NewExecutable nex = new(model, source);
+
+            var checker = new WiseInstaller();
+            string? actual = checker.CheckExecutable(file, nex, includeDebug: false);
+            Assert.Null(actual);
+        }
+    
+        [Fact]
         public void CheckPortableExecutableTest()
         {
             string file = "filename";
@@ -19,6 +32,20 @@ namespace BinaryObjectScanner.Test.Packer
             Assert.Null(actual);
         }
     
+        [Fact]
+        public void ExtractNewExecutableTest()
+        {
+            string file = "filename";
+            SabreTools.Models.NewExecutable.Executable model = new();
+            Stream source = new MemoryStream();
+            SabreTools.Serialization.Wrappers.NewExecutable nex = new(model, source);
+            string outputDir = string.Empty;
+
+            var checker = new WiseInstaller();
+            bool actual = checker.Extract(file, nex, outputDir, includeDebug: false);
+            Assert.False(actual);
+        }
+
         [Fact]
         public void ExtractPortableExecutableTest()
         {

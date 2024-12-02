@@ -7,6 +7,19 @@ namespace BinaryObjectScanner.Test.Packer
     public class InnoSetupTests
     {
         [Fact]
+        public void CheckNewExecutableTest()
+        {
+            string file = "filename";
+            SabreTools.Models.NewExecutable.Executable model = new();
+            Stream source = new MemoryStream();
+            SabreTools.Serialization.Wrappers.NewExecutable nex = new(model, source);
+
+            var checker = new InnoSetup();
+            string? actual = checker.CheckExecutable(file, nex, includeDebug: false);
+            Assert.Null(actual);
+        }
+
+        [Fact]
         public void CheckPortableExecutableTest()
         {
             string file = "filename";
@@ -18,7 +31,21 @@ namespace BinaryObjectScanner.Test.Packer
             string? actual = checker.CheckExecutable(file, pex, includeDebug: false);
             Assert.Null(actual);
         }
-    
+
+        [Fact]
+        public void ExtractNewExecutableTest()
+        {
+            string file = "filename";
+            SabreTools.Models.NewExecutable.Executable model = new();
+            Stream source = new MemoryStream();
+            SabreTools.Serialization.Wrappers.NewExecutable nex = new(model, source);
+            string outputDir = string.Empty;
+
+            var checker = new InnoSetup();
+            bool actual = checker.Extract(file, nex, outputDir, includeDebug: false);
+            Assert.False(actual);
+        }
+
         [Fact]
         public void ExtractPortableExecutableTest()
         {

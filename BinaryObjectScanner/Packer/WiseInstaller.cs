@@ -71,10 +71,9 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug)
         {
-            Directory.CreateDirectory(outDir);
-
             try
             {
+                Directory.CreateDirectory(outDir);
                 return Extractor.ExtractTo(file, outDir);
             }
             catch (Exception ex)
