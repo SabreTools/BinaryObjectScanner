@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Protection
             var name = pex.ProductName;
 
             // Found in "Register.dll" in IA item "MGIPhotoSuite4.0AndPhotoVista2.02001".
-            if (name?.Equals("MGI Registration Utility", StringComparison.Ordinal) == true)
+            if (name.OptionalEquals("MGI Registration Utility", StringComparison.Ordinal))
                 return $"MGI Registration {pex.GetInternalVersion()}";
 
             // Found in "Register.dll" from "VideoWaveIII" in IA item "mgi-videowave-iii-version-3.00-mgi-software-2000".

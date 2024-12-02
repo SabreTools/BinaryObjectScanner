@@ -18,15 +18,15 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.Contains("Copy Protection Viewer") == true)
+            if (name.OptionalContains("Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
             name = pex.LegalTrademarks;
-            if (name?.Contains("WTM Copy Protection") == true)
+            if (name.OptionalContains("WTM Copy Protection"))
                 return "WTM Protection Viewer";
 
             name = pex.ProductName;
-            if (name?.Contains("WTM Copy Protection Viewer") == true)
+            if (name.OptionalContains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
             // Get the code/CODE section strings, if they exist

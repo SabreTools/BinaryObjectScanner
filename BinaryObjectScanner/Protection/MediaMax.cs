@@ -25,11 +25,11 @@ namespace BinaryObjectScanner.Protection
 
             // Used to detect "LicGen.exe", found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
             var name = pex.FileDescription;
-            if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
                 return $"MediaMax CD-3";
 
             name = pex.ProductName;
-            if (name?.StartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
                 return $"MediaMax CD-3";
 
             if (pex.FindGenericResource("Cd3Ctl").Count > 0)

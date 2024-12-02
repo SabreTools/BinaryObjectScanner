@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Protection
 
             // TODO: Is this too broad in general?
             var name = pex.InternalName;
-            if (name?.StartsWith("EReg", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("EReg", StringComparison.OrdinalIgnoreCase))
                 return $"Executable-Based Online Registration {pex.GetInternalVersion()}";
 
             return null;

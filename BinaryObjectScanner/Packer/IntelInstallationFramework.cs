@@ -16,15 +16,15 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             var name= pex.FileDescription;
-            if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
-                || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
+                || name.OptionalEquals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase))
             {
                 return $"Intel Installation Framework {pex.GetInternalVersion()}";
             }
 
             name = pex.ProductName;
-            if (name?.Equals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase) == true
-                || name?.Equals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
+                || name.OptionalEquals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase))
             {
                 return $"Intel Installation Framework {pex.GetInternalVersion()}";
             }

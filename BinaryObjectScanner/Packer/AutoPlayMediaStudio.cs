@@ -19,15 +19,13 @@ namespace BinaryObjectScanner.Packer
 
             // Known to detect versions 5.0.0.3 - 8.1.0.0
             var name = pex.ProductName;
-            if (name?.StartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))
                 return $"AutoPlay Media Studio {GetVersion(pex)}";
 
-            // Currently too vague, may be re-enabled in the future
-            /*
-            name  = Utilities.GetLegalCopyright(pex);
-            if (name?.StartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase) == true)
-                return $"AutoPlay Media Studio {GetVersion(pex)}";
-            */
+            // TODO: Currently too vague, may be re-enabled in the future
+            // name  = Utilities.GetLegalCopyright(pex);
+            // if (name.OptionalStartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase))
+            //     return $"AutoPlay Media Studio {GetVersion(pex)}";
 
             return null;
         }

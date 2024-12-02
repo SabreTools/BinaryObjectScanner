@@ -43,23 +43,23 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "denuvo-anti-cheat.sys".
             var name = pex.FileDescription;
-            if (name?.Equals("Denuvo Anti-Cheat Driver", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Denuvo Anti-Cheat Driver", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
             // Found in "denuvo-anti-cheat-update-service.exe"/"Denuvo Anti-Cheat Installer.exe".
-            if (name?.Equals("Denuvo Anti-Cheat Update Service", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Denuvo Anti-Cheat Update Service", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
             // Found in "denuvo-anti-cheat-update-service-launcher.dll".
-            if (name?.Equals("Denuvo Anti-Cheat Update Service Launcher", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Denuvo Anti-Cheat Update Service Launcher", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
             // Found in "denuvo-anti-cheat-runtime.dll".
-            if (name?.Equals("Denuvo Anti-Cheat Runtime", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Denuvo Anti-Cheat Runtime", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
             // Found in "denuvo-anti-cheat-crash-report.exe".
-            if (name?.Equals("Denuvo Anti-Cheat Crash Report Tool", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Denuvo Anti-Cheat Crash Report Tool", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
             // Data sourced from:

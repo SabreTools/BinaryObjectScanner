@@ -18,11 +18,11 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.Equals("Origin", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Origin", StringComparison.OrdinalIgnoreCase))
                 return "Origin";
 
             name = pex.ProductName;
-            if (name?.Equals("Origin", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Origin", StringComparison.OrdinalIgnoreCase))
                 return "Origin";
 
             return null;

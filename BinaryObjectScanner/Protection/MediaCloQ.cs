@@ -25,12 +25,12 @@ namespace BinaryObjectScanner.Protection
 
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
             var name = pex.FileDescription;
-            if (name?.StartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase))
                 return $"MediaCloQ";
 
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
             name = pex.ProductName;
-            if (name?.StartsWith("scvfy Application", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("scvfy Application", StringComparison.OrdinalIgnoreCase))
                 return $"MediaCloQ";
 
             return null;

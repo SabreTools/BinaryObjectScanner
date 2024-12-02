@@ -34,13 +34,13 @@ namespace BinaryObjectScanner.Protection
             var name = pex.InternalName;
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
-            if (name?.Contains("KalypsoLauncher.dll") == true)
+            if (name.OptionalContains("KalypsoLauncher.dll"))
                 return $"Kalypso Launcher {pex.GetInternalVersion()}";
 
             name = pex.OriginalFilename;
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
-            if (name?.Contains("KalypsoLauncher.dll") == true)
+            if (name.OptionalContains("KalypsoLauncher.dll"))
                 return $"Kalypso Launcher {pex.GetInternalVersion()}";
 
             // Get the .text section strings, if they exist

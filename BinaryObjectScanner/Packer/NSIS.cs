@@ -15,8 +15,8 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             var name = pex.AssemblyDescription;
-            if (name?.StartsWith("Nullsoft Install System") == true)
-                return $"NSIS {name.Substring("Nullsoft Install System".Length).Trim()}";
+            if (name.OptionalStartsWith("Nullsoft Install System"))
+                return $"NSIS {name!.Substring("Nullsoft Install System".Length).Trim()}";
 
             // Get the .data/DATA section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");

@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.InternalName;
-            if (name?.Equals("CDKey", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("CDKey", StringComparison.OrdinalIgnoreCase))
                 return "CD-Key / Serial";
 
             return null;

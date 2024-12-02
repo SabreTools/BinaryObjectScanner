@@ -28,11 +28,11 @@ namespace BinaryObjectScanner.Protection
 
             // Should be present on all LabelGate CD2 discs (Redump entry 95010 and product ID SVWC-7185).
             var name = pex.FileDescription;
-            if (name?.StartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase))
                 return $"LabelGate CD2 Media Player";
 
             name = pex.ProductName;
-            if (name?.StartsWith("MQSTART", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("MQSTART", StringComparison.OrdinalIgnoreCase))
                 return $"LabelGate CD2 Media Player";
 
             // Get the .data/DATA section strings, if they exist

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -22,28 +21,23 @@ namespace BinaryObjectScanner.Packer
             if (pex.ContainsSection(".aspack", exact: true))
                 return "ASPack 2.29";
 
-            // TODO: Re-enable all Entry Point checks after implementing
             // Use the entry point data, if it exists
-            // if (pex.EntryPointRaw != null)
-            // {
-            //     var matchers = GenerateMatchers();
-            //     var match = MatchUtil.GetFirstMatch(file, pex.EntryPointRaw, matchers, includeDebug);
-            //     if (!string.IsNullOrEmpty(match))
-            //         return match;
-            // }
+            if (pex.EntryPointData != null)
+            {
+                var matchers = GenerateMatchers();
+                var match = MatchUtil.GetFirstMatch(file, pex.EntryPointData, matchers, includeDebug);
+                if (!string.IsNullOrEmpty(match))
+                    return match;
+            }
 
             // Get the .adata* section, if it exists
-            var adataSection = pex.GetFirstSection(".adata", exact: false);
-            if (adataSection?.Name != null)
+            var adataSectionRaw = pex.GetFirstSectionData(".adata", exact: false);
+            if (adataSectionRaw != null)
             {
-                var adataSectionRaw = pex.GetFirstSectionData(Encoding.UTF8.GetString(adataSection.Name));
-                if (adataSectionRaw != null)
-                {
-                    var matchers = GenerateMatchers();
-                    var match = MatchUtil.GetFirstMatch(file, adataSectionRaw, matchers, includeDebug);
-                    if (!string.IsNullOrEmpty(match))
-                        return match;
-                }
+                var matchers = GenerateMatchers();
+                var match = MatchUtil.GetFirstMatch(file, adataSectionRaw, matchers, includeDebug);
+                if (!string.IsNullOrEmpty(match))
+                    return match;
             }
 
             return null;

@@ -28,12 +28,12 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             var name = pex.FileDescription;
-            if (name?.Equals("rgasdev", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))
                 return "RipGuard";
 
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             name = pex.ProductName;
-            if (name?.Equals("rgasdev", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))
                 return "RipGuard";
 
             if (!string.IsNullOrEmpty(file) && File.Exists(file))

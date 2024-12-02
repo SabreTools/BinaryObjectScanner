@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
             if (pex.Model.ExportTable?.ExportDirectoryTable != null)
             {
                 // Found in "cenega.dll" in IA item "speed-pack".
-                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name?.Equals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase) == true;
+                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name.OptionalEquals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase);
                 if (match)
                     return "Cenega ProtectDVD";
             }

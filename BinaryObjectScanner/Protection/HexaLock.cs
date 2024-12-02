@@ -42,16 +42,16 @@ namespace BinaryObjectScanner.Protection
             // TODO: Fix the following checks, as this information is visible via Windows Explorer but isn't currently being seen by BOS.
             // Found in "HCPSMng.exe".
             var name = pex.FileDescription;
-            if (name?.StartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
             // Found in the file typically named "Start_Here.exe".
-            if (name?.StartsWith("HCPS Loader", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("HCPS Loader", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
             // Found in both "HCPSMng.exe" and in the file typically named "Start_Here.exe".
             name = pex.ProductName;
-            if (name?.StartsWith("HCPS", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("HCPS", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
             // Get the .text section strings, if they exist

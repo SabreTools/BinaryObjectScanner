@@ -21,21 +21,21 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
+            if (name.OptionalContains("ImpulseReactor Dynamic Link Library"))
                 return $"Impulse Reactor Core Module {pex.GetInternalVersion()}";
 
             name = pex.ProductName;
-            if (name?.Contains("ImpulseReactor Dynamic Link Library") == true)
+            if (name.OptionalContains("ImpulseReactor Dynamic Link Library"))
                 return $"Impulse Reactor Core Module {pex.GetInternalVersion()}";
 
             name = pex.OriginalFilename;
-            if (name?.Contains("ReactorActivate.exe") == true)
+            if (name.OptionalContains("ReactorActivate.exe"))
                 return $"Stardock Product Activation {pex.GetInternalVersion()}";
 
             // TODO: Check for CVP* instead?
             bool containsCheck = false;
             if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
-                containsCheck = Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s?.StartsWith("CVPInitializeClient") ?? false);
+                containsCheck = Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s.OptionalStartsWith("CVPInitializeClient"));
 
             // Get the .rdata section strings, if they exist
             bool containsCheck2 = false;

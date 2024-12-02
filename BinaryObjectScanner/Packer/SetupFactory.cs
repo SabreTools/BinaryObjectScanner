@@ -19,16 +19,16 @@ namespace BinaryObjectScanner.Packer
 
             // Known to detect versions 7.0.5.1 - 9.1.0.0
             var name = pex.LegalCopyright;
-            if (name?.StartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(pex)}";
 
             name = pex.ProductName;
-            if (name?.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(pex)}";
 
             // Known to detect version 5.0.1 - 6.0.1.3
             name = pex.FileDescription;
-            if (name?.StartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(pex)}";
 
             // Longer version of the check that can be used if false positves become an issue:

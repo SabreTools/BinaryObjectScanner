@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "RngInterstitial.dll" in the RealArcade installation directory in IA item "Nova_RealArcadeCD_USA".
             var name = pex.FileDescription;
-            if (name?.Contains("RngInterstitial") == true)
+            if (name.OptionalContains("RngInterstitial"))
                 return "RealArcade";
 
             return null;

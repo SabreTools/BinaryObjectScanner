@@ -17,11 +17,11 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             var name= pex.InternalName;
-            if (name?.Equals("Wextract", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Wextract", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             name = pex.OriginalFilename;
-            if (name?.Equals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             // Get the .data/DATA section strings, if they exist

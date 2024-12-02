@@ -20,23 +20,23 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.Contains("SecuROM PA") == true)
+            if (name.OptionalContains("SecuROM PA"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
             name = pex.InternalName;
-            if (name?.Equals("paul.dll") == true)
+            if (name.OptionalEquals("paul.dll"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
-            else if (name?.Equals("paul_dll_activate_and_play.dll") == true)
+            else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
-            else if (name?.Equals("paul_dll_preview_and_review.dll") == true)
+            else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
             name = pex.OriginalFilename;
-            if (name?.Equals("paul_dll_activate_and_play.dll") == true)
+            if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
             name = pex.ProductName;
-            if (name?.Contains("SecuROM Activate & Play") == true)
+            if (name.OptionalContains("SecuROM Activate & Play"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
             // Get the matrosch section, if it exists

@@ -32,29 +32,29 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "AbeWincw.dll" in Redump entry 116358 and in "TOYSGMcw.dll" in the "TOYSTORY" installation folder from Redump entry 12354.
             var name = pex.ProductName;
-            if (name?.Equals("ChannelWare Utilities") == true)
+            if (name.OptionalEquals("ChannelWare Utilities"))
                 return "Channelware";
 
             // Found in "cwbrowse.exe" in the "Channelware" folder installed from Redump entry 12354.
-            if (name?.Equals("Channelware Browser Launcher") == true)
+            if (name.OptionalEquals("Channelware Browser Launcher"))
                 return "Channelware";
 
             // Found in "cwuninst.exe" in the "Channelware" folder installed from Redump entry 12354.
-            if (name?.Equals("Channelware Launcher Uninstall Application") == true)
+            if (name.OptionalEquals("Channelware Launcher Uninstall Application"))
                 return "Channelware";
 
             // Found in "cwbrowse.exe" in the "Channelware\CWBrowse" folder installed from Redump entry 116358.
-            if (name?.Equals("Channelware Authorization Server Browser Launcher") == true)
+            if (name.OptionalEquals("Channelware Authorization Server Browser Launcher"))
                 return "Channelware";
 
             name = pex.FileDescription;
             // Found in "cwuninst.exe" in the "Channelware" folder installed from Redump entry 12354.
-            if (name?.Equals("Channelware Launcher Uninstall") == true)
+            if (name.OptionalEquals("Channelware Launcher Uninstall"))
                 return "Channelware";
 
             name = pex.LegalTrademarks;
             // Found in "CWAuto.dll" and "Upgrader.exe" in the "TOYSTORY" installation folder from Redump entry 12354.
-            if (name?.Equals("Channelware") == true)
+            if (name.OptionalEquals("Channelware"))
                 return "Channelware";
 
             return null;

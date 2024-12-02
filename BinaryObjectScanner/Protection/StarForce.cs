@@ -33,49 +33,49 @@ namespace BinaryObjectScanner.Protection
             // "Helper Application" - Found in "protect.x64" and "protect.x86" in Redump entry 81756.
 
             // Found in "sfdrvrem.exe" in Redump entry 102677.
-            if (name?.Contains("FrontLine Drivers Removal Tool") == true)
+            if (name.OptionalContains("FrontLine Drivers Removal Tool"))
                 return $"StarForce FrontLine Driver Removal Tool";
 
             // Found in "protect.exe" in Redump entry 94805.
-            if (name?.Contains("FrontLine Protection GUI Application") == true)
+            if (name.OptionalContains("FrontLine Protection GUI Application"))
                 return $"StarForce {pex.GetInternalVersion()}";
 
             // Found in "protect.dll" in Redump entry 94805.
-            if (name?.Contains("FrontLine Protection Library") == true)
+            if (name.OptionalContains("FrontLine Protection Library"))
                 return $"StarForce {pex.GetInternalVersion()}";
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
-            if (name?.Contains("FrontLine Helper") == true)
+            if (name.OptionalContains("FrontLine Helper"))
                 return $"StarForce {pex.GetInternalVersion()}";
 
             // TODO: Find a sample of this check.
-            if (name?.Contains("Protected Module") == true)
+            if (name.OptionalContains("Protected Module"))
                 return $"StarForce 5";
 
             name = pex.LegalCopyright;
-            if (name?.StartsWith("(c) Protection Technology") == true) // (c) Protection Technology (StarForce)?
+            if (name.OptionalStartsWith("(c) Protection Technology")) // (c) Protection Technology (StarForce)?
                 return $"StarForce {pex.GetInternalVersion()}";
-            else if (name?.Contains("Protection Technology") == true) // Protection Technology (StarForce)?
+            else if (name.OptionalContains("Protection Technology")) // Protection Technology (StarForce)?
                 return $"StarForce {pex.GetInternalVersion()}";
 
             // TODO: Decide if internal name checks are safe to use.
             name = pex.InternalName;
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
-            if (name?.Equals("CORE.ADMIN", StringComparison.Ordinal) == true)
+            if (name.OptionalEquals("CORE.ADMIN", StringComparison.Ordinal))
                 return $"StarForce {pex.GetInternalVersion()}";
 
             
             // These checks currently disabled due being possibly too generic:
             // Found in "protect.dll" in Redump entry 94805.
-            // if (name?.Equals("CORE.DLL", StringComparison.Ordinal) == true)
+            // if (name.OptionalEquals("CORE.DLL", StringComparison.Ordinal))
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
             //
             // Found in "protect.exe" in Redump entry 94805.
-            // if (name?.Equals("CORE.EXE", StringComparison.Ordinal) == true)
+            // if (name.OptionalEquals("CORE.EXE", StringComparison.Ordinal))
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
             //
-            // else if (name?.Equals("protect.exe", StringComparison.Ordinal) == true)
+            // else if (name.OptionalEquals("protect.exe", StringComparison.Ordinal))
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
 
             // Check the export name table

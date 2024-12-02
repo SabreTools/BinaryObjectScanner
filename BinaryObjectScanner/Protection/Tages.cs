@@ -30,15 +30,15 @@ namespace BinaryObjectScanner.Protection
             // - TagesClient.dat (Does not always exist)
 
             var name = pex.FileDescription;
-            if (name?.StartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(pex)}";
-            else if (name?.StartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
             name = pex.ProductName;
-            if (name?.StartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(pex)}";
-            else if (name?.StartsWith("T@GES", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(pex)}";
 
             // TODO: Add entry point check

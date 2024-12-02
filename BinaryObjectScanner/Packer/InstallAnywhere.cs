@@ -17,11 +17,11 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             var name= pex.FileDescription;
-            if (name?.StartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase))
                 return $"InstallAnywhere {GetVersion(pex)}";
 
             name = pex.ProductName;
-            if (name?.StartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase))
                 return $"InstallAnywhere {GetVersion(pex)}";
 
             return null;

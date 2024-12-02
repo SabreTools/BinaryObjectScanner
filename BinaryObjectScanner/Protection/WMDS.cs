@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
             var name = pex.FileDescription;
-            if (name?.StartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase))
                 return "Windows Media Data Session DRM";
 
             // Found in "autorun.exe" ("Touch" by Amerie).

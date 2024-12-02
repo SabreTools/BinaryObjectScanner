@@ -49,27 +49,27 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "LineRider2.exe" in Redump entry 6236
             var name = pex.FileDescription;
-            if (name?.Equals("ByteShield Client") == true)
+            if (name.OptionalEquals("ByteShield Client"))
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
             name = pex.InternalName;
-            if (name?.Equals("ByteShield") == true)
+            if (name.OptionalEquals("ByteShield"))
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
             name = pex.OriginalFilename;
-            if (name?.Equals("ByteShield.EXE") == true)
+            if (name.OptionalEquals("ByteShield.EXE"))
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
             name = pex.ProductName;
-            if (name?.Equals("ByteShield Client") == true)
+            if (name.OptionalEquals("ByteShield Client"))
                 return $"ByteShield Activation Client {pex.GetInternalVersion()}";
 
             // Found in "ByteShield.dll" in Redump entry 6236
             name = pex.Model.ExportTable?.ExportDirectoryTable?.Name;
-            if (name?.Equals("ByteShield Client") == true)
+            if (name.OptionalEquals("ByteShield Client"))
                 return "ByteShield Component Module";
 
             // Found in "LineRider2.exe" in Redump entry 6236
@@ -91,7 +91,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "LineRider2.exe" in Redump entry 6236
-                if (strs.Exists(s => s?.Contains("ByteShield") == true))
+                if (strs.Exists(s => s.OptionalContains("ByteShield")))
                     return "ByteShield";
             }
 
@@ -100,15 +100,15 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "ByteShield.dll" in Redump entry 6236
-                if (strs.Exists(s => s?.Contains("Byte|Shield") == true))
+                if (strs.Exists(s => s.OptionalContains("Byte|Shield")))
                     return "ByteShield Component Module";
 
                 // Found in "ByteShield.dll" in Redump entry 6236
-                else if (strs.Exists(s => s?.Contains("Byteshield0") == true))
+                else if (strs.Exists(s => s.OptionalContains("Byteshield0")))
                     return "ByteShield Component Module";
 
                 // Found in "ByteShield.dll" in Redump entry 6236
-                else if (strs.Exists(s => s?.Contains("ByteShieldLoader") == true))
+                else if (strs.Exists(s => s.OptionalContains("ByteShieldLoader")))
                     return "ByteShield Component Module";
             }
 
@@ -118,7 +118,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // TODO: Figure out if this specifically indicates if the file is encrypted
                 // Found in "LineRider2.bbz" in Redump entry 6236
-                if (strs.Exists(s => s?.Contains("ByteShield") == true))
+                if (strs.Exists(s => s.OptionalContains("ByteShield")))
                     return "ByteShield";
             }
 

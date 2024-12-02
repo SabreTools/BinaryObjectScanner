@@ -43,37 +43,37 @@ namespace BinaryObjectScanner.Protection
             var name = pex.FileDescription;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598, and "Soulworker" (Steam Depot 1377581, Manifest 5092481117079359342).
-            if (name?.Contains("nProtect GameGuard Launcher") == true)
+            if (name.OptionalContains("nProtect GameGuard Launcher"))
                 return $"nProtect GameGuard ({pex.GetInternalVersion()})";
 
             // Found in "npkcrypt.dll" in Redump entry 90526.
-            if (name?.Contains("nProtect KeyCrypt Driver Support Dll") == true)
+            if (name.OptionalContains("nProtect KeyCrypt Driver Support Dll"))
                 return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
 
             // Found in "npkcrypt.sys" and "npkcusb.sys" in Redump entry 90526.
-            if (name?.Contains("nProtect KeyCrypt Driver") == true)
+            if (name.OptionalContains("nProtect KeyCrypt Driver"))
                 return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
 
             // Found in "npkpdb.dll" in Redump entry 90526.
-            if (name?.Contains("nProtect KeyCrypt Program Database DLL") == true)
+            if (name.OptionalContains("nProtect KeyCrypt Program Database DLL"))
                 return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
 
             name = pex.ProductName;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598.
-            if (name?.Contains("nProtect GameGuard Launcher") == true)
+            if (name.OptionalContains("nProtect GameGuard Launcher"))
                 return $"nProtect GameGuard ({pex.GetInternalVersion()})";
 
             // Found in "npkcrypt.dll" in Redump entry 90526.
-            if (name?.Contains("nProtect KeyCrypt Driver Support Dll") == true)
+            if (name.OptionalContains("nProtect KeyCrypt Driver Support Dll"))
                 return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
 
             // Found in "npkcrypt.sys" and "npkcusb.sys" in Redump entry 90526.
-            if (name?.Contains("nProtect KeyCrypt Driver") == true)
+            if (name.OptionalContains("nProtect KeyCrypt Driver"))
                 return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
 
             // Found in "npkpdb.dll" in Redump entry 90526.
-            if (name?.Contains("nProtect KeyCrypt Program Database DLL") == true)
+            if (name.OptionalContains("nProtect KeyCrypt Program Database DLL"))
                 return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
 
             return null;

@@ -58,13 +58,13 @@ namespace BinaryObjectScanner.Protection
             var name = pex.FileDescription;
 
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
-            if (name?.Equals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
                 resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}");
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
-            if (name?.Equals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase))
                 resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
 
             // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.

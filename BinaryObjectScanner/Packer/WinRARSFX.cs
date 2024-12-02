@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Packer
                 return null;
 
             var name = pex.AssemblyDescription;
-            if (name?.Contains("WinRAR archiver") == true)
+            if (name.OptionalContains("WinRAR archiver"))
                 return "WinRAR SFX";
 
             if (pex.FindDialogByTitle("WinRAR self-extracting archive").Count > 0)

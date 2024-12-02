@@ -15,15 +15,15 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.Contains("EReg MFC Application") == true)
+            if (name.OptionalContains("EReg MFC Application"))
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
-            else if (name?.Contains("Registration code installer program") == true)
+            else if (name.OptionalContains("Registration code installer program"))
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
-            else if (name?.Equals("EA DRM Helper", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalEquals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
                 return $"EA DRM Protection {pex.GetInternalVersion()}";
 
             name = pex.InternalName;
-            if (name?.Equals("CDCode", StringComparison.Ordinal) == true)
+            if (name.OptionalEquals("CDCode", StringComparison.Ordinal))
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
 
             if (pex.FindDialogByTitle("About CDKey").Count > 0)

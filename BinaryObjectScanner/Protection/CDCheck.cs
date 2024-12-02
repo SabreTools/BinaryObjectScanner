@@ -14,17 +14,17 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.Comments;
-            if (name?.Contains("CDCheck utlity for Microsoft Game Studios") == true)
+            if (name.OptionalContains("CDCheck utlity for Microsoft Game Studios"))
                 return "Microsoft Game Studios CD Check";
 
             // To broad to be of use
             //name = pex.InternalName;
-            //if (name?.Contains("CDCheck") == true)
+            //if (name.OptionalContains("CDCheck"))
             //    return "Microsoft Game Studios CD Check";
 
             // To broad to be of use
             //name = pex.OriginalFilename;
-            //if (name?.Contains("CDCheck.exe") == true)
+            //if (name.OptionalContains("CDCheck.exe"))
             //    return "Microsoft Game Studios CD Check";
 
             return null;

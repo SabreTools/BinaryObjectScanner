@@ -18,26 +18,26 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.Contains("Ubisoft Connect Installer") == true)
+            if (name.OptionalContains("Ubisoft Connect Installer"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Ubisoft Connect Service") == true)
+            else if (name.OptionalContains("Ubisoft Connect Service"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Ubisoft Connect WebCore") == true)
+            else if (name.OptionalContains("Ubisoft Connect WebCore"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Ubisoft Crash Reporter") == true)
+            else if (name.OptionalContains("Ubisoft Crash Reporter"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Ubisoft Game Launcher") == true)
+            else if (name.OptionalContains("Ubisoft Game Launcher"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Ubisoft Uplay Installer") == true)
+            else if (name.OptionalContains("Ubisoft Uplay Installer"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Uplay launcher") == true)
+            else if (name.OptionalContains("Uplay launcher"))
                 return "Uplay / Ubisoft Connect";
 
             // There's also a variant that looks like "Uplay <version> installer"
             name = pex.ProductName;
-            if (name?.Contains("Ubisoft Connect") == true)
+            if (name.OptionalContains("Ubisoft Connect"))
                 return "Uplay / Ubisoft Connect";
-            else if (name?.Contains("Uplay") == true)
+            else if (name.OptionalContains("Uplay"))
                 return "Uplay / Ubisoft Connect";
 
             return null;

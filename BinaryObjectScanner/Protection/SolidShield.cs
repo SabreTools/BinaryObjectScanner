@@ -23,31 +23,31 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.StartsWith("DVM Library", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {pex.GetInternalVersion()}";
 
-            else if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {pex.GetInternalVersion()}";
 
-            else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
             // Found in "tvdm.dll" in Redump entry 68166.
-            else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {GetInternalVersion(pex)}";
 
             name = pex.ProductName;
-            if (name?.StartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {pex.GetInternalVersion()}";
 
-            else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {pex.GetInternalVersion()}";
 
-            else if (name?.StartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
             // Found in "tvdm.dll" in Redump entry 68166.
-            else if (name?.StartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {GetInternalVersion(pex)}";
 
             // Get the .init section, if it exists

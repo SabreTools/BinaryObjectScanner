@@ -104,41 +104,41 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
             var name = pex.FileDescription;
-            if (name?.Equals("SafeCast2", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("SafeCast2", StringComparison.OrdinalIgnoreCase))
                 return "SafeCast";
 
             // Found in "cdac01ba.dll" from IA item "ejay_nestle_trial".
             // TODO: Figure out a reasonable way to parse version.
-            if (name?.Equals("CdaC01BA", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("CdaC01BA", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
             // Found in "C2CDEL.EXE" in IA item "britney-spears-special-edition-cd-rom".
-            if (name?.Equals("32-bit SafeCast Copy To Clear Delete", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("32-bit SafeCast Copy To Clear Delete", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
             // Found in "C2C.DLL" in IA item "britney-spears-special-edition-cd-rom".
-            if (name?.Equals("32-bit SafeCast Shell Copy To Clear DLL", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("32-bit SafeCast Shell Copy To Clear DLL", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
             // Found in "SCRfrsh.exe" in Redump entry 102979.
-            if (name?.Equals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast {pex.FileVersion}";
 
             // Found in "CDAC14BA.DLL" in Redump entry 95524.
-            if (name?.Equals("32-bit SafeCast Anchor Installer", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("32-bit SafeCast Anchor Installer", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
             // Found in "CDAC21BA.DLL" in Redump entry 95524.
-            if (name?.Equals("32-bit CdaC20BA", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("32-bit CdaC20BA", StringComparison.OrdinalIgnoreCase))
                 return $"SafeCast";
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
             name = pex.ProductName;
-            if (name?.Equals("SafeCast Windows NT", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("SafeCast Windows NT", StringComparison.OrdinalIgnoreCase))
                 return "SafeCast";
 
             // Found in "cdac01ba.dll" from IA item "ejay_nestle_trial".
-            if (name?.Equals("SafeCast", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("SafeCast", StringComparison.OrdinalIgnoreCase))
                 return "SafeCast";
 
             // Check for CDSHARE/DISAG_SH sections

@@ -70,33 +70,33 @@ namespace BinaryObjectScanner.Protection
             var name = pex.FileDescription;
 
             // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.
-            if (name?.Equals("32-bit C-Dilla DLL", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("32-bit C-Dilla DLL", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla License Management System";
 
             // Found in "CdaIns32.dll" and "CdSet32.exe" from version 3.27.000 of C-Dilla LMS.
-            if (name?.Equals("C-Dilla Windows 32-Bit RTS Installer", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("C-Dilla Windows 32-Bit RTS Installer", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Found in "CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 3.1.
-            if (name?.Equals("C-Dilla Windows 3.1x RTS", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("C-Dilla Windows 3.1x RTS", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Found in "CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 95.
-            if (name?.Equals("C-Dilla Windows 95 RTS", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("C-Dilla Windows 95 RTS", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Found in "CDANT.SYS"/"CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMSversion 3.27.000 for Windows NT.
-            if (name?.Equals("C-Dilla Windows NT RTS", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("C-Dilla Windows NT RTS", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Found in "CDANTSRV.EXE" from C-Dilla LMS version 3.27.000 for Windows NT, and an embedded executable contained in Redump entry 95524.
-            if (name?.Equals("C-Dilla RTS Service", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("C-Dilla RTS Service", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla RTS Service Version {pex.ProductVersion}";
 
             name = pex.ProductName;
 
             // Found in "CDANTSRV.EXE" from version 3.27.000 of C-Dilla LMS.
-            if (name?.Equals("CD-Secure/CD-Compress Windows NT", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("CD-Secure/CD-Compress Windows NT", StringComparison.OrdinalIgnoreCase))
                 return $"C-Dilla License Management System Version {pex.ProductVersion}";
 
             // Get string table resources

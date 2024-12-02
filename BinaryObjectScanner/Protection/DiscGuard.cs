@@ -47,21 +47,21 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             var name = pex.FileDescription;
-            if (name?.StartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
             // Found in "T29.dll" (Redump entry 31914).
-            if (name?.StartsWith("TTR Technologies DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("TTR Technologies DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return $"DiscGuard {GetVersion(pex)}";
 
             // Found in "T29.dll" (Redump entry 31914).
             name = pex.ProductName;
-            if (name?.StartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             name = pex.ProductName;
-            if (name?.StartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
             // Found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).

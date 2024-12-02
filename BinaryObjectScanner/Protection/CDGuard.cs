@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Protection
             if (pex.Model.ExportTable?.ExportDirectoryTable != null)
             {
                 // Found in "cdguard.dll" in Redump entry 97142 and IA item "pahgeby-he3hakomkou".
-                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name?.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase) == true;
+                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name.OptionalEquals("cdguard.dll", StringComparison.OrdinalIgnoreCase);
                 if (match)
                     return "CD-Guard Copy Protection System";
             }

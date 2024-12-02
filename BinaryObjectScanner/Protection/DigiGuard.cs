@@ -35,17 +35,17 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             var name = pex.FileDescription;
-            if (name?.Equals("DigiGuard3 Client") == true)
+            if (name.OptionalEquals("DigiGuard3 Client"))
                 return $"DigiGuard3";
 
             // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             name = pex.LegalTrademarks;
-            if (name?.Equals("DigiGuard") == true)
+            if (name.OptionalEquals("DigiGuard"))
                 return $"DigiGuard";
 
             // Found in "PJS3.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             name = pex.ProductName;
-            if (name?.Equals("Greenleaf Wrapper3") == true)
+            if (name.OptionalEquals("Greenleaf Wrapper3"))
                 return $"DigiGuard";
 
             return null;

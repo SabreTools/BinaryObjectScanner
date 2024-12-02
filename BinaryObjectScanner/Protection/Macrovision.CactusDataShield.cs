@@ -57,7 +57,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found in various files in "Les Paul & Friends" (Barcode 4 98806 834170).
             var name = pex.ProductName;
-            if (name?.Equals("CDS300", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("CDS300", StringComparison.OrdinalIgnoreCase))
                 return $"Cactus Data Shield 300";
 
             return null;

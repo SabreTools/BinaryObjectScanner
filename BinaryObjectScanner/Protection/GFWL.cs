@@ -18,9 +18,9 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             var name = pex.FileDescription;
-            if (name?.StartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase))
                 return $"Games for Windows LIVE - Zero Day Piracy Protection Module {pex.GetInternalVersion()}";
-            else if (name?.StartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase) == true)
+            else if (name.OptionalStartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase))
                 return $"Games for Windows LIVE {pex.GetInternalVersion()}";
 
             // Get the import directory table

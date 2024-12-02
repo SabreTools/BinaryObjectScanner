@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Figure out why this check doesn't work.
             // Found in "autorun.exe" in CopyKiller V3.64, V3.99, and V3.99a.
             var name = pex.ProductName;
-            if (name?.StartsWith("CopyKiller", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalStartsWith("CopyKiller", StringComparison.OrdinalIgnoreCase))
                 return "CopyKiller V3.64+";
 
             return null;

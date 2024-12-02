@@ -45,22 +45,22 @@ namespace BinaryObjectScanner.Protection
 
             // Found in 'cki32k.dll'
             var name = pex.CompanyName;
-            if (name?.StartsWith("CrypKey") == true)
+            if (name.OptionalStartsWith("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
-            
+
             name = pex.FileDescription;
 
             // Found in "CKSEC_32.DLL" in IA item "NBECRORV11".
-            if (name?.StartsWith("CrypKey Instant security library") == true)
+            if (name.OptionalStartsWith("CrypKey Instant security library"))
                 return $"CrypKey Instant {pex.GetInternalVersion()}";
 
             // Found in 'cki32k.dll'
-            if (name?.StartsWith("CrypKey") == true)
+            if (name.OptionalStartsWith("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 
             // Found in 'cki32k.dll'
             name = pex.LegalCopyright;
-            if (name?.Contains("CrypKey") == true)
+            if (name.OptionalContains("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 
             // Found in 'cki32k.dll'

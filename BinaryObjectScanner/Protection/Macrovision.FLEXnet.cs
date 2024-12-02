@@ -22,37 +22,37 @@ namespace BinaryObjectScanner.Protection
             var name = pex.ProductName;
 
             // Found in "IsSvcInstDanceEJay7.dll" in IA item "computer200709dvd" (Dance eJay 7).
-            if (name?.Equals("FLEXnet Activation Toolkit", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("FLEXnet Activation Toolkit", StringComparison.OrdinalIgnoreCase))
                 return "FLEXnet";
 
             // Found in "INSTALLS.EXE", "LMGR326B.DLL", "LMGRD.EXE", and "TAKEFIVE.EXE" in IA item "prog-17_202403".
-            if (name?.Equals("Globetrotter Software Inc lmgr326b Flexlm", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Globetrotter Software Inc lmgr326b Flexlm", StringComparison.OrdinalIgnoreCase))
                 return $"FlexLM {pex.ProductVersion}";
 
             // Generic case to catch unknown versions.
-            if (name?.Contains("Flexlm") == true)
+            if (name.OptionalContains("Flexlm"))
                 return "FlexLM (Unknown Version - Please report to us on GitHub)";
 
             name = pex.FileDescription;
 
             // Found in "INSTALLS.EXE", "LMGR326B.DLL", "LMGRD.EXE", and "TAKEFIVE.EXE" in IA item "prog-17_202403".
-            if (name?.Equals("lmgr326b", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("lmgr326b", StringComparison.OrdinalIgnoreCase))
                 return $"FlexLM {pex.ProductVersion}";
 
             name = pex.LegalTrademarks;
 
             // Found in "INSTALLS.EXE", "LMGR326B.DLL", "LMGRD.EXE", and "TAKEFIVE.EXE" in IA item "prog-17_202403".
-            if (name?.Equals("Flexible License Manager,FLEXlm,Globetrotter,FLEXID", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("Flexible License Manager,FLEXlm,Globetrotter,FLEXID", StringComparison.OrdinalIgnoreCase))
                 return $"FlexLM {pex.ProductVersion}";
 
-            if (name?.Contains("FLEXlm") == true)
+            if (name.OptionalContains("FLEXlm"))
                 return $"FlexLM {pex.ProductVersion}";
 
             name = pex.OriginalFilename;
 
             // Found in "INSTALLS.EXE", "LMGR326B.DLL", "LMGRD.EXE", and "TAKEFIVE.EXE" in IA item "prog-17_202403".
             // It isn't known why these various executables have the same original filename.
-            if (name?.Equals("lmgr326b.dll", StringComparison.OrdinalIgnoreCase) == true)
+            if (name.OptionalEquals("lmgr326b.dll", StringComparison.OrdinalIgnoreCase))
                 return $"FlexLM {pex.ProductVersion}";
 
             // Get the .data/DATA section strings, if they exist

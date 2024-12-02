@@ -23,12 +23,12 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
             var name = pex.InternalName;
-            if (name?.Equals("Softlock Protected Application") == true)
+            if (name.OptionalEquals("Softlock Protected Application"))
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
             name = pex.Comments;
-            if (name?.Equals("Softlock Protected Application") == true)
+            if (name.OptionalEquals("Softlock Protected Application"))
                 return "SoftLock";
 
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
