@@ -30,11 +30,8 @@ namespace BinaryObjectScanner.FileType
                 if (svm == null)
                     return null;
 
-                // Format the date
-                string date = $"{svm.Model.Year:0000}/{svm.Model.Month:00}/{svm.Model.Day:00}";
-
                 // Return the formatted value
-                return $"BD+ {date}";
+                return $"BD+ {svm.Date}";
             }
             catch (Exception ex)
             {

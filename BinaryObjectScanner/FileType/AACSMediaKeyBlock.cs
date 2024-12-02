@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.FileType
                     return null;
 
                 // Derive the version, if possible
-                var typeAndVersion = Array.Find(mkb.Model.Records ?? [], r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
+                var typeAndVersion = Array.Find(mkb.Records ?? [], r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
                 if (typeAndVersion == null)
                     return "AACS (Unknown Version)";
                 else

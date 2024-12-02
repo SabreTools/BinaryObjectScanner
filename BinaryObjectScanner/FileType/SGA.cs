@@ -52,22 +52,13 @@ namespace BinaryObjectScanner.FileType
         public static bool ExtractAll(SabreTools.Serialization.Wrappers.SGA item, string outputDirectory)
         {
             // Get the file count
-            int filesLength = item.Model.Directory switch
-            {
-                SabreTools.Models.SGA.Directory4 d4 => d4.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory5 d5 => d5.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory6 d6 => d6.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory7 d7 => d7.Files?.Length ?? 0,
-                _ => 0,
-            };
-
-            // If we have no files
-            if (filesLength == 0)
+            int fileCount = item.FileCount;
+            if (fileCount == 0)
                 return false;
 
             // Loop through and extract all files to the output
             bool allExtracted = true;
-            for (int i = 0; i < filesLength; i++)
+            for (int i = 0; i < fileCount; i++)
             {
                 allExtracted &= ExtractFile(item, i, outputDirectory);
             }
@@ -84,45 +75,16 @@ namespace BinaryObjectScanner.FileType
         public static bool ExtractFile(SabreTools.Serialization.Wrappers.SGA item, int index, string outputDirectory)
         {
             // Get the file count
-            int filesLength = item.Model.Directory switch
-            {
-                SabreTools.Models.SGA.Directory4 d4 => filesLength = d4.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory5 d5 => filesLength = d5.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory6 d6 => filesLength = d6.Files?.Length ?? 0,
-                SabreTools.Models.SGA.Directory7 d7 => filesLength = d7.Files?.Length ?? 0,
-                _ => 0,
-            };
-
-            // If we have no files
-            if (filesLength == 0)
+            int fileCount = item.FileCount;
+            if (fileCount == 0)
                 return false;
 
             // If the files index is invalid
-            if (index < 0 || index >= filesLength)
-                return false;
-
-            // Get the files
-            object? file = item.Model.Directory switch
-            {
-                SabreTools.Models.SGA.Directory4 d4 => d4.Files![index],
-                SabreTools.Models.SGA.Directory5 d5 => d5.Files![index],
-                SabreTools.Models.SGA.Directory6 d6 => d6.Files![index],
-                SabreTools.Models.SGA.Directory7 d7 => d7.Files![index],
-                _ => null,
-            };
-
-            // If the file is invalid
-            if (file == null)
+            if (index < 0 || index >= fileCount)
                 return false;
 
             // Create the filename
-            var filename = file switch
-            {
-                SabreTools.Models.SGA.File4 f4 => f4.Name,
-                _ => null,
-            };
-
-            // If the filename is invalid
+            var filename = item.GetFileName(index);
             if (filename == null)
                 return false;
 
@@ -130,26 +92,9 @@ namespace BinaryObjectScanner.FileType
             var parentNames = new List<string> { filename };
 
             // Get the parent directory
-            var folder = item.Model.Directory switch
-            {
-                SabreTools.Models.SGA.Directory4 d4 => Array.Find(d4.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
-                SabreTools.Models.SGA.Directory5 d5 => Array.Find(d5.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
-                SabreTools.Models.SGA.Directory6 d6 => Array.Find(d6.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
-                SabreTools.Models.SGA.Directory7 d7 => Array.Find(d7.Folders ?? [], f => f != null && index >= f.FileStartIndex && index <= f.FileEndIndex),
-                _ => default(object),
-            };
-
-            // If we have a parent folder
-            if (folder != null)
-            {
-                string folderName = folder switch
-                {
-                    SabreTools.Models.SGA.Folder4 f4 => f4.Name ?? string.Empty,
-                    SabreTools.Models.SGA.Folder5 f5 => f5.Name ?? string.Empty,
-                    _ => string.Empty,
-                };
+            string? folderName = item.GetParentName(index);
+            if (folderName != null)
                 parentNames.Add(folderName);
-            }
 
             // TODO: Should the section name/alias be used in the path as well?
 
@@ -165,37 +110,15 @@ namespace BinaryObjectScanner.FileType
             filename = Path.Combine([.. parentNames]);
 #endif
 
-            // Get the file offset
-            long fileOffset = file switch
-            {
-                SabreTools.Models.SGA.File4 f4 => f4.Offset,
-                _ => -1,
-            };
-
-            // Adjust the file offset
-            fileOffset += item.Model.Header switch
-            {
-                SabreTools.Models.SGA.Header4 h4 => h4.FileDataOffset,
-                SabreTools.Models.SGA.Header6 h6 => h6.FileDataOffset,
-                _ => -1,
-            };
-
-            // If the offset is invalid
+            // Get and adjust the file offset
+            long fileOffset = item.GetFileOffset(index);
+            fileOffset += item.FileDataOffset;
             if (fileOffset < 0)
                 return false;
 
             // Get the file sizes
-            long fileSize, outputFileSize;
-            switch (file)
-            {
-                case SabreTools.Models.SGA.File4 f4:
-                    fileSize = f4.SizeOnDisk;
-                    outputFileSize = f4.Size;
-                    break;
-
-                default:
-                    return false;
-            }
+            long fileSize = item.GetCompressedSize(index);
+            long outputFileSize = item.GetUncompressedSize(index);
 
             // Read the compressed data directly
             var compressedData = item.ReadFromDataSource((int)fileOffset, (int)fileSize);
