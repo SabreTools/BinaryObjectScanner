@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class SFFSTests
     {
         [Fact]
-        public void DetectFileTest()
+        public void DetectFile_EmptyString_Null()
         {
             string file = string.Empty;
             var detectable = new SFFS();
@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Test.FileType
         }
 
         [Fact]
-        public void DetectStream()
+        public void DetectStream_EmptyStream_Null()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Test.FileType
         }
 
         [Fact]
-        public void ExtractFileTest()
+        public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;

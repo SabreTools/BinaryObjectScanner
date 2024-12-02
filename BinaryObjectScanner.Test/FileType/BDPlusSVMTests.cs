@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class BDPlusSVMTests
     {
         [Fact]
-        public void DetectFileTest()
+        public void DetectFile_EmptyString_Null()
         {
             string file = string.Empty;
             var detectable = new BDPlusSVM();
@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Test.FileType
         }
 
         [Fact]
-        public void DetectStream()
+        public void DetectStream_EmptyStream_Null()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;

@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class BFPKTests
     {
         [Fact]
-        public void ExtractFileTest()
+        public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;
@@ -38,6 +38,30 @@ namespace BinaryObjectScanner.Test.FileType
             var extractable = new BFPK();
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
+            Assert.False(actual);
+        }
+    
+        [Fact]
+        public void ExtractAll_EmptyModel_False()
+        {
+            var model = new SabreTools.Models.BFPK.Archive();
+            var data = new MemoryStream();
+            var item = new SabreTools.Serialization.Wrappers.BFPK(model, data);
+            string outputDirectory = string.Empty;
+
+            bool actual = BFPK.ExtractAll(item, outputDirectory);
+            Assert.False(actual);
+        }
+
+        [Fact]
+        public void ExtractFile_EmptyModel_False()
+        {
+            var model = new SabreTools.Models.BFPK.Archive();
+            var data = new MemoryStream();
+            var item = new SabreTools.Serialization.Wrappers.BFPK(model, data);
+            string outputDirectory = string.Empty;
+
+            bool actual = BFPK.ExtractFile(item, 0, outputDirectory);
             Assert.False(actual);
         }
     }

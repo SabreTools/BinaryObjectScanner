@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class MicrosoftCABTests
     {
         [Fact]
-        public void ExtractFileTest()
+        public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;
