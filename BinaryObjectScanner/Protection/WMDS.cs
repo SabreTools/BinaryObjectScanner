@@ -18,11 +18,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
             var name = pex.FileDescription;
             if (name.OptionalStartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase))

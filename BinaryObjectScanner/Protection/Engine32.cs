@@ -17,11 +17,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Most every tested sample of "engine32.dll" has a product name of "engine32", and the file description typically follows the naming pattern of "[Game Name] DLL-helper".
 
             // Detects Engine32 within the game executables that contain it.

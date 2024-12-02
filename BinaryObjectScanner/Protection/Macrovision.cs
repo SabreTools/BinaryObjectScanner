@@ -46,11 +46,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Check for specific indications for individual Macrovision protections.
             var resultsList = new List<string>();
 

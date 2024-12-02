@@ -34,11 +34,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Fix the following checks, as this information is visible via Windows Explorer but isn't currently being seen by BOS.
             // Found in "HCPSMng.exe".
             var name = pex.FileDescription;

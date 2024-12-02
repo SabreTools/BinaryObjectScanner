@@ -47,11 +47,6 @@ namespace BinaryObjectScanner.Protection
             // TODO: Add support for detecting Alpha-ROM found in older games made with the RealLive engine. 
             // TODO: Add version detection for Alpha-ROM.
 
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the .data/DATA section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)

@@ -12,11 +12,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Known to detect versions 5.0.0.3 - 8.1.0.0
             var name = pex.ProductName;
             if (name.OptionalStartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))

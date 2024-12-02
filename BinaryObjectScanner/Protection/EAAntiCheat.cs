@@ -21,11 +21,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             var name = pex.FileDescription;
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Contains("EA Anticheat"))

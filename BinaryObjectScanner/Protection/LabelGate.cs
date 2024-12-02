@@ -21,11 +21,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Should be present on all LabelGate CD2 discs (Redump entry 95010 and product ID SVWC-7185).
             var name = pex.FileDescription;
             if (name.OptionalStartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase))

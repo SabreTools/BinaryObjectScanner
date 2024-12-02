@@ -19,11 +19,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Find what fvinfo field actually maps to this
             var name = pex.FileDescription;
 
@@ -65,7 +60,7 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("CORE.ADMIN", StringComparison.Ordinal))
                 return $"StarForce {pex.GetInternalVersion()}";
 
-            
+
             // These checks currently disabled due being possibly too generic:
             // Found in "protect.dll" in Redump entry 94805.
             // if (name.OptionalEquals("CORE.DLL", StringComparison.Ordinal))

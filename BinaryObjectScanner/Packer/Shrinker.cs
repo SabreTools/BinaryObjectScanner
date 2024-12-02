@@ -10,11 +10,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the .shrink0 and .shrink2 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
             if (pex.ContainsSection(".shrink0", true) || pex.ContainsSection(".shrink2", true))
                 return "Shrinker";

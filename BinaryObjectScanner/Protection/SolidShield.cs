@@ -17,11 +17,6 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             var name = pex.FileDescription;
             if (name.OptionalStartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {pex.GetInternalVersion()}";
@@ -76,6 +71,7 @@ namespace BinaryObjectScanner.Protection
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
+            var sections = pex.Model.SectionTable ?? [];
             for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)
             {
                 // Get the nth section strings, if they exist

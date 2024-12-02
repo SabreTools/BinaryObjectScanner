@@ -12,11 +12,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Known to detect versions 7.0.5.1 - 9.1.0.0
             var name = pex.LegalCopyright;
             if (name.OptionalStartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))

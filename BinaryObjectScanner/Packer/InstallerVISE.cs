@@ -11,11 +11,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the .data/DATA section strings, if they exist
             var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
@@ -23,7 +18,7 @@ namespace BinaryObjectScanner.Packer
                 if (strs.Exists(s => s.Contains("ViseMain")))
                     return "Installer VISE";
             }
-            
+
             return null;
         }
 

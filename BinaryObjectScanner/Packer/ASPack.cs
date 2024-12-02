@@ -12,11 +12,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the .aspack section, if it exists
             if (pex.ContainsSection(".aspack", exact: true))
                 return "ASPack 2.29";

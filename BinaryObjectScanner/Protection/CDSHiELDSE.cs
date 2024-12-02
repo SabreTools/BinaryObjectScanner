@@ -8,11 +8,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Indicates Hypertech Crack Proof as well?
             //// Get the import directory table
             //if (pex.Model.ImportTable?.ImportDirectoryTable != null)

@@ -40,11 +40,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             var name = pex.FileDescription;
             if (name.OptionalStartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))

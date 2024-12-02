@@ -11,12 +11,7 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
-            var name= pex.InternalName;
+            var name = pex.InternalName;
             if (name.OptionalEquals("Wextract", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 

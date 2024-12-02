@@ -21,11 +21,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? RipGuardCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             var name = pex.FileDescription;
             if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))

@@ -16,12 +16,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the 4th and 5th sections, if they exist (example names: ACE4/ACE5) (Found in Redump entries 94792, 94793)
+            var sections = pex.Model.SectionTable ?? [];
             for (int i = 3; i < sections.Length; i++)
             {
                 var nthSectionData = pex.GetSectionData(i);

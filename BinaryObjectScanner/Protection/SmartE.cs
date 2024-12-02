@@ -11,12 +11,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the last section strings, if they exist
+            var sections = pex.Model.SectionTable ?? [];
             var strs = pex.GetSectionStrings(sections.Length - 1);
             if (strs != null)
             {

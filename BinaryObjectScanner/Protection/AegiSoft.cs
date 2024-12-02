@@ -22,11 +22,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // There are possibly identifying Product Names for some files used in AegiSoft License Manager, but they were deemed too overmatching to use for the time being (Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA")..
             // "Asc001.dll" has the Product Name "Install Dynamic Link Library".
             // "Asc002.dll" has the Product Name "Transact Dynamic Link Library".
@@ -53,7 +48,7 @@ namespace BinaryObjectScanner.Protection
                     // ÿÿÿÿ\\.\ASCLM
                     new(new byte?[]
                     {
-                        0xFF, 0xFF, 0xFF, 0xFF, 0x5C, 0x5C, 0x2E, 0x5C, 
+                        0xFF, 0xFF, 0xFF, 0xFF, 0x5C, 0x5C, 0x2E, 0x5C,
                         0x41, 0x53, 0x43, 0x4C, 0x4D
                     }, "AegiSoft License Manager"),
                 };

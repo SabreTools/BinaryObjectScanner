@@ -14,11 +14,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             var name = pex.FileDescription;
             if (name.OptionalContains("SecuROM PA"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
@@ -62,6 +57,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
+            var sections = pex.Model.SectionTable ?? [];
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];

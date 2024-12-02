@@ -13,12 +13,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
-            //This produced false positives in some DirectX 9.0c installer files
+            // This produced false positives in some DirectX 9.0c installer files
             //"Y" + (char)0xC3 + "U" + (char)0x8B + (char)0xEC + (char)0x83 + (char)0xEC + "0SVW"
 
             // Get the .ldr and .ldt sections, if they exist

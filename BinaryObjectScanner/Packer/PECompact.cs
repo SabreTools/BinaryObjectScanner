@@ -10,11 +10,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // 0x4F434550 is "PECO"
             if (pex.Model.COFFFileHeader?.PointerToSymbolTable == 0x4F434550)
                 return "PE Compact v1.x";
@@ -32,7 +27,7 @@ namespace BinaryObjectScanner.Packer
             {
                 if (textSection.PointerToLinenumbers != 0)
                     return $"PE Compact v{textSection.PointerToLinenumbers} (internal version)";
-                
+
                 return "PE Compact v2.x (or newer)";
             }
 

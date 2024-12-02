@@ -24,11 +24,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             var name = pex.FileDescription;
             // Found in "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam).
             if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))

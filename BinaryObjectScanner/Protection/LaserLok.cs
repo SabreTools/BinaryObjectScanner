@@ -49,11 +49,6 @@ namespace BinaryObjectScanner.Protection
             //     0x33
             // }, "LaserLok 5"),
 
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Packed by SPEEnc V2 Asterios Parlamentas.PE
             byte?[] check =
             [
@@ -188,7 +183,7 @@ namespace BinaryObjectScanner.Protection
             return Encoding.ASCII.GetString(sectionContent, position + 76, 4);
         }
 
-        public static string? GetVersion16Bit(string firstMatchedString, IEnumerable<string>? files)
+        private static string? GetVersion16Bit(string firstMatchedString, IEnumerable<string>? files)
         {
             if (!File.Exists(firstMatchedString))
                 return string.Empty;

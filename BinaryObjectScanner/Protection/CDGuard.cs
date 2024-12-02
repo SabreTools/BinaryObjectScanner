@@ -25,11 +25,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Investigate the numerous ".guard" sections present in "Randevu.exe" in Redump entry 97142.
 
             // Get the export directory table
@@ -47,7 +42,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in "Randevu.exe" in Redump entry 97142.
                 bool match = Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name != null && idte.Name.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase));
                 if (match)
-                      return "CD-Guard Copy Protection System";
+                    return "CD-Guard Copy Protection System";
             }
 
             return null;

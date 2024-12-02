@@ -17,11 +17,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // If there are exactly 2 resources with type 99
             if (pex.FindResourceByNamedType("99, ").Count == 2)
                 return "CExe";

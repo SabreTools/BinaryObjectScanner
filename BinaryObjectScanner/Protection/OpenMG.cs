@@ -19,11 +19,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found in many different OpenMG related files ("Touch" by Amerie).
             var name = pex.LegalTrademarks;
             if (name.OptionalStartsWith("OpenMG", StringComparison.OrdinalIgnoreCase))

@@ -12,11 +12,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             var name = pex.FileDescription;
             if (name.OptionalContains("Ubisoft Connect Installer"))
                 return "Uplay / Ubisoft Connect";

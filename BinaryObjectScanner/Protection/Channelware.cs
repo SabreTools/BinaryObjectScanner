@@ -25,11 +25,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found in "AbeWincw.dll" in Redump entry 116358 and in "TOYSGMcw.dll" in the "TOYSTORY" installation folder from Redump entry 12354.
             var name = pex.ProductName;
             if (name.OptionalEquals("ChannelWare Utilities"))

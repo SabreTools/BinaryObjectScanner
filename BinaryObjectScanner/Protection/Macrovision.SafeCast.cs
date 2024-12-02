@@ -69,11 +69,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? SafeCastCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Investigate import hint/name table entry "CdaSysInstall"
             // TODO: Investigate string table entries: "CDWP02DG", "CDWP02DG", "CDWS02DG"
             // TODO: Invesitgate if the "AdobeLM.dll" file (along with mentions of "AdobeLM" in executables) uniquely identifies SafeCast, or if it can be used with different DRM. (Found in IA item ccd0605)

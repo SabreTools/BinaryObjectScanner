@@ -11,12 +11,7 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
-            var name= pex.FileDescription;
+            var name = pex.FileDescription;
             if (name.OptionalStartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase))
                 return $"InstallAnywhere {GetVersion(pex)}";
 

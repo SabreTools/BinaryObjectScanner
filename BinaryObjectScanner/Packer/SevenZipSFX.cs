@@ -8,11 +8,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the assembly description, if possible
             if (pex.AssemblyDescription.OptionalStartsWith("7-Zip Self-extracting Archive"))
                 return $"7-Zip SFX {pex.AssemblyDescription!.Substring("7-Zip Self-extracting Archive ".Length)}";

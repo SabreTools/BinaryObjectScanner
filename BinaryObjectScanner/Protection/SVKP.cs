@@ -26,11 +26,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Investigate the "Debugger or tool for monitoring detected!!!.Application cannot be run with debugger or monitoring tool(s) loaded!.            Please unload it and restart the application" strings present in seemingly every version.
 
             // Get the entry point data, if it exists.

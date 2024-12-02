@@ -43,11 +43,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? SafeDiscCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found in Redump entry 57986.
             if (pex.Model.ImportTable?.HintNameTable != null)
             {

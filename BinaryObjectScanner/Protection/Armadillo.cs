@@ -3,7 +3,7 @@ using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
-{ 
+{
     /// <summary>
     /// Armadillo was a license manager, packer, and DRM by "The Silicon Realm Toolworks": https://web.archive.org/web/20030203101931/http://www.siliconrealms.com/armadillo.shtml
     /// They were later bought by Digital River, and updated their website: https://web.archive.org/web/20031203021152/http://www.siliconrealms.com/armadillo.shtml
@@ -13,21 +13,16 @@ namespace BinaryObjectScanner.Protection
     /// Digital River itself also advertised Armadillo at first: https://web.archive.org/web/20040116043029/http://www.digitalriver.com:80/corporate/solutions06.shtml
     /// But then only advertised SoftwarePassport once it was released: https://web.archive.org/web/20040604065907/http://www.digitalriver.com/corporate/solutions06.shtml
     /// </summary>
-    
+
     // TODO: Add extraction
     // TODO: Add version checking, if possible
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    
+
     public class Armadillo : IExtractableExecutable<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Get the .nicode section, if it exists
             if (pex.ContainsSection(".nicode", exact: true))
                 return "Armadillo";

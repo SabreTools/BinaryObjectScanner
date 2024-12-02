@@ -34,11 +34,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // All current checks for Denuvo Anti-Cheat come from Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
             // Found in "denuvo-anti-cheat.sys".

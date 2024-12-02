@@ -20,12 +20,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // TODO: Figure out how to differentiate between V3.99 and V3.99a.
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // TODO: Figure out why this check doesn't work.
             // Found in "autorun.exe" in CopyKiller V3.64, V3.99, and V3.99a.
             var name = pex.ProductName;

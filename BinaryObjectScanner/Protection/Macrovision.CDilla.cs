@@ -62,11 +62,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? CDillaCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             var name = pex.FileDescription;
 
             // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.

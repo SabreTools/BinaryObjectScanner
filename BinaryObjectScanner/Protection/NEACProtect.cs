@@ -25,10 +25,6 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Most of the relevant executables are highly obfuscated, making executable detection mostly impractical.
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
 
             // Get the .neac0 and .neac1 sections, if they exist.
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".

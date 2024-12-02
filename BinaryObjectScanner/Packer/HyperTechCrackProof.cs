@@ -14,11 +14,6 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // This check may be overly limiting, as it excludes the sample provided to DiE (https://github.com/horsicq/Detect-It-Easy/issues/102).
             // TODO: Find further samples and invesitgate if the "peC" section is only present on specific versions.
             bool importTableMatch = Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [],

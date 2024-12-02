@@ -16,11 +16,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
-            // Get the sections from the executable, if possible
-            var sections = pex.Model.SectionTable;
-            if (sections == null)
-                return null;
-
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
             var name = pex.FileDescription;
             if (name.OptionalStartsWith("PlayJ Music Player", StringComparison.OrdinalIgnoreCase))
