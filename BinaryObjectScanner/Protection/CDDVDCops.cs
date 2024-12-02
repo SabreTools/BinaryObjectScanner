@@ -71,10 +71,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
         {
-            // Only allow during debug
-            if (!includeDebug)
-                return null;
-
             // TODO: Obtain a sample to find where this string is in a typical executable
             var contentMatchSets = new List<ContentMatchSet>
             {
