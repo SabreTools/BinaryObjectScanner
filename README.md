@@ -1,6 +1,5 @@
 # Binary Object Scanner
 
-[![Build status](https://ci.appveyor.com/api/projects/status/gmdft5bk1h8a1c31?svg=true)](https://ci.appveyor.com/project/mnadareski/BinaryObjectScanner)
 [![Program Build](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_programs.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_programs.yml)
 [![Nuget Pack](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_nupkg.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_nupkg.yml)
 
