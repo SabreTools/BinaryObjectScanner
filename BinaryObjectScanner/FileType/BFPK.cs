@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
 #if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Compressors;
@@ -26,24 +25,16 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            try
-            {
-                // Create the wrapper
-                var bfpk = SabreTools.Serialization.Wrappers.BFPK.Create(stream);
-                if (bfpk == null)
-                    return false;
-
-                // Extract all files
-                Directory.CreateDirectory(outDir);
-                ExtractAll(bfpk, outDir);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.WriteLine(ex);
+            // Create the wrapper
+            var bfpk = SabreTools.Serialization.Wrappers.BFPK.Create(stream);
+            if (bfpk == null)
                 return false;
-            }
+
+            // Extract all files
+            Directory.CreateDirectory(outDir);
+            ExtractAll(bfpk, outDir);
+
+            return true;
         }
 
         /// <summary>
@@ -119,12 +110,12 @@ namespace BinaryObjectScanner.FileType
                     fs.Write(data, 0, compressedSize);
                 }
 #if NET462_OR_GREATER || NETCOREAPP
-                    else
-                    {
-                        MemoryStream ms = new MemoryStream(data);
-                        ZlibStream zs = new ZlibStream(ms, CompressionMode.Decompress);
-                        zs.CopyTo(fs);
-                    }
+                else
+                {
+                    MemoryStream ms = new MemoryStream(data);
+                    ZlibStream zs = new ZlibStream(ms, CompressionMode.Decompress);
+                    zs.CopyTo(fs);
+                }
 #endif
 
                 return true;

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
@@ -22,24 +21,16 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            try
-            {
-                // Create the wrapper
-                var pff = SabreTools.Serialization.Wrappers.PFF.Create(stream);
-                if (pff == null)
-                    return false;
-
-                // Extract all files
-                Directory.CreateDirectory(outDir);
-                pff.ExtractAll(outDir);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.WriteLine(ex.Message);
+            // Create the wrapper
+            var pff = SabreTools.Serialization.Wrappers.PFF.Create(stream);
+            if (pff == null)
                 return false;
-            }
+
+            // Extract all files
+            Directory.CreateDirectory(outDir);
+            pff.ExtractAll(outDir);
+
+            return true;
         }
     }
 }

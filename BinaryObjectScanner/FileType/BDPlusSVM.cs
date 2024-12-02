@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 
@@ -22,23 +21,13 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Detect(Stream stream, string file, bool includeDebug)
         {
-            // If the BD+ file itself fails
-            try
-            {
-                // Create the wrapper
-                var svm = SabreTools.Serialization.Wrappers.BDPlusSVM.Create(stream);
-                if (svm == null)
-                    return null;
+            // Create the wrapper
+            var svm = SabreTools.Serialization.Wrappers.BDPlusSVM.Create(stream);
+            if (svm == null)
+                return null;
 
-                // Return the formatted value
-                return $"BD+ {svm.Date}";
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.WriteLine(ex);
-            }
-
-            return null;
+            // Return the formatted value
+            return $"BD+ {svm.Date}";
         }
     }
 }
