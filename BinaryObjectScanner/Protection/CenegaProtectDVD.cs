@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Protection
     /// Games using this protection aren't able to be run from an ISO file, and presumably use DPM as a protection feature.
     /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/Cenega_ProtectDVD/Cenega_ProtectDVD.md"/>
     /// </summary>
-    public class CengaProtectDVD : IExecutableCheck<PortableExecutable>, IPathCheck
+    public class CenegaProtectDVD : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)

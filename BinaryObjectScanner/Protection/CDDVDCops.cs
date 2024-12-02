@@ -235,7 +235,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        public static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
+        private static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
             if (fileContent == null)
