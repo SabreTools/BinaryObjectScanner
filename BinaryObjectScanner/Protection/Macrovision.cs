@@ -171,6 +171,11 @@ namespace BinaryObjectScanner.Protection
             if (cDilla != null)
                 results.AddRange(cDilla);
 
+            // Run C-Dilla directory checks
+            var flexNet = FLEXNetCheckDirectoryPath(path, files);
+            if (flexNet != null)
+                results.AddRange(flexNet);
+
             // Run RipGuard directory checks
             var ripGuard = RipGuardCheckDirectoryPath(path, files);
             if (ripGuard != null)
@@ -211,6 +216,11 @@ namespace BinaryObjectScanner.Protection
             var cDilla = CDillaCheckFilePath(path);
             if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
+
+            // Run FLEXnet file checks
+            var flexNet = FLEXNetCheckFilePath(path);
+            if (!string.IsNullOrEmpty(flexNet))
+                resultsList.Add(flexNet!);
 
             // Run RipGuard file checks
             var ripGuard = RipGuardCheckFilePath(path);
