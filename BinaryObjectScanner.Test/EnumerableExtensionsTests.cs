@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace BinaryObjectScanner.Tests
+namespace BinaryObjectScanner.Test
 {
     public class EnumerableExtensionsTests
     {
