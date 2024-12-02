@@ -20,7 +20,15 @@ namespace BinaryObjectScanner
             if (!File.Exists(filename))
                 return -1;
 
-            return new FileInfo(filename).Length;
+            try
+            {
+                return new FileInfo(filename).Length;
+            }
+            catch
+            {
+                // Ignore errors
+                return -1;
+            }
         }
 
         /// <summary>
