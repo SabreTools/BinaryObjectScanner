@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.Protection
                 resultsList.Add(safeCast!);
 
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", [.. resultsList]);
+                return string.Join(";", [.. resultsList]);
 
             return null;
         }
@@ -146,7 +146,7 @@ namespace BinaryObjectScanner.Protection
             // Clean the result list
             resultsList = CleanResultList(resultsList);
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", [.. resultsList]);
+                return string.Join(";", [.. resultsList]);
 
             return null;
         }
@@ -240,7 +240,7 @@ namespace BinaryObjectScanner.Protection
             // Clean the result list
             resultsList = CleanResultList(resultsList);
             if (resultsList != null && resultsList.Count > 0)
-                return string.Join(", ", [.. resultsList]);
+                return string.Join(";", [.. resultsList]);
 
             return null;
         }
