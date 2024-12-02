@@ -24,6 +24,14 @@ namespace BinaryObjectScanner.Test
             Assert.Equal(-1, actual);
         }
 
+        [Fact]
+        public void FileSize_Invalid_Invalid()
+        {
+            string? filename = "INVALID";
+            long actual = filename.FileSize();
+            Assert.Equal(-1, actual);
+        }
+
         #endregion
 
         #region IterateWithAction
