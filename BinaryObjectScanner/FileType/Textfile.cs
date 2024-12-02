@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.FileType
                     protections.Add("CopyKiller V3.62-V3.64");
                 // Found in "engine.wzc" in CopyKiller versions 3.99 and 3.99a.
                 else if (fileContent.Contains("CopyKiller V3.99x Protection Engine"))
-                            protections.Add("CopyKiller V3.99+");
+                    protections.Add("CopyKiller V3.99+");
 
                 // Freelock
                 // Found in "FILE_ID.DIZ" distributed with Freelock.
@@ -181,7 +181,11 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
             }
 
-            return string.Join(";", [.. protections]);
+            // Only return if there are protections found
+            if (protections.Count > 0)
+                return string.Join(";", [.. protections]);
+
+            return null;
         }
     }
 }
