@@ -24,7 +24,7 @@ namespace BinaryObjectScanner
         public void Append(string key, string value)
         {
             // If the value is empty, don't add it
-            if (string.IsNullOrEmpty(value))
+            if (value == null || value.Trim().Length == 0)
                 return;
 
             Append(key, [value]);
@@ -44,6 +44,9 @@ namespace BinaryObjectScanner
             EnsureKey(key);
             foreach (string value in values)
             {
+                if (value == null || value.Trim().Length == 0)
+                    continue;
+
                 this[key].Enqueue(value);
             }
         }
@@ -180,6 +183,9 @@ namespace BinaryObjectScanner
 
             foreach (string value in values)
             {
+                if (value == null || value.Trim().Length == 0)
+                    continue;
+
                 this[key].Enqueue(value);
             }
         }
