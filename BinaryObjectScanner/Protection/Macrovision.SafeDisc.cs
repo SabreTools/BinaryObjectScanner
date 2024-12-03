@@ -102,12 +102,19 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("SafeDisc", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc";
 
-            // Found in Redump entries 20729 and 65569.
-            // Get the debug data
-            if (pex.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
-                return "SafeDisc";
-            if (pex.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
-                return "SafeDisc";
+            try
+            {
+                // Found in Redump entries 20729 and 65569.
+                // Get the debug data
+                if (pex.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
+                    return "SafeDisc";
+                if (pex.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
+                    return "SafeDisc";
+            }
+            catch
+            {
+                // Absorb inconsistent debug data errors
+            }
 
             // TODO: Investigate various section names:
             // "STLPORT_" - Found in Redump entry 11638.
