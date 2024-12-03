@@ -42,7 +42,12 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 var readerOptions = new ReaderOptions() { LookForHeader = lookForHeader };
-                using RarArchive rarFile = RarArchive.Open(stream, readerOptions);
+                RarArchive rarFile = RarArchive.Open(stream, readerOptions);
+
+                // Try to read the file path if no entries are found
+                if (rarFile.Entries.Count == 0 && !string.IsNullOrEmpty(file) && File.Exists(file))
+                    rarFile = RarArchive.Open(file, readerOptions);
+
                 if (!rarFile.IsComplete)
                     return false;
 

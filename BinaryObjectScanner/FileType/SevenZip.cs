@@ -42,7 +42,12 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 var readerOptions = new ReaderOptions() { LookForHeader = lookForHeader };
-                using var sevenZip = SevenZipArchive.Open(stream, readerOptions);
+                var sevenZip = SevenZipArchive.Open(stream, readerOptions);
+
+                // Try to read the file path if no entries are found
+                if (sevenZip.Entries.Count == 0 && !string.IsNullOrEmpty(file) && File.Exists(file))
+                    sevenZip = SevenZipArchive.Open(file, readerOptions);
+
                 foreach (var entry in sevenZip.Entries)
                 {
                     try

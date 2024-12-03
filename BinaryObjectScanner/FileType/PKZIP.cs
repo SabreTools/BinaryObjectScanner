@@ -42,7 +42,12 @@ namespace BinaryObjectScanner.FileType
             try
             {
                 var readerOptions = new ReaderOptions() { LookForHeader = lookForHeader };
-                using var zipFile = ZipArchive.Open(stream, readerOptions);
+                var zipFile = ZipArchive.Open(stream, readerOptions);
+
+                // Try to read the file path if no entries are found
+                if (zipFile.Entries.Count == 0 && !string.IsNullOrEmpty(file) && File.Exists(file))
+                    zipFile = ZipArchive.Open(file, readerOptions);
+
                 foreach (var entry in zipFile.Entries)
                 {
                     try

@@ -32,7 +32,12 @@ namespace BinaryObjectScanner.FileType
 #if NET462_OR_GREATER || NETCOREAPP
             try
             {
-                using var tarFile = TarArchive.Open(stream);
+                var tarFile = TarArchive.Open(stream);
+
+                // Try to read the file path if no entries are found
+                if (tarFile.Entries.Count == 0 && !string.IsNullOrEmpty(file) && File.Exists(file))
+                    tarFile = TarArchive.Open(file);
+
                 foreach (var entry in tarFile.Entries)
                 {
                     try
