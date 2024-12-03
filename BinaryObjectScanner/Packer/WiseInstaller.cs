@@ -88,87 +88,8 @@ namespace BinaryObjectScanner.Packer
         {
             try
             {
-                // Get the matching PE format
-                var format = GetPEFormat(pex);
-                if (format == null)
-                    return false;
-
-                // Get the overlay data for easier reading
-                int overlayOffset = 0, dataStart = 0;
-                var overlayData = pex.OverlayData;
-                if (overlayData == null)
-                    return false;
-
-                // Skip over the additional DLL name, if we expect it
-                if (format.Dll)
-                {
-                    // Read the name length
-                    byte dllNameLength = overlayData.ReadByte(ref overlayOffset);
-                    dataStart++;
-
-                    // Read the name, if it exists
-                    if (dllNameLength != 0)
-                    {
-                        // Ignore the name for now
-                        _ = overlayData.ReadBytes(ref overlayOffset, dllNameLength);
-                        dataStart += dllNameLength;
-
-                        // Named DLLs also have a DLL length that we ignore
-                        _ = overlayData.ReadUInt32(ref overlayOffset);
-                        dataStart += 4;
-                    }
-                }
-
-                // Check if flags are consistent
-                if (!format.NoCrc)
-                {
-                    // Unlike WiseUnpacker, we ignore the flag value here
-                    _ = overlayData.ReadUInt32(ref overlayOffset);
-                }
-
-                // Ensure that we have an archive end
-                if (format.ArchiveEnd > 0)
-                {
-                    overlayOffset = (int)(dataStart + format.ArchiveEnd);
-                    int archiveEndLoaded = overlayData.ReadInt32(ref overlayOffset);
-                    if (archiveEndLoaded != 0)
-                        format.ArchiveEnd = archiveEndLoaded;
-                }
-
-                // Skip to the start of the archive
-                overlayOffset = (int)(dataStart + format.ArchiveStart);
-
-                // Skip over the initialization text, if we expect it
-                if (format.InitText)
-                {
-                    int initTextLength = overlayData.ReadByte(ref overlayOffset);
-                    _ = overlayData.ReadBytes(ref overlayOffset, initTextLength);
-                }
-
-                // Cache the current offset in the overlay as the "start of data"
-                int offsetReal = overlayOffset;
-
-                // If the first entry is PKZIP, we assume it's an embedded zipfile
-                var magic = overlayData.ReadBytes(ref overlayOffset, 4); overlayOffset -= 4;
-                bool pkzip = magic?.StartsWith(new byte?[] { (byte)'P', (byte)'K' }) ?? false;
-
-                // Create the output directory
                 Directory.CreateDirectory(outDir);
-
-                // If we have PKZIP
-                if (pkzip)
-                {
-                    string tempFile = Path.Combine(outDir, "WISEDATA.zip");
-                    using Stream tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-                    tempStream.Write(overlayData, overlayOffset, overlayData.Length - overlayOffset);
-                    return true;
-                }
-
-                // If we have DEFLATE -- TODO: Port implementation here or use DeflateStream
-                else
-                {
-                    return Extractor.ExtractTo(file, outDir);
-                }
+                return Extractor.ExtractTo(file, outDir);
             }
             catch (Exception ex)
             {
