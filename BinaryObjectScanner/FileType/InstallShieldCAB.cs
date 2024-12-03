@@ -77,6 +77,10 @@ namespace BinaryObjectScanner.FileType
                             tempFile = Path.Combine(outDir, $"BAD_FILENAME{i}");
                         }
 
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
+
                         cabfile.FileSave(i, tempFile);
                     }
                     catch (Exception ex)
