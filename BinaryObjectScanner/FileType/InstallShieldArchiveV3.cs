@@ -25,6 +25,9 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
+                if (!File.Exists(file))
+                    return false;
+
                 var archive = new ISv3(file);
                 foreach (var cfile in archive.Files)
                 {
@@ -39,10 +42,8 @@ namespace BinaryObjectScanner.FileType
                         if (fileContents == null || !string.IsNullOrEmpty(error))
                             continue;
 
-                        using (FileStream fs = File.OpenWrite(tempFile))
-                        {
-                            fs.Write(fileContents, 0, fileContents.Length);
-                        }
+                        using FileStream fs = File.OpenWrite(tempFile);
+                        fs.Write(fileContents, 0, fileContents.Length);
                     }
                     catch (Exception ex)
                     {

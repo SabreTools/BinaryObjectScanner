@@ -24,6 +24,9 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
+            if (stream == null || !stream.CanRead)
+                return false;
+
             try
             {
                 var data = Decompressor.Decompress(stream);

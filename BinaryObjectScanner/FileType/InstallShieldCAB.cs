@@ -54,6 +54,9 @@ namespace BinaryObjectScanner.FileType
 
             try
             {
+                if (!File.Exists(file))
+                    return false;
+
                 var cabfile = InstallShieldCabinet.Open(file);
                 if (cabfile?.HeaderList == null)
                     return false;

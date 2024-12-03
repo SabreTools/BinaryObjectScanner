@@ -32,6 +32,9 @@ namespace BinaryObjectScanner.FileType
 #else
             try
             {
+                if (!File.Exists(file))
+                    return false;
+
                 // Try to open the archive and listfile
                 var mpqArchive = new MpqArchive(file, FileAccess.Read);
                 string? listfile = null;

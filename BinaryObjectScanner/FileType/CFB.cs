@@ -30,6 +30,9 @@ namespace BinaryObjectScanner.FileType
             // Not supported for .NET Framework 2.0 or .NET Framework 3.5 due to library support
             return false;
 #else
+            if (stream == null || !stream.CanRead)
+                return false;
+
             try
             {
                 using var msi = new CompoundFile(stream, CFSUpdateMode.ReadOnly, CFSConfiguration.Default);

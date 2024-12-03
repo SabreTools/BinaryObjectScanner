@@ -33,6 +33,9 @@ namespace BinaryObjectScanner.FileType
 #else
             try
             {
+                if (!File.Exists(file))
+                    return false;
+
                 // Loop over each entry
                 var cabArchive = new MSCabinet(file);
                 foreach (var compressedFile in cabArchive.GetFiles())

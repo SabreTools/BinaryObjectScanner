@@ -26,6 +26,9 @@ namespace BinaryObjectScanner.FileType
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
 #if NET462_OR_GREATER || NETCOREAPP
+            if (stream == null || !stream.CanRead)
+                return false;
+
             try
             {
                 // Try opening the stream
