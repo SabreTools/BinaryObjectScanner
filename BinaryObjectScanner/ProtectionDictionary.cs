@@ -27,6 +27,7 @@ namespace BinaryObjectScanner
             if (value == null || value.Trim().Length == 0)
                 return;
 
+            EnsureKey(key);
             foreach (string subValue in ProcessProtectionString(value))
             {
                 this[key].Enqueue(subValue);
@@ -40,9 +41,6 @@ namespace BinaryObjectScanner
         /// <param name="values">String value array to add</param>
         public void Append(string key, string[] values)
         {
-            // Use a placeholder value if the key is null
-            key ??= "NO FILENAME";
-
             // Add the key if needed and then append the lists
             EnsureKey(key);
             foreach (string value in values)
@@ -187,6 +185,7 @@ namespace BinaryObjectScanner
             if (values == null)
                 return;
 
+            EnsureKey(key);
             foreach (string value in values)
             {
                 if (value == null || value.Trim().Length == 0)
