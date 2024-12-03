@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BinaryObjectScanner.Test
 {
-    public class ScannerTests
+    public class ProtectionDictionaryTests
     {
         #region ProcessProtectionString
 
@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Test
         public void ProcessProtectionString_Null_Empty()
         {
             string? protection = null;
-            List<string> actual = Scanner.ProcessProtectionString(protection);
+            List<string> actual = ProtectionDictionary.ProcessProtectionString(protection);
             Assert.Empty(actual);
         }
 
@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Test
         public void ProcessProtectionString_Empty_Empty()
         {
             string? protection = string.Empty;
-            List<string> actual = Scanner.ProcessProtectionString(protection);
+            List<string> actual = ProtectionDictionary.ProcessProtectionString(protection);
             Assert.Empty(actual);
         }
 
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Test
         public void ProcessProtectionString_NoIndicator_Single()
         {
             string? protection = "item1";
-            List<string> actual = Scanner.ProcessProtectionString(protection);
+            List<string> actual = ProtectionDictionary.ProcessProtectionString(protection);
             Assert.Single(actual);
         }
 
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Test
         public void ProcessProtectionString_Indicator_Multiple()
         {
             string? protection = "item1;item2";
-            List<string> actual = Scanner.ProcessProtectionString(protection);
+            List<string> actual = ProtectionDictionary.ProcessProtectionString(protection);
             Assert.Equal(2, actual.Count);
         }
 

@@ -284,7 +284,7 @@ namespace BinaryObjectScanner
                     else
                     {
                         var subProtection = detectable.Detect(stream, fileName, _options.IncludeDebug);
-                        protections.Append(fileName, ProcessProtectionString(subProtection));
+                        protections.Append(fileName, subProtection);
                     }
                 }
 
@@ -395,8 +395,8 @@ namespace BinaryObjectScanner
             if (File.Exists(path))
             {
                 var protection = impl.CheckFilePath(path!);
-                var subProtections = ProcessProtectionString(protection);
-                protections.AddRange(subProtections);
+                if (protection != null)
+                    protections.Add(protection);
             }
 
             // If we have a directory path
@@ -405,38 +405,6 @@ namespace BinaryObjectScanner
                 var subProtections = impl.CheckDirectoryPath(path!, files);
                 if (subProtections != null)
                     protections.AddRange(subProtections);
-            }
-
-            return protections;
-        }
-
-        #endregion
-
-        #region Helpers
-
-        /// <summary>
-        /// Process a protection string if it includes multiple protections
-        /// </summary>
-        /// <param name="protection">Protection string to process</param>
-        /// <returns>Set of protections parsed, empty on error</returns>
-        internal static List<string> ProcessProtectionString(string? protection)
-        {
-            // If we have an invalid protection string
-            if (string.IsNullOrEmpty(protection))
-                return [];
-
-            // Setup the output queue
-            var protections = new List<string>();
-
-            // If we have an indicator of multiple protections
-            if (protection!.Contains(";"))
-            {
-                var splitProtections = protection.Split(';');
-                protections.AddRange(splitProtections);
-            }
-            else
-            {
-                protections.Add(protection);
             }
 
             return protections;

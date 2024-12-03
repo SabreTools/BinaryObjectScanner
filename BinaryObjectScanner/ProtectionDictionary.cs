@@ -21,13 +21,16 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="key">Key to add information to</param>
         /// <param name="value">String value to add</param>
-        public void Append(string key, string value)
+        public void Append(string key, string? value)
         {
             // If the value is empty, don't add it
             if (value == null || value.Trim().Length == 0)
                 return;
 
-            Append(key, [value]);
+            foreach (string subValue in ProcessProtectionString(value))
+            {
+                this[key].Enqueue(subValue);
+            }
         }
 
         /// <summary>
@@ -47,7 +50,10 @@ namespace BinaryObjectScanner
                 if (value == null || value.Trim().Length == 0)
                     continue;
 
-                this[key].Enqueue(value);
+                foreach (string subValue in ProcessProtectionString(value))
+                {
+                    this[key].Enqueue(subValue);
+                }
             }
         }
 
@@ -186,8 +192,41 @@ namespace BinaryObjectScanner
                 if (value == null || value.Trim().Length == 0)
                     continue;
 
-                this[key].Enqueue(value);
+                foreach (string subValue in ProcessProtectionString(value))
+                {
+                    this[key].Enqueue(subValue);
+                }
             }
+        }
+
+        #region Helpers
+
+        /// <summary>
+        /// Process a protection string if it includes multiple protections
+        /// </summary>
+        /// <param name="protection">Protection string to process</param>
+        /// <returns>Set of protections parsed, empty on error</returns>
+        internal static List<string> ProcessProtectionString(string? protection)
+        {
+            // If we have an invalid protection string
+            if (string.IsNullOrEmpty(protection))
+                return [];
+
+            // Setup the output queue
+            var protections = new List<string>();
+
+            // If we have an indicator of multiple protections
+            if (protection!.Contains(";"))
+            {
+                var splitProtections = protection.Split(';');
+                protections.AddRange(splitProtections);
+            }
+            else
+            {
+                protections.Add(protection);
+            }
+
+            return protections;
         }
 
         /// <summary>
@@ -202,5 +241,7 @@ namespace BinaryObjectScanner
             TryAdd(key, new ConcurrentQueue<string>());
 #endif
         }
+
+        #endregion
     }
 }
