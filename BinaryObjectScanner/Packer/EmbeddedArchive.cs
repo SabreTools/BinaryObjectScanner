@@ -22,18 +22,29 @@ namespace BinaryObjectScanner.Packer
                 {
                     if (value == null || value is not byte[] ba)
                         continue;
-                    if (!ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
-                        continue;
 
-                    return "Embedded Archive";
+                    if (ba.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
+                        return "Embedded 7-Zip Archive";
+                    if (ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                        return "Embedded PKZIP Archive";
+                    if (ba.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
+                        return "Embedded RAR Archive";
+                    if (ba.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
+                        return "Embedded RAR Archive";
                 }
             }
 
             // Check the overlay, if it exists
             if (pex.OverlayData != null && pex.OverlayData.Length > 0)
             {
+                if (pex.OverlayData.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
+                    return "Embedded 7-Zip Archive";
                 if (pex.OverlayData.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
-                    return "Embedded Archive";
+                    return "Embedded PKZIP Archive";
+                if (pex.OverlayData.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
+                    return "Embedded RAR Archive";
+                if (pex.OverlayData.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
+                    return "Embedded RAR Archive";
             }
 
             return null;
@@ -60,11 +71,20 @@ namespace BinaryObjectScanner.Packer
                     return false;
 
                 // Only process the overlay if it has an archive signature
-                if (!overlayData.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                string extension = string.Empty;
+                if (overlayData.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
+                    extension = "7z";
+                else if (overlayData.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                    extension = "zip";
+                else if (overlayData.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
+                    extension = "rar";
+                else if (overlayData.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
+                    extension = "rar";
+                else
                     return false;
 
                 // Create the temp filename
-                string tempFile = $"embedded_overlay.zip";
+                string tempFile = $"embedded_overlay.{extension}";
                 tempFile = Path.Combine(outDir, tempFile);
                 var directoryName = Path.GetDirectoryName(tempFile);
                 if (directoryName != null && !Directory.Exists(directoryName))
@@ -100,13 +120,24 @@ namespace BinaryObjectScanner.Packer
                 {
                     if (value == null || value is not byte[] ba)
                         continue;
-                    if (!ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+
+                    // Only process the resource if it has an archive signature
+                    string extension = string.Empty;
+                    if (ba.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
+                        extension = "7z";
+                    else if (ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                        extension = "zip";
+                    else if (ba.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
+                        extension = "rar";
+                    else if (ba.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
+                        extension = "rar";
+                    else
                         continue;
 
                     try
                     {
                         // Create the temp filename
-                        string tempFile = $"embedded_resource_{i++}.zip";
+                        string tempFile = $"embedded_resource_{i++}.{extension}";
                         tempFile = Path.Combine(outDir, tempFile);
                         var directoryName = Path.GetDirectoryName(tempFile);
                         if (directoryName != null && !Directory.Exists(directoryName))
