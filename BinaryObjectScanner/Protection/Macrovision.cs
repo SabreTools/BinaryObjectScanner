@@ -171,7 +171,7 @@ namespace BinaryObjectScanner.Protection
             if (cDilla != null)
                 results.AddRange(cDilla);
 
-            // Run C-Dilla directory checks
+            // Run FLEXnet directory checks
             var flexNet = FLEXNetCheckDirectoryPath(path, files);
             if (flexNet != null)
                 results.AddRange(flexNet);
@@ -550,28 +550,70 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 66005.
                 "1.00.025"
 
-                    // Source not documented.
+                    // Found in Redump entries 1882, 30049, 34828, 35922, 38212, 84280, and 97611.
                     or "1.00.026"
+
+                    // Found in Redump entries 31575 and 41923.
                     or "1.00.030"
+
+                    // Found in Redump entries 1883 and 42114.
                     or "1.00.032"
+
+                    // Found in Redump entries 36223 and 40770.
                     or "1.00.035"
+
+                    // Found in Redump entries 42155 and 47574.
                     or "1.01.034"
+
+                    // Found in Redump entry 51459.
                     or "1.01.038"
+
+                    // Found in Redump entries 34562 and 63304.
                     or "1.01.043"
+
+                    // Found in Redump entries 61731 and 81619.
                     or "1.01.044"
+
+                    // Found in Redump entries 29073 and 31149.
                     or "1.06.000"
+
+                    // Found in Redump entries 9718 and 46756.
                     or "1.07.000"
+
+                    // Found in Redump entries 12885 and 66210.
                     or "1.09.000"
+
+                    // Found in Redump entries 3569, 3570, 37523, 66586.
                     or "1.11.000"
+
+                    // Found in Redump entries 21154, 37982, 108632.
                     or "1.20.000"
+
+                    // Found in Redump entries 17024/37920. 
                     or "1.20.001"
+
+                    // Found in Redump entries 28708, 31526, 43321, 55080, 75501.
                     or "1.30.010"
+
+                    // Found in Redump entries 9617 and 49552. 
                     or "1.35.000"
+                    
+                    // Found in Redump entries 2595 and 30121.
                     or "1.40.004"
+
+                    // Found in Redump entries 1887, 44350, 61047, and 63323.
                     or "1.41.000"
+
+                    // Found in Redump entries 37832 and 42091.
                     or "1.41.001"
+
+                    // Found in Redump entries 30555 and 55078.
                     or "1.45.011"
+
+                    // Found in Redump entries 28810 and 62935.
                     or "1.50.020"
+
+                    // Source not documented.
                     or "2.05.030"
                     or "2.10.030"
                     or "2.30.030"

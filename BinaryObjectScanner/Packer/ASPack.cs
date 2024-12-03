@@ -621,7 +621,8 @@ namespace BinaryObjectScanner.Packer
 
                 #region Short
 
-                new(new byte?[] { 0x75, 0x00, 0xE9 }, "ASPack 1.05b"),
+                // Disabled due to being too prone to false positives. 
+                // new(new byte?[] { 0x75, 0x00, 0xE9 }, "ASPack 1.05b"),
 
                 new(new byte?[] { 0x90, 0x90, 0x90, 0x75, 0x00, 0xE9 }, "ASPack 1.06.1b"),
 
