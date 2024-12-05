@@ -613,10 +613,15 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 28810 and 62935.
                     or "1.50.020"
 
-                    // Source not documented.
+                    // Found in Redump entries 2022, 72195, and 73502.
                     or "2.05.030"
+
+                    // Found in Redump entries 38541 and 59462.
                     or "2.10.030"
+
+                    // Found in Redump entries 45040, 55823, and 79476.
                     or "2.30.030"
+
                     or "2.30.031"
                     or "2.30.033"
                     or "2.40.010"
@@ -629,6 +634,8 @@ namespace BinaryObjectScanner.Protection
                     or "2.80.010"
                     or "2.80.011"
                     or "2.90.040"
+
+                    // Source not documented.
                     or "3.10.020"
                     or "3.15.010"
                     or "3.15.011"

@@ -388,7 +388,9 @@ namespace BinaryObjectScanner.Protection
                 "2418D791C7B9D4F05BCB01FAF98F770CDF798464" => "1.00.026",
 
                 // Found in Redump entries 31149 and 28810.
-                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000-1.50.020/Lite",
+                // It can also be found in the Windows Temp directory when running SafeDisc 2+ games on Windows 9x, but not on XP or newer.
+                // Examples of it in SafeDisc 2+ can be found in Redump entries 2022 and 38541.
+                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000+/Lite",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -477,6 +479,18 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 14928.
                 "538351FF5955A3D8438E8C278E9D6D6274CF13AB" => "Lite",
+
+                // The following versions of the file are only found in the Windows Temp directory when running a SafeDisc 2+ program on Windows 9x.
+                // They aren't found when running the same program on Windows XP or newer. These also aren't currently automatically extracted, and would have to be manually recovered and scanned.
+
+                // Found in Redump entries 2022, 72195, and 73502.
+                "3F46BA4BB6D0D725F8BC5BFD374025853D0F8D10" => "2.05.030",
+
+                // Found in Redump entries 38541 and 59462.
+                "3AF6AD2EBA63FC96BF1A2E39725C41A022B14550" => "2.10.030",
+
+                // Found in Redump entries 45040, 55823, 
+                "AAB277C3877F654A0EAEC1E0DB1D511CD0D7BA00" => "2.30.030",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
