@@ -1,4 +1,4 @@
-name: Nuget Pack
+name: Build and Test
 
 on:
   push:
@@ -18,29 +18,23 @@ jobs:
       with:
         dotnet-version: 9.0.x
         
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build library
-      run: dotnet build
-
     - name: Run tests
       run: dotnet test
       
-    - name: Pack
-      run: dotnet pack
+    - name: Run publish script
+      run: ./publish-nix.sh -d
 
-    - name: Upload build
+    - name: Upload package
       uses: actions/upload-artifact@v4
       with:
         name: 'Nuget Package'
-        path: 'BinaryObjectScanner/bin/Release/*.nupkg'
+        path: '*.nupkg'
 
     - name: Upload to rolling
       uses: ncipollo/release-action@v1.14.0
       with:
         allowUpdates: True
-        artifacts: 'BinaryObjectScanner/bin/Release/*.nupkg'
+        artifacts: "*.nupkg,*.zip"
         body: 'Last built commit: ${{ github.sha }}'
         name: 'Rolling Release'
         prerelease: True
