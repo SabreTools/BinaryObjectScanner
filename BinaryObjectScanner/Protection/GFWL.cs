@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -51,6 +52,7 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("Gfwlivesetup.exe"), "Games for Windows LIVE"),
                 new(new FilePathMatch("xliveinstall.dll"), "Games for Windows LIVE"),
                 new(new FilePathMatch("XLiveRedist.msi"), "Games for Windows LIVE"),
+                new(new PathMatch($"{Path.DirectorySeparatorChar}XLiveRedist"), "Games for Windows LIVE"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
