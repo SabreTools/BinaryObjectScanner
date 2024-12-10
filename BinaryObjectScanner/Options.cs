@@ -16,16 +16,6 @@
         public bool ScanContents { get; set; }
 
         /// <summary>
-        /// Determines if game engines are counted as detected protections or not
-        /// </summary>
-        public bool ScanGameEngines { get; set; }
-
-        /// <summary>
-        /// Determines if packers are counted as detected protections or not
-        /// </summary>
-        public bool ScanPackers { get; set; }
-
-        /// <summary>
         /// Determines if path matches are used or not
         /// </summary>
         public bool ScanPaths { get; set; }

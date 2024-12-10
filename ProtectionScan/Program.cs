@@ -34,8 +34,6 @@ namespace ProtectionScan
             var scanner = new Scanner(
                 options.ScanArchives,
                 options.ScanContents,
-                options.ScanGameEngines,
-                options.ScanPackers,
                 options.ScanPaths,
                 options.Debug,
                 fileProgress);

@@ -29,17 +29,6 @@ namespace ProtectionScan
         /// Scan file contents during protection scanning
         /// </summary>
         public bool ScanContents { get; private set; } = true;
-
-        /// <summary>
-        /// Scan game engines during protection scanning
-        /// </summary>
-        public bool ScanGameEngines { get; private set; } = true;
-
-        /// <summary>
-        /// Scan packers during protection scanning
-        /// </summary>
-        public bool ScanPackers { get; private set; } = true;
-
         /// <summary>
         /// Scan file paths during protection scanning
         /// </summary>
@@ -85,16 +74,6 @@ namespace ProtectionScan
                         options.ScanContents = false;
                         break;
 
-                    case "-ng":
-                    case "--no-game-engines":
-                        options.ScanGameEngines = false;
-                        break;
-
-                    case "-np":
-                    case "--no-packers":
-                        options.ScanPackers = false;
-                        break;
-
                     case "-ns":
                     case "--no-paths":
                         options.ScanPaths = false;
@@ -130,8 +109,6 @@ namespace ProtectionScan
             Console.WriteLine("-d, --debug              Enable debug mode");
             Console.WriteLine("-nc, --no-contents       Disable scanning for content checks");
             Console.WriteLine("-na, --no-archives       Disable scanning archives");
-            Console.WriteLine("-ng, --no-game-engines   Disable scanning for game engines");
-            Console.WriteLine("-np, --no-packers        Disable scanning for packers");
             Console.WriteLine("-ns, --no-paths          Disable scanning for path checks");
         }
     }

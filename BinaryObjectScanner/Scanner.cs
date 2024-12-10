@@ -30,15 +30,11 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="scanArchives">Enable scanning archive contents</param>
         /// <param name="scanContents">Enable including content detections in output</param>
-        /// <param name="scanGameEngines">Enable including game engines in output</param>
-        /// <param name="scanPackers">Enable including packers in output</param>
         /// <param name="scanPaths">Enable including path detections in output</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
         public Scanner(bool scanArchives,
             bool scanContents,
-            bool scanGameEngines,
-            bool scanPackers,
             bool scanPaths,
             bool includeDebug,
             IProgress<ProtectionProgress>? fileProgress = null)
@@ -47,8 +43,6 @@ namespace BinaryObjectScanner
             {
                 ScanArchives = scanArchives,
                 ScanContents = scanContents,
-                ScanGameEngines = scanGameEngines,
-                ScanPackers = scanPackers,
                 ScanPaths = scanPaths,
                 IncludeDebug = includeDebug,
             };
@@ -273,9 +267,6 @@ namespace BinaryObjectScanner
                     // If we have an executable, it needs to bypass normal handling
                     if (detectable is Executable executable)
                     {
-                        executable.IncludeGameEngines = _options.ScanGameEngines;
-                        executable.IncludePackers = _options.ScanPackers;
-
                         var subProtections = executable.DetectDict(stream, fileName, GetProtections, _options.IncludeDebug);
                         protections.Append(subProtections);
                     }
