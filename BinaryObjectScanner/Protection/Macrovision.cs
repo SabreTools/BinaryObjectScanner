@@ -634,10 +634,15 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 23786, 37478, and 110603.
                     or "2.40.011"
 
-
+                    // Found in Redump entries 30022 and 75014.
                     or "2.51.020"
+
+                    // Found in Redump entries 31666, 38589, 66852, and 83145.
                     or "2.51.021"
+
+                    // Found in Redump entries 2064, 47047, and 57673.
                     or "2.60.052"
+
                     or "2.70.030"
                     or "2.72.000"
                     or "2.80.010"
