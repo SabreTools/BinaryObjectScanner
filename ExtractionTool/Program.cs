@@ -137,14 +137,9 @@ namespace ExtractionTool
                 Console.WriteLine("Extracting bzip2 contents");
                 Console.WriteLine();
 
-#if NET20 || NET35 || NET40 || NET452
-                Console.WriteLine("Extraction is not supported for this framework!");
-                Console.WriteLine();
-#else
                 // Extract using the FileType
                 var bzip2 = new BZip2();
                 bzip2.Extract(stream, file, outputDirectory, includeDebug: true);
-#endif
             }
 
             // CFB
@@ -235,14 +230,9 @@ namespace ExtractionTool
                 Console.WriteLine("Extracting gzip contents");
                 Console.WriteLine();
 
-#if NET20 || NET35 || NET40 || NET452
-                Console.WriteLine("Extraction is not supported for this framework!");
-                Console.WriteLine();
-#else
                 // Extract using the FileType
                 var gzip = new GZIP();
                 gzip.Extract(stream, file, outputDirectory, includeDebug: true);
-#endif
             }
 
             // InstallShield Archive V3 (Z)

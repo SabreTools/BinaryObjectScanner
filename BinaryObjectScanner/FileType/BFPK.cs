@@ -1,9 +1,6 @@
 ﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER || NETCOREAPP
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.Deflate;
-#endif
+using SabreTools.Compression.Deflate;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -109,14 +106,12 @@ namespace BinaryObjectScanner.FileType
                 {
                     fs.Write(data, 0, compressedSize);
                 }
-#if NET462_OR_GREATER || NETCOREAPP
                 else
                 {
                     MemoryStream ms = new MemoryStream(data);
                     ZlibStream zs = new ZlibStream(ms, CompressionMode.Decompress);
                     zs.CopyTo(fs);
                 }
-#endif
 
                 return true;
             }
