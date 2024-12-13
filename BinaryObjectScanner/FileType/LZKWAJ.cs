@@ -1,12 +1,12 @@
-﻿using System.IO;
+using System.IO;
 using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// InstallShield archive v3
+    /// LZ-compressed file, KWAJ variant
     /// </summary>
-    public class InstallShieldArchiveV3 : IExtractable
+    public class LZKWAJ : IExtractable
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)
@@ -22,13 +22,13 @@ namespace BinaryObjectScanner.FileType
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
-            var isv3 = SabreTools.Serialization.Wrappers.InstallShieldArchiveV3.Create(stream);
-            if (isv3 == null)
+            var kwaj = SabreTools.Serialization.Wrappers.LZKWAJ.Create(stream);
+            if (kwaj == null)
                 return false;
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            isv3.ExtractAll(outDir);
+            kwaj.Extract(outDir);
 
             return true;
         }

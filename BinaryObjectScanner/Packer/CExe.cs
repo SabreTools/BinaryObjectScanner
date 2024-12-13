@@ -110,7 +110,10 @@ namespace BinaryObjectScanner.Packer
                 {
                     try
                     {
-                        data = SabreTools.Compression.LZ.Decompressor.Decompress(payload);
+                        var decompressor = SabreTools.Compression.SZDD.Decompressor.CreateSZDD(payload);
+                        var dataStream = new MemoryStream();
+                        decompressor.CopyTo(dataStream);
+                        data = dataStream.ToArray();
                     }
                     catch
                     {

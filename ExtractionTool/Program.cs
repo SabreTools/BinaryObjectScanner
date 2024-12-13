@@ -269,6 +269,42 @@ namespace ExtractionTool
                 iscab.Extract(stream, file, outputDirectory, includeDebug: true);
             }
 
+            // LZ-compressed file, KWAJ variant
+            else if (ft == WrapperType.LZKWAJ)
+            {
+                // Build the KWAJ
+                Console.WriteLine("Extracting LZ-compressed file, KWAJ variant contents");
+                Console.WriteLine();
+
+                // Extract using the FileType
+                var lz = new LZKWAJ();
+                lz.Extract(stream, file, outputDirectory, includeDebug: true);
+            }
+
+            // LZ-compressed file, QBasic variant
+            else if (ft == WrapperType.LZQBasic)
+            {
+                // Build the QBasic
+                Console.WriteLine("Extracting LZ-compressed file, QBasic variant contents");
+                Console.WriteLine();
+
+                // Extract using the FileType
+                var lz = new LZQBasic();
+                lz.Extract(stream, file, outputDirectory, includeDebug: true);
+            }
+
+            // LZ-compressed file, SZDD variant
+            else if (ft == WrapperType.LZSZDD)
+            {
+                // Build the SZDD
+                Console.WriteLine("Extracting LZ-compressed file, SZDD variant contents");
+                Console.WriteLine();
+
+                // Extract using the FileType
+                var lz = new LZSZDD();
+                lz.Extract(stream, file, outputDirectory, includeDebug: true);
+            }
+
             // Microsoft Cabinet archive
             else if (ft == WrapperType.MicrosoftCAB)
             {
@@ -284,18 +320,6 @@ namespace ExtractionTool
                 var mscab = new MicrosoftCAB();
                 mscab.Extract(stream, file, outputDirectory, includeDebug: true);
 #endif
-            }
-
-            // Microsoft LZ / LZ32
-            else if (ft == WrapperType.MicrosoftLZ)
-            {
-                // Build the Microsoft LZ / LZ32 information
-                Console.WriteLine("Extracting Microsoft LZ / LZ32 contents");
-                Console.WriteLine();
-
-                // Extract using the FileType
-                var lz = new MicrosoftLZ();
-                lz.Extract(stream, file, outputDirectory, includeDebug: true);
             }
 
             // MoPaQ (MPQ) archive

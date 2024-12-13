@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
-using UnshieldSharp.Cabinet;
+using UnshieldSharp;
 
 namespace BinaryObjectScanner.FileType
 {
