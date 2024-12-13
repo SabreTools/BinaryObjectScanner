@@ -32,9 +32,6 @@ namespace BinaryObjectScanner.FileType
 #if NET20 || NET35 || !WIN
             try
             {
-                if (!File.Exists(file))
-                    return false;
-
                 // Create the wrapper
                 var cabArchive = SabreTools.Serialization.Wrappers.MicrosoftCabinet.Create(stream);
                 if (cabArchive?.Model?.Folders == null || cabArchive.Model.Folders.Length == 0)
@@ -47,6 +44,10 @@ namespace BinaryObjectScanner.FileType
                     var folder = cabArchive.Model.Folders[f];
                     if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
                         continue;
+
+                    // Setup decompressors
+                    var mszip = SabreTools.Compression.MSZIP.Decompressor.Create();
+                    uint quantumWindowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
 
                     // Loop through the data blocks
                     var ms = new MemoryStream();
@@ -65,16 +66,14 @@ namespace BinaryObjectScanner.FileType
                         // MS-ZIP
                         else if ((folder.CompressionType & CompressionType.TYPE_MSZIP) != 0)
                         {
-                            var decomp = SabreTools.Compression.MSZIP.Decompressor.Create();
-                            decomp.CopyTo(db.CompressedData, ms);
+                            mszip.CopyTo(db.CompressedData, ms);
                         }
 
                         // Quantum
                         else if ((folder.CompressionType & CompressionType.TYPE_QUANTUM) != 0)
                         {
-                            uint windowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
-                            var decomp = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, windowBits);
-                            byte[] data = decomp.Process();
+                            var quantum = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, quantumWindowBits);
+                            byte[] data = quantum.Process();
                             ms.Write(data, 0, data.Length);
                             ms.Flush();
                         }
