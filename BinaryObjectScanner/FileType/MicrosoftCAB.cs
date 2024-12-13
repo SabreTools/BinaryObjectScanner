@@ -1,7 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BinaryObjectScanner.Interfaces;
 #if (NET40_OR_GREATER || NETCOREAPP) && WIN
 using LibMSPackN;
+#else
+using SabreTools.Models.MicrosoftCabinet;
 #endif
 
 namespace BinaryObjectScanner.FileType
@@ -27,9 +30,111 @@ namespace BinaryObjectScanner.FileType
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
 #if NET20 || NET35 || !WIN
-            // Not supported for old .NET due to feature requirements
-            // Not supported in non-Windows builds due to DLL requirements
-            return false;
+            try
+            {
+                if (!File.Exists(file))
+                    return false;
+
+                // Create the wrapper
+                var cabArchive = SabreTools.Serialization.Wrappers.MicrosoftCabinet.Create(stream);
+                if (cabArchive?.Model?.Folders == null || cabArchive.Model.Folders.Length == 0)
+                    return false;
+
+                // Loop through the folders
+                for (int f = 0; f < cabArchive!.Model.Folders.Length; f++)
+                {
+                    // Ensure data blocks
+                    var folder = cabArchive.Model.Folders[f];
+                    if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
+                        continue;
+
+                    // Loop through the data blocks
+                    var ms = new MemoryStream();
+                    foreach (var db in folder.DataBlocks)
+                    {
+                        if (db?.CompressedData == null)
+                            continue;
+
+                        // Uncompressed data
+                        if ((folder.CompressionType & CompressionType.TYPE_NONE) != 0)
+                        {
+                            ms.Write(db.CompressedData);
+                            ms.Flush();
+                        }
+
+                        // MS-ZIP
+                        else if ((folder.CompressionType & CompressionType.TYPE_MSZIP) != 0)
+                        {
+                            var decomp = SabreTools.Compression.MSZIP.Decompressor.Create();
+                            decomp.CopyTo(db.CompressedData, ms);
+                        }
+
+                        // Quantum
+                        else if ((folder.CompressionType & CompressionType.TYPE_QUANTUM) != 0)
+                        {
+                            uint windowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
+                            var decomp = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, windowBits);
+                            byte[] data = decomp.Process();
+                            ms.Write(data);
+                            ms.Flush();
+                        }
+
+                        // LZX
+                        else if ((folder.CompressionType & CompressionType.TYPE_LZX) != 0)
+                        {
+                            // TODO: Unsupported
+                            continue;
+                        }
+
+                        // Unknown
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    // If no data was read
+                    if (ms.Length == 0)
+                        continue;
+
+                    // Ensure files
+                    if (cabArchive?.Model?.Files == null || cabArchive.Model.Files.Length == 0)
+                        continue;
+
+                    // Loop through the files
+                    foreach (var compressedFile in cabArchive.Model.Files)
+                    {
+                        if (compressedFile?.Name == null || compressedFile.FolderIndex != (FolderIndex)f)
+                            continue;
+
+                        try
+                        {
+                            byte[] fileData = new byte[compressedFile.FileSize];
+                            Array.Copy(ms.ToArray(), compressedFile.FolderStartOffset, fileData, 0, compressedFile.FileSize);
+
+                            string tempFile = Path.Combine(outDir, compressedFile.Name);
+                            var directoryName = Path.GetDirectoryName(tempFile);
+                            if (directoryName != null && !Directory.Exists(directoryName))
+                                Directory.CreateDirectory(directoryName);
+
+                            using var of = File.OpenWrite(tempFile);
+                            of.Write(fileData);
+                            of.Flush();
+                        }
+                        catch (Exception ex)
+                        {
+                            if (includeDebug) Console.WriteLine(ex);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return false;
+            }
 #else
             try
             {
@@ -49,17 +154,17 @@ namespace BinaryObjectScanner.FileType
 
                         compressedFile.ExtractTo(tempFile);
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
-                        if (includeDebug) System.Console.WriteLine(ex);
+                        if (includeDebug) Console.WriteLine(ex);
                     }
                 }
 
                 return true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                if (includeDebug) System.Console.WriteLine(ex);
+                if (includeDebug) Console.WriteLine(ex);
                 return false;
             }
 #endif

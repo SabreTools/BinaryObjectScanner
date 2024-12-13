@@ -300,16 +300,14 @@ namespace ExtractionTool
             {
                 // Build the cabinet information
                 Console.WriteLine("Extracting MS-CAB contents");
+#if NET20 || NET35 || !WIN
+                Console.WriteLine("WARNING: LZX compression not supported so some files may be skipped!");
+#endif
                 Console.WriteLine();
 
-#if NET20 || NET35 || !WIN
-                Console.WriteLine("Extraction is not supported for this framework!");
-                Console.WriteLine();
-#else
                 // Extract using the FileType
                 var mscab = new MicrosoftCAB();
                 mscab.Extract(stream, file, outputDirectory, includeDebug: true);
-#endif
             }
 
             // MoPaQ (MPQ) archive
