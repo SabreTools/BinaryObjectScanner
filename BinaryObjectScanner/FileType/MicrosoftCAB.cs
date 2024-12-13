@@ -58,7 +58,7 @@ namespace BinaryObjectScanner.FileType
                         // Uncompressed data
                         if ((folder.CompressionType & CompressionType.TYPE_NONE) != 0)
                         {
-                            ms.Write(db.CompressedData);
+                            ms.Write(db.CompressedData, 0, db.CompressedData.Length);
                             ms.Flush();
                         }
 
@@ -75,7 +75,7 @@ namespace BinaryObjectScanner.FileType
                             uint windowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
                             var decomp = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, windowBits);
                             byte[] data = decomp.Process();
-                            ms.Write(data);
+                            ms.Write(data, 0, data.Length);
                             ms.Flush();
                         }
 
@@ -118,7 +118,7 @@ namespace BinaryObjectScanner.FileType
                                 Directory.CreateDirectory(directoryName);
 
                             using var of = File.OpenWrite(tempFile);
-                            of.Write(fileData);
+                            of.Write(fileData, 0, fileData.Length);
                             of.Flush();
                         }
                         catch (Exception ex)
