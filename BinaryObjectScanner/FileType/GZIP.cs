@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER || NETCOREAPP
-using SharpCompress.Archives;
-using SharpCompress.Archives.GZip;
-#endif
+using SabreTools.Compression.Deflate;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -29,34 +26,18 @@ namespace BinaryObjectScanner.FileType
             if (stream == null || !stream.CanRead)
                 return false;
 
-#if NET462_OR_GREATER || NETCOREAPP
             try
             {
-                using var zipFile = GZipArchive.Open(stream);
-                foreach (var entry in zipFile.Entries)
-                {
-                    try
-                    {
-                        // If the entry is a directory
-                        if (entry.IsDirectory)
-                            continue;
+                // Try opening the stream
+                using var gzipFile = new GZipStream(stream, CompressionMode.Decompress, true);
 
-                        // If the entry has an invalid key
-                        if (entry.Key == null)
-                            continue;
+                // Create the output file path
+                Directory.CreateDirectory(outDir);
+                string tempFile = Path.Combine(outDir, Guid.NewGuid().ToString());
 
-                        string tempFile = Path.Combine(outDir, entry.Key);
-                        var directoryName = Path.GetDirectoryName(tempFile);
-                        if (directoryName != null && !Directory.Exists(directoryName))
-                            Directory.CreateDirectory(directoryName);
-
-                        entry.WriteToFile(tempFile);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (includeDebug) Console.WriteLine(ex);
-                    }
-                }
+                // Extract the file
+                using FileStream fs = File.OpenWrite(tempFile);
+                gzipFile.CopyTo(fs);
 
                 return true;
             }
@@ -65,9 +46,6 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
                 return false;
             }
-#else
-            return false;
-#endif
         }
     }
 }

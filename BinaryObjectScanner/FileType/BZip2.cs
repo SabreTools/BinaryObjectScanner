@@ -1,10 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER || NETCOREAPP
-using SharpCompress.Compressors;
-using SharpCompress.Compressors.BZip2;
-#endif
+using SabreTools.Compression.BZip2;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -29,11 +26,10 @@ namespace BinaryObjectScanner.FileType
             if (stream == null || !stream.CanRead)
                 return false;
 
-#if NET462_OR_GREATER || NETCOREAPP
             try
             {
                 // Try opening the stream
-                using var bz2File = new BZip2Stream(stream, CompressionMode.Decompress, true);
+                using var bz2File = new BZip2InputStream(stream, true);
 
                 // Create the output file path
                 Directory.CreateDirectory(outDir);
@@ -50,9 +46,6 @@ namespace BinaryObjectScanner.FileType
                 if (includeDebug) Console.WriteLine(ex);
                 return false;
             }
-#else
-            return false;
-#endif
         }
     }
 }
