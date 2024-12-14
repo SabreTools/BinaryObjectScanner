@@ -300,7 +300,7 @@ namespace ExtractionTool
             {
                 // Build the cabinet information
                 Console.WriteLine("Extracting MS-CAB contents");
-#if NET20 || NET35 || !WIN
+#if NET20 || NET35 || !WINX86
                 Console.WriteLine("WARNING: LZX compression not supported so some files may be skipped!");
 #endif
                 Console.WriteLine();
@@ -317,7 +317,7 @@ namespace ExtractionTool
                 Console.WriteLine("Extracting MoPaQ contents");
                 Console.WriteLine();
 
-#if NET20 || NET35 || !WIN
+#if NET20 || NET35 || !WINX86
                 Console.WriteLine("Extraction is not supported for this framework!");
                 Console.WriteLine();
 #else

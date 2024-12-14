@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if (NET40_OR_GREATER || NETCOREAPP) && WIN
+#if (NET40_OR_GREATER || NETCOREAPP) && WINX86
 using LibMSPackN;
 #else
 using SabreTools.Models.MicrosoftCabinet;
@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-#if NET20 || NET35 || !WIN
+#if NET20 || NET35 || !WINX86
             try
             {
                 // Create the wrapper

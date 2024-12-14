@@ -28,7 +28,7 @@
 
     <!-- Set a build flag for Windows specifically -->
     <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-        <DefineConstants>$(DefineConstants);WIN</DefineConstants>
+        <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
     </PropertyGroup>
 
     <!-- Exclude certain parts of external modules for by default -->
