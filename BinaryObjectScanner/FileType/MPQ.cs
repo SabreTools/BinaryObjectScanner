@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if (NET452_OR_GREATER || NETCOREAPP) && WINX86
+#if (NET452_OR_GREATER || NETCOREAPP) && (WINX86 || WINX64)
 using StormLibSharp;
 #endif
 

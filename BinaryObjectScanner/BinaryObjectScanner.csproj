@@ -26,9 +26,12 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <!-- Set a build flag for Windows specifically -->
+    <!-- Set build flags for Windows specifically -->
     <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
         <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
+        <DefineConstants>$(DefineConstants);WINX64</DefineConstants>
     </PropertyGroup>
 
     <!-- Exclude certain parts of external modules for by default -->
@@ -56,9 +59,6 @@
     <!-- These are needed for dealing with native Windows DLLs -->
     <ItemGroup>
         <Content Include="runtimes\**\*">
-            <BuildAction>Content</BuildAction>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <PackagePath>%(Identity)</PackagePath>
             <Pack>true</Pack>
         </Content>

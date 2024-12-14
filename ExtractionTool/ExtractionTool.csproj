@@ -30,6 +30,40 @@
     <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
         <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
+        <DefineConstants>$(DefineConstants);WINX64</DefineConstants>
+    </PropertyGroup>
+
+    <!-- These are needed for dealing with native Windows DLLs -->
+    <ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\CascLib.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <TargetPath>CascLib.dll</TargetPath>
+        </ContentWithTargetPath>
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\mspack.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <TargetPath>mspack.dll</TargetPath>
+        </ContentWithTargetPath>
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\StormLib.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <TargetPath>StormLib.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
+    <ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\CascLib.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <TargetPath>CascLib.dll</TargetPath>
+        </ContentWithTargetPath>
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\StormLib.dll">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <TargetPath>StormLib.dll</TargetPath>
+        </ContentWithTargetPath>
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
