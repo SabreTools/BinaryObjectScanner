@@ -62,8 +62,8 @@ SINGLE_FILE_CAPABLE=("net5.0" "net6.0" "net7.0" "net8.0" "net9.0")
 VALID_APPLE_FRAMEWORKS=("net6.0" "net7.0" "net8.0" "net9.0")
 VALID_CROSS_PLATFORM_FRAMEWORKS=("netcoreapp3.1" "net5.0" "net6.0" "net7.0" "net8.0" "net9.0")
 VALID_CROSS_PLATFORM_RUNTIMES=("win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
-NON_DLL_FRAMEWORKS=("net20" "net35" "net40")
-NON_DLL_RUNTIMES=("win-x64" "win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
+NON_DLL_FRAMEWORKS=("net20" "net35")
+NON_DLL_RUNTIMES=("win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
 
 # Only build if requested
 if [ $NO_BUILD = false ]; then
