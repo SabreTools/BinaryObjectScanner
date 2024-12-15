@@ -388,7 +388,9 @@ namespace BinaryObjectScanner.Protection
                 "2418D791C7B9D4F05BCB01FAF98F770CDF798464" => "1.00.026",
 
                 // Found in Redump entries 31149 and 28810.
-                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000-1.50.020/Lite",
+                // It can also be found in the Windows Temp directory when running SafeDisc 2+ games on Windows 9x, but not on XP or newer.
+                // Examples of it in SafeDisc 2+ can be found in Redump entries 2022 and 38541.
+                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000+/Lite",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -475,8 +477,53 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 57986 and 63941.
                 "85A92DC1D9CCBA6349D70F489043E649A8C21F2B" => "Lite",
 
-                // Found in Redump entry 14928.
-                "538351FF5955A3D8438E8C278E9D6D6274CF13AB" => "Lite",
+                // The following versions of the file are only found in the Windows Temp directory when running a SafeDisc 2+ program on Windows 9x.
+                // They aren't found when running the same program on Windows XP or newer. These also aren't currently automatically extracted, and would have to be manually recovered and scanned.
+
+                // Found in Redump entries 2022, 72195, and 73502.
+                "3F46BA4BB6D0D725F8BC5BFD374025853D0F8D10" => "2.05.030",
+
+                // Found in Redump entries 38541 and 59462.
+                "3AF6AD2EBA63FC96BF1A2E39725C41A022B14550" => "2.10.030",
+
+                // Found in Redump entries 45040, 55823, and 79476.
+                "AAB277C3877F654A0EAEC1E0DB1D511CD0D7BA00" => "2.30.030",
+
+                // Found in Redump entries 15312 and 48853.
+                "A73A129E50FB872F3AE0BA974A2EC46281556F8C" => "2.30.031",
+
+                // Found in Redump entries 9819 and 53658/53659.
+                "1499FC17B7565FC4B47F029412928FCA076D1838" => "2.30.033",
+
+                // Found in Redump entries 9846, 65642, and 68206.
+                "FF4DF7AE5252EF38A69F165A6A180F51DCCA0438" => "2.40.010",
+
+                // Found in Redump entries 23786 and 110603.
+                "0D52948CDC6562EEBB5D078C9C0C7E9D1EDB00CE" => "2.40.011",
+
+                // Found in Redump entries 30022 and 75104.
+                "30F5C179AF876292C45463FAE287E109C57B265E" => "2.51.020",
+
+                // Found in Redump entries 38589 and 66852.
+                "728D2D788A757341A37E64DE85204EE1096FD509" => "2.51.021",
+
+                // Found in Redump entries 2064, 47047, and 57673.
+                "5F4EDEA0B29AA3B6B374EC2C91C5EB3C1D791456" => "2.60.052",
+
+                // Found in Redump entries 13048-13050, 35385, and 46339.
+                "6328E7C065E5FB5CD1FB3FE7C47D8B1EA6BF040E" => "2.70.030",
+
+                // Found in Redump entries 9261/9262 and 64198.
+                "DB195BF5C6E732CFDA7DC391C0DF1A52D5898140" => "2.72.000",
+
+                // Found in Redump entries 14928, 32783, 75897.
+                "538351FF5955A3D8438E8C278E9D6D6274CF13AB" => "2.80.010/Lite",
+
+                // Found in Redump entries 39273/39274 and 59351.
+                "51C816A76C831B6EA2B66EEBACFB7032FF813ECC" => "2.80.011",
+
+                // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
+                "6492B6164D40633C7AAAC882EF1BA55E6931DBDC" => "2.90.040",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -737,7 +784,7 @@ namespace BinaryObjectScanner.Protection
                 "1BF885FDEF8A1824C34C10E2729AD133F70E1516" => "2.80.011",
 
                 // Found in Redump entries 11638, 52606, and 62505.
-                "B824ED257946EEE93F438B25C855E9DDE7A3671A" => "2.90.010-2.90.040",
+                "B824ED257946EEE93F438B25C855E9DDE7A3671A" => "2.90.040",
 
                 // Found in Redump entries 13230 and 68204.
                 // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
