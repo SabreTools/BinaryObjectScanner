@@ -348,7 +348,7 @@ namespace BinaryObjectScanner.Protection
                 12_464 => "3.17.000 / SafeDisc 2.80.010-2.80.011",
 
                 // Found in Redump entries 11638 and 52606.
-                12_400 => "3.18.000 / SafeDisc 2.90.010-2.90.040",
+                12_400 => "3.18.000 / SafeDisc 2.90.040",
 
                 // Found in Redump entries 13230, 15383, and 36511.
                 // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
@@ -404,7 +404,7 @@ namespace BinaryObjectScanner.Protection
 
                     // Found in Redump entries 11638 and 52606.
                     // The product version is "3.18.000 Windows NT 2002/11/14".
-                    "3.18.000" => "3.18.000 / SafeDisc 2.90.010-2.90.040",
+                    "3.18.000" => "3.18.000 / SafeDisc 2.90.040",
 
                     // Found in Redump entries 13230, 15383, and 36511.
                     // SafeDisc 4+ is known to sometimes use old versions of drivers, such as in Redump entry 101261.
@@ -583,16 +583,16 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 12885 and 66210.
                     or "1.09.000"
 
-                    // Found in Redump entries 3569, 3570, 37523, 66586.
+                    // Found in Redump entries 3569, 3570, 37523, and 66586.
                     or "1.11.000"
 
-                    // Found in Redump entries 21154, 37982, 108632.
+                    // Found in Redump entries 21154, 37982, and 108632.
                     or "1.20.000"
 
                     // Found in Redump entries 17024/37920. 
                     or "1.20.001"
 
-                    // Found in Redump entries 28708, 31526, 43321, 55080, 75501.
+                    // Found in Redump entries 28708, 31526, 43321, 55080, and 75501.
                     or "1.30.010"
 
                     // Found in Redump entries 9617 and 49552. 
@@ -643,10 +643,23 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 2064, 47047, and 57673.
                     or "2.60.052"
 
+                    // Found in Redump entries 13048-13050, 35385, and 46339.
                     or "2.70.030"
+
+                    // Found in Redump entries 9261/9262 and 64198.
                     or "2.72.000"
+
+                    // Found in Redump entries 32783, 72743, 75897, and 86176.
                     or "2.80.010"
+
+                    // Found in Redump entries 39273/39274 and 59351.
                     or "2.80.011"
+
+                    // Version 2.90.010 was erroneously thought to be a valid version, likely due to the SafeDisc version of Redump entry 11639 being updated from "2.80.010" to "2.90.010", presumably as a typo.
+                    // The version string found in SimCity 4 Deluxe is expunged, and so it seems likely that that version was filled in to several other entries of the same game due to the uncertainty.
+                    // Due to this, several BOS checks used to report a version range from 2.90.010-2.90.040, which have all since been updated.
+
+                    // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
                     or "2.90.040"
 
                     // Source not documented.
