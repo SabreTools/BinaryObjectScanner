@@ -25,7 +25,11 @@ namespace BinaryObjectScanner.Packer
 
                     if (ba.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                         return "Embedded 7-Zip Archive";
-                    if (ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                    if (ba.StartsWith([0x50, 0x4B, 0x03, 0x04]))
+                        return "Embedded PKZIP Archive";
+                    if (ba.StartsWith([0x50, 0x4B, 0x05, 0x06]))
+                        return "Embedded PKZIP Archive";
+                    if (ba.StartsWith([0x50, 0x4B, 0x07, 0x08]))
                         return "Embedded PKZIP Archive";
                     if (ba.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
                         return "Embedded RAR Archive";
@@ -39,7 +43,11 @@ namespace BinaryObjectScanner.Packer
             {
                 if (pex.OverlayData.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                     return "Embedded 7-Zip Archive";
-                if (pex.OverlayData.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                if (pex.OverlayData.StartsWith([0x50, 0x4B, 0x03, 0x04]))
+                    return "Embedded PKZIP Archive";
+                if (pex.OverlayData.StartsWith([0x50, 0x4B, 0x05, 0x06]))
+                    return "Embedded PKZIP Archive";
+                if (pex.OverlayData.StartsWith([0x50, 0x4B, 0x07, 0x08]))
                     return "Embedded PKZIP Archive";
                 if (pex.OverlayData.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
                     return "Embedded RAR Archive";
@@ -74,7 +82,11 @@ namespace BinaryObjectScanner.Packer
                 string extension = string.Empty;
                 if (overlayData.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                     extension = "7z";
-                else if (overlayData.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                else if (overlayData.StartsWith([0x50, 0x4B, 0x03, 0x04]))
+                    extension = "zip";
+                else if (overlayData.StartsWith([0x50, 0x4B, 0x05, 0x06]))
+                    extension = "zip";
+                else if (overlayData.StartsWith([0x50, 0x4B, 0x07, 0x08]))
                     extension = "zip";
                 else if (overlayData.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
                     extension = "rar";
@@ -125,7 +137,11 @@ namespace BinaryObjectScanner.Packer
                     string extension = string.Empty;
                     if (ba.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                         extension = "7z";
-                    else if (ba.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                    else if (ba.StartsWith([0x50, 0x4B, 0x03, 0x04]))
+                        extension = "zip";
+                    else if (ba.StartsWith([0x50, 0x4B, 0x05, 0x06]))
+                        extension = "zip";
+                    else if (ba.StartsWith([0x50, 0x4B, 0x07, 0x08]))
                         extension = "zip";
                     else if (ba.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
                         extension = "rar";
