@@ -525,6 +525,9 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
                 "6492B6164D40633C7AAAC882EF1BA55E6931DBDC" => "2.90.040",
 
+                // Found in Redump entry 116357.
+                "CC1818B15AD1D0510602D556AB0AFFB8011ECF4F" => "2.90.045",
+
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
         }

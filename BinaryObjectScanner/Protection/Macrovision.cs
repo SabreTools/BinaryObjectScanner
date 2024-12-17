@@ -662,6 +662,11 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
                     or "2.90.040"
 
+                    // Found in Redump entry 116357.
+                    // This version is particularly unusual, as it was in a game released in late 2007, when 2.90.040 was used from 2004/2005.
+                    // It also doesn't appear to contain the SecDrv or DrvMgt drivers. It may be a Long Term Support release of SafeDisc 2 for customers unwilling or unable to use SafeDisc 3+.
+                    or "2.90.045"
+
                     // Source not documented.
                     or "3.10.020"
                     or "3.15.010"
