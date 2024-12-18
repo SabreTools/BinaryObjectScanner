@@ -62,8 +62,6 @@ SINGLE_FILE_CAPABLE=("net5.0" "net6.0" "net7.0" "net8.0" "net9.0")
 VALID_APPLE_FRAMEWORKS=("net6.0" "net7.0" "net8.0" "net9.0")
 VALID_CROSS_PLATFORM_FRAMEWORKS=("netcoreapp3.1" "net5.0" "net6.0" "net7.0" "net8.0" "net9.0")
 VALID_CROSS_PLATFORM_RUNTIMES=("win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
-NON_DLL_FRAMEWORKS=("net20" "net35")
-NON_DLL_RUNTIMES=("win-arm64" "linux-x64" "linux-arm64" "osx-x64" "osx-arm64")
 
 # Only build if requested
 if [ $NO_BUILD = false ]; then
@@ -180,22 +178,10 @@ if [ $NO_ARCHIVE = false ]; then
             # Only include Debug if set
             if [ $INCLUDE_DEBUG = true ]; then
                 cd $BUILD_FOLDER/ExtractionTool/bin/Debug/${FRAMEWORK}/${RUNTIME}/publish/
-                if [[ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ]]; then
-                    zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_debug.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-                elif [[ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]]; then
-                    zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_debug.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-                else
-                    zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_debug.zip .
-                fi
+                zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_debug.zip .
             fi
             cd $BUILD_FOLDER/ExtractionTool/bin/Release/${FRAMEWORK}/${RUNTIME}/publish/
-            if [[ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ]]; then
-                zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_release.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-            elif [[ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]]; then
-                zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_release.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-            else
-                zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_release.zip .
-            fi
+            zip -r $BUILD_FOLDER/ExtractionTool_${FRAMEWORK}_${RUNTIME}_release.zip .
         done
     done
 
@@ -224,22 +210,10 @@ if [ $NO_ARCHIVE = false ]; then
             # Only include Debug if set
             if [ $INCLUDE_DEBUG = true ]; then
                 cd $BUILD_FOLDER/ProtectionScan/bin/Debug/${FRAMEWORK}/${RUNTIME}/publish/
-                if [[ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ]]; then
-                    zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_debug.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-                elif [[ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]]; then
-                    zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_debug.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-                else
-                    zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_debug.zip .
-                fi
+                zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_debug.zip .
             fi
             cd $BUILD_FOLDER/ProtectionScan/bin/Release/${FRAMEWORK}/${RUNTIME}/publish/
-            if [[ $(echo ${NON_DLL_FRAMEWORKS[@]} | fgrep -w $FRAMEWORK) ]]; then
-                zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_release.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-            elif [[ $(echo ${NON_DLL_RUNTIMES[@]} | fgrep -w $RUNTIME) ]]; then
-                zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_release.zip . -x 'CascLib.dll' -x 'mspack.dll' -x 'StormLib.dll'
-            else
-                zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_release.zip .
-            fi
+            zip -r $BUILD_FOLDER/ProtectionScan_${FRAMEWORK}_${RUNTIME}_release.zip .
         done
     done
 
