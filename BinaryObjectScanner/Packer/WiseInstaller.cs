@@ -105,53 +105,24 @@ namespace BinaryObjectScanner.Packer
         private static FormatProperty? MatchesNEVersion(NewExecutable nex)
         {
             // TODO: Offset is _not_ the EXE header address, rather where the data starts. Fix this.
-            switch (nex.Model.Stub?.Header?.NewExeHeaderAddr)
+            return (nex.Model.Stub?.Header?.NewExeHeaderAddr) switch
             {
-                case 0x84b0:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x11, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = true };
-
-                case 0x3e10:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
-
-                case 0x3e50:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
-
-                case 0x3c20:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x1e, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
-
-                case 0x3c30:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x22, ArchiveEnd = -1, InitText = false, FilenamePosition = 0x04, NoCrc = false };
-
-                case 0x3660:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x40, ArchiveEnd = 0x3c, InitText = false, FilenamePosition = 0x04, NoCrc = false };
-
-                case 0x36f0:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x48, ArchiveEnd = 0x44, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x3770:
-                    return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x3780:
-                    return new FormatProperty { Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x37b0:
-                    return new FormatProperty { Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x37d0:
-                    return new FormatProperty { Dll = true, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x3c80:
-                    return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x3bd0:
-                    return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-                case 0x3c10:
-                    return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-                default:
-                    return null;
-            }
+                0x84b0 => new FormatProperty { ArchiveEnd = -1 },
+                0x3e10 => new FormatProperty { ArchiveEnd = -1 },
+                0x3e50 => new FormatProperty { ArchiveEnd = -1 },
+                0x3c20 => new FormatProperty { ArchiveEnd = -1 },
+                0x3c30 => new FormatProperty { ArchiveEnd = -1 },
+                0x3660 => new FormatProperty { ArchiveEnd = 0x3c },
+                0x36f0 => new FormatProperty { ArchiveEnd = 0x44 },
+                0x3770 => new FormatProperty { ArchiveEnd = 0x4c },
+                0x3780 => new FormatProperty { ArchiveEnd = 0x4c },
+                0x37b0 => new FormatProperty { ArchiveEnd = 0x4c },
+                0x37d0 => new FormatProperty { ArchiveEnd = 0x4c },
+                0x3c80 => new FormatProperty { ArchiveEnd = 0x4c },
+                0x3bd0 => new FormatProperty { ArchiveEnd = 0x4c },
+                0x3c10 => new FormatProperty { ArchiveEnd = 0x4c },
+                _ => null,
+            };
         }
 
         /// <summary>
@@ -161,40 +132,24 @@ namespace BinaryObjectScanner.Packer
         /// <returns>True if it matches a known version, false otherwise</returns>
         private static FormatProperty? GetPEFormat(PortableExecutable pex)
         {
-            if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
-                && pex.GetFirstSection(".data")?.VirtualSize == 0x1528)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+            // Get the current format
+            var current = new FormatProperty
+            {
+                ExecutableType = ExecutableType.PE,
+                CodeSectionLength = (int?)pex.GetFirstSection(".text")?.VirtualSize ?? -1,
+                DataSectionLength = (int?)pex.GetFirstSection(".data")?.VirtualSize ?? -1,
+            };
 
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3cf4
-                && pex.GetFirstSection(".data")?.VirtualSize == 0x1568)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d54)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d44)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x6e00
-                && pex.GetFirstSection(".text")?.VirtualSize == 0x3d04)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
+            // Search known formats
+            foreach (var format in FormatProperty.KnownFormats)
+            {
+                if (current.Equals(format))
+                    return format;
+            }
 
             // Found in Binary.WiseCustomCalla
-            else if (pex.OverlayAddress == 0x6200)
-                return new FormatProperty { Dll = true, ArchiveStart = 0x62, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x3000)
-                return new FormatProperty { Dll = false, ArchiveStart = 0x50, ArchiveEnd = 0x4c, InitText = false, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x3800)
-                return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
-
-            else if (pex.OverlayAddress == 0x3a00)
-                return new FormatProperty { Dll = true, ArchiveStart = 0x5a, ArchiveEnd = 0x4c, InitText = true, FilenamePosition = 0x1c, NoCrc = false };
+            if (pex.OverlayAddress == 0x6200)
+                return new FormatProperty { ArchiveEnd = 0x4c };
 
             return null;
         }
