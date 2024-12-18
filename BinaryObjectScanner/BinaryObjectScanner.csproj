@@ -6,10 +6,12 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+        <IncludeSymbols>true</IncludeSymbols>
         <LangVersion>latest</LangVersion>
         <NoWarn>CS0162;CS0612</NoWarn>
         <Nullable>enable</Nullable>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Version>3.3.2</Version>
         <!-- Mostly added due to external libraries -->
