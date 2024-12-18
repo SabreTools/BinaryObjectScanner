@@ -28,29 +28,29 @@
 
     <!-- These are needed for dealing with native Windows DLLs -->
     <ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\CascLib.dll">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\CascLib.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <TargetPath>CascLib.dll</TargetPath>
         </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\mspack.dll">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\mspack.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <TargetPath>mspack.dll</TargetPath>
         </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\StormLib.dll">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\StormLib.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <TargetPath>StormLib.dll</TargetPath>
         </ContentWithTargetPath>
     </ItemGroup>
     <ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\CascLib.dll">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\native\CascLib.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <TargetPath>CascLib.dll</TargetPath>
         </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\StormLib.dll">
+        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\native\StormLib.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <TargetPath>StormLib.dll</TargetPath>
