@@ -474,9 +474,9 @@ namespace BinaryObjectScanner.Protection
 
             // Begin reading 2 bytes after "BoG_ *90.0&!!  Yy>" for older versions
             int index = positions[0] + 18 + 2;
-            int version = fileContent.ReadInt32(ref index);
-            int subVersion = fileContent.ReadInt32(ref index);
-            int subsubVersion = fileContent.ReadInt32(ref index);
+            int version = fileContent.ReadInt32LittleEndian(ref index);
+            int subVersion = fileContent.ReadInt32LittleEndian(ref index);
+            int subsubVersion = fileContent.ReadInt32LittleEndian(ref index);
 
             if (version != 0)
             {
@@ -486,9 +486,9 @@ namespace BinaryObjectScanner.Protection
 
             // Begin reading 14 bytes after "BoG_ *90.0&!!  Yy>" for newer versions
             index = positions[0] + 18 + 14;
-            version = fileContent.ReadInt32(ref index);
-            subVersion = fileContent.ReadInt32(ref index);
-            subsubVersion = fileContent.ReadInt32(ref index);
+            version = fileContent.ReadInt32LittleEndian(ref index);
+            subVersion = fileContent.ReadInt32LittleEndian(ref index);
+            subsubVersion = fileContent.ReadInt32LittleEndian(ref index);
 
             if (version != 0)
             {

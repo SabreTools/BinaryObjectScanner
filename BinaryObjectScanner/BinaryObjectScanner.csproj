@@ -86,14 +86,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SabreTools.Compression" Version="0.6.2" />
-        <PackageReference Include="SabreTools.Hashing" Version="1.4.0" />
-        <PackageReference Include="SabreTools.IO" Version="1.6.1" />
-        <PackageReference Include="SabreTools.Matching" Version="1.5.0" />
-        <PackageReference Include="SabreTools.Models" Version="1.5.7" />
-        <PackageReference Include="SabreTools.Serialization" Version="1.8.3" />
-        <PackageReference Include="UnshieldSharp" Version="1.9.3" />
-        <PackageReference Include="WiseUnpacker" Version="1.5.5" />
+        <PackageReference Include="SabreTools.Compression" Version="0.6.3" />
+        <PackageReference Include="SabreTools.Hashing" Version="1.4.1" />
+        <PackageReference Include="SabreTools.IO" Version="1.6.2" />
+        <PackageReference Include="SabreTools.Matching" Version="1.5.1" />
+        <PackageReference Include="SabreTools.Models" Version="1.5.8" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.8.4" />
+        <PackageReference Include="UnshieldSharp" Version="1.9.4" />
+        <PackageReference Include="WiseUnpacker" Version="1.5.6" />
     </ItemGroup>
 
 </Project>
