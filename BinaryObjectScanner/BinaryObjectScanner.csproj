@@ -13,7 +13,7 @@
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Version>3.3.2</Version>
+        <Version>3.3.3</Version>
         <!-- Mostly added due to external libraries -->
         <WarningsNotAsErrors>CS8600;CS8601;CS8602;CS8603;CS8604;CS8605;CS8618;CS8625;CS8634;CS8765;IL3000;NU5100</WarningsNotAsErrors>
 
