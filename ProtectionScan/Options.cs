@@ -29,10 +29,16 @@ namespace ProtectionScan
         /// Scan file contents during protection scanning
         /// </summary>
         public bool ScanContents { get; private set; } = true;
+
         /// <summary>
         /// Scan file paths during protection scanning
         /// </summary>
         public bool ScanPaths { get; private set; } = true;
+
+        /// <summary>
+        /// Scan subdirectories during protection scanning
+        /// </summary>
+        public bool ScanSubdirectories { get; set; } = true;
 
         #endregion
 
@@ -74,9 +80,14 @@ namespace ProtectionScan
                         options.ScanContents = false;
                         break;
 
-                    case "-ns":
+                    case "-np":
                     case "--no-paths":
                         options.ScanPaths = false;
+                        break;
+
+                    case "-ns":
+                    case "--no-subdirs":
+                        options.ScanSubdirectories = false;
                         break;
 
                     default:
@@ -109,7 +120,8 @@ namespace ProtectionScan
             Console.WriteLine("-d, --debug              Enable debug mode");
             Console.WriteLine("-nc, --no-contents       Disable scanning for content checks");
             Console.WriteLine("-na, --no-archives       Disable scanning archives");
-            Console.WriteLine("-ns, --no-paths          Disable scanning for path checks");
+            Console.WriteLine("-np, --no-paths          Disable scanning for path checks");
+            Console.WriteLine("-ns, --no-subdirs        Disable scanning subdirectories");
         }
     }
 }

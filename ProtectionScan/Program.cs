@@ -35,6 +35,7 @@ namespace ProtectionScan
                 options.ScanArchives,
                 options.ScanContents,
                 options.ScanPaths,
+                options.ScanSubdirectories,
                 options.Debug,
                 fileProgress);
 

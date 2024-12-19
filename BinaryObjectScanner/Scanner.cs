@@ -31,11 +31,13 @@ namespace BinaryObjectScanner
         /// <param name="scanArchives">Enable scanning archive contents</param>
         /// <param name="scanContents">Enable including content detections in output</param>
         /// <param name="scanPaths">Enable including path detections in output</param>
+        /// <param name="scanSubdirectories">Enable scanning subdirectories</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
         public Scanner(bool scanArchives,
             bool scanContents,
             bool scanPaths,
+            bool scanSubdirectories,
             bool includeDebug,
             IProgress<ProtectionProgress>? fileProgress = null)
         {
@@ -44,6 +46,7 @@ namespace BinaryObjectScanner
                 ScanArchives = scanArchives,
                 ScanContents = scanContents,
                 ScanPaths = scanPaths,
+                ScanSubdirectories = scanSubdirectories,
                 IncludeDebug = includeDebug,
             };
 
@@ -93,7 +96,8 @@ namespace BinaryObjectScanner
                 if (Directory.Exists(path))
                 {
                     // Enumerate all files at first for easier access
-                    List<string> files = [.. IOExtensions.SafeGetFiles(path, "*", SearchOption.AllDirectories)];
+                    SearchOption searchOption = _options.ScanSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                    List<string> files = [.. IOExtensions.SafeGetFiles(path, "*", searchOption)];
 
                     // Scan for path-detectable protections
                     if (_options.ScanPaths)
