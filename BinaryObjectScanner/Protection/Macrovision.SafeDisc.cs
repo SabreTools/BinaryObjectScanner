@@ -528,6 +528,24 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 116357.
                 "CC1818B15AD1D0510602D556AB0AFFB8011ECF4F" => "2.90.045",
 
+                // Found in Redump entries 13230 and 68204.
+                "E481642064018AD02CE1FA524E539C89B80B8116" => "3.10.020",
+
+                // Found in Redump entries 36511 and 74338.
+                "6950E54EFAE8A00D2F54BEAAE34FBE13C9555BB8" => "3.15.010",
+
+                // Found in Redump entries 15383 and 35512.
+                "86EBAD43D87C2192FAF457BE922E21963FE8A16C" => "3.15.011",
+
+                // Found in Redump entries 30404, 31621/31623, 56748, 58625, and 64355-64358. TODO: Test 84586.
+                "553BA02CCAE2298C6E14F695EA172EB2B47E6798" => "3.20.020",
+
+                // Found in Redump entries 20728, 53667/53668/76775, 58625, 64255, 75782, 84985, 91552, 102135, and 102806.
+                "CCC4797FDC387FB5E08F87C1830F43F9B7A28726" => "3.20.022",
+
+                // Found in Redump entries 20729, 28257, 54268-5427, 63810-63813, and 86177.
+                "E931EEC20B4A7032BDAD5DC1D76E740A08A6321B" => "3.20.024",
+
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
         }
