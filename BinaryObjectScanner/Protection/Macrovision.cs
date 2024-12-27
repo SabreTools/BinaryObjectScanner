@@ -667,13 +667,25 @@ namespace BinaryObjectScanner.Protection
                     // It also doesn't appear to contain the SecDrv or DrvMgt drivers. It may be a Long Term Support release of SafeDisc 2 for customers unwilling or unable to use SafeDisc 3+.
                     or "2.90.045"
 
-                    // Source not documented.
+                    // Found in Redump entries 13230 and 68204.
                     or "3.10.020"
+
+                    // Found in Redump entries 36511 and 74338.
                     or "3.15.010"
+
+                    // Found in Redump entries 15383 and 35512.
                     or "3.15.011"
+
+                    // Found in Redump entries 30404, 31621/31623, 56748, 58625, and 64355-64358.
                     or "3.20.020"
+
+                    // Found in Redump entries 20728, 53667/53668/76775, 58625, 64255, 75782, 84985, 91552, 102135, and 102806.
                     or "3.20.022"
+
+                    // Found in Redump entries 20729, 28257, 54268-5427, 63810-63813, and 86177.
                     or "3.20.024"
+
+                    // Source not documented.
                     or "4.00.000"
                     or "4.00.001"
                     or "4.00.002"
