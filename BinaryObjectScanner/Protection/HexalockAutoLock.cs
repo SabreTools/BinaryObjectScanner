@@ -57,7 +57,15 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Exists(s => s.Contains("mfint.dll")))
                     return "Hexalock Autolock";
             }
-
+            // Get the CODE section strings, if they exist
+            strs = pex.GetFirstSectionStrings("CODE");
+            if (strs != null)
+            {
+                // Found in "Sea Adventure / Adventure de la Mer" by Compedia
+                if (strs.Exists(s => s.Contains("mfint.dll")))
+                    return "Hexalock Autolock";
+            }
+            
             return null;
         }
 
