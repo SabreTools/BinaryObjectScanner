@@ -57,7 +57,25 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Exists(s => s.Contains("mfint.dll")))
                     return "Hexalock Autolock";
             }
-
+            
+            // Get the code/CODE section strings, if they exist
+            strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            if (strs != null)
+            {
+                // Found in "launcher.exe" in "Sea Adventure / Adventure de la Mer" by Compedia.
+                if (strs.Exists(s => s.Contains("mfint.dll")))
+                    return "Hexalock Autolock";
+            }
+            
+            // Get the UPX1 section strings, if they exist
+            strs = pex.GetFirstSectionStrings("UPX1");
+            if (strs != null)
+            {
+                // Found in "postmanpat.exe" in "Postman Pat" by Compedia.
+                if (strs.Exists(s => s.Contains("mfint.dll")))
+                    return "Hexalock Autolock";
+            }
+            
             return null;
         }
 
