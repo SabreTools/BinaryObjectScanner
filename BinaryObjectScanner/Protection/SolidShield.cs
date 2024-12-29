@@ -27,6 +27,10 @@ namespace BinaryObjectScanner.Protection
             else if (name.OptionalStartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
 
+            // Found in Redump entry 63719.
+            else if (name.OptionalStartsWith("Solidshield - Activation Wizard", StringComparison.OrdinalIgnoreCase))
+                return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
+
             // Found in "tvdm.dll" in Redump entry 68166.
             else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {GetInternalVersion(pex)}";
