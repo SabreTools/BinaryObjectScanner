@@ -656,8 +656,9 @@ namespace BinaryObjectScanner.Packer
 
                 new(new byte?[] { 0x60, 0xE8, 0x41, 0x06, 0x00, 0x00, 0xEB, 0x41 }, "ASPack 1.08.04"),
 
-                new(new byte?[] { 0x60, 0xE8, null, null, null, null, 0xEB }, "ASPack 1.08.04"),
-
+                // Disabled due to being too prone to false positives. 
+                //new(new byte?[] { 0x60, 0xE8, null, null, null, null, 0xEB }, "ASPack 1.08.04"),
+                
                 new(new byte?[] { 0x60, 0xE8, 0x70, 0x05, 0x00, 0x00, 0xEB, 0x4C }, "ASPack 2.00.00"),
 
                 new(new byte?[] { 0x60, 0xE8, 0x48, 0x11, 0x00, 0x00, 0xC3, 0x83 }, "ASPack 2.00.00"),
