@@ -90,7 +90,9 @@ namespace BinaryObjectScanner.Protection
 
             // TODO: Re-enable all Entry Point checks after implementing
             if (pex.ContainsSection(".arch")
-                || pex.ContainsSection(".srdata")
+                // Disabled scanning in files with the ".srdata" section due to numerous false positives.
+                // These include Redump entry 112733 and Bus Hound 5.04 (https://web.archive.org/web/20070129204350/http://www.perisoft.net/bin/bhe504.exe).
+                // || pex.ContainsSection(".srdata")
                 || !string.IsNullOrEmpty(timingMatch))
             {
                 if (pex.Model.OptionalHeader?.Magic == OHMN.PE32Plus)
