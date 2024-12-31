@@ -91,7 +91,7 @@
         <PackageReference Include="SabreTools.IO" Version="1.6.2" />
         <PackageReference Include="SabreTools.Matching" Version="1.5.1" />
         <PackageReference Include="SabreTools.Models" Version="1.5.8" />
-        <PackageReference Include="SabreTools.Serialization" Version="1.8.5" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.8.6" />
         <PackageReference Include="UnshieldSharp" Version="1.9.4" />
         <PackageReference Include="WiseUnpacker" Version="1.5.6" />
     </ItemGroup>
