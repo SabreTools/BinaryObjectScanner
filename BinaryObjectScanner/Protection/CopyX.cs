@@ -134,7 +134,7 @@ namespace BinaryObjectScanner.Protection
 
                     // Samples: Redump ID 81628
                     if (Array.TrueForAll(block, b => b == 0))
-                        protections.Add("copy-X");
+                        protections.Add("copy-X [Check disc for physical ring]");
 
                     var matchers = new List<ContentMatchSet>
                     {
