@@ -41,7 +41,7 @@ namespace BinaryObjectScanner.Protection
            
            return null;
         }
-        
+
         /// <inheritdoc/>
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
