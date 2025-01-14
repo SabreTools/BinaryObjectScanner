@@ -33,51 +33,15 @@ namespace BinaryObjectScanner.Protection
                }
            }
            
-           // Get the .bss section, if it exists
-           var bssSectionRaw = pex.GetFirstSectionData(".bss", exact: true);
-           if (bssSectionRaw != null)
-           {
-               //Rise of Nations
-               var matchers = GenerateMatchers();
-               var match = MatchUtil.GetFirstMatch(file, bssSectionRaw, matchers, includeDebug);
-               if (!string.IsNullOrEmpty(match))
-                   return match;
-           }
-
-           // Get the .tls section, if it exists
-           var tlsSectionRaw = pex.GetFirstSectionData(".tls", exact: true);
-           if (tlsSectionRaw != null)
-           {
-               //Zoo Tycoon 2
-               var matchers = GenerateMatchers();
-               var match = MatchUtil.GetFirstMatch(file, tlsSectionRaw, matchers, includeDebug);
-               if (!string.IsNullOrEmpty(match))
-                   return match;
-           }
+           // Specific known named sections:
+           // .bss (Rise of Nations)
+           // .tls (Zoo Tycoon 2)
+           // .idata (http://redump.org/disc/58561/ and http://redump.org/disc/71983/)
+           // .edata (http://redump.org/disc/36619/)
            
-           // Get the .idata section, if it exists
-           var idataSectionRaw = pex.GetFirstSectionData(".idata", exact: true);
-           if (idataSectionRaw != null)
-           {
-               // http://redump.org/disc/58561/ and http://redump.org/disc/71983/
-               var matchers = GenerateMatchers();
-               var match = MatchUtil.GetFirstMatch(file, idataSectionRaw, matchers, includeDebug);
-               if (!string.IsNullOrEmpty(match))
-                   return match;
-           }
-
-           // Get the .edata section, if it exists
-           var edataSectionRaw = pex.GetFirstSectionData(".edata", exact: true);
-           if (edataSectionRaw != null)
-           {
-               // http://redump.org/disc/36619/
-               var matchers = GenerateMatchers();
-               var match = MatchUtil.GetFirstMatch(file, edataSectionRaw, matchers, includeDebug);
-               if (!string.IsNullOrEmpty(match))
-                   return match;
-           }
            return null;
         }
+        
         /// <inheritdoc/>
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
