@@ -72,7 +72,6 @@ namespace BinaryObjectScanner.Protection
         /// <summary>
         /// Generate the set of matchers used for each section
         /// </summary>
-        /// <returns></returns>
         private static List<ContentMatchSet> GenerateMatchers()
         {
             return
