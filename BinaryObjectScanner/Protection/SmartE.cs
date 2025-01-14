@@ -68,6 +68,7 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
+        
         /// <summary>
         /// Generate the set of matchers used for each section
         /// </summary>
