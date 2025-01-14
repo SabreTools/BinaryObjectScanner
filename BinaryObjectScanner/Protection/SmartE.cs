@@ -13,9 +13,8 @@ namespace BinaryObjectScanner.Protection
         {
            // Only works on stub generated from running the program yourself
            if (pex.InternalName.OptionalEquals("SmarteSECURE"))
-           {
                return "SmartE";
-           }
+           
            var sections = pex.Model.SectionTable ?? [];
 
            if (sections.Length > 0)
