@@ -96,6 +96,12 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase))
                 return "Macrovision SecDrv Update Installer";
 
+            // Present in "AuthServ.exe" files from SafeDisc 4+.
+            // This filename is confirmed by the file properties in SafeDisc 4+ (such as Redump entry 35382).
+            // It is only found extracted into the Windows Temp directory when a protected application is run, and is renamed to begin with a "~" and have the ".tmp" extension.
+            else if (name.OptionalEquals("SafeDisc AuthServ APP", StringComparison.OrdinalIgnoreCase))
+                return $"SafeDisc AuthServ APP {GetSafeDiscAuthServVersion(pex)}";
+
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
             name = pex.FileDescription;
@@ -371,6 +377,25 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
+        private static string GetSafeDiscAuthServVersion(PortableExecutable pex)
+        {
+            // Different versions of this executable correspond to different SafeDisc versions.
+            var version = pex.FileVersion;
+            if (!string.IsNullOrEmpty(version))
+            {
+                return version switch
+                {
+                    // Found in Redump entries 35382, 36024, 74520, and 79729.
+                    // The product version is "4.00.00.0092 2004/09/02".
+                    "4.00.00.0092" => "4.00.00.0092 / SafeDisc 4.00.000",
+
+                    _ => $"Unknown Version {version} (Report this to us on GitHub)",
+                };
+            }
+
+            return "Unknown Version (Report this to us on GitHub)";
+        }
+
         internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
@@ -545,6 +570,9 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 20729, 28257, 54268-5427, 63810-63813, and 86177.
                 "E931EEC20B4A7032BDAD5DC1D76E740A08A6321B" => "3.20.024",
+
+                // Found in Redump entries 35382, 36024, 74520, and 79729.
+                "AF437372045AF7D5F74A876581FE2E76D2CEC80A" => "4.00.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -850,6 +878,10 @@ namespace BinaryObjectScanner.Protection
 
                 // Found distributed in https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe and https://web.archive.org/web/20010707163339/http://www.macrovision.com:80/demos/safedisc.exe, but unknown what version it is associated with.
                 "8426690FA43076EE466FD1B2D1F2F1267F9CC3EC" => "Unknown Version (Report this to us on GitHub)",
+
+                // Found in Redump entry 121132.
+                // The game itself is protected with SecuROM, and contains a secdrv.sys associated with SafeDisc 2.90.040, despite that version not having been used with DVDs.
+                "18AD11E1B8D6A644989E12C12258B548996C1C96" => "Unknown Version (DVD) (Report this to us on GitHub)",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
