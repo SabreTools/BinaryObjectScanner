@@ -688,9 +688,10 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 35382, 36024, 74520, and 79729.
                     or "4.00.000"
 
-                    // Source not documented.
-
+                    // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
                     or "4.00.001"
+
+                    // Source not documented.
                     or "4.00.002"
                     or "4.00.003"
                     or "4.50.000"

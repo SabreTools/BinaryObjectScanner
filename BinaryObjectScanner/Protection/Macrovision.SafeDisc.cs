@@ -389,6 +389,10 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.00.00.0092 2004/09/02".
                     "4.00.00.0092" => "4.00.00.0092 / SafeDisc 4.00.000",
 
+                    // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
+                    // The product version is "4.00.01.0004 2004/09/30".
+                    "4.00.01.0004" => "4.00.01.0004 / SafeDisc 4.00.001",
+
                     _ => $"Unknown Version {version} (Report this to us on GitHub)",
                 };
             }
@@ -573,6 +577,9 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 35382, 36024, 74520, and 79729.
                 "AF437372045AF7D5F74A876581FE2E76D2CEC80A" => "4.00.000",
+
+                // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
+                "CF1BF960995040AB7DA103F95E7C0A2B69DA094C" => "4.00.001",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
