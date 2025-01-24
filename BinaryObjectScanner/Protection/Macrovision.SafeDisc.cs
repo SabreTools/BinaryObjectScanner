@@ -401,6 +401,10 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.00.03.0000 2005/05/11".
                     "4.00.03.0000" => "4.00.03.0000 / SafeDisc 4.00.003",
 
+                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261
+                    // The product version is "4.50.00.1619 2005/06/08".
+                    "4.50.00.1619" => "4.50.00.1619 / SafeDisc 4.50.000",
+
                     _ => $"Unknown Version {version} (Report this to us on GitHub)",
                 };
             }
@@ -594,6 +598,11 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 40595-40597, 51597, 68551-68552, 83408, and 83410.
                 "47A729C462186615DA2B8C6038535B884E7D10BC" => "4.00.003",
+
+                // After this point, games that support 9x are inconsistent, so some versions of this driver may not be documented until proper extraction from the game executable is implemented.
+
+                // Found in Redump entries 74564 + 74579-74581, 76813, and 101261.
+                "FD6A99FEF6AA551A71F4BD683E0334E92CFA546F" => "4.50.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
