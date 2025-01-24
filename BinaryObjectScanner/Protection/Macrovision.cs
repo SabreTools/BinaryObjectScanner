@@ -56,13 +56,15 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
                 resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}");
 
-            // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
+            // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Windows (2.00R)(Intuit)(2002)(352282)".
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
             if (name.OptionalEquals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase))
                 resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
 
             // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
+            // A stxt381 section has also been found in the "~df89e9.tmp" file, which is extracted into the Windows temp directory when running Redump entry 42034 on Windows 9x.
+            // This file serves an unknown function, as it's only roughly 12 KB in size and consists of mostly empty (00) data.
             // They may indicate SafeWrap, but this hasn't been confirmed yet.
             // Almost every single sample known has both sections, though one only contains the "stxt371" section. It is unknown if this is intentional, or if the game functions without it.
             // It is present in the "Texas HoldEm!" game in "boontybox_PCGamer_DVD.exe" in IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58.
@@ -691,9 +693,13 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
                     or "4.00.001"
 
-                    // Source not documented.
+                    // Found in Redump entries 33326, 42034, 49677x, 71646, 78980, 85345-85347, 86196, and 105716.
                     or "4.00.002"
+
+                    // Found in Redump entries 40595-40597, 51597, 68551-68552, 83408, and 83410.
                     or "4.00.003"
+
+                    // Source not documented.               
                     or "4.50.000"
                     or "4.60.000"
                     or "4.70.000"
