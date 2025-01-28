@@ -401,9 +401,21 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.00.03.0000 2005/05/11".
                     "4.00.03.0000" => "4.00.03.0000 / SafeDisc 4.00.003",
 
-                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261
+                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
                     // The product version is "4.50.00.1619 2005/06/08".
                     "4.50.00.1619" => "4.50.00.1619 / SafeDisc 4.50.000",
+
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, and 104503.
+                    // The product version is "4.60.00.1702 2005/08/03".
+                    "4.60.00.1702" => "4.60.00.1702 / SafeDisc 4.60.000",
+
+                    // Found in Redump entries 34783, 56320-56323, and 66403.
+                    // The product version is "4.70.00.1941 2006/04/26".
+                    "4.70.00.1941" => "4.70.00.1941 / SafeDisc 4.70.000",
+
+                    // Found in Redump entries 
+                    // The product version is "4.80.00.2074 2006/09/06".
+                    "4.80.00.2074" => "4.80.00.2074 / SafeDisc 4.80.000",
 
                     _ => $"Unknown Version {version} (Report this to us on GitHub)",
                 };
@@ -603,6 +615,15 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 74564 + 74579-74581, 76813, and 101261.
                 "FD6A99FEF6AA551A71F4BD683E0334E92CFA546F" => "4.50.000",
+
+                // Found in Redump entries 31824, 45684-45686, 50682, and 104503.
+                "86923EE2618814ABDA285C2EB50EA26635479C7A" => "4.60.000",
+
+                // Found in Redump entries 56320-56323.
+                "5E26D831981841B4D36EF0B4A195CD073C513544" => "4.70.000",
+
+                // Found in Redump entries 64144-64146 + 78543.
+                "1AF42A52234EF989E099C0EB05906A939C7B98EA" => "4.80.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };

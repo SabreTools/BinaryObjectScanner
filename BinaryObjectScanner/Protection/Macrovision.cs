@@ -364,6 +364,7 @@ namespace BinaryObjectScanner.Protection
 
                 // Found distributed online, but so far not in a game release. May be a final driver version never released with a game. TODO: Discover original source.
                 // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officially by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
+                // Further confirmed to have been distributed in a Windows Server Trial in IA item pcworld-0410 (PCWorld0410.iso/WindowsServerTrial/server.iso/sources/install.wim/3/Windows/System32/drivers).
                 23_040 => "4.03.086 / Product Unknown",
 
                 // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
@@ -702,10 +703,16 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
                     or "4.50.000"
 
-                    // Source not documented.
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, and 104503.
                     or "4.60.000"
+
+                    // Found in Redump entries 34783, 56320-56323, and 66403.
                     or "4.70.000"
+
+                    // Found in Redump entries 64144-64146 + 78543, and 98589-98590.
                     or "4.80.000"
+
+                    // Source not documented.
                     or "4.81.000"
                     or "4.85.000"
                     or "4.90.000"
