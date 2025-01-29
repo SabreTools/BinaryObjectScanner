@@ -67,8 +67,16 @@ namespace ProtectionScan
             }
             catch (Exception ex)
             {
-                using var sw = new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
-                sw.WriteLine(ex);
+                try
+                {
+                    using var sw = new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
+                    sw.WriteLine(ex);
+                }
+                catch
+                {
+                    Console.WriteLine("Could not open exception log file for writing. See original message below:");
+                    Console.WriteLine(ex);
+                }
             }
         }
 
@@ -85,7 +93,17 @@ namespace ProtectionScan
                 return;
             }
 
-            using var sw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
+            // Attempt to open a protection file for writing
+            StreamWriter? sw = null;
+            try
+            {
+                sw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
+            }
+            catch
+            {
+                Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
+            }
+
 #if NET20
             var keysArr = new string[protections.Keys.Count];
             protections.Keys.CopyTo(keysArr, 0);
@@ -107,8 +125,11 @@ namespace ProtectionScan
 #endif
                 string line = $"{key}: {string.Join(", ", fileProtections)}";
                 Console.WriteLine(line);
-                sw.WriteLine(line);
+                sw?.WriteLine(line);
             }
+
+            // Dispose of the writer
+            sw?.Dispose();
         }
 
         /// <summary>
