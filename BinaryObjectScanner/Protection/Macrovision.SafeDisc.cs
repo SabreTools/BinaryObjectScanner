@@ -413,9 +413,13 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.70.00.1941 2006/04/26".
                     "4.70.00.1941" => "4.70.00.1941 / SafeDisc 4.70.000",
 
-                    // Found in Redump entries 
+                    // Found in Redump entries 64144-64146 + 78543, and 98589-98590.
                     // The product version is "4.80.00.2074 2006/09/06".
                     "4.80.00.2074" => "4.80.00.2074 / SafeDisc 4.80.000",
+
+                    // Found in Redump entries 13014, 52523, 74366, 76346, 83290, 115764, and 116381.
+                    // The product version is "4.81.00.2284 2007/04/04".
+                    "4.81.00.2284" => "4.81.00.2284 / SafeDisc 4.81.000",
 
                     _ => $"Unknown Version {version} (Report this to us on GitHub)",
                 };
@@ -441,9 +445,16 @@ namespace BinaryObjectScanner.Protection
                 "2418D791C7B9D4F05BCB01FAF98F770CDF798464" => "1.00.026",
 
                 // Found in Redump entries 31149 and 28810.
-                // It can also be found in the Windows Temp directory when running SafeDisc 2+ games on Windows 9x, but not on XP or newer.
+                // For SafeDisc 1 programs, it can be found bundled together with the rest of the drivers and protected application files.
+                // For SafeDisc 2+ programs, it can be found in the Windows Temp directory when running protected programs on Windows 9x, but not on XP or newer.
                 // Examples of it in SafeDisc 2+ can be found in Redump entries 2022 and 38541.
-                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000+/Lite",
+                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000-4.80.000/Lite",
+
+                // The following versions can only be found in the Windows Temp directory when running protected programs on Windows 9x, but not on XP or newer.
+                // It is unknown why there is such a large gap between updates, or why this file was updated at all, as the majority of programs at this point didn't tend to support 9x.
+
+                // Found in Redump entries 115764 and 116381.
+                "12491C7C3A6778A02511F2632F5CFBC535D4E47A" => "4.81.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -624,6 +635,9 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 64144-64146 + 78543.
                 "1AF42A52234EF989E099C0EB05906A939C7B98EA" => "4.80.000",
+
+                // Found in Redump entries 115764 and 116381.
+                "844D1876BD92DEBBA9B529DC5EE9B22CC3F317C2" => "4.81.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
