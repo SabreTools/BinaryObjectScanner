@@ -673,7 +673,8 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entry 120303.
                 "E16551A94B43358401368787E21840AE23137BE7" => "4.90.010",
 
-                // Due to the single known sample of 4.91.000 (Redump entry 120213) not being compatible with 9x, the associated clcd32.dll file has yet to be documented.
+                // Found in Redump entry 120213.
+                "C2F6A1A558946053171037C2A640F3ECEE017FA0" => "4.91.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
