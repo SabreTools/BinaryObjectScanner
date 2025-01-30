@@ -721,8 +721,17 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 38142, 56319, and 66333.
                     or "4.90.000"
 
-                    // Source not documented.
-                    or "4.90.010" => "SafeDisc",
+                    // Found in Redump entries 11347, 29069, 58573-58575, 78976, and 120303.
+                    or "4.90.010"
+
+                    // Found in Redump entry 120213.
+                    // This is a particularly odd version, as despite being the last known version of SafeDisc, it was not known to exist until recently.
+                    // The copyright for "AuthServ.exe" in this version is set to RealNetworks, instead of Macrovision.
+                    // RealNetworks presumably acquired SafeDisc when they purchased Trymedia from Macrovision (https://realnetworks.com/press/releases/2008/realnetworks-acquire-trymedia-macrovision).
+                    // Due to this being the only known sample, it may be that they did a trial run of a new version of SafeDisc, before deciding against continuing its development.
+                    or "4.91.000"
+                    
+                    => "SafeDisc",
 
                 // SafeDisc (Unconfirmed)
                 // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".

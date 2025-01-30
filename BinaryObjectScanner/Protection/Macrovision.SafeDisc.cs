@@ -434,8 +434,16 @@ namespace BinaryObjectScanner.Protection
                     "4.90.00.2613" => "4.90.00.2613 / SafeDisc 4.90.000",
 
                     // Found in Redump entry 38142.
-                    // The product version is "4.90.010.2747 2008/07/10".
+                    // The product version is "4.90.10.2747 2008/07/10".
                     "4.90.10.2747" => "4.90.10.2747 / SafeDisc 4.90.000",
+
+                    // Found in Redump entries 11347, 29069, 58573-58575, 78976, and 120303.
+                    // The product version is "4.90.10.2781 2008/08/13".
+                    "4.90.10.2781" => "4.90.10.2781 / SafeDisc 4.90.010",
+
+                    // Found in Redump entry 120213.
+                    // The product version is "4.91.00.2832 2008/10/03".
+                    "4.91.00.2832" => "4.91.00.2832 / SafeDisc 4.91.000",
 
                     _ => $"Unknown Version {version} (Report this to us on GitHub)",
                 };
@@ -661,6 +669,11 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 56319.
                 "98508487638694450B0361B53C1159745A767D72" => "4.90.000",
+
+                // Found in Redump entry 120303.
+                "E16551A94B43358401368787E21840AE23137BE7" => "4.90.010",
+
+                // Due to the single known sample of 4.91.000 (Redump entry 120213) not being compatible with 9x, the associated clcd32.dll file has yet to be documented.
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
