@@ -96,6 +96,12 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase))
                 return "Macrovision SecDrv Update Installer";
 
+            // Present in "AuthServ.exe" files from SafeDisc 4+.
+            // This filename is confirmed by the file properties in SafeDisc 4+ (such as Redump entry 35382).
+            // It is only found extracted into the Windows Temp directory when a protected application is run, and is renamed to begin with a "~" and have the ".tmp" extension.
+            else if (name.OptionalEquals("SafeDisc AuthServ APP", StringComparison.OrdinalIgnoreCase))
+                return $"SafeDisc AuthServ APP {GetSafeDiscAuthServVersion(pex)}";
+
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
             name = pex.FileDescription;
@@ -371,6 +377,81 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
+        private static string GetSafeDiscAuthServVersion(PortableExecutable pex)
+        {
+            // Different versions of this executable correspond to different SafeDisc versions.
+            var version = pex.FileVersion;
+            if (!string.IsNullOrEmpty(version))
+            {
+                return version switch
+                {
+                    // Found in Redump entries 35382, 36024, 74520, and 79729.
+                    // The product version is "4.00.00.0092 2004/09/02".
+                    "4.00.00.0092" => "4.00.00.0092 / SafeDisc 4.00.000",
+
+                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, and 83017.
+                    // The product version is "4.00.01.0004 2004/09/30".
+                    "4.00.01.0004" => "4.00.01.0004 / SafeDisc 4.00.001",
+
+                    // Found in Redump entries 33326, 42034, 71646, 78980, 85345-85347, 86196, and 105716.
+                    // The product version is "4.00.02.0000 2004/12/15".
+                    "4.00.02.0000" => "4.00.02.0000 / SafeDisc 4.00.002",
+
+                    // Found in Redump entries 40595-40597, 51597, 68551-68552, 83408, and 83410.
+                    // The product version is "4.00.03.0000 2005/05/11".
+                    "4.00.03.0000" => "4.00.03.0000 / SafeDisc 4.00.003",
+
+                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
+                    // The product version is "4.50.00.1619 2005/06/08".
+                    "4.50.00.1619" => "4.50.00.1619 / SafeDisc 4.50.000",
+
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 85859, and 104503.
+                    // The product version is "4.60.00.1702 2005/08/03".
+                    "4.60.00.1702" => "4.60.00.1702 / SafeDisc 4.60.000",
+
+                    // Found in Redump entries 34783, 56320-56323, and 66403.
+                    // The product version is "4.70.00.1941 2006/04/26".
+                    "4.70.00.1941" => "4.70.00.1941 / SafeDisc 4.70.000",
+
+                    // Found in Redump entries 64144-64146 + 78543, and 98589-98590.
+                    // The product version is "4.80.00.2074 2006/09/06".
+                    "4.80.00.2074" => "4.80.00.2074 / SafeDisc 4.80.000",
+
+                    // Found in Redump entries 13014, 52523, 74366, 76346, 83290, 115764, and 116381.
+                    // The product version is "4.81.00.2284 2007/04/04".
+                    "4.81.00.2284" => "4.81.00.2284 / SafeDisc 4.81.000",
+
+                    // Found in Redump entries 65417
+                    // The product version is "4.85.00.2422 2007/08/20".
+                    "4.85.00.2422" => "4.85.00.2422 / SafeDisc 4.85.000",
+
+                    // Found in Redump entries 20434, 31766, and 79113.
+                    // The product version is "4.85.00.2489 2007/10/26".
+                    "4.85.00.2489" => "4.85.00.2489 / SafeDisc 4.85.000",
+
+                    // Found in Redump entries 56319, and 66333.
+                    // The product version is "4.90.00.2613 2008/02/27".
+                    "4.90.00.2613" => "4.90.00.2613 / SafeDisc 4.90.000",
+
+                    // Found in Redump entry 38142.
+                    // The product version is "4.90.10.2747 2008/07/10".
+                    "4.90.10.2747" => "4.90.10.2747 / SafeDisc 4.90.000",
+
+                    // Found in Redump entries 11347, 29069, 58573-58575, 78976, and 120303.
+                    // The product version is "4.90.10.2781 2008/08/13".
+                    "4.90.10.2781" => "4.90.10.2781 / SafeDisc 4.90.010",
+
+                    // Found in Redump entry 120213.
+                    // The product version is "4.91.00.2832 2008/10/03".
+                    "4.91.00.2832" => "4.91.00.2832 / SafeDisc 4.91.000",
+
+                    _ => $"Unknown Version {version} (Report this to us on GitHub)",
+                };
+            }
+
+            return "Unknown Version (Report this to us on GitHub)";
+        }
+
         internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
@@ -388,9 +469,17 @@ namespace BinaryObjectScanner.Protection
                 "2418D791C7B9D4F05BCB01FAF98F770CDF798464" => "1.00.026",
 
                 // Found in Redump entries 31149 and 28810.
-                // It can also be found in the Windows Temp directory when running SafeDisc 2+ games on Windows 9x, but not on XP or newer.
+                // For SafeDisc 1 programs, it can be found bundled together with the rest of the drivers and protected application files.
+                // For SafeDisc 2+ programs, it can be found in the Windows Temp directory when running protected programs on Windows 9x, but not on XP or newer.
                 // Examples of it in SafeDisc 2+ can be found in Redump entries 2022 and 38541.
+                // It can also be found in SafeDisc 4.85.000, as seen in Redump entry 20434.
                 "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000+/Lite",
+
+                // The following versions can only be found in the Windows Temp directory when running protected programs on Windows 9x, but not on XP or newer.
+                // It is unknown why there is such a large gap between updates, or why this file was updated at all, as the majority of programs at this point didn't tend to support 9x.
+
+                // Found in Redump entries 115764 and 116381.
+                "12491C7C3A6778A02511F2632F5CFBC535D4E47A" => "4.81.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -545,6 +634,47 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 20729, 28257, 54268-5427, 63810-63813, and 86177.
                 "E931EEC20B4A7032BDAD5DC1D76E740A08A6321B" => "3.20.024",
+
+                // Found in Redump entries 35382, 36024, 74520, and 79729.
+                "AF437372045AF7D5F74A876581FE2E76D2CEC80A" => "4.00.000",
+
+                // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
+                "CF1BF960995040AB7DA103F95E7C0A2B69DA094C" => "4.00.001",
+
+                // Found in Redump entries 33326, 42034, 71646, 78980, 85345-85347, 86196, and 105716.
+                "BD373AE0A919349A5C3270C74AD990E11A836C60" => "4.00.002",
+
+                // Found in Redump entries 40595-40597, 51597, 68551-68552, 83408, and 83410.
+                "47A729C462186615DA2B8C6038535B884E7D10BC" => "4.00.003",
+
+                // After this point, games that support 9x are inconsistent, so some versions of this driver may not be documented until proper extraction from the game executable is implemented.
+
+                // Found in Redump entries 74564 + 74579-74581, 76813, and 101261.
+                "FD6A99FEF6AA551A71F4BD683E0334E92CFA546F" => "4.50.000",
+
+                // Found in Redump entries 31824, 45684-45686, 50682, and 104503.
+                "86923EE2618814ABDA285C2EB50EA26635479C7A" => "4.60.000",
+
+                // Found in Redump entries 56320-56323.
+                "5E26D831981841B4D36EF0B4A195CD073C513544" => "4.70.000",
+
+                // Found in Redump entries 64144-64146 + 78543.
+                "1AF42A52234EF989E099C0EB05906A939C7B98EA" => "4.80.000",
+
+                // Found in Redump entries 115764 and 116381.
+                "844D1876BD92DEBBA9B529DC5EE9B22CC3F317C2" => "4.81.000",
+
+                // Found in Redump entry 20434.
+                "48CAA84CEACFDCB6CEE8C85701A5A85EDC83F0A9" => "4.85.000",
+
+                // Found in Redump entry 56319.
+                "98508487638694450B0361B53C1159745A767D72" => "4.90.000",
+
+                // Found in Redump entry 120303.
+                "E16551A94B43358401368787E21840AE23137BE7" => "4.90.010",
+
+                // Found in Redump entry 120213.
+                "C2F6A1A558946053171037C2A640F3ECEE017FA0" => "4.91.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
@@ -850,6 +980,10 @@ namespace BinaryObjectScanner.Protection
 
                 // Found distributed in https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe and https://web.archive.org/web/20010707163339/http://www.macrovision.com:80/demos/safedisc.exe, but unknown what version it is associated with.
                 "8426690FA43076EE466FD1B2D1F2F1267F9CC3EC" => "Unknown Version (Report this to us on GitHub)",
+
+                // Found in Redump entry 121132.
+                // The game itself is protected with SecuROM, and contains a secdrv.sys associated with SafeDisc 2.90.040, despite that version not having been used with DVDs.
+                "18AD11E1B8D6A644989E12C12258B548996C1C96" => "Unknown Version (DVD) (Report this to us on GitHub)",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
