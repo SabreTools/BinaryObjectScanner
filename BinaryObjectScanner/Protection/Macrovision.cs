@@ -691,7 +691,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 35382, 36024, 74520, and 79729.
                     or "4.00.000"
 
-                    // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
+                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, and 83017.
                     or "4.00.001"
 
                     // Found in Redump entries 33326, 42034, 49677x, 71646, 78980, 85345-85347, 86196, and 105716.
@@ -703,7 +703,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
                     or "4.50.000"
 
-                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, and 104503.
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 85859, and 104503.
                     or "4.60.000"
 
                     // Found in Redump entries 34783, 56320-56323, and 66403.
@@ -715,9 +715,13 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 13014, 52523, 74366, 76346, 83290, 115764, and 116381.
                     or "4.81.000"
 
-                    // Source not documented.
+                    // Found in Redump entries 20434, and 79113.
                     or "4.85.000"
+
+                    // Found in Redump entries 38142, 56319, and 66333.
                     or "4.90.000"
+
+                    // Source not documented.
                     or "4.90.010" => "SafeDisc",
 
                 // SafeDisc (Unconfirmed)

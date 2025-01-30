@@ -389,7 +389,7 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.00.00.0092 2004/09/02".
                     "4.00.00.0092" => "4.00.00.0092 / SafeDisc 4.00.000",
 
-                    // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
+                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, and 83017.
                     // The product version is "4.00.01.0004 2004/09/30".
                     "4.00.01.0004" => "4.00.01.0004 / SafeDisc 4.00.001",
 
@@ -405,7 +405,7 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.50.00.1619 2005/06/08".
                     "4.50.00.1619" => "4.50.00.1619 / SafeDisc 4.50.000",
 
-                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, and 104503.
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 85859, and 104503.
                     // The product version is "4.60.00.1702 2005/08/03".
                     "4.60.00.1702" => "4.60.00.1702 / SafeDisc 4.60.000",
 
@@ -420,6 +420,22 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 13014, 52523, 74366, 76346, 83290, 115764, and 116381.
                     // The product version is "4.81.00.2284 2007/04/04".
                     "4.81.00.2284" => "4.81.00.2284 / SafeDisc 4.81.000",
+
+                    // Found in Redump entries 65417
+                    // The product version is "4.85.00.2422 2007/08/20".
+                    "4.85.00.2422" => "4.85.00.2422 / SafeDisc 4.85.000",
+
+                    // Found in Redump entries 20434, 31766, and 79113.
+                    // The product version is "4.85.00.2489 2007/10/26".
+                    "4.85.00.2489" => "4.85.00.2489 / SafeDisc 4.85.000",
+
+                    // Found in Redump entries 56319, and 66333.
+                    // The product version is "4.90.00.2613 2008/02/27".
+                    "4.90.00.2613" => "4.90.00.2613 / SafeDisc 4.90.000",
+
+                    // Found in Redump entry 38142.
+                    // The product version is "4.90.010.2747 2008/07/10".
+                    "4.90.10.2747" => "4.90.10.2747 / SafeDisc 4.90.000",
 
                     _ => $"Unknown Version {version} (Report this to us on GitHub)",
                 };
@@ -448,7 +464,8 @@ namespace BinaryObjectScanner.Protection
                 // For SafeDisc 1 programs, it can be found bundled together with the rest of the drivers and protected application files.
                 // For SafeDisc 2+ programs, it can be found in the Windows Temp directory when running protected programs on Windows 9x, but not on XP or newer.
                 // Examples of it in SafeDisc 2+ can be found in Redump entries 2022 and 38541.
-                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000-4.80.000/Lite",
+                // It can also be found in SafeDisc 4.85.000, as seen in Redump entry 20434.
+                "848EDF9F45A8437438B7289BB4D2D1BCF752FD4A" => "1.06.000+/Lite",
 
                 // The following versions can only be found in the Windows Temp directory when running protected programs on Windows 9x, but not on XP or newer.
                 // It is unknown why there is such a large gap between updates, or why this file was updated at all, as the majority of programs at this point didn't tend to support 9x.
@@ -638,6 +655,12 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 115764 and 116381.
                 "844D1876BD92DEBBA9B529DC5EE9B22CC3F317C2" => "4.81.000",
+
+                // Found in Redump entry 20434.
+                "48CAA84CEACFDCB6CEE8C85701A5A85EDC83F0A9" => "4.85.000",
+
+                // Found in Redump entry 56319.
+                "98508487638694450B0361B53C1159745A767D72" => "4.90.000",
 
                 _ => "Unknown Version (Report this to us on GitHub)",
             };
