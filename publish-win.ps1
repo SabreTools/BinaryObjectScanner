@@ -134,6 +134,42 @@ if (!$NO_BUILD.IsPresent) {
             }
         }
     }
+
+    # Build PackerScan
+    foreach ($FRAMEWORK in $FRAMEWORKS) {
+        foreach ($RUNTIME in $RUNTIMES) {
+            # Output the current build
+            Write-Host "===== Build PackerScan - $FRAMEWORK, $RUNTIME ====="
+
+            # If we have an invalid combination of framework and runtime
+            if ($VALID_CROSS_PLATFORM_FRAMEWORKS -notcontains $FRAMEWORK -and $VALID_CROSS_PLATFORM_RUNTIMES -contains $RUNTIME) {
+                Write-Host "Skipped due to invalid combination"
+                continue
+            }
+
+            # If we have Apple silicon but an unsupported framework
+            if ($VALID_APPLE_FRAMEWORKS -notcontains $FRAMEWORK -and $RUNTIME -eq 'osx-arm64') {
+                Write-Host "Skipped due to no Apple Silicon support"
+                continue
+            }
+
+            # Only .NET 5 and above can publish to a single file
+            if ($SINGLE_FILE_CAPABLE -contains $FRAMEWORK) {
+                # Only include Debug if set
+                if ($INCLUDE_DEBUG.IsPresent) {
+                    dotnet publish PackerScan\PackerScan.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true
+                }
+                dotnet publish PackerScan\PackerScan.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:PublishSingleFile=true -p:DebugType=None -p:DebugSymbols=false
+            }
+            else {
+                # Only include Debug if set
+                if ($INCLUDE_DEBUG.IsPresent) {
+                    dotnet publish PackerScan\PackerScan.csproj -f $FRAMEWORK -r $RUNTIME -c Debug --self-contained true --version-suffix $COMMIT
+                }
+                dotnet publish PackerScan\PackerScan.csproj -f $FRAMEWORK -r $RUNTIME -c Release --self-contained true --version-suffix $COMMIT -p:DebugType=None -p:DebugSymbols=false
+            }
+        }
+    }
 }
 
 # Only create archives if requested
@@ -193,6 +229,35 @@ if (!$NO_ARCHIVE.IsPresent) {
         
             Set-Location -Path $BUILD_FOLDER\ProtectionScan\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
             7z a -tzip $BUILD_FOLDER\ProtectionScan_${FRAMEWORK}_${RUNTIME}_release.zip *
+        }
+    }
+
+    # Create PackerScan archives
+    foreach ($FRAMEWORK in $FRAMEWORKS) {
+        foreach ($RUNTIME in $RUNTIMES) {
+            # Output the current build
+            Write-Host "===== Archive PackerScan - $FRAMEWORK, $RUNTIME ====="
+
+            # If we have an invalid combination of framework and runtime
+            if ($VALID_CROSS_PLATFORM_FRAMEWORKS -notcontains $FRAMEWORK -and $VALID_CROSS_PLATFORM_RUNTIMES -contains $RUNTIME) {
+                Write-Host "Skipped due to invalid combination"
+                continue
+            }
+
+            # If we have Apple silicon but an unsupported framework
+            if ($VALID_APPLE_FRAMEWORKS -notcontains $FRAMEWORK -and $RUNTIME -eq 'osx-arm64') {
+                Write-Host "Skipped due to no Apple Silicon support"
+                continue
+            }
+
+            # Only include Debug if set
+            if ($INCLUDE_DEBUG.IsPresent) {
+                Set-Location -Path $BUILD_FOLDER\PackerScan\bin\Debug\${FRAMEWORK}\${RUNTIME}\publish\
+                7z a -tzip $BUILD_FOLDER\PackerScan_${FRAMEWORK}_${RUNTIME}_debug.zip *
+            }
+        
+            Set-Location -Path $BUILD_FOLDER\PackerScan\bin\Release\${FRAMEWORK}\${RUNTIME}\publish\
+            7z a -tzip $BUILD_FOLDER\PackerScan_${FRAMEWORK}_${RUNTIME}_release.zip *
         }
     }
 
