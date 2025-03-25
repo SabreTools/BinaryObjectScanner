@@ -443,9 +443,23 @@ namespace BinaryObjectScanner.Protection
                 if (!sectionStrings.Exists(s => s.Contains("BoG_")))
                     return null;
 
-                // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
+                // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string,
+                //   the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
                 if (!sectionStrings.Exists(s => s.Contains("BoG_ *90.0&!!  Yy>")))
                     return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
+
+                // So far, every executable with an expunged version has been able to be identified via other means,
+                //   most consistently by scanning files extracted to the Temp folder when the program is run.
+
+                // The following versions have been found as expunged:
+
+                // 2.90.040: Found in Redump entries 11638+11639, 58510+58511, 58510+110103, 71617+71618, and 95322+95324.
+                // 3.20.020: Found in Redump entries 31621+31623 and 107085-107086.
+                // 3.20.024: Found in Redump entries 101449+101450.
+                // 4.00.001: Found in Redump entries 70504 and 74390-74391.
+                // 4.00.003: Found in Redump entry 83410.
+                // 4.50.000: Found in Redump entries 58990-58992, 74206, 77440, 76813, 85384, and 101261.
+                // 4.60.000: Found in Redump entries 40337, 57721, 65209-65212, 73786, and 85859.
             }
 
             // Get the section data, if it exists
@@ -665,7 +679,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
                     or "2.90.040"
 
-                    // Found in Redump entry 116357.
+                    // Found in Redump entries 116357 and 121411.
                     // This version is particularly unusual, as it was in a game released in late 2007, when 2.90.040 was used from 2004/2005.
                     // It also doesn't appear to contain the SecDrv or DrvMgt drivers. It may be a Long Term Support release of SafeDisc 2 for customers unwilling or unable to use SafeDisc 3+.
                     or "2.90.045"
@@ -691,7 +705,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 35382, 36024, 74520, and 79729.
                     or "4.00.000"
 
-                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, and 83017.
+                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, 74390-74391, and 83017.
                     or "4.00.001"
 
                     // Found in Redump entries 33326, 42034, 49677x, 71646, 78980, 85345-85347, 86196, and 105716.
@@ -703,7 +717,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
                     or "4.50.000"
 
-                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 85859, and 104503.
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 73786, 85859, and 104503.
                     or "4.60.000"
 
                     // Found in Redump entries 34783, 56320-56323, and 66403.
@@ -737,9 +751,17 @@ namespace BinaryObjectScanner.Protection
                 // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
                 "1.01.045" => "SafeDisc (Unconfirmed - Please report to us on GitHub)",
 
+                // "4.82.01 0004" - Unknown version from https://extreme.pcgameshardware.de/threads/windows-10-spiele-mit-safedisc-kopierschutz-starten-nicht-u-a-battlefield-1942.400359/page-5
+
                 // SafeDisc Lite (Confirmed)
                 // Found in Redump entry 14928.
                 "2.60.020" => "SafeDisc Lite",
+
+                // SafeDisc Lite (Unconfirmed)
+                // Found in Redump entries 63769 and 89649.
+                // This is unconfirmed because it is only known to exist in Mac versions of Lite, which currently isn't scanned for.
+                // If it is present on PC, or at least in an executable format that can be scanned, it is not currently known or documented.
+                "2.70.020" => "SafeDisc Lite (Unconfirmed - Please report to us on GitHub)",
 
                 _ => "Macrovision Protected Application (Generic detection - Report to us on GitHub)",
             };

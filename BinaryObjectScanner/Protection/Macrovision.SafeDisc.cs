@@ -33,6 +33,13 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// SafeDisc Lite/LT is an alternate version of SafeDisc available that was based on SafeDisc 1 (https://web.archive.org/web/20030421023647/http://www.macrovision.com:80/solutions/software/cdrom/SafeDisc_WhitePaper_4-17-02-web.pdf).
     /// Although seemingly only officially referred to as "SafeDisc LT", a multitude of sources, including one that seemingly worked directly with Macrovision, call it "SafeDisc Lite" (http://www.eclipsedata.com/insidepages.asp?pageID=149).
+    /// It doesn't typically require the disc after installation (unless game files are left on the disc in a minimal installation).
+    /// However, according to the white paper, Mac products can still choose to authenticate on each run. 
+    /// According to the same white paper, it only uses some protection methods of normal SafeDisc without specifying which.
+    /// CDs still contain errors, though typically less (in the ballpark of ~100), and the white paper admits that DVDs with Lite are less secure due to not having this signature.
+    /// It's currently unknown if Lite actually uses an active disc check, or if it just relies on the errors to prevent copying of the disc.
+    /// SafeDisc Lite games are able to be installed and played in situations where bad sectors are not emulated (such as 86box v.4.2.1), meaning it likely doesn't actually check the signature.
+    /// 
     /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
     /// SafeDisc HD (https://web.archive.org/web/20000129100449/http://www.macrovision.com/scp_hd.html).
@@ -267,7 +274,8 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
                 new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
 
-                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning. It appears to contain the same "BoG_" string and version detection logic.
+                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning.
+                // It appears to contain the same "BoG_" string and version detection logic.
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
@@ -371,7 +379,8 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("SafeDiscLT.bundle"), "SafeDiscLT for Macintosh"),
                 new(new FilePathMatch("SafeDiscLT"), "SafeDiscLT for Macintosh"),
 
-                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning. It appears to contain the same "BoG_" string and version detection logic.
+                // TODO: Add SafeDisc detection for Redump entry 63769 once Mac executables are supported for scanning.
+                // It appears to contain the same "BoG_" string and version detection logic.
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
@@ -389,7 +398,7 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.00.00.0092 2004/09/02".
                     "4.00.00.0092" => "4.00.00.0092 / SafeDisc 4.00.000",
 
-                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, and 83017.
+                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, 74390-74391, and 83017.
                     // The product version is "4.00.01.0004 2004/09/30".
                     "4.00.01.0004" => "4.00.01.0004 / SafeDisc 4.00.001",
 
@@ -401,11 +410,12 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.00.03.0000 2005/05/11".
                     "4.00.03.0000" => "4.00.03.0000 / SafeDisc 4.00.003",
 
-                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
+                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440,
+                    //   80776-80777, 85384, and 101261.
                     // The product version is "4.50.00.1619 2005/06/08".
                     "4.50.00.1619" => "4.50.00.1619 / SafeDisc 4.50.000",
 
-                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 85859, and 104503.
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 73786, 85859, and 104503.
                     // The product version is "4.60.00.1702 2005/08/03".
                     "4.60.00.1702" => "4.60.00.1702 / SafeDisc 4.60.000",
 
@@ -465,7 +475,7 @@ namespace BinaryObjectScanner.Protection
                 "C13493AB753891B8BEE9E4E014896B026C01AC92" => "1.00.025-1.01.044",
 
                 // Found in Redump entries 1882 and 30049. 
-                // It is currently unknown why the previous hash covers both the version before this one, and several afterwards, with this one being a consistent outlier between these versions.
+                // It is currently unknown why the previous hash covers both the version before this one, and most afterwards, with this one being a consistent outlier between these versions.
                 "2418D791C7B9D4F05BCB01FAF98F770CDF798464" => "1.00.026",
 
                 // Found in Redump entries 31149 and 28810.
@@ -531,7 +541,8 @@ namespace BinaryObjectScanner.Protection
                 "B5503E2222B3DA387BB5D7150A4A32A47824988F" => "1.07.000",
 
                 // Found in Redump entries 12885 and 66210.
-                "7D33EA7B241245182FFB7A392873079B6183050B" => "1.09.000",
+                // SafeDisc Lite found in Redump entries 32751.
+                "7D33EA7B241245182FFB7A392873079B6183050B" => "1.09.000/Lite",
 
                 // Found in Redump entries 37523 and 66586.
                 "61A4A5A758A5CFFB226CE2AE96E55A40AB073AC6" => "1.11.000",
@@ -567,7 +578,8 @@ namespace BinaryObjectScanner.Protection
                 "85A92DC1D9CCBA6349D70F489043E649A8C21F2B" => "Lite",
 
                 // The following versions of the file are only found in the Windows Temp directory when running a SafeDisc 2+ program on Windows 9x.
-                // They aren't found when running the same program on Windows XP or newer. These also aren't currently automatically extracted, and would have to be manually recovered and scanned.
+                // They aren't found when running the same program on Windows 2k or newer.
+                // These also aren't currently automatically extracted, and would have to be manually recovered and scanned.
 
                 // Found in Redump entries 2022, 72195, and 73502.
                 "3F46BA4BB6D0D725F8BC5BFD374025853D0F8D10" => "2.05.030",
@@ -585,7 +597,8 @@ namespace BinaryObjectScanner.Protection
                 "1499FC17B7565FC4B47F029412928FCA076D1838" => "2.30.033",
 
                 // Found in Redump entries 9846, 65642, and 68206.
-                "FF4DF7AE5252EF38A69F165A6A180F51DCCA0438" => "2.40.010",
+                // Found in SafeDisc Lite in Redump entry 99126.
+                "FF4DF7AE5252EF38A69F165A6A180F51DCCA0438" => "2.40.010/Lite",
 
                 // Found in Redump entries 23786 and 110603.
                 "0D52948CDC6562EEBB5D078C9C0C7E9D1EDB00CE" => "2.40.011",
@@ -614,7 +627,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
                 "6492B6164D40633C7AAAC882EF1BA55E6931DBDC" => "2.90.040",
 
-                // Found in Redump entry 116357.
+                // Found in Redump entries 116357 and 121411.
                 "CC1818B15AD1D0510602D556AB0AFFB8011ECF4F" => "2.90.045",
 
                 // Found in Redump entries 13230 and 68204.
@@ -638,7 +651,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 35382, 36024, 74520, and 79729.
                 "AF437372045AF7D5F74A876581FE2E76D2CEC80A" => "4.00.000",
 
-                // Found in Redump entries 8842-8844, 38143, 67927, 83017, 15614.
+                // Found in Redump entries 8842-8844, 38143, 67927, 74390-74391, 83017, 15614.
                 "CF1BF960995040AB7DA103F95E7C0A2B69DA094C" => "4.00.001",
 
                 // Found in Redump entries 33326, 42034, 71646, 78980, 85345-85347, 86196, and 105716.
@@ -647,7 +660,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 40595-40597, 51597, 68551-68552, 83408, and 83410.
                 "47A729C462186615DA2B8C6038535B884E7D10BC" => "4.00.003",
 
-                // After this point, games that support 9x are inconsistent, so some versions of this driver may not be documented until proper extraction from the game executable is implemented.
+                // After this point, games that support 9x are inconsistent, but hashes for all known versions have manged to be acquired.
 
                 // Found in Redump entries 74564 + 74579-74581, 76813, and 101261.
                 "FD6A99FEF6AA551A71F4BD683E0334E92CFA546F" => "4.50.000",
@@ -810,24 +823,33 @@ namespace BinaryObjectScanner.Protection
                 155_648 => "1.06.000",
 
                 // Found in Redump entries 9718, 12885, and 37523.
-                156_160 => "1.07.000-1.11.000",
+                // SafeDisc Lite found in Redump entries 32751.
+                156_160 => "1.07.000-1.11.000/Lite",
 
-                // File size checks for versions 1.2X+ are superseded by executable string checks, which are more accurate. For reference, the previously used file sizes are kept as comments.
-                // 157,184 bytes corresponds to SafeDisc 1.20.000-1.20.001 (Redump entries 21154 and 37920).
-                // 163,382 bytes corresponds to SafeDisc 1.30.010 (Redump entries 31526 and 55080).
-                // 165,888 bytes corresponds to SafeDisc 1.35.000 (Redump entries 9617 and 49552).
-                // 172,544 bytes corresponds to SafeDisc 1.40.004 (Redump entries 2595 and 30121).
-                // 173,568 bytes corresponds to SafeDisc 1.41.000-1.41.001 (Redump entries 37832, and 44350). 
-                // 136,704 bytes corresponds to SafeDisc 1.45.011 (Redump entries 30555 and 55078).
-                // 138,752 bytes corresponds to SafeDisc 1.50.020 (Redump entries 28810 and 62935).
+                // File size checks for versions 1.2X+ are superseded by executable string checks, which are more accurate.
+                // For reference, the previously used file sizes are kept below as comments:
+
+                /*
+                    157,184 bytes corresponds to SafeDisc 1.20.000-1.20.001 (Redump entries 21154 and 37920).
+                    163,382 bytes corresponds to SafeDisc 1.30.010 (Redump entries 31526 and 55080).
+                    165,888 bytes corresponds to SafeDisc 1.35.000 (Redump entries 9617 and 49552).
+                    172,544 bytes corresponds to SafeDisc 1.40.004 (Redump entries 2595 and 30121).
+                    173,568 bytes corresponds to SafeDisc 1.41.000-1.41.001 (Redump entries 37832, and 44350). 
+                    136,704 bytes corresponds to SafeDisc 1.45.011 (Redump entries 30555 and 55078).
+                    138,752 bytes corresponds to SafeDisc 1.50.020 (Redump entries 28810 and 62935).
+                */
 
                 _ => "1",
 
-                // Hashes have not been found to be a reliable indicator for these files, and likely differ on a game-to-game basis. Some hashes were previously collected and are collected below:
+                // Hashes have not been found to be a reliable indicator for these files, and likely differ on a game-to-game basis.
+                // Some hashes were previously collected and are collected below:
+
                 // Found in Redump entry 41923.
                 // F7A57F83BDC29040E20FD37CD0C6D7E6B2984180" => "1.00.030",
+
                 // Found in Redump entries 3569 and 3570.
                 // "A8ED1613D47D1B5064300FF070484528EBB20A3B" => "1.11.000",
+
                 // It is not known which games these files are from.
                 // "ED680E9A13F593E7A80A69EE1035D956AB62212B" => "1.3x",
                 // "66D8589343E00FA3E11BBF462E38C6F502515BEA" => "1.30.010",
@@ -840,10 +862,19 @@ namespace BinaryObjectScanner.Protection
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            // The file "drvmgt.dll" has been found to be incredibly consistent between versions, with the vast majority of files based on hash corresponding 1:1 with the SafeDisc version used according to the EXE.
-            // There are occasionaly inconsistencies, even within the well detected version range. This seems to me to mostly happen with later (3.20+) games, and seems to me to be an example of the SafeDisc distribution becoming more disorganized with time.
+            // The file "drvmgt.dll" has been found to be incredibly consistent between versions,
+            //   with the vast majority of files based on hash corresponding 1:1 with the SafeDisc version used according to the EXE.
+            // There are occasionally inconsistencies, even within the well detected version range.
+            // This seems to me to mostly happen with later (3.20+) games, and may be an example of the SafeDisc distribution becoming more disorganized with time.
             // Particularly interesting inconsistencies will be noted below:
-            // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe with a version of 4.60.000, and a copy of drvmgt.dll belonging to version 3.10.020. This seems like an accidental(?) distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
+
+            // Redump entry 73786 has an EXE with a scrubbed version, a DIAG.exe associated with SD 4.60.000, a copy of drvmgt.dll belonging to 3.10.020,
+            //   and a copy of secdrv.sys belonging to version 3.10.020-3.15.011.
+            // This may be an accidental distribution of older drivers, as this game was released 3 years after the use of 3.10.020.
+
+            // Redump entry 40337 has an EXE with a scrubbed version, an AuthServ.exe associated with SD 4.60.000, and copies of drvmgt.dll and secdrv.sys belonging to version 2.90.040.
+            // This also seems like an accidental distribution of older drivers, as this game was released about 3 years after the use of 2.90.040.
+
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
             return sha1?.ToUpperInvariant() switch
             {
@@ -860,7 +891,8 @@ namespace BinaryObjectScanner.Protection
                 "D5E4C99CDCA8091EC8010FCB96C5534A8BE35B43" => "1.07.000",
 
                 // Found in Redump entries 12885 and 66210.
-                "412067F80F6B644EDFB25932EA34A7E92AD4FC21" => "1.09.000",
+                // SafeDisc Lite found in Redump entries 32751.
+                "412067F80F6B644EDFB25932EA34A7E92AD4FC21" => "1.09.000/Lite",
 
                 // Found in Redump entries 37523 and 66586.
                 "87C0DA1B52681FA8052A915E85699738993BEA72" => "1.11.000",
@@ -977,6 +1009,8 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 56320.
                 "84480ABCE4676EEB9C43DFF7C5C49F0D574FAC25" => "4.70.000",
+
+                // There are no known uses of drvmgt.dll (or secdrv.sys) after 4.70.000.
 
                 // Found distributed in https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe and https://web.archive.org/web/20010707163339/http://www.macrovision.com:80/demos/safedisc.exe, but unknown what version it is associated with.
                 "8426690FA43076EE466FD1B2D1F2F1267F9CC3EC" => "Unknown Version (Report this to us on GitHub)",
@@ -1145,7 +1179,7 @@ namespace BinaryObjectScanner.Protection
                     // The product version is "4.50.00.1619 2005/06/08".
                     "4.50.00.1619" => "4.50.0.1619 / SafeDisc 4.50.000",
 
-                    // Found to be in Redump entry 20092.
+                    // Found to be in Redump entries 20092 and 73786.
                     // The product version is "4.60.00.1702 2005/08/03".
                     "4.60.00.1702" => "4.60.0.1702 / SafeDisc 4.60.000",
 
