@@ -38,6 +38,10 @@ namespace BinaryObjectScanner.Protection
             if (pex.ContainsSection("matrosch", exact: true))
                 return $"SecuROM Matroschka Package";
 
+            // Get the rcpacker section, if it exists
+            if (pex.ContainsSection("rcpacker", exact: true))
+                return $"SecuROM Release Control";
+
             if (pex.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
 
