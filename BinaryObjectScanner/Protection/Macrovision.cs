@@ -56,13 +56,15 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
                 resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}");
 
-            // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
+            // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Windows (2.00R)(Intuit)(2002)(352282)".
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
             if (name.OptionalEquals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase))
                 resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
 
             // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
+            // A stxt381 section has also been found in the "~df89e9.tmp" file, which is extracted into the Windows temp directory when running Redump entry 42034 on Windows 9x.
+            // This file serves an unknown function, as it's only roughly 12 KB in size and consists of mostly empty (00) data.
             // They may indicate SafeWrap, but this hasn't been confirmed yet.
             // Almost every single sample known has both sections, though one only contains the "stxt371" section. It is unknown if this is intentional, or if the game functions without it.
             // It is present in the "Texas HoldEm!" game in "boontybox_PCGamer_DVD.exe" in IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58.
@@ -362,6 +364,7 @@ namespace BinaryObjectScanner.Protection
 
                 // Found distributed online, but so far not in a game release. May be a final driver version never released with a game. TODO: Discover original source.
                 // Can be found at https://github.com/ericwj/PsSecDrv/blob/master/tools/SECDRV/SECDRV.sys, and the file is confirmed to be distributed officially by Microsoft: https://www.virustotal.com/gui/file/34bbb0459c96b3de94ccb0d73461562935c583d7bf93828da4e20a6bc9b7301d/.
+                // Further confirmed to have been distributed in a Windows Server Trial in IA item pcworld-0410 (PCWorld0410.iso/WindowsServerTrial/server.iso/sources/install.wim/3/Windows/System32/drivers).
                 23_040 => "4.03.086 / Product Unknown",
 
                 // Found in https://web.archive.org/web/20010417215205/http://www.macrovision.com:80/demos/Trialware.exe.
@@ -440,9 +443,23 @@ namespace BinaryObjectScanner.Protection
                 if (!sectionStrings.Exists(s => s.Contains("BoG_")))
                     return null;
 
-                // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string, the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
+                // If we have the "BoG_" string but not the full "BoG_ *90.0&!!  Yy>" string,
+                //   the section has had the portion of the section that included the version number removed or obfuscated (Redump entry 40337).
                 if (!sectionStrings.Exists(s => s.Contains("BoG_ *90.0&!!  Yy>")))
                     return newVersion ? "Macrovision Protected Application [Version Expunged]" : null;
+
+                // So far, every executable with an expunged version has been able to be identified via other means,
+                //   most consistently by scanning files extracted to the Temp folder when the program is run.
+
+                // The following versions have been found as expunged:
+
+                // 2.90.040: Found in Redump entries 11638+11639, 58510+58511, 58510+110103, 71617+71618, and 95322+95324.
+                // 3.20.020: Found in Redump entries 31621+31623 and 107085-107086.
+                // 3.20.024: Found in Redump entries 101449+101450.
+                // 4.00.001: Found in Redump entries 70504 and 74390-74391.
+                // 4.00.003: Found in Redump entry 83410.
+                // 4.50.000: Found in Redump entries 58990-58992, 74206, 77440, 76813, 85384, and 101261.
+                // 4.60.000: Found in Redump entries 40337, 57721, 65209-65212, 73786, and 85859.
             }
 
             // Get the section data, if it exists
@@ -662,7 +679,7 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 11638/11639, 52606, 62505, 85338/85339, 95322/95324, 119414, and 119415.
                     or "2.90.040"
 
-                    // Found in Redump entry 116357.
+                    // Found in Redump entries 116357 and 121411.
                     // This version is particularly unusual, as it was in a game released in late 2007, when 2.90.040 was used from 2004/2005.
                     // It also doesn't appear to contain the SecDrv or DrvMgt drivers. It may be a Long Term Support release of SafeDisc 2 for customers unwilling or unable to use SafeDisc 3+.
                     or "2.90.045"
@@ -685,27 +702,66 @@ namespace BinaryObjectScanner.Protection
                     // Found in Redump entries 20729, 28257, 54268-5427, 63810-63813, and 86177.
                     or "3.20.024"
 
-                    // Source not documented.
+                    // Found in Redump entries 35382, 36024, 74520, and 79729.
                     or "4.00.000"
+
+                    // Found in Redump entries 8842-8844, 15614, 38143, 67927, 70504, 74390-74391, and 83017.
                     or "4.00.001"
+
+                    // Found in Redump entries 33326, 42034, 49677x, 71646, 78980, 85345-85347, 86196, and 105716.
                     or "4.00.002"
+
+                    // Found in Redump entries 40595-40597, 51597, 68551-68552, 83408, and 83410.
                     or "4.00.003"
+
+                    // Found in Redump entries 58073-58074, 58455-58459, 58990-58992, 65569, 74206, 74564 + 74579-74581, 76813, 77440, 80776-80777, 85384, and 101261.
                     or "4.50.000"
+
+                    // Found in Redump entries 20092, 31824, 45407-45409, 45469, 45684-45686, 46764-46769, 50682, 57721, 73786, 85859, and 104503.
                     or "4.60.000"
+
+                    // Found in Redump entries 34783, 56320-56323, and 66403.
                     or "4.70.000"
+
+                    // Found in Redump entries 64144-64146 + 78543, and 98589-98590.
                     or "4.80.000"
+
+                    // Found in Redump entries 13014, 52523, 74366, 76346, 83290, 115764, and 116381.
                     or "4.81.000"
+
+                    // Found in Redump entries 20434, and 79113.
                     or "4.85.000"
+
+                    // Found in Redump entries 38142, 56319, and 66333.
                     or "4.90.000"
-                    or "4.90.010" => "SafeDisc",
+
+                    // Found in Redump entries 11347, 29069, 58573-58575, 78976, and 120303.
+                    or "4.90.010"
+
+                    // Found in Redump entry 120213.
+                    // This is a particularly odd version, as despite being the last known version of SafeDisc, it was not known to exist until recently.
+                    // The copyright for "AuthServ.exe" in this version is set to RealNetworks, instead of Macrovision.
+                    // RealNetworks presumably acquired SafeDisc when they purchased Trymedia from Macrovision (https://realnetworks.com/press/releases/2008/realnetworks-acquire-trymedia-macrovision).
+                    // Due to this being the only known sample, it may be that they did a trial run of a new version of SafeDisc, before deciding against continuing its development.
+                    or "4.91.000"
+                    
+                    => "SafeDisc",
 
                 // SafeDisc (Unconfirmed)
                 // Currently only found in a pirate compilation disc: IA item "cdrom-classic-fond-58".
                 "1.01.045" => "SafeDisc (Unconfirmed - Please report to us on GitHub)",
 
+                // "4.82.01 0004" - Unknown version from https://extreme.pcgameshardware.de/threads/windows-10-spiele-mit-safedisc-kopierschutz-starten-nicht-u-a-battlefield-1942.400359/page-5
+
                 // SafeDisc Lite (Confirmed)
                 // Found in Redump entry 14928.
                 "2.60.020" => "SafeDisc Lite",
+
+                // SafeDisc Lite (Unconfirmed)
+                // Found in Redump entries 63769 and 89649.
+                // This is unconfirmed because it is only known to exist in Mac versions of Lite, which currently isn't scanned for.
+                // If it is present on PC, or at least in an executable format that can be scanned, it is not currently known or documented.
+                "2.70.020" => "SafeDisc Lite (Unconfirmed - Please report to us on GitHub)",
 
                 _ => "Macrovision Protected Application (Generic detection - Report to us on GitHub)",
             };
