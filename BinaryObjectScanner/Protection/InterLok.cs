@@ -8,13 +8,18 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
+            // Get the .rsrc section strings, if they exist
+            if (pex.GetFirstSectionStrings(".rsrc") != null)
+            {
                 // Found in "nfsc_link.exe" in IA item "nfscorigin".
                 // Full string: 
                 // (: ) InterLok PC v2.0, PACE Anti-Piracy, Copyright (C) 1998, ALL RIGHTS RESERVED
                 var match = pex.GetFirstSectionStrings(".rsrc").Find(s => s.Contains("InterLok") && s.Contains("PACE Anti-Piracy"));
                 if (match != null)
                     return $"PACE Anti-Piracy InterLok {GetVersion(match)}";
-                return null;
+            }
+            
+            return null;
         }
         private static string GetVersion(string match)
         {
