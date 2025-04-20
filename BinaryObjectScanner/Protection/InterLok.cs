@@ -21,6 +21,7 @@ namespace BinaryObjectScanner.Protection
             
             return null;
         }
+        
         private static string GetVersion(string match)
         {
             match = match.Remove(match.IndexOf(",")).Trim();
