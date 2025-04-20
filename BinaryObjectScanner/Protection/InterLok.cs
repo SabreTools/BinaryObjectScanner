@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -23,10 +24,14 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
         
-        private static string GetVersion(string match)
+        private static string GetVersion(string matchMe)
         {
-            match = match.Remove(match.IndexOf(",")).Trim();
-            return match.Substring("InterLok ".Length + match.IndexOf("InterLok"));
+            var match = new Regex(@"(?<=InterLok )(.*?)(?=,)").Match(matchMe);
+            if (match.Success)
+            {
+                return match.Value;
+            }
+            return "(Unknown Version - Please report to us on GitHub)";
         }
     }
 }
