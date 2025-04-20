@@ -24,13 +24,12 @@ namespace BinaryObjectScanner.Protection
             return null;
         }
         
-        private static string GetVersion(string matchMe)
+        private static string GetVersion(string match)
         {
-            var match = new Regex(@"(?<=InterLok )(.*?)(?=,)").Match(matchMe);
-            if (match.Success)
-            {
-                return match.Value;
-            }
+            var versionMatch = Regex.Match(match, @"(?<=InterLok )(.*?)(?=,)");
+            if (versionMatch.Success)
+                return versionMatch.Value;
+            
             return "(Unknown Version - Please report to us on GitHub)";
         }
     }
