@@ -54,9 +54,9 @@ namespace BinaryObjectScanner.Protection
                 return $"StarForce {pex.GetInternalVersion()}";
             
             // FrontLine ProActive (digital activation), samples: 
-            //https://dbox.tools/titles/pc/46450FA4/ 
-            //https://dbox.tools/titles/pc/4F430FA0/ 
-            //https://dbox.tools/titles/pc/53450FA1/
+            // https://dbox.tools/titles/pc/46450FA4/ 
+            // https://dbox.tools/titles/pc/4F430FA0/ 
+            // https://dbox.tools/titles/pc/53450FA1/
             name = pex.GetVersionInfoString(key: "TradeName");
             if (name.OptionalContains("FL ProActive")) 
                 return $"FrontLine ProActive";
