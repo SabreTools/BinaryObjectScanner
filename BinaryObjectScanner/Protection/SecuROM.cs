@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
 
             name = pex.InternalName;
-            if (name.OptionalEquals("paul.dll"))
+            if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
             else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
                 return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
