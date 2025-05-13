@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 #endif
 using System.Text;
+using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
@@ -64,35 +65,12 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// List of applications that have CD/DVD/WEB-Cops relating to a Windows update: https://www.betaarchive.com/wiki/index.php/Microsoft_KB_Archive/924867
     /// </summary>
-
-    public class CDDVDCops : IContentCheck, IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
+    // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
+    // TODO: Investigate cdcode.key for redump ID 108167, may be key-less cd-cops?
+    // TODO: Document update 12 for redump ID 108167 bumping version, adding key, adding vista(?) support
+    
+    public class CDDVDCops : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
-        // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
-        /// <inheritdoc/>
-        public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
-        {
-            // TODO: Obtain a sample to find where this string is in a typical executable
-            var contentMatchSets = new List<ContentMatchSet>
-            {
-                // TODO: Remove from here once it's confirmed that no PE executables contain this string
-                // CD-Cops,  ver. 
-                new(new byte?[]
-                {
-                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
-                    0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
-
-                // // DVD-Cops,  ver. 
-                new(new byte?[]
-                {
-                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
-                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
-            };
-
-            return MatchUtil.GetFirstMatch(file, fileContent, contentMatchSets, includeDebug);
-        }
-
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
@@ -104,13 +82,39 @@ namespace BinaryObjectScanner.Protection
             // TODO: Figure out what NE section this lives in
             var neMatchSets = new List<ContentMatchSet>
             {
+                // Checking for variants with one or two spaces, just in case; the Brockhaus DVDs only had one
+                // CD-Cops, ver. 
+                new(new byte?[]
+                {
+                    0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
+                    0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                
                 // CD-Cops,  ver. 
                 // Found in "h3blade.exe" in Redump entry 85077.
                 new(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops"),
+                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
+
+                // DVD-Cops, ver. 
+                // Found in IA entries "der-brockhaus-multimedial-2002-premium" and "der-brockhaus-multimedial-2003-premium"
+                // TODO: 2002 returns DVD-Cops 2.01, 2003 returns DVD-Cops 1,60. CD-Cops version numbers seem to "reset" 
+                // after some point in time in existing redump entries- perhaps the command instead of the period may have
+                // some significance?
+                new(new byte?[]
+                {
+                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                    0x2C, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
+                
+                // DVD-Cops,  ver. 
+                new(new byte?[]
+                {
+                    0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
+                    0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
+                }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
             };
 
             var match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
@@ -186,7 +190,22 @@ namespace BinaryObjectScanner.Protection
             // Found in "FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
             if (pex.ContainsSection("UNICops", exact: true))
                 return "UNI-Cops";
-
+            
+            // Get the DATA section, if it exists
+            // Found in "bib.dll" in IA item "https://archive.org/details/cover_202501"
+            // This contains the version section that the Content Check looked for. There are likely other sections
+            // that may contain it. Update when more are found.
+            var strs = pex.GetFirstSectionStrings("DATA");
+            if (strs != null)
+            {
+                var match = strs.Find(s =>  s.Contains(" ver. ") && (s.Contains("CD-Cops, ") || s.Contains("DVD-Cops, ")));
+                if (match != null)
+                    if (match.Contains("CD-Cops"))
+                        return $"CD-Cops {GetVersionString(match)}";
+                    else if (match.Contains("DVD-Cops"))
+                        return $"DVD-Cops {GetVersionString(match)}";
+            }
+            
             return null;
         }
 
@@ -242,6 +261,15 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             return version;
+        }
+        
+        private static string GetVersionString(string match)
+        {
+            var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,)");
+            if (versionMatch.Success)
+                return versionMatch.Value;
+            
+            return "(Unknown Version - Please report to us on GitHub)";
         }
     }
 }
