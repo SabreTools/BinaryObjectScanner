@@ -265,7 +265,10 @@ namespace BinaryObjectScanner.Protection
         
         private static string GetVersionString(string match)
         {
-            var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,)");
+            // Full string ends with # (i.e. "CD-Cops,  ver. 1.72,  #"), use that to compensate for comma in version 
+            // number cases (don't change the comma, see earlier to-do) like "DVD-Cops, ver. 1,60,"
+            // TODO: improve regex via the starting "N" character? Possibly unnecessary?
+            var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,\s{1,}#)");
             if (versionMatch.Success)
                 return versionMatch.Value;
             
