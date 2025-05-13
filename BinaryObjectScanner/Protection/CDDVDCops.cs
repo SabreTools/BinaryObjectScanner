@@ -83,22 +83,21 @@ namespace BinaryObjectScanner.Protection
             var neMatchSets = new List<ContentMatchSet>
             {
                 // Checking for variants with one or two spaces, just in case; the Brockhaus DVDs only had one
-                // CD-Cops, ver. 
                 new(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                }, GetVersion, "CD-Cops"),
+                // CD-Cops, ver. 
                 
-                // CD-Cops,  ver. 
                 // Found in "h3blade.exe" in Redump entry 85077.
                 new(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                }, GetVersion, "CD-Cops"),
+                // CD-Cops,  ver. 
 
-                // DVD-Cops, ver. 
                 // Found in IA entries "der-brockhaus-multimedial-2002-premium" and "der-brockhaus-multimedial-2003-premium"
                 // TODO: 2002 returns DVD-Cops 2.01, 2003 returns DVD-Cops 1,60. CD-Cops version numbers seem to "reset" 
                 // after some point in time in existing redump entries- perhaps the command instead of the period may have
@@ -107,14 +106,15 @@ namespace BinaryObjectScanner.Protection
                 {
                     0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
                     0x2C, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
+                }, GetVersion, "DVD-Cops"),
+                // DVD-Cops, ver. 
                 
-                // DVD-Cops,  ver. 
                 new(new byte?[]
                 {
                     0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
                     0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
-                }, GetVersion, "DVD-Cops (Unconfirmed - Please report to us on Github)"),
+                }, GetVersion, "DVD-Cops"),
+                // DVD-Cops,  ver. 
             };
 
             var match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
@@ -225,6 +225,16 @@ namespace BinaryObjectScanner.Protection
 
                 new(new PathMatch(".GZ_", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
                 new(new PathMatch(".Qz", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                
+                // Found in Redump entries 84517, 108167, 119435, 119436, and 119437. This is the official
+                // name from their website https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/cdcops
+                // I can't find this specific filename documented anywhere, but, all of these
+                // games do not require a key to be input
+                new(new FilePathMatch("cdcode.key"), "CD-Cops Codefree"),
+                
+                // DVD-Cops Codefree does exist https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/dvdvers
+                // but we currently have no samples. Presumably this is what the file would be called?
+                new(new FilePathMatch("dvdcode.key"), "DVD-Cops Codefree (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -245,6 +255,15 @@ namespace BinaryObjectScanner.Protection
 
                 new(new PathMatch(".GZ_", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
                 new(new PathMatch(".Qz", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
+                // Found in Redump entries 84517, 108167, 119435, 119436, and 119437. This is the official
+                // name from their website https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/cdcops
+                // I can't find this specific filename documented anywhere, but, all of these
+                // games do not require a key to be input
+                new(new FilePathMatch("cdcode.key"), "CD-Cops Codefree"),
+                
+                // DVD-Cops Codefree does exist https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/dvdvers
+                // but we currently have no samples. Presumably this is what the file would be called?
+                new(new FilePathMatch("dvdcode.key"), "DVD-Cops Codefree (Unconfirmed - Please report to us on Github)"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
