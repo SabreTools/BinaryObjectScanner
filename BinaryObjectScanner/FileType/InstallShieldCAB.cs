@@ -24,8 +24,16 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            if (file != "")
+            try
+            {
                 file = Path.GetFullPath(file);
+            }
+            catch
+            {
+                // If any of the exceptions to getting a full path occur, just continue as normal. The rest of the
+                // functions already handle the various cases upon which this would throw exceptions.
+            }
+            
             // Get the name of the first cabinet file or header
             var directory = Path.GetDirectoryName(file);
             string noExtension = Path.GetFileNameWithoutExtension(file);
