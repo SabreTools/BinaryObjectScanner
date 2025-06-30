@@ -42,6 +42,8 @@ namespace ExtractionTool
         /// <param name="includeDebug">Enable including debug information</param>
         private static void ExtractPath(string path, string outputDirectory, bool includeDebug)
         {
+            // Normalize by getting the full path
+            path = Path.GetFullPath(path);
             Console.WriteLine($"Checking possible path: {path}");
 
             // Check if the file or directory exists

@@ -53,6 +53,9 @@ namespace ProtectionScan
         /// <param name="path">File or directory path</param>
         private static void GetAndWriteProtections(Scanner scanner, string path)
         {
+            // Normalize by getting the full path
+            path = Path.GetFullPath(path);
+
             // An invalid path can't be scanned
             if (!Directory.Exists(path) && !File.Exists(path))
             {
