@@ -24,6 +24,8 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
+            // Handles getting full path if relative paths were passed.
+            file = Path.GetFullPath(file);
             // Get the name of the first cabinet file or header
             var directory = Path.GetDirectoryName(file);
             string noExtension = Path.GetFileNameWithoutExtension(file);
