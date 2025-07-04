@@ -207,7 +207,7 @@ namespace BinaryObjectScanner
             try
             {
                 using FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                return GetInternalProtections(file, fs);
+                return GetInternalProtections(fs.Name, fs);
             }
             catch (Exception ex)
             {

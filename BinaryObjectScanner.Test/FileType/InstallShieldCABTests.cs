@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using BinaryObjectScanner.FileType;
 using Xunit;
 
@@ -25,8 +26,7 @@ namespace BinaryObjectScanner.Test.FileType
             string outDir = string.Empty;
             var extractable = new InstallShieldCAB();
 
-            bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
-            Assert.False(actual);
+            Assert.Throws<ArgumentException>(() => extractable.Extract(stream, file, outDir, includeDebug: false));
         }
 
         [Fact]
@@ -37,8 +37,7 @@ namespace BinaryObjectScanner.Test.FileType
             string outDir = string.Empty;
             var extractable = new InstallShieldCAB();
 
-            bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
-            Assert.False(actual);
+            Assert.Throws<ArgumentException>(() => extractable.Extract(stream, file, outDir, includeDebug: false));
         }
     }
 }
