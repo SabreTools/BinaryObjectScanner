@@ -74,7 +74,6 @@ namespace BinaryObjectScanner.FileType
         public bool Extract_Non_Solid(ReaderOptions? readerOptions, RarArchive? rarFile, string file, string?
                 outDir, bool includeDebug) 
         {
-
             
             foreach (var entry in rarFile.Entries)
             {

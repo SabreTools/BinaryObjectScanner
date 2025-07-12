@@ -49,41 +49,9 @@ namespace BinaryObjectScanner.FileType
                 if (sevenZip.Entries.Count == 0 && !string.IsNullOrEmpty(file) && File.Exists(file))
                     sevenZip = SevenZipArchive.Open(file, readerOptions);
 
-                // SharpCompress' archive-level solid flag doesn't ever seem to be set to true, even on solid archives.
-                // Pending further investigation.
-                bool firstFile = true;
-                bool isSolid = false;
-                foreach (var entry in sevenZip.Entries)
-                {
-                    try
-                    {
-                        // If the entry is a directory
-                        if (entry.IsDirectory)
-                            continue;
-
-                        // If the entry has an invalid key
-                        if (entry.Key == null)
-                            continue;
-
-                        // If we have a partial entry due to an incomplete multi-part archive, skip it
-                        if (!entry.IsComplete)
-                            continue;
-
-                        if (firstFile)
-                            firstFile = false;
-                        else
-                        {
-                            isSolid = entry.IsSolid;
-                            break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (includeDebug) Console.WriteLine(ex);
-                    }
-                }
-
-                if (isSolid)
+                // Currently doesn't flag solid 7z archives with only 1 solid block as solid, but practically speaking
+                // this is not much of a concern.
+                if (sevenZip.IsSolid)
                     return Extract_Solid(sevenZip, outDir, includeDebug);
                 else
                     return Extract_Non_Solid(sevenZip, outDir, includeDebug);
