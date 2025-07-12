@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.FileType
             => Extract(stream, file, outDir, lookForHeader: false, includeDebug);
 
         /// <inheritdoc cref="IExtractable.Extract(Stream?, string, string, bool)"/>
- public bool Extract(Stream? stream, string file, string outDir, bool lookForHeader, bool includeDebug)
+        public bool Extract(Stream? stream, string file, string outDir, bool lookForHeader, bool includeDebug)
         {
             if (stream == null || !stream.CanRead)
                 return false;
@@ -67,6 +67,7 @@ namespace BinaryObjectScanner.FileType
             return false;
 #endif
         }
+        
 #if NET462_OR_GREATER || NETCOREAPP
         
         /// <summary>
