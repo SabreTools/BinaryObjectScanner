@@ -4,6 +4,7 @@ using BinaryObjectScanner.Interfaces;
 #if NET462_OR_GREATER || NETCOREAPP
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
+using SharpCompress.Common;
 using SharpCompress.Readers;
 #endif
 
@@ -33,7 +34,7 @@ namespace BinaryObjectScanner.FileType
             => Extract(stream, file, outDir, lookForHeader: false, includeDebug);
 
         /// <inheritdoc cref="IExtractable.Extract(Stream?, string, string, bool)"/>
-        public bool Extract(Stream? stream, string file, string outDir, bool lookForHeader, bool includeDebug)
+ public bool Extract(Stream? stream, string file, string outDir, bool lookForHeader, bool includeDebug)
         {
             if (stream == null || !stream.CanRead)
                 return false;
@@ -51,6 +52,12 @@ namespace BinaryObjectScanner.FileType
                 if (!rarFile.IsComplete)
                     return false;
 
+                // Explained in https://github.com/adamhathcock/sharpcompress/pull/661. in order to determine whether  
+                // a RAR or 7Z archive is solid or not, you must check the second file in the archive, as the first 
+                // file is always marked non-solid even for solid archives. This iteration is necessary since things
+                // like directories aren't marked solid either.
+                bool firstFile = true;
+                bool isSolid = false;
                 foreach (var entry in rarFile.Entries)
                 {
                     try
@@ -67,12 +74,13 @@ namespace BinaryObjectScanner.FileType
                         if (!entry.IsComplete)
                             continue;
 
-                        string tempFile = Path.Combine(outDir, entry.Key);
-                        var directoryName = Path.GetDirectoryName(tempFile);
-                        if (directoryName != null && !Directory.Exists(directoryName))
-                            Directory.CreateDirectory(directoryName);
-
-                        entry.WriteToFile(tempFile);
+                        if (firstFile)
+                            firstFile = false;
+                        else
+                        {
+                            isSolid = entry.IsSolid;
+                            break;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -80,7 +88,11 @@ namespace BinaryObjectScanner.FileType
                     }
                 }
 
-                return true;
+                if (isSolid)
+                    return Extract_Solid(rarFile, outDir, includeDebug);
+                else
+                    return Extract_Non_Solid(readerOptions, rarFile, file, outDir, includeDebug);
+
             }
             catch (Exception ex)
             {
@@ -91,5 +103,71 @@ namespace BinaryObjectScanner.FileType
             return false;
 #endif
         }
+#if NET462_OR_GREATER || NETCOREAPP
+        /// <inheritdoc cref="IExtractable.Extract(Stream?, string, string, bool)"/>
+        // Extraction method for non-solid archives. This iterates over each entry in the archive to extract every file
+        // individually, in order to extract all valid files from the archive.
+        public bool Extract_Non_Solid(ReaderOptions? readerOptions, RarArchive? rarFile, string file, string?
+                outDir, bool includeDebug) 
+        {
+
+            
+            foreach (var entry in rarFile.Entries)
+            {
+                try
+                {
+                    // If the entry is a directory
+                    if (entry.IsDirectory)
+                        continue;
+
+                    // If the entry has an invalid key
+                    if (entry.Key == null)
+                        continue;
+
+                    // If we have a partial entry due to an incomplete multi-part archive, skip it
+                    if (!entry.IsComplete)
+                        continue;
+
+                    string tempFile = Path.Combine(outDir, entry.Key);
+                    var directoryName = Path.GetDirectoryName(tempFile);
+                    if (directoryName != null && !Directory.Exists(directoryName))
+                        Directory.CreateDirectory(directoryName);
+
+                    entry.WriteToFile(tempFile);
+                }
+                catch (Exception ex)
+                {
+                    if (includeDebug) Console.WriteLine(ex);
+                }
+            }
+            return true;
+        }
+        
+        /// <inheritdoc cref="IExtractable.Extract(Stream?, string, string, bool)"/>
+        
+        // Extraction method for solid archives. Uses ExtractAllEntries because extraction for solid archives must be
+        // done sequentially, and files beyond a corrupted point in a solid archive will be unreadable anyways.
+        public bool Extract_Solid(RarArchive rarFile, string? outDir, bool includeDebug)
+        {
+                try
+                {
+                    if (outDir != null && !Directory.Exists(outDir))
+                        Directory.CreateDirectory(outDir);
+                    
+                    rarFile.ExtractAllEntries().WriteAllToDirectory(outDir, new ExtractionOptions()
+                    {
+                        ExtractFullPath = true,
+                        Overwrite = true // Ideally would mark this false, but can't find documentation on how it works
+                    });
+                    
+                }
+                catch (Exception ex)
+                {
+                    if (includeDebug) Console.WriteLine(ex);
+                }
+
+                return true;
+        }
+#endif
     }
 }
