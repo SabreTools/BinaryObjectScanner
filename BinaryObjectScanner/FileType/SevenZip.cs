@@ -73,8 +73,6 @@ namespace BinaryObjectScanner.FileType
         /// </summary>
         private bool ExtractNonSolid(SevenZipArchive sevenZip, string outDir, bool includeDebug) 
         {
-
-            
             foreach (var entry in sevenZip.Entries)
             {
                 try
@@ -112,24 +110,24 @@ namespace BinaryObjectScanner.FileType
         /// </summary>
         private bool ExtractSolid(SevenZipArchive sevenZip, string outDir, bool includeDebug)
         {
-                try
-                {
-                    if (!Directory.Exists(outDir))
-                        Directory.CreateDirectory(outDir);
+            try
+            {
+                if (!Directory.Exists(outDir))
+                    Directory.CreateDirectory(outDir);
                     
-                    sevenZip.WriteToDirectory(outDir, new ExtractionOptions()
-                    {
-                        ExtractFullPath = true,
-                        Overwrite = true // Ideally would mark this false, but can't find documentation on how it works
-                    });
-                    
-                }
-                catch (Exception ex)
+                sevenZip.WriteToDirectory(outDir, new ExtractionOptions()
                 {
-                    if (includeDebug) Console.WriteLine(ex);
-                }
+                    ExtractFullPath = true,
+                    Overwrite = true, 
+                });
+                    
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+            }
 
-                return true;
+            return true;
         }
 #endif
     }

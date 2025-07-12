@@ -112,24 +112,24 @@ namespace BinaryObjectScanner.FileType
         /// </summary>
         private bool ExtractSolid(RarArchive rarFile, string outDir, bool includeDebug)
         {
-                try
-                {
-                    if (!Directory.Exists(outDir))
-                        Directory.CreateDirectory(outDir);
-                    
-                    rarFile.WriteToDirectory(outDir, new ExtractionOptions()
-                    {
-                        ExtractFullPath = true,
-                        Overwrite = true // Ideally would mark this false, but can't find documentation on how it works
-                    });
-                    
-                }
-                catch (Exception ex)
-                {
-                    if (includeDebug) Console.WriteLine(ex);
-                }
+            try
+            {
+                if (!Directory.Exists(outDir))
+                    Directory.CreateDirectory(outDir);
 
-                return true;
+                rarFile.WriteToDirectory(outDir, new ExtractionOptions()
+                {
+                    ExtractFullPath = true,
+                    Overwrite = true,
+                });
+
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+            }
+
+            return true;
         }
 #endif
     }
