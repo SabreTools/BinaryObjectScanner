@@ -49,10 +49,8 @@ namespace BinaryObjectScanner.FileType
                 if (sevenZip.Entries.Count == 0 && !string.IsNullOrEmpty(file) && File.Exists(file))
                     sevenZip = SevenZipArchive.Open(file, readerOptions);
 
-                // Explained in https://github.com/adamhathcock/sharpcompress/pull/661. in order to determine whether  
-                // a RAR or 7Z archive is solid or not, you must check the second file in the archive, as the first 
-                // file is always marked non-solid even for solid archives. This iteration is necessary since things
-                // like directories aren't marked solid either.
+                // SharpCompress' archive-level solid flag doesn't ever seem to be set to true, even on solid archives.
+                // Pending further investigation.
                 bool firstFile = true;
                 bool isSolid = false;
                 foreach (var entry in sevenZip.Entries)
