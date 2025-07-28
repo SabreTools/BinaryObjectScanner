@@ -170,8 +170,9 @@ namespace BinaryObjectScanner.FileType
                 {
                     long position = ms.Position;
                     mszip.CopyTo(db.CompressedData, ms);
-                    if (ms.Position - position != db.UncompressedSize)
-                        Console.Error.WriteLine($"Data block {i} in folder {folderIndex} did not decompress properly. All files past this point may be corrupt.");
+                    long decompressedSize = ms.Position - position;
+                    if (decompressedSize != db.UncompressedSize)
+                        Console.Error.WriteLine($"Data block {i} in folder {folderIndex} did not decompress properly. Expected: {db.UncompressedSize} Got: {decompressedSize}");
                 }
 
                 // Quantum
