@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.FileType
                 {
                     // Decompress the blocks, if possible
                     var folder = cabArchive.Model.Folders[f];
-                    var ms = DecompressBlocks(cabArchive, folder, f);
+                    var ms = DecompressBlocks(cabArchive, file, folder, f);
                     if (ms == null || ms.Length == 0)
                         continue;
 
@@ -121,10 +121,10 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Decompress all blocks for a folder
         /// </summary>
-        private MemoryStream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFOLDER? folder, int folderIndex)
+        private MemoryStream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file, CFFOLDER? folder, int folderIndex)
         {
             // Ensure data blocks
-            var dataBlocks = GetDataBlocks(cabArchive, folder, folderIndex);
+            var dataBlocks = GetDataBlocks(cabArchive, file, folder, folderIndex);
             if (dataBlocks == null || dataBlocks.Length == 0)
                 return null;
 
@@ -181,7 +181,12 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Get the set of data blocks for a folder
         /// </summary>
-        private CFDATA[]? GetDataBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFOLDER? folder, int folderIndex)
+        private CFDATA[]? GetDataBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive,
+            string file,
+            CFFOLDER? folder,
+            int folderIndex,
+            bool skipPrev = false,
+            bool skipNext = false)
         {
             // Skip invalid folders
             if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
@@ -193,19 +198,33 @@ namespace BinaryObjectScanner.FileType
                 return folder.DataBlocks;
 
             // Check if the folder spans backward
-            if (Array.Exists(files, f => f.FolderIndex == FolderIndex.CONTINUED_FROM_PREV || f.FolderIndex == FolderIndex.CONTINUED_PREV_AND_NEXT))
+            CFDATA[] prevBlocks = [];
+            if (!skipPrev && Array.Exists(files, f => f.FolderIndex == FolderIndex.CONTINUED_FROM_PREV || f.FolderIndex == FolderIndex.CONTINUED_PREV_AND_NEXT))
             {
-                // TODO: Get the list of blocks from the last folder in the previous cabinet
+                var prev = OpenPrevious(cabArchive, file);
+                if (prev?.Model?.Header != null && prev.Model.Folders != null)
+                {
+                    int prevFolderIndex = prev.Model.Header.FolderCount;
+                    var prevFolder = prev.Model.Folders[prevFolderIndex - 1];
+                    prevBlocks = GetDataBlocks(prev, file, prevFolder, folderIndex, skipNext: true) ?? [];
+                }
             }
 
             // Check if the folder spans forward
-            if (Array.Exists(files, f => f.FolderIndex == FolderIndex.CONTINUED_TO_NEXT || f.FolderIndex == FolderIndex.CONTINUED_PREV_AND_NEXT))
+            CFDATA[] nextBlocks = [];
+            if (!skipNext && Array.Exists(files, f => f.FolderIndex == FolderIndex.CONTINUED_TO_NEXT || f.FolderIndex == FolderIndex.CONTINUED_PREV_AND_NEXT))
             {
-                // TODO: Get the list of blocks from the first folder in the next cabinet
+                var next = OpenNext(cabArchive, file);
+                if (next?.Model?.Header != null && next.Model.Folders != null)
+                {
+                    int nextFolderIndex = next.Model.Header.FolderCount;
+                    var nextFolder = next.Model.Folders[nextFolderIndex - 1];
+                    nextBlocks = GetDataBlocks(next, file, nextFolder, folderIndex, skipPrev: true) ?? [];
+                }
             }
 
-            // Return all found blocks
-            return [.. folder.DataBlocks];
+            // Return all found blocks in order
+            return [.. prevBlocks, .. folder.DataBlocks, .. nextBlocks];
         }
 
         /// <summary>
@@ -245,15 +264,14 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Open the next archive, if possible
         /// </summary>
-        private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenNext(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? file)
+        private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenNext(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file)
         {
             // Ignore invalid archives
             if (cabArchive.Model.Header == null)
                 return null;
 
-            // Normalize the filename, if one exists
-            if (file != null)
-                file = Path.GetFullPath(file);
+            // Normalize the filename
+            file = Path.GetFullPath(file);
 
             // Get if the cabinet has a next part
             string? next = cabArchive.Model.Header.CabinetNext;
@@ -276,15 +294,14 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Open the previous archive, if possible
         /// </summary>
-        private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenPrevious(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? file)
+        private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenPrevious(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file)
         {
             // Ignore invalid archives
             if (cabArchive.Model.Header == null)
                 return null;
 
-            // Normalize the filename, if one exists
-            if (file != null)
-                file = Path.GetFullPath(file);
+            // Normalize the filename
+            file = Path.GetFullPath(file);
 
             // Get if the cabinet has a previous part
             string? prev = cabArchive.Model.Header.CabinetPrev;
