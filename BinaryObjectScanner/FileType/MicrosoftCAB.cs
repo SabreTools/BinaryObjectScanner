@@ -199,6 +199,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Get the set of data blocks for a folder
         /// </summary>
+        /// TODO: Remove once Serialization is updated
         private CFDATA[]? GetDataBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive,
             string file,
             CFFOLDER? folder,
@@ -247,6 +248,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Get all files for the current folder index
         /// </summary>
+        /// TODO: Remove once Serialization is updated
         private CFFILE[] GetFiles(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, int folderIndex)
         {
             // Ignore invalid archives
@@ -267,6 +269,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Get the corrected folder index
         /// </summary>
+        /// TODO: Remove once Serialization is updated
         private int GetFolderIndex(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFILE file)
         {
             return file.FolderIndex switch
@@ -281,6 +284,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Open the next archive, if possible
         /// </summary>
+        /// TODO: Remove once Serialization is updated
         private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenNext(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file)
         {
             // Ignore invalid archives
@@ -311,6 +315,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Open the previous archive, if possible
         /// </summary>
+        /// TODO: Remove once Serialization is updated
         private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenPrevious(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file)
         {
             // Ignore invalid archives
