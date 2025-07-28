@@ -104,7 +104,7 @@ namespace BinaryObjectScanner.FileType
                     // Loop through the files
                     foreach (var compressedFile in cabArchive.Model.Files)
                     {
-                        if (compressedFile?.Name == null || compressedFile.FolderIndex != (FolderIndex)f)
+                        if (compressedFile?.Name == null || GetFolderIndex(cabArchive, compressedFile) != f)
                             continue;
 
                         try
@@ -168,6 +168,20 @@ namespace BinaryObjectScanner.FileType
                 return false;
             }
 #endif
+        }
+
+        /// <summary>
+        /// Get the corrected folder index
+        /// </summary>
+        private int GetFolderIndex(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFILE file)
+        {
+            return file.FolderIndex switch
+            {
+                FolderIndex.CONTINUED_FROM_PREV => 0,
+                FolderIndex.CONTINUED_TO_NEXT => (cabArchive.Model.Header?.FolderCount ?? 1) - 1,
+                FolderIndex.CONTINUED_PREV_AND_NEXT => 0,
+                _ => (int)file.FolderIndex,
+            };
         }
     }
 }
