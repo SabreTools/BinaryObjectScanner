@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
+
 #if (NET40_OR_GREATER || NETCOREAPP) && WINX86
 using LibMSPackN;
 #else
@@ -45,8 +47,8 @@ namespace BinaryObjectScanner.FileType
                     var folder = cabArchive.Model.Folders[f];
 
                     // Decompress the blocks, if possible
-                    using var ms = DecompressBlocks(cabArchive, file, folder, f);
-                    if (ms == null || ms.Length == 0)
+                    using var blockStream = DecompressBlocks(cabArchive, file, folder, f);
+                    if (blockStream == null || blockStream.Length == 0)
                         continue;
 
                     // Ensure files
@@ -59,8 +61,8 @@ namespace BinaryObjectScanner.FileType
                     {
                         try
                         {
-                            byte[] fileData = new byte[compressedFile.FileSize];
-                            Array.Copy(ms.ToArray(), compressedFile.FolderStartOffset, fileData, 0, compressedFile.FileSize);
+                            blockStream.Seek(compressedFile.FolderStartOffset, SeekOrigin.Begin);
+                            byte[] fileData = blockStream.ReadBytes((int)compressedFile.FileSize);
 
                             // Ensure directory separators are consistent
                             string fileName = compressedFile.Name!;
@@ -137,7 +139,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Decompress all blocks for a folder
         /// </summary>
-        private MemoryStream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file, CFFOLDER? folder, int folderIndex)
+        private Stream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string file, CFFOLDER? folder, int folderIndex)
         {
             // Ensure data blocks
             var dataBlocks = GetDataBlocks(cabArchive, file, folder, folderIndex);
