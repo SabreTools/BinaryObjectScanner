@@ -156,7 +156,7 @@ namespace BinaryObjectScanner.FileType
             {
                 var db = dataBlocks[i];
                 if (db?.CompressedData == null)
-                        continue;
+                    continue;
 
                 // Uncompressed data
                 if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_NONE)
@@ -171,8 +171,14 @@ namespace BinaryObjectScanner.FileType
                     long position = ms.Position;
                     mszip.CopyTo(db.CompressedData, ms);
                     long decompressedSize = ms.Position - position;
-                    if (decompressedSize != db.UncompressedSize)
-                        Console.Error.WriteLine($"Data block {i} in folder {folderIndex} did not decompress properly. Expected: {db.UncompressedSize} Got: {decompressedSize}");
+
+                    // Pad to the correct size but throw a warning about this
+                    if (decompressedSize < db.UncompressedSize)
+                    {
+                        Console.Error.WriteLine($"Data block {i} in folder {folderIndex} had mismatching sizes. Expected: {db.UncompressedSize}, Got: {decompressedSize}");
+                        byte[] padding = new byte[db.UncompressedSize - decompressedSize];
+                        ms.Write(padding, 0, padding.Length);
+                    }
                 }
 
                 // Quantum
