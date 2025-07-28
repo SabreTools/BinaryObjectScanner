@@ -41,9 +41,11 @@ namespace BinaryObjectScanner.FileType
                 // Loop through the folders
                 for (int f = 0; f < cabArchive!.Model.Folders.Length; f++)
                 {
-                    // Decompress the blocks, if possible
+                    // Get the current folder for processing
                     var folder = cabArchive.Model.Folders[f];
-                    var ms = DecompressBlocks(cabArchive, file, folder, f);
+
+                    // Decompress the blocks, if possible
+                    using var ms = DecompressBlocks(cabArchive, file, folder, f);
                     if (ms == null || ms.Length == 0)
                         continue;
 
