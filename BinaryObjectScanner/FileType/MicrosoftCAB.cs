@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.FileType
                 {
                     // Decompress the blocks, if possible
                     var folder = cabArchive.Model.Folders[f];
-                    var ms = DecompressBlocks(cabArchive, folder);
+                    var ms = DecompressBlocks(cabArchive, folder, f);
                     if (ms == null || ms.Length == 0)
                         continue;
 
@@ -121,19 +121,20 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Decompress all blocks for a folder
         /// </summary>
-        private MemoryStream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFOLDER? folder)
+        private MemoryStream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFOLDER? folder, int folderIndex)
         {
             // Ensure data blocks
-            if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
+            var dataBlocks = GetDataBlocks(cabArchive, folder, folderIndex);
+            if (dataBlocks == null || dataBlocks.Length == 0)
                 return null;
 
             // Setup decompressors
             var mszip = SabreTools.Compression.MSZIP.Decompressor.Create();
-            uint quantumWindowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
+            uint quantumWindowBits = (uint)(((ushort)folder!.CompressionType >> 8) & 0x1f);
 
             // Loop through the data blocks
             var ms = new MemoryStream();
-            foreach (var db in folder.DataBlocks)
+            foreach (var db in dataBlocks)
             {
                 if (db?.CompressedData == null)
                     continue;
@@ -175,6 +176,36 @@ namespace BinaryObjectScanner.FileType
             }
 
             return ms;
+        }
+
+        /// <summary>
+        /// Get the set of data blocks for a folder
+        /// </summary>
+        private CFDATA[]? GetDataBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFOLDER? folder, int folderIndex)
+        {
+            // Skip invalid folders
+            if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
+                return null;
+
+            // Get all files for the folder
+            var files = GetFiles(cabArchive, folderIndex);
+            if (files.Length == 0)
+                return folder.DataBlocks;
+
+            // Check if the folder spans backward
+            if (Array.Exists(files, f => f.FolderIndex == FolderIndex.CONTINUED_FROM_PREV || f.FolderIndex == FolderIndex.CONTINUED_PREV_AND_NEXT))
+            {
+                // TODO: Get the list of blocks from the last folder in the previous cabinet
+            }
+
+            // Check if the folder spans forward
+            if (Array.Exists(files, f => f.FolderIndex == FolderIndex.CONTINUED_TO_NEXT || f.FolderIndex == FolderIndex.CONTINUED_PREV_AND_NEXT))
+            {
+                // TODO: Get the list of blocks from the first folder in the next cabinet
+            }
+
+            // Return all found blocks
+            return [.. folder.DataBlocks];
         }
 
         /// <summary>
