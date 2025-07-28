@@ -56,10 +56,11 @@ namespace BinaryObjectScanner.FileType
                         continue;
 
                     // Loop through the files
-                    foreach (var compressedFile in files)
+                    for (int i = 0; i < files.Length; i++)
                     {
                         try
                         {
+                            var compressedFile = files[i];
                             blockStream.Seek(compressedFile.FolderStartOffset, SeekOrigin.Begin);
                             byte[] fileData = blockStream.ReadBytes((int)compressedFile.FileSize);
 
@@ -151,10 +152,11 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through the data blocks
             var ms = new MemoryStream();
-            foreach (var db in dataBlocks)
+            for (int i = 0; i < dataBlocks.Length; i++)
             {
+                var db = dataBlocks[i];
                 if (db?.CompressedData == null)
-                    continue;
+                        continue;
 
                 // Uncompressed data
                 if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_NONE)
@@ -166,7 +168,10 @@ namespace BinaryObjectScanner.FileType
                 // MS-ZIP
                 else if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_MSZIP)
                 {
+                    long position = ms.Position;
                     mszip.CopyTo(db.CompressedData, ms);
+                    if (ms.Position - position != db.UncompressedSize)
+                        Console.Error.WriteLine($"Data block {i} in folder {folderIndex} did not decompress properly. All files past this point may be corrupt.");
                 }
 
                 // Quantum
