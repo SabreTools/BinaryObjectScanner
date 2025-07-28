@@ -60,7 +60,7 @@ namespace BinaryObjectScanner.FileType
                             byte[] fileData = new byte[compressedFile.FileSize];
                             Array.Copy(ms.ToArray(), compressedFile.FolderStartOffset, fileData, 0, compressedFile.FileSize);
 
-                            string tempFile = Path.Combine(outDir, compressedFile.Name);
+                            string tempFile = Path.Combine(outDir, compressedFile.Name!);
                             var directoryName = Path.GetDirectoryName(tempFile);
                             if (directoryName != null && !Directory.Exists(directoryName))
                                 Directory.CreateDirectory(directoryName);
