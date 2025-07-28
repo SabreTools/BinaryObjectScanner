@@ -41,60 +41,10 @@ namespace BinaryObjectScanner.FileType
                 // Loop through the folders
                 for (int f = 0; f < cabArchive!.Model.Folders.Length; f++)
                 {
-                    // Ensure data blocks
+                    // Decompress the blocks, if possible
                     var folder = cabArchive.Model.Folders[f];
-                    if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
-                        continue;
-
-                    // Setup decompressors
-                    var mszip = SabreTools.Compression.MSZIP.Decompressor.Create();
-                    uint quantumWindowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
-
-                    // Loop through the data blocks
-                    var ms = new MemoryStream();
-                    foreach (var db in folder.DataBlocks)
-                    {
-                        if (db?.CompressedData == null)
-                            continue;
-
-                        // Uncompressed data
-                        if ((folder.CompressionType & CompressionType.TYPE_NONE) != 0)
-                        {
-                            ms.Write(db.CompressedData, 0, db.CompressedData.Length);
-                            ms.Flush();
-                        }
-
-                        // MS-ZIP
-                        else if ((folder.CompressionType & CompressionType.TYPE_MSZIP) != 0)
-                        {
-                            mszip.CopyTo(db.CompressedData, ms);
-                        }
-
-                        // Quantum
-                        else if ((folder.CompressionType & CompressionType.TYPE_QUANTUM) != 0)
-                        {
-                            var quantum = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, quantumWindowBits);
-                            byte[] data = quantum.Process();
-                            ms.Write(data, 0, data.Length);
-                            ms.Flush();
-                        }
-
-                        // LZX
-                        else if ((folder.CompressionType & CompressionType.TYPE_LZX) != 0)
-                        {
-                            // TODO: Unsupported
-                            continue;
-                        }
-
-                        // Unknown
-                        else
-                        {
-                            continue;
-                        }
-                    }
-
-                    // If no data was read
-                    if (ms.Length == 0)
+                    var ms = DecompressBlocks(cabArchive, folder);
+                    if (ms == null || ms.Length == 0)
                         continue;
 
                     // Ensure files
@@ -166,6 +116,65 @@ namespace BinaryObjectScanner.FileType
                 return false;
             }
 #endif
+        }
+
+        /// <summary>
+        /// Decompress all blocks for a folder
+        /// </summary>
+        private MemoryStream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, CFFOLDER? folder)
+        {
+            // Ensure data blocks
+            if (folder?.DataBlocks == null || folder.DataBlocks.Length == 0)
+                return null;
+
+            // Setup decompressors
+            var mszip = SabreTools.Compression.MSZIP.Decompressor.Create();
+            uint quantumWindowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
+
+            // Loop through the data blocks
+            var ms = new MemoryStream();
+            foreach (var db in folder.DataBlocks)
+            {
+                if (db?.CompressedData == null)
+                    continue;
+
+                // Uncompressed data
+                if ((folder.CompressionType & CompressionType.TYPE_NONE) != 0)
+                {
+                    ms.Write(db.CompressedData, 0, db.CompressedData.Length);
+                    ms.Flush();
+                }
+
+                // MS-ZIP
+                else if ((folder.CompressionType & CompressionType.TYPE_MSZIP) != 0)
+                {
+                    mszip.CopyTo(db.CompressedData, ms);
+                }
+
+                // Quantum
+                else if ((folder.CompressionType & CompressionType.TYPE_QUANTUM) != 0)
+                {
+                    var quantum = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, quantumWindowBits);
+                    byte[] data = quantum.Process();
+                    ms.Write(data, 0, data.Length);
+                    ms.Flush();
+                }
+
+                // LZX
+                else if ((folder.CompressionType & CompressionType.TYPE_LZX) != 0)
+                {
+                    // TODO: Unsupported
+                    continue;
+                }
+
+                // Unknown
+                else
+                {
+                    continue;
+                }
+            }
+
+            return ms;
         }
 
         /// <summary>
