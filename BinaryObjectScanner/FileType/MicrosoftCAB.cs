@@ -140,20 +140,20 @@ namespace BinaryObjectScanner.FileType
                     continue;
 
                 // Uncompressed data
-                if ((folder.CompressionType & CompressionType.TYPE_NONE) != 0)
+                if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_NONE)
                 {
                     ms.Write(db.CompressedData, 0, db.CompressedData.Length);
                     ms.Flush();
                 }
 
                 // MS-ZIP
-                else if ((folder.CompressionType & CompressionType.TYPE_MSZIP) != 0)
+                else if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_MSZIP)
                 {
                     mszip.CopyTo(db.CompressedData, ms);
                 }
 
                 // Quantum
-                else if ((folder.CompressionType & CompressionType.TYPE_QUANTUM) != 0)
+                else if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_QUANTUM)
                 {
                     var quantum = SabreTools.Compression.Quantum.Decompressor.Create(db.CompressedData, quantumWindowBits);
                     byte[] data = quantum.Process();
@@ -162,7 +162,7 @@ namespace BinaryObjectScanner.FileType
                 }
 
                 // LZX
-                else if ((folder.CompressionType & CompressionType.TYPE_LZX) != 0)
+                else if ((folder.CompressionType & CompressionType.MASK_TYPE) == CompressionType.TYPE_LZX)
                 {
                     // TODO: Unsupported
                     continue;
@@ -206,7 +206,7 @@ namespace BinaryObjectScanner.FileType
                 {
                     int prevFolderIndex = prev.Model.Header.FolderCount;
                     var prevFolder = prev.Model.Folders[prevFolderIndex - 1];
-                    prevBlocks = GetDataBlocks(prev, file, prevFolder, folderIndex, skipNext: true) ?? [];
+                    prevBlocks = GetDataBlocks(prev, file, prevFolder, prevFolderIndex, skipNext: true) ?? [];
                 }
             }
 
@@ -217,9 +217,8 @@ namespace BinaryObjectScanner.FileType
                 var next = OpenNext(cabArchive, file);
                 if (next?.Model?.Header != null && next.Model.Folders != null)
                 {
-                    int nextFolderIndex = next.Model.Header.FolderCount;
-                    var nextFolder = next.Model.Folders[nextFolderIndex - 1];
-                    nextBlocks = GetDataBlocks(next, file, nextFolder, folderIndex, skipPrev: true) ?? [];
+                    var nextFolder = next.Model.Folders[0];
+                    nextBlocks = GetDataBlocks(next, file, nextFolder, 0, skipPrev: true) ?? [];
                 }
             }
 
