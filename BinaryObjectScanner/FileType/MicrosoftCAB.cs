@@ -210,5 +210,67 @@ namespace BinaryObjectScanner.FileType
                 _ => (int)file.FolderIndex,
             };
         }
+
+        /// <summary>
+        /// Open the next archive, if possible
+        /// </summary>
+        private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenNext(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? file)
+        {
+            // Ignore invalid archives
+            if (cabArchive.Model.Header == null)
+                return null;
+
+            // Normalize the filename, if one exists
+            if (file != null)
+                file = Path.GetFullPath(file);
+
+            // Get if the cabinet has a next part
+            string? next = cabArchive.Model.Header.CabinetNext;
+            if (string.IsNullOrEmpty(next))
+                return null;
+
+            // Get the full next path, if possible
+            if (file != null)
+            {
+                string? folder = Path.GetDirectoryName(file);
+                if (folder != null)
+                    next = Path.Combine(folder, next);
+            }
+
+            // Open and return the next cabinet
+            var fs = File.Open(next, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return SabreTools.Serialization.Wrappers.MicrosoftCabinet.Create(fs);
+        }
+
+        /// <summary>
+        /// Open the previous archive, if possible
+        /// </summary>
+        private SabreTools.Serialization.Wrappers.MicrosoftCabinet? OpenPrevious(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? file)
+        {
+            // Ignore invalid archives
+            if (cabArchive.Model.Header == null)
+                return null;
+
+            // Normalize the filename, if one exists
+            if (file != null)
+                file = Path.GetFullPath(file);
+
+            // Get if the cabinet has a previous part
+            string? prev = cabArchive.Model.Header.CabinetPrev;
+            if (string.IsNullOrEmpty(prev))
+                return null;
+
+            // Get the full previous path, if possible
+            if (file != null)
+            {
+                string? folder = Path.GetDirectoryName(file);
+                if (folder != null)
+                    prev = Path.Combine(folder, prev);
+            }
+
+            // Open and return the previous cabinet
+            var fs = File.Open(prev, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return SabreTools.Serialization.Wrappers.MicrosoftCabinet.Create(fs);
+        }
     }
 }
