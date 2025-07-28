@@ -2,7 +2,6 @@
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
-
 #if (NET40_OR_GREATER || NETCOREAPP) && WINX86
 using LibMSPackN;
 #else
