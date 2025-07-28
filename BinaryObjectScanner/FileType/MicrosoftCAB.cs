@@ -98,15 +98,13 @@ namespace BinaryObjectScanner.FileType
                         continue;
 
                     // Ensure files
-                    if (cabArchive?.Model?.Files == null || cabArchive.Model.Files.Length == 0)
+                    var files = GetFiles(cabArchive, f);
+                    if (files.Length == 0)
                         continue;
 
                     // Loop through the files
-                    foreach (var compressedFile in cabArchive.Model.Files)
+                    foreach (var compressedFile in files)
                     {
-                        if (compressedFile?.Name == null || GetFolderIndex(cabArchive, compressedFile) != f)
-                            continue;
-
                         try
                         {
                             byte[] fileData = new byte[compressedFile.FileSize];
@@ -168,6 +166,26 @@ namespace BinaryObjectScanner.FileType
                 return false;
             }
 #endif
+        }
+
+        /// <summary>
+        /// Get all files for the current folder index
+        /// </summary>
+        private CFFILE[] GetFiles(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, int folderIndex)
+        {
+            // Ignore invalid archives
+            if (cabArchive.Model.Files == null)
+                return [];
+
+            // Get all files with a name and matching index
+            return Array.FindAll(cabArchive.Model.Files, f =>
+            {
+                if (string.IsNullOrEmpty(f.Name))
+                    return false;
+
+                int fileFolder = GetFolderIndex(cabArchive, f);
+                return fileFolder == folderIndex;
+            });
         }
 
         /// <summary>
