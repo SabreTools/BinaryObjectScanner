@@ -30,6 +30,7 @@ namespace BinaryObjectScanner.FileType
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
 #if NET20 || NET35 || !WINX86
+            // TODO: Use MicrosoftCabinet.OpenSet when Serialization is updated
             try
             {
                 // Create the wrapper
