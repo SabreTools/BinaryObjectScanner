@@ -102,7 +102,14 @@ namespace BinaryObjectScanner.FileType
                 {
                     try
                     {
-                        string tempFile = Path.Combine(outDir, compressedFile.Filename);
+                        // Ensure directory separators are consistent
+                        string fileName = compressedFile.Filename;
+                        if (Path.DirectorySeparatorChar == '\\')
+                            fileName = fileName.Replace('/', '\\');
+                        else if (Path.DirectorySeparatorChar == '/')
+                            fileName = fileName.Replace('\\', '/');
+                        
+                        string tempFile = Path.Combine(outDir, fileName);
                         var directoryName = Path.GetDirectoryName(tempFile);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
