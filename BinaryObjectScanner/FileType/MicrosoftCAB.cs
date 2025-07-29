@@ -142,7 +142,6 @@ namespace BinaryObjectScanner.FileType
         /// <param name="filename">Filename for one cabinet in the set, if available</param>
         /// <param name="outDir">Path to the output directory</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
-        /// <param name="forwardOnly">Indicates if decompression should be done forward-only</param>
         /// <returns>Indicates if all files were able to be extracted</returns>
         /// TODO: Remove once Serialization is updated
         private static bool ExtractCabinet(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? filename, string outDir, bool forwardOnly, bool includeDebug)
@@ -157,7 +156,7 @@ namespace BinaryObjectScanner.FileType
                 for (int f = 0; f < cabArchive.Model.Folders.Length; f++)
                 {
                     var folder = cabArchive.Model.Folders[f];
-                    ExtractFolder(cabArchive, filename, outDir, folder, f, forwardOnly, includeDebug);
+                    ExtractFolder(cabArchive, filename, outDir, folder, f, includeDebug);
                 }
 
                 return true;
@@ -176,7 +175,6 @@ namespace BinaryObjectScanner.FileType
         /// <param name="outDir">Path to the output directory</param>
         /// <param name="folder">Folder containing the blocks to decompress</param>
         /// <param name="folderIndex">Index of the folder in the cabinet</param>
-        /// <param name="forwardOnly">Indicates if decompression should be done forward-only</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// TODO: Remove once Serialization is updated
         private static void ExtractFolder(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive,
@@ -184,11 +182,10 @@ namespace BinaryObjectScanner.FileType
             string outDir,
             CFFOLDER? folder,
             int folderIndex,
-            bool forwardOnly,
             bool includeDebug)
         {
             // Decompress the blocks, if possible
-            using var blockStream = DecompressBlocks(cabArchive, filename, folder, folderIndex, forwardOnly);
+            using var blockStream = DecompressBlocks(cabArchive, filename, folder, folderIndex);
             if (blockStream == null || blockStream.Length == 0)
                 return;
 
@@ -235,15 +232,12 @@ namespace BinaryObjectScanner.FileType
         /// <param name="filename">Filename for one cabinet in the set, if available</param>
         /// <param name="folder">Folder containing the blocks to decompress</param>
         /// <param name="folderIndex">Index of the folder in the cabinet</param>
-        /// <param name="forwardOnly">Indicates if decompression should be done forward-only</param>
         /// <returns>Stream representing the decompressed data on success, null otherwise</returns>
         /// TODO: Remove once Serialization is updated
-        private static Stream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? filename, CFFOLDER? folder, int folderIndex, bool forwardOnly)
+        private static Stream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? filename, CFFOLDER? folder, int folderIndex)
         {
             // Ensure data blocks
-            var dataBlocks = forwardOnly
-                ? GetDataBlocksForward(cabArchive, filename, folder, folderIndex)
-                : GetDataBlocks(cabArchive, filename, folder, folderIndex);
+            var dataBlocks = GetDataBlocks(cabArchive, filename, folder, folderIndex);
             if (dataBlocks == null || dataBlocks.Length == 0)
                 return null;
 
@@ -374,17 +368,6 @@ namespace BinaryObjectScanner.FileType
             // Return all found blocks in order
             return [.. prevBlocks, .. folder.DataBlocks, .. nextBlocks];
         }
-
-        /// <summary>
-        /// Get the set of data blocks for a folder using forward reading only
-        /// </summary>
-        /// <param name="filename">Filename for one cabinet in the set, if available</param>
-        /// <param name="folder">Folder containing the blocks to decompress</param>
-        /// <param name="folderIndex">Index of the folder in the cabinet</param>
-        /// <returns>Array of data blocks on success, null otherwise</returns>
-        /// TODO: Remove once Serialization is updated
-        private static CFDATA[]? GetDataBlocksForward(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? filename, CFFOLDER? folder, int folderIndex)
-            => GetDataBlocks(cabArchive, filename, folder, folderIndex, skipPrev: true, skipNext: false);
 
         /// <summary>
         /// Get all files for the current folder index
