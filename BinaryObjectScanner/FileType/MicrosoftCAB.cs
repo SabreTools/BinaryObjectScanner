@@ -250,6 +250,9 @@ namespace BinaryObjectScanner.FileType
             if (dataBlocks == null || dataBlocks.Length == 0)
                 return null;
 
+            // Get the compression type
+            var compressionType = GetCompressionType(folder!);
+
             // Setup decompressors
             var mszip = SabreTools.Compression.MSZIP.Decompressor.Create();
             //uint quantumWindowBits = (uint)(((ushort)folder.CompressionType >> 8) & 0x1f);
@@ -262,8 +265,6 @@ namespace BinaryObjectScanner.FileType
                 if (db?.CompressedData == null)
                     continue;
 
-                // Get the compression type
-                var compressionType = GetCompressionType(folder!);
                 switch (compressionType)
                 {
                     // Uncompressed data
