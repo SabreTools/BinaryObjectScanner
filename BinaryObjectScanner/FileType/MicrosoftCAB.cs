@@ -189,12 +189,8 @@ namespace BinaryObjectScanner.FileType
             if (blockStream == null || blockStream.Length == 0)
                 return;
 
-            // Ensure files
-            var files = GetFiles(cabArchive, folderIndex);
-            if (files.Length == 0)
-                return;
-
             // Loop through the files
+            var files = GetFiles(cabArchive, folderIndex);
             for (int i = 0; i < files.Length; i++)
             {
                 var file = files[i];
