@@ -33,8 +33,14 @@ namespace BinaryObjectScanner.FileType
 #if NET20 || NET35 || !WINX86
             // TODO: Remove once Serialization is updated
 
-            // Get a wrapper for the set
-            var current = OpenSet(file);
+            // Get a wrapper for the set, if possible
+            SabreTools.Serialization.Wrappers.MicrosoftCabinet? current;
+            if (File.Exists(file))
+                current = OpenSet(file);
+            else
+                current = SabreTools.Serialization.Wrappers.MicrosoftCabinet.Create(stream);
+
+            // Validate the header exists
             if (current?.Model?.Header == null)
                 return false;
 
