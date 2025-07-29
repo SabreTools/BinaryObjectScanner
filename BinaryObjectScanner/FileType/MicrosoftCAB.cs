@@ -197,32 +197,45 @@ namespace BinaryObjectScanner.FileType
             // Loop through the files
             for (int i = 0; i < files.Length; i++)
             {
-                try
-                {
-                    var compressedFile = files[i];
-                    blockStream.Seek(compressedFile.FolderStartOffset, SeekOrigin.Begin);
-                    byte[] fileData = blockStream.ReadBytes((int)compressedFile.FileSize);
+                var file = files[i];
+                ExtractFile(outDir, blockStream, file, includeDebug);
+            }
+        }
 
-                    // Ensure directory separators are consistent
-                    string fileName = compressedFile.Name!;
-                    if (Path.DirectorySeparatorChar == '\\')
-                        fileName = fileName.Replace('/', '\\');
-                    else if (Path.DirectorySeparatorChar == '/')
-                        fileName = fileName.Replace('\\', '/');
+        /// <summary>
+        /// Extract the contents of a single file
+        /// </summary>
+        /// <param name="outDir">Path to the output directory</param>
+        /// <param name="blockStream">Stream representing the uncompressed block data</param>
+        /// <param name="file">File information</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// TODO: Remove once Serialization is updated
+        private static void ExtractFile(string outDir, Stream blockStream, CFFILE file, bool includeDebug)
+        {
+            try
+            {
+                blockStream.Seek(file.FolderStartOffset, SeekOrigin.Begin);
+                byte[] fileData = blockStream.ReadBytes((int)file.FileSize);
 
-                    string tempFile = Path.Combine(outDir, fileName);
-                    var directoryName = Path.GetDirectoryName(tempFile);
-                    if (directoryName != null && !Directory.Exists(directoryName))
-                        Directory.CreateDirectory(directoryName);
+                // Ensure directory separators are consistent
+                string fileName = file.Name!;
+                if (Path.DirectorySeparatorChar == '\\')
+                    fileName = fileName.Replace('/', '\\');
+                else if (Path.DirectorySeparatorChar == '/')
+                    fileName = fileName.Replace('\\', '/');
 
-                    using var of = File.OpenWrite(tempFile);
-                    of.Write(fileData, 0, fileData.Length);
-                    of.Flush();
-                }
-                catch (Exception ex)
-                {
-                    if (includeDebug) Console.WriteLine(ex);
-                }
+                string tempFile = Path.Combine(outDir, fileName);
+                var directoryName = Path.GetDirectoryName(tempFile);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                    Directory.CreateDirectory(directoryName);
+
+                using var of = File.OpenWrite(tempFile);
+                of.Write(fileData, 0, fileData.Length);
+                of.Flush();
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
             }
         }
 
