@@ -8,7 +8,6 @@ The following non-project libraries (or ports thereof) are used for file handlin
 
 - [LessIO](https://github.com/activescott/LessIO) - Used by libmspack4n for IO handling
 - [libmspack4n](https://github.com/activescott/libmspack4n) MS-CAB extraction [Unused in .NET Framework 2.0/3.5, non-Windows, and non-x86 builds due to Windows-specific libraries]
-- [OpenMcdf](https://github.com/ironfede/openmcdf) - MSI extraction
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Framework 2.0/3.5/4.0, non-Windows, and non-x86 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
@@ -40,7 +39,6 @@ Binary Object Scanner strives to have both full compatibility for scanning acros
 - **bzip2 archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **gzip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **MS-CAB** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
-- **MSI** - Extraction is only supported on .NET Framework 4.0 and higher due to `OpenMcdf` support limitations
 - **MoPaQ** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
 - **PKZIP and derived files (ZIP, etc.)** - Extraction is only supported on .NET Framework 4.6.2 and higher
 - **RAR archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
@@ -202,7 +200,7 @@ Below is a list of container formats that are supported in some way:
 | BD+ SVM | Yes | Yes | N/A | |
 | BFPK custom archive format | Yes | Yes | Yes | |
 | bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
-| Compound File Binary (CFB) | Yes* | Yes | Yes | Via `OpenMcdf`, only CFB common pieces printable |
+| Compound File Binary (CFB) | Yes* | Yes | Yes | Only CFB common pieces printable |
 | gzip archive | No | Yes | Yes | Via `SharpCompress` |
 | Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
 | Half-Life Level (BSP) | Yes | Yes | Yes | |
