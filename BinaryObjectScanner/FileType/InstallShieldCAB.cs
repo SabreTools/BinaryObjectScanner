@@ -71,22 +71,20 @@ namespace BinaryObjectScanner.FileType
                         if (!cabfile.HeaderList.FileIsValid(i))
                             continue;
 
-                        string tempFile;
-                        try
-                        {
-                            string? filename = cabfile.HeaderList.GetFileName(i);
-                            tempFile = Path.Combine(outDir, filename ?? string.Empty);
-                        }
-                        catch
-                        {
-                            tempFile = Path.Combine(outDir, $"BAD_FILENAME{i}");
-                        }
+                        // Ensure directory separators are consistent
+                        string filename = cabfile.HeaderList.GetFileName(i) ?? $"BAD_FILENAME{i}";
+                        if (Path.DirectorySeparatorChar == '\\')
+                            filename = filename.Replace('/', '\\');
+                        else if (Path.DirectorySeparatorChar == '/')
+                            filename = filename.Replace('\\', '/');
 
-                        var directoryName = Path.GetDirectoryName(tempFile);
+                        // Ensure the full output directory exists
+                        filename = Path.Combine(outDir, filename);
+                        var directoryName = Path.GetDirectoryName(filename);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
 
-                        cabfile.FileSave(i, tempFile);
+                        cabfile.FileSave(i, filename);
                     }
                     catch (Exception ex)
                     {

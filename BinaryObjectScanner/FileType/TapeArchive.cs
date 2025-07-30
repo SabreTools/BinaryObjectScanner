@@ -54,12 +54,20 @@ namespace BinaryObjectScanner.FileType
                         if (!entry.IsComplete)
                             continue;
 
-                        string tempFile = Path.Combine(outDir, entry.Key);
-                        var directoryName = Path.GetDirectoryName(tempFile);
+                        // Ensure directory separators are consistent
+                        string filename = entry.Key;
+                        if (Path.DirectorySeparatorChar == '\\')
+                            filename = filename.Replace('/', '\\');
+                        else if (Path.DirectorySeparatorChar == '/')
+                            filename = filename.Replace('\\', '/');
+
+                        // Ensure the full output directory exists
+                        filename = Path.Combine(outDir, filename);
+                        var directoryName = Path.GetDirectoryName(filename);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
 
-                        entry.WriteToFile(tempFile);
+                        entry.WriteToFile(filename);
                     }
                     catch (Exception ex)
                     {

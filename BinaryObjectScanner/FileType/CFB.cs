@@ -66,13 +66,21 @@ namespace BinaryObjectScanner.FileType
                             decoded = decoded.Replace(c, '_');
                         }
 
-                        string tempFile = Path.Combine(outDir, decoded);
-                        var directoryName = Path.GetDirectoryName(tempFile);
+                        // Ensure directory separators are consistent
+                        if (Path.DirectorySeparatorChar == '\\')
+                            decoded = decoded.Replace('/', '\\');
+                        else if (Path.DirectorySeparatorChar == '/')
+                            decoded = decoded.Replace('\\', '/');
+
+                        // Ensure the full output directory exists
+                        decoded = Path.Combine(outDir, decoded);
+                        var directoryName = Path.GetDirectoryName(decoded);
                         if (directoryName != null && !Directory.Exists(directoryName))
                             Directory.CreateDirectory(directoryName);
 
-                        using Stream fs = File.OpenWrite(tempFile);
+                        using Stream fs = File.OpenWrite(decoded);
                         fs.Write(strData, 0, strData.Length);
+                        fs.Flush();
                     }
                     catch (Exception ex)
                     {

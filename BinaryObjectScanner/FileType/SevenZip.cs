@@ -65,13 +65,13 @@ namespace BinaryObjectScanner.FileType
             return false;
 #endif
         }
-        
+
 #if NET462_OR_GREATER || NETCOREAPP
         /// <summary>
         /// Extraction method for non-solid archives. This iterates over each entry in the archive to extract every 
         /// file individually, in order to extract all valid files from the archive.
         /// </summary>
-        private bool ExtractNonSolid(SevenZipArchive sevenZip, string outDir, bool includeDebug) 
+        private static bool ExtractNonSolid(SevenZipArchive sevenZip, string outDir, bool includeDebug)
         {
             foreach (var entry in sevenZip.Entries)
             {
@@ -89,12 +89,20 @@ namespace BinaryObjectScanner.FileType
                     if (!entry.IsComplete)
                         continue;
 
-                    string tempFile = Path.Combine(outDir, entry.Key);
-                    var directoryName = Path.GetDirectoryName(tempFile);
+                    // Ensure directory separators are consistent
+                    string filename = entry.Key;
+                    if (Path.DirectorySeparatorChar == '\\')
+                        filename = filename.Replace('/', '\\');
+                    else if (Path.DirectorySeparatorChar == '/')
+                        filename = filename.Replace('\\', '/');
+
+                    // Ensure the full output directory exists
+                    filename = Path.Combine(outDir, filename);
+                    var directoryName = Path.GetDirectoryName(filename);
                     if (directoryName != null && !Directory.Exists(directoryName))
                         Directory.CreateDirectory(directoryName);
 
-                    entry.WriteToFile(tempFile);
+                    entry.WriteToFile(filename);
                 }
                 catch (Exception ex)
                 {
@@ -103,24 +111,24 @@ namespace BinaryObjectScanner.FileType
             }
             return true;
         }
-        
+
         /// <summary>
         /// Extraction method for solid archives. Uses ExtractAllEntries because extraction for solid archives must be
         /// done sequentially, and files beyond a corrupted point in a solid archive will be unreadable anyways.
         /// </summary>
-        private bool ExtractSolid(SevenZipArchive sevenZip, string outDir, bool includeDebug)
+        private static bool ExtractSolid(SevenZipArchive sevenZip, string outDir, bool includeDebug)
         {
             try
             {
                 if (!Directory.Exists(outDir))
                     Directory.CreateDirectory(outDir);
-                    
+
                 sevenZip.WriteToDirectory(outDir, new ExtractionOptions()
                 {
                     ExtractFullPath = true,
-                    Overwrite = true, 
+                    Overwrite = true,
                 });
-                    
+
             }
             catch (Exception ex)
             {

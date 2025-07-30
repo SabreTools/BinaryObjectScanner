@@ -34,13 +34,23 @@ namespace BinaryObjectScanner.FileType
                 // Try opening the stream
                 using var xzFile = new XZStream(stream);
 
-                // Create the output file path
-                Directory.CreateDirectory(outDir);
-                string tempFile = Path.Combine(outDir, Guid.NewGuid().ToString());
+                // Ensure directory separators are consistent
+                string filename = Guid.NewGuid().ToString();
+                if (Path.DirectorySeparatorChar == '\\')
+                    filename = filename.Replace('/', '\\');
+                else if (Path.DirectorySeparatorChar == '/')
+                    filename = filename.Replace('\\', '/');
+
+                // Ensure the full output directory exists
+                filename = Path.Combine(outDir, filename);
+                var directoryName = Path.GetDirectoryName(filename);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                    Directory.CreateDirectory(directoryName);
 
                 // Extract the file
-                using FileStream fs = File.OpenWrite(tempFile);
+                using FileStream fs = File.OpenWrite(filename);
                 xzFile.CopyTo(fs);
+                fs.Flush();
 
                 return true;
             }
