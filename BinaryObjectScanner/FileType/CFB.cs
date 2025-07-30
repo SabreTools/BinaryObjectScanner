@@ -99,6 +99,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
+        /// TODO: Remove when serialization updated
         private static string? DecodeStreamName(string input)
         {
             if (input == null)
@@ -148,6 +149,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
+        /// TODO: Remove when serialization updated
         private static int Mime2Utf(int x)
         {
             if (x < 10)
