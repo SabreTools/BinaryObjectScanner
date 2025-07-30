@@ -43,6 +43,8 @@ namespace BinaryObjectScanner.FileType
             return true;
         }
 
+        #region REMOVE WHEN SERIALIZATION UPDATED
+
         /// <summary>
         /// Extract all files from the CFB to an output directory
         /// </summary>
@@ -169,7 +171,6 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
-        /// TODO: Remove when serialization updated
         private static string? DecodeStreamName(string input)
         {
             if (input == null)
@@ -219,7 +220,6 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <remarks>Adapted from LibMSI</remarks>
-        /// TODO: Remove when serialization updated
         private static int Mime2Utf(int x)
         {
             if (x < 10)
@@ -232,8 +232,6 @@ namespace BinaryObjectScanner.FileType
                 return '.';
             return '_';
         }
-
-        #region REMOVE WHEN SERIALIZATION UPDATED
 
         /// <inheritdoc/>
         private static Binary? Deserialize(Stream? data)
