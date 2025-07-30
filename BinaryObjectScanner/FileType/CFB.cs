@@ -280,28 +280,31 @@ namespace BinaryObjectScanner.FileType
                 var currentSector = (SectorNumber?)fileHeader.FirstDIFATSectorLocation;
                 for (int i = 0; i < fileHeader.NumberOfDIFATSectors; i++)
                 {
-                    // If we have a readable sector
-                    if (currentSector <= SectorNumber.MAXREGSECT)
+                    // If we have an unreadable sector
+                    if (currentSector > SectorNumber.MAXREGSECT)
+                        break;
+
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
+
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
+
+                    // Try to parse the sectors
+                    var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
+                    if (sectorNumbers == null)
+                        return null;
+
+                    // Add all but the last sector number that was parsed
+                    for (int j = 0; j < sectorNumbers.Length - 1; j++)
                     {
-                        // Get the new next sector information
-                        long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
-                        if (sectorOffset < 0 || sectorOffset >= data.Length)
-                            return null;
-
-                        // Seek to the next sector
-                        data.Seek(sectorOffset, SeekOrigin.Begin);
-
-                        // Try to parse the sectors
-                        var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
-                        if (sectorNumbers == null)
-                            return null;
-
-                        // Add the sector shifts
-                        difatSectors.AddRange(sectorNumbers);
+                        difatSectors.Add(sectorNumbers[j]);
                     }
 
-                    // Get the next sector from the DIFAT
-                    currentSector = difatSectors[i];
+                    // Get the next sector from the final sector number
+                    currentSector = sectorNumbers[sectorNumbers.Length - 1];
                 }
 
                 // Assign the DIFAT sectors table
@@ -320,25 +323,25 @@ namespace BinaryObjectScanner.FileType
                     // Get the next sector from the DIFAT
                     currentSector = binary.DIFATSectorNumbers[i];
 
-                    // If we have a readable sector
-                    if (currentSector <= SectorNumber.MAXREGSECT)
-                    {
-                        // Get the new next sector information
-                        long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
-                        if (sectorOffset < 0 || sectorOffset >= data.Length)
-                            return null;
+                    // If we have an unreadable sector
+                    if (currentSector > SectorNumber.MAXREGSECT)
+                        break;
 
-                        // Seek to the next sector
-                        data.Seek(sectorOffset, SeekOrigin.Begin);
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
 
-                        // Try to parse the sectors
-                        var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
-                        if (sectorNumbers == null)
-                            return null;
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
 
-                        // Add the sector shifts
-                        fatSectors.AddRange(sectorNumbers);
-                    }
+                    // Try to parse the sectors
+                    var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
+                    if (sectorNumbers == null)
+                        return null;
+
+                    // Add the sector shifts
+                    fatSectors.AddRange(sectorNumbers);
                 }
 
                 // Assign the FAT sectors table
@@ -355,25 +358,25 @@ namespace BinaryObjectScanner.FileType
                 currentSector = (SectorNumber)fileHeader.FirstMiniFATSectorLocation;
                 for (int i = 0; i < fileHeader.NumberOfMiniFATSectors; i++)
                 {
-                    // If we have a readable sector
-                    if (currentSector <= SectorNumber.MAXREGSECT)
-                    {
-                        // Get the new next sector information
-                        long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
-                        if (sectorOffset < 0 || sectorOffset >= data.Length)
-                            return null;
+                    // If we have an unreadable sector
+                    if (currentSector > SectorNumber.MAXREGSECT)
+                        break;
 
-                        // Seek to the next sector
-                        data.Seek(sectorOffset, SeekOrigin.Begin);
+                    // Get the new next sector information
+                    long sectorOffset = (long)((long)(currentSector + 1) * Math.Pow(2, fileHeader.SectorShift));
+                    if (sectorOffset < 0 || sectorOffset >= data.Length)
+                        return null;
 
-                        // Try to parse the sectors
-                        var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
-                        if (sectorNumbers == null)
-                            return null;
+                    // Seek to the next sector
+                    data.Seek(sectorOffset, SeekOrigin.Begin);
 
-                        // Add the sector shifts
-                        miniFatSectors.AddRange(sectorNumbers);
-                    }
+                    // Try to parse the sectors
+                    var sectorNumbers = ParseSectorNumbers(data, fileHeader.SectorShift);
+                    if (sectorNumbers == null)
+                        return null;
+
+                    // Add the sector shifts
+                    miniFatSectors.AddRange(sectorNumbers);
 
                     // Get the next sector from the FAT
                     currentSector = binary.FATSectorNumbers[(int)currentSector];
