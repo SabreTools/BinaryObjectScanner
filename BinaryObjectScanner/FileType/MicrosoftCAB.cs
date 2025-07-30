@@ -191,7 +191,7 @@ namespace BinaryObjectScanner.FileType
             bool includeDebug)
         {
             // Decompress the blocks, if possible
-            using var blockStream = DecompressBlocks(cabArchive, filename, folder, folderIndex);
+            using var blockStream = DecompressBlocks(cabArchive, filename, folder, folderIndex, includeDebug);
             if (blockStream == null || blockStream.Length == 0)
                 return;
 
@@ -247,9 +247,10 @@ namespace BinaryObjectScanner.FileType
         /// <param name="filename">Filename for one cabinet in the set, if available</param>
         /// <param name="folder">Folder containing the blocks to decompress</param>
         /// <param name="folderIndex">Index of the folder in the cabinet</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Stream representing the decompressed data on success, null otherwise</returns>
         /// TODO: Remove once Serialization is updated
-        private static Stream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? filename, CFFOLDER? folder, int folderIndex)
+        private static Stream? DecompressBlocks(SabreTools.Serialization.Wrappers.MicrosoftCabinet cabArchive, string? filename, CFFOLDER? folder, int folderIndex, bool includeDebug)
         {
             // Ensure data blocks
             var dataBlocks = GetDataBlocks(cabArchive, filename, folder, folderIndex);
@@ -275,7 +276,7 @@ namespace BinaryObjectScanner.FileType
                 byte[] data = compressionType switch
                 {
                     CompressionType.TYPE_NONE => db.CompressedData,
-                    CompressionType.TYPE_MSZIP => DecompressMSZIPBlock(folderIndex, mszip, i, db),
+                    CompressionType.TYPE_MSZIP => DecompressMSZIPBlock(folderIndex, mszip, i, db, includeDebug),
 
                     // TODO: Unsupported
                     CompressionType.TYPE_QUANTUM => [],
@@ -300,28 +301,39 @@ namespace BinaryObjectScanner.FileType
         /// <param name="mszip">MS-ZIP decompressor with persistent state</param>
         /// <param name="blockIndex">Index of the block within the folder</param>
         /// <param name="block">Block data to be used for decompression</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Byte array representing the decompressed data, empty on error</returns>
         /// TODO: Remove once Serialization is updated
-        private static byte[] DecompressMSZIPBlock(int folderIndex, SabreTools.Compression.MSZIP.Decompressor mszip, int blockIndex, CFDATA block)
+        private static byte[] DecompressMSZIPBlock(int folderIndex, SabreTools.Compression.MSZIP.Decompressor mszip, int blockIndex, CFDATA block, bool includeDebug)
         {
             // Ignore invalid blocks
             if (block.CompressedData == null)
                 return [];
 
-            // Decompress to a temporary stream
-            using var stream = new MemoryStream();
-            mszip.CopyTo(block.CompressedData, stream);
-
-            // Pad to the correct size but throw a warning about this
-            if (stream.Length < block.UncompressedSize)
+            try
             {
-                Console.Error.WriteLine($"Data block {blockIndex} in folder {folderIndex} had mismatching sizes. Expected: {block.UncompressedSize}, Got: {stream.Length}");
-                byte[] padding = new byte[block.UncompressedSize - stream.Length];
-                stream.Write(padding, 0, padding.Length);
-            }
+                // Decompress to a temporary stream
+                using var stream = new MemoryStream();
+                mszip.CopyTo(block.CompressedData, stream);
 
-            // Return the byte array data
-            return stream.ToArray();
+                // Pad to the correct size but throw a warning about this
+                if (stream.Length < block.UncompressedSize)
+                {
+                    if (includeDebug)
+                        Console.Error.WriteLine($"Data block {blockIndex} in folder {folderIndex} had mismatching sizes. Expected: {block.UncompressedSize}, Got: {stream.Length}");
+
+                    byte[] padding = new byte[block.UncompressedSize - stream.Length];
+                    stream.Write(padding, 0, padding.Length);
+                }
+
+                // Return the byte array data
+                return stream.ToArray();
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.WriteLine(ex);
+                return [];
+            }
         }
 
         /// <summary>
