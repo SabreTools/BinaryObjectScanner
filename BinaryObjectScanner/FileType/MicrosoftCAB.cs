@@ -269,14 +269,29 @@ namespace BinaryObjectScanner.FileType
             for (int i = 0; i < dataBlocks.Length; i++)
             {
                 var db = dataBlocks[i];
-                if (db?.CompressedData == null)
+                if (db.CompressedData == null)
                     continue;
+
+                // Get the data to be processed
+                byte[] blockData = db.CompressedData;
+
+                // If the block is continued, append
+                if (db.UncompressedSize == 0)
+                {
+                    var nextBlock = dataBlocks[i++];
+                    byte[]? nextData = nextBlock.CompressedData;
+                    if (nextData == null)
+                        continue;
+
+                    blockData = [.. blockData, .. nextData];
+                    db.UncompressedSize = nextBlock.UncompressedSize;
+                }
 
                 // Get the uncompressed data block
                 byte[] data = compressionType switch
                 {
-                    CompressionType.TYPE_NONE => db.CompressedData,
-                    CompressionType.TYPE_MSZIP => DecompressMSZIPBlock(folderIndex, mszip, i, db, includeDebug),
+                    CompressionType.TYPE_NONE => blockData,
+                    CompressionType.TYPE_MSZIP => DecompressMSZIPBlock(folderIndex, mszip, i, db, blockData, includeDebug),
 
                     // TODO: Unsupported
                     CompressionType.TYPE_QUANTUM => [],
@@ -301,20 +316,17 @@ namespace BinaryObjectScanner.FileType
         /// <param name="mszip">MS-ZIP decompressor with persistent state</param>
         /// <param name="blockIndex">Index of the block within the folder</param>
         /// <param name="block">Block data to be used for decompression</param>
+        /// <param name="blockData">Block data to be used for decompression</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Byte array representing the decompressed data, empty on error</returns>
         /// TODO: Remove once Serialization is updated
-        private static byte[] DecompressMSZIPBlock(int folderIndex, SabreTools.Compression.MSZIP.Decompressor mszip, int blockIndex, CFDATA block, bool includeDebug)
+        private static byte[] DecompressMSZIPBlock(int folderIndex, SabreTools.Compression.MSZIP.Decompressor mszip, int blockIndex, CFDATA block, byte[] blockData, bool includeDebug)
         {
-            // Ignore invalid blocks
-            if (block.CompressedData == null)
-                return [];
-
             try
             {
                 // Decompress to a temporary stream
                 using var stream = new MemoryStream();
-                mszip.CopyTo(block.CompressedData, stream);
+                mszip.CopyTo(blockData, stream);
 
                 // Pad to the correct size but throw a warning about this
                 if (stream.Length < block.UncompressedSize)
