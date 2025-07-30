@@ -57,7 +57,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | AegiSoft License Manager | True | True | |
 | Alpha-DVD | False | True | Unconfirmed¹ |
 | Alpha-ROM | True | False | |
-| Armadillo | True | False | | 
+| Armadillo | True | False | |
 | Bitpool | False | True | |
 | ByteShield | True | True | |
 | C-Dilla License Management Solution / CD-Secure / CD-Compress | True | True | |

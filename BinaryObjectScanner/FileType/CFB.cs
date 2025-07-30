@@ -29,6 +29,9 @@ namespace BinaryObjectScanner.FileType
         {
             // Get a wrapper for the CFB
             var model = Deserialize(stream);
+            if (model == null)
+                return false;
+
             var cfb = new SabreTools.Serialization.Wrappers.CFB(model, stream);
             if (cfb?.Model == null)
                 return false;
