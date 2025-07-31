@@ -1,8 +1,5 @@
 ﻿using System;
 using System.IO;
-#if NET35_OR_GREATER || NETCOREAPP
-using System.Linq;
-#endif
 using BinaryObjectScanner;
 
 namespace ProtectionScan
@@ -107,25 +104,22 @@ namespace ProtectionScan
                 Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
             }
 
-#if NET20
-            var keysArr = new string[protections.Keys.Count];
-            protections.Keys.CopyTo(keysArr, 0);
-            Array.Sort(keysArr);
-            foreach (string key in keysArr)
-#else
-            foreach (string key in protections.Keys.OrderBy(k => k))
-#endif
+            // Sort the keys for consistent output
+            string[] keys = [.. protections.Keys];
+            Array.Sort(keys);
+
+            // Loop over all keys
+            foreach (string key in keys)
             {
                 // Skip over files with no protection
                 if (protections[key] == null || protections[key].Count == 0)
                     continue;
 
-#if NET20
+                // Sort the detected protections for consistent output
                 string[] fileProtections = [.. protections[key]];
                 Array.Sort(fileProtections);
-#else
-                string[] fileProtections = [.. protections[key].OrderBy(p => p)];
-#endif
+
+                // Format and output the line
                 string line = $"{key}: {string.Join(", ", fileProtections)}";
                 Console.WriteLine(line);
                 sw?.WriteLine(line);
