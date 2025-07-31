@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.FileType
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
-        internal ProtectionDictionary DetectDict(Stream stream,
+        public ProtectionDictionary DetectDict(Stream stream,
             string file,
             Func<string, ProtectionDictionary>? getProtections,
             bool includeDebug)
