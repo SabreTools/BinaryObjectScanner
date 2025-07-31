@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET35_OR_GREATER || NETCOREAPP
-using System.Linq;
-#endif
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
@@ -239,20 +236,15 @@ namespace BinaryObjectScanner.FileType
                 return protections;
 
             // If we have any extractable packers
-#if NET20
             var extractables = new List<IExtractableExecutable<T>>();
             foreach (var check in checks)
             {
-                if (check == null || check is not IExtractableExecutable<T> extractable)
+                if (check is not IExtractableExecutable<T> extractable)
                     continue;
 
                 extractables.Add(extractable);
             }
-#else
-            var extractables = checks
-                .Where(c => c is IExtractableExecutable<T>)
-                .Select(c => c as IExtractableExecutable<T>);
-#endif
+
             extractables.IterateWithAction(extractable =>
             {
                 var subProtections = PerformExtractableCheck(extractable!, file, exe, getProtections, includeDebug);

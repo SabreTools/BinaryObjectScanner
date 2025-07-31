@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private string? GetInternalVersion(string firstMatchedString, IEnumerable<string>? files)
+        private string? GetInternalVersion(string firstMatchedString, List<string>? files)
         {
             try
             {

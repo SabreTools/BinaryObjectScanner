@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET35_OR_GREATER || NETCOREAPP
-using System.Linq;
-#endif
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
@@ -271,7 +268,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        internal static string? Get00000001TMPVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string? Get00000001TMPVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -296,7 +293,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
-        internal static string? GetSecdrvFileSizeVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string? GetSecdrvFileSizeVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -787,7 +784,6 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get distinct and order
-#if NET20
             var distinct = new List<string>();
             foreach (string result in resultsList)
             {
@@ -797,9 +793,6 @@ namespace BinaryObjectScanner.Protection
 
             distinct.Sort();
             return distinct;
-#else
-            return [.. resultsList.Distinct().OrderBy(s => s)];
-#endif
         }
     }
 }

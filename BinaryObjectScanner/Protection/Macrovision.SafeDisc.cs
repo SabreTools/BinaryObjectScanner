@@ -462,7 +462,7 @@ namespace BinaryObjectScanner.Protection
             return "Unknown Version (Report this to us on GitHub)";
         }
 
-        internal static string GetSafeDiscCLCD16Version(string firstMatchedString, IEnumerable<string>? files)
+        internal static string GetSafeDiscCLCD16Version(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -495,7 +495,7 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        internal static string GetSafeDiscCLCD32Version(string firstMatchedString, IEnumerable<string>? files)
+        internal static string GetSafeDiscCLCD32Version(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -693,7 +693,7 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        internal static string GetSafeDiscCLOKSPLVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string GetSafeDiscCLOKSPLVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -786,7 +786,7 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        internal static string GetSafeDiscDPlayerXVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string GetSafeDiscDPlayerXVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -857,7 +857,7 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        internal static string GetSafeDiscDrvmgtVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string GetSafeDiscDrvmgtVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -1023,7 +1023,7 @@ namespace BinaryObjectScanner.Protection
             };
         }
 
-        internal static string? GetSafeDiscSplshVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string? GetSafeDiscSplshVersion(string firstMatchedString, List<string>? files)
         {
             // Special thanks to TheMechasaur for combing through known SafeDisc games and cataloging the splash-screens used in them, making these detections possible. 
 

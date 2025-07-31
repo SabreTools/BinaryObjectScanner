@@ -183,7 +183,7 @@ namespace BinaryObjectScanner.Protection
             return Encoding.ASCII.GetString(sectionContent, position + 76, 4);
         }
 
-        private static string? GetVersion16Bit(string firstMatchedString, IEnumerable<string>? files)
+        private static string? GetVersion16Bit(string firstMatchedString, List<string>? files)
         {
             if (!File.Exists(firstMatchedString))
                 return string.Empty;
