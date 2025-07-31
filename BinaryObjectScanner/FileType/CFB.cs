@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            ExtractAll(cfb, outDir);
+            ExtractAll(cfb, outDir, includeDebug);
 
             return true;
         }
@@ -49,8 +49,9 @@ namespace BinaryObjectScanner.FileType
         /// Extract all files from the CFB to an output directory
         /// </summary>
         /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>True if all files extracted, false otherwise</returns>
-        private static bool ExtractAll(SabreTools.Serialization.Wrappers.CFB? cfb, string outputDirectory)
+        private static bool ExtractAll(SabreTools.Serialization.Wrappers.CFB? cfb, string outputDirectory, bool includeDebug)
         {
             // If we have no files
             if (cfb?.Model?.DirectoryEntries == null || cfb.Model.DirectoryEntries.Length == 0)
@@ -60,7 +61,7 @@ namespace BinaryObjectScanner.FileType
             bool allExtracted = true;
             for (int i = 0; i < cfb.Model.DirectoryEntries.Length; i++)
             {
-                allExtracted &= ExtractEntry(cfb, i, outputDirectory);
+                allExtracted &= ExtractEntry(cfb, i, outputDirectory, includeDebug);
             }
 
             return allExtracted;
@@ -71,8 +72,9 @@ namespace BinaryObjectScanner.FileType
         /// </summary>
         /// <param name="index">Entry index to extract</param>
         /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>True if the file extracted, false otherwise</returns>
-        private static bool ExtractEntry(SabreTools.Serialization.Wrappers.CFB cfb, int index, string outputDirectory)
+        private static bool ExtractEntry(SabreTools.Serialization.Wrappers.CFB cfb, int index, string outputDirectory, bool includeDebug)
         {
             // If we have no entries
             if (cfb?.Model?.DirectoryEntries == null || cfb.Model.DirectoryEntries.Length == 0)
@@ -131,8 +133,9 @@ namespace BinaryObjectScanner.FileType
                 fs.Write(data);
                 fs.Flush();
             }
-            catch
+            catch (Exception ex)
             {
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
 
