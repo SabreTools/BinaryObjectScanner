@@ -2,7 +2,7 @@
 
 namespace BinaryObjectScanner
 {
-    public delegate TResult Func<in T, out TResult>(T arg);
+    internal delegate TResult Func<in T, out TResult>(T arg);
 }
 
 #endif
