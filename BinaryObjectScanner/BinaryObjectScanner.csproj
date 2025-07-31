@@ -72,7 +72,6 @@
 
     <ItemGroup>
         <PackageReference Include="MinAsyncBridge" Version="0.12.4" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))" />
-        <PackageReference Include="Net35.Actions" Version="1.4.0" Condition="$(TargetFramework.StartsWith(`net2`))" />
         <PackageReference Include="SabreTools.Compression" Version="0.6.3" />
         <PackageReference Include="SabreTools.Hashing" Version="1.4.2" />
         <PackageReference Include="SabreTools.IO" Version="1.6.3" />
