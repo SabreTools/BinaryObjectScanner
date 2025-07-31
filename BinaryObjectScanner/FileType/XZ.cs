@@ -56,7 +56,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
 #else

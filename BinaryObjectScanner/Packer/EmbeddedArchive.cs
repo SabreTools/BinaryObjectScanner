@@ -110,7 +110,7 @@ namespace BinaryObjectScanner.Packer
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
         }
@@ -165,7 +165,7 @@ namespace BinaryObjectScanner.Packer
                     }
                     catch (Exception ex)
                     {
-                        if (includeDebug) Console.WriteLine(ex);
+                        if (includeDebug) Console.Error.WriteLine(ex);
                     }
                 }
 
@@ -173,7 +173,7 @@ namespace BinaryObjectScanner.Packer
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
         }

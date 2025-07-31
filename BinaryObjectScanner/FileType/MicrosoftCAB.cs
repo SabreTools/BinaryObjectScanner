@@ -56,7 +56,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
 
@@ -89,7 +89,7 @@ namespace BinaryObjectScanner.FileType
                     }
                     catch (Exception ex)
                     {
-                        if (includeDebug) Console.WriteLine(ex);
+                        if (includeDebug) Console.Error.WriteLine(ex);
                     }
                 }
 
@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
 #endif
@@ -169,7 +169,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return false;
             }
         }
@@ -237,7 +237,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
             }
         }
 
@@ -349,7 +349,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
                 return [];
             }
         }

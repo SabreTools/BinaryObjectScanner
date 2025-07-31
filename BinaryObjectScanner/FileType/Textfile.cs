@@ -178,7 +178,7 @@ namespace BinaryObjectScanner.FileType
             }
             catch (Exception ex)
             {
-                if (includeDebug) Console.WriteLine(ex);
+                if (includeDebug) Console.Error.WriteLine(ex);
             }
 
             // Only return if there are protections found
