@@ -57,7 +57,7 @@ namespace BinaryObjectScanner.Protection
             // https://dbox.tools/titles/pc/46450FA4/ 
             // https://dbox.tools/titles/pc/4F430FA0/ 
             // https://dbox.tools/titles/pc/53450FA1/
-            name = pex.GetVersionInfoString(key: "TradeName");
+            name = pex.TradeName;
             if (name.OptionalContains("FL ProActive")) 
                 return $"FrontLine ProActive";
 
