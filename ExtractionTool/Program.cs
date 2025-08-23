@@ -90,6 +90,16 @@ namespace ExtractionTool
 
             // Get the file type
             WrapperType ft = WrapperFactory.GetFileType(magic, extension);
+            var wrapper = WrapperFactory.CreateWrapper(ft, stream);
+            if (wrapper == null)
+            {
+                Console.WriteLine("Could not determine the file format, skipping...");
+                Console.WriteLine();
+                return;
+            }
+
+            // Create the output directory
+            Directory.CreateDirectory(outputDirectory);
 
             // 7-zip
             if (ft == WrapperType.SevenZip)
@@ -109,27 +119,21 @@ namespace ExtractionTool
             }
 
             // BFPK archive
-            else if (ft == WrapperType.BFPK)
+            else if (wrapper is SabreTools.Serialization.Wrappers.BFPK bfpk)
             {
-                // Build the BFPK information
                 Console.WriteLine("Extracting BFPK contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var bfpk = new BFPK();
-                bfpk.Extract(stream, file, outputDirectory, includeDebug: true);
+                bfpk.ExtractAll(outputDirectory);
             }
 
             // BSP
-            else if (ft == WrapperType.BSP)
+            else if (wrapper is SabreTools.Serialization.Wrappers.BSP bsp)
             {
-                // Build the BSP information
                 Console.WriteLine("Extracting BSP contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var bsp = new BSP();
-                bsp.Extract(stream, file, outputDirectory, includeDebug: true);
+                bsp.ExtractAllLumps(outputDirectory);
             }
 
             // bzip2
@@ -223,15 +227,12 @@ namespace ExtractionTool
             }
 
             // GCF
-            else if (ft == WrapperType.GCF)
+            else if (wrapper is SabreTools.Serialization.Wrappers.GCF gcf)
             {
-                // Build the GCF information
                 Console.WriteLine("Extracting GCF contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var gcf = new GCF();
-                gcf.Extract(stream, file, outputDirectory, includeDebug: true);
+                gcf.ExtractAll(outputDirectory);
             }
 
             // gzip
@@ -247,15 +248,12 @@ namespace ExtractionTool
             }
 
             // InstallShield Archive V3 (Z)
-            else if (ft == WrapperType.InstallShieldArchiveV3)
+            else if (wrapper is SabreTools.Serialization.Wrappers.InstallShieldArchiveV3 isv3)
             {
-                // Build the InstallShield Archive V3 information
                 Console.WriteLine("Extracting InstallShield Archive V3 contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var isav3 = new InstallShieldArchiveV3();
-                isav3.Extract(stream, file, outputDirectory, includeDebug: true);
+                isv3.ExtractAll(outputDirectory);
             }
 
             // IS-CAB archive
@@ -271,39 +269,30 @@ namespace ExtractionTool
             }
 
             // LZ-compressed file, KWAJ variant
-            else if (ft == WrapperType.LZKWAJ)
+            else if (wrapper is SabreTools.Serialization.Wrappers.LZKWAJ kwaj)
             {
-                // Build the KWAJ
                 Console.WriteLine("Extracting LZ-compressed file, KWAJ variant contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var lz = new LZKWAJ();
-                lz.Extract(stream, file, outputDirectory, includeDebug: true);
+                kwaj.Extract(outputDirectory);
             }
 
             // LZ-compressed file, QBasic variant
-            else if (ft == WrapperType.LZQBasic)
+            else if (wrapper is SabreTools.Serialization.Wrappers.LZQBasic qbasic)
             {
-                // Build the QBasic
                 Console.WriteLine("Extracting LZ-compressed file, QBasic variant contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var lz = new LZQBasic();
-                lz.Extract(stream, file, outputDirectory, includeDebug: true);
+                qbasic.Extract(outputDirectory);
             }
 
             // LZ-compressed file, SZDD variant
-            else if (ft == WrapperType.LZSZDD)
+            else if (wrapper is SabreTools.Serialization.Wrappers.LZSZDD szdd)
             {
-                // Build the SZDD
                 Console.WriteLine("Extracting LZ-compressed file, SZDD variant contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var lz = new LZSZDD();
-                lz.Extract(stream, file, outputDirectory, includeDebug: true);
+                szdd.Extract(Path.GetFileName(file), outputDirectory);
             }
 
             // Microsoft Cabinet archive
@@ -339,27 +328,21 @@ namespace ExtractionTool
             }
 
             // PAK
-            else if (ft == WrapperType.PAK)
+            else if (wrapper is SabreTools.Serialization.Wrappers.PAK pak)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting PAK contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var pak = new PAK();
-                pak.Extract(stream, file, outputDirectory, includeDebug: true);
+                pak.ExtractAll(outputDirectory);
             }
 
             // PFF
-            else if (ft == WrapperType.PFF)
+            else if (wrapper is SabreTools.Serialization.Wrappers.PFF pff)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting PFF contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var pff = new PFF();
-                pff.Extract(stream, file, outputDirectory, includeDebug: true);
+                pff.ExtractAll(outputDirectory);
             }
 
             // PKZIP
@@ -409,15 +392,12 @@ namespace ExtractionTool
             }
 
             // SGA
-            else if (ft == WrapperType.SGA)
+            else if (wrapper is SabreTools.Serialization.Wrappers.SGA sga)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting SGA contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var sga = new SGA();
-                sga.Extract(stream, file, outputDirectory, includeDebug: true);
+                sga.ExtractAll(outputDirectory);
             }
 
             // Tape Archive
@@ -438,39 +418,30 @@ namespace ExtractionTool
             }
 
             // VBSP
-            else if (ft == WrapperType.VBSP)
+            else if (wrapper is SabreTools.Serialization.Wrappers.VBSP vbsp)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting VBSP contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var vbsp = new VBSP();
-                vbsp.Extract(stream, file, outputDirectory, includeDebug: true);
+                vbsp.ExtractAllLumps(outputDirectory);
             }
 
             // VPK
-            else if (ft == WrapperType.VPK)
+            else if (wrapper is SabreTools.Serialization.Wrappers.VPK vpk)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting VPK contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var vpk = new VPK();
-                vpk.Extract(stream, file, outputDirectory, includeDebug: true);
+                vpk.ExtractAll(outputDirectory);
             }
 
             // WAD3
-            else if (ft == WrapperType.WAD)
+            else if (wrapper is SabreTools.Serialization.Wrappers.WAD3 wad)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting WAD3 contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var wad = new WAD3();
-                wad.Extract(stream, file, outputDirectory, includeDebug: true);
+                wad.ExtractAllLumps(outputDirectory);
             }
 
             // xz
@@ -491,15 +462,12 @@ namespace ExtractionTool
             }
 
             // XZP
-            else if (ft == WrapperType.XZP)
+            else if (wrapper is SabreTools.Serialization.Wrappers.XZP xzp)
             {
-                // Build the archive information
                 Console.WriteLine("Extracting XZP contents");
                 Console.WriteLine();
 
-                // Extract using the FileType
-                var xzp = new XZP();
-                xzp.Extract(stream, file, outputDirectory, includeDebug: true);
+                xzp.ExtractAll(outputDirectory);
             }
 
             // Everything else
