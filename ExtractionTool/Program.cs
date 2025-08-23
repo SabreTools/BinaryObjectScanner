@@ -88,6 +88,8 @@ namespace ExtractionTool
                 return;
             }
 
+            // TODO: When extractable wrapper types are exposed to this, use them instead of guessing
+
             // Get the file type
             WrapperType ft = WrapperFactory.GetFileType(magic, extension);
             var wrapper = WrapperFactory.CreateWrapper(ft, stream);
