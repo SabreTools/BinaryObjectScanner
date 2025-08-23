@@ -170,47 +170,56 @@ namespace ExtractionTool
 
                 // Extract using the FileType
                 var exe = WrapperFactory.CreateExecutableWrapper(stream);
-                if (exe == null || exe is not SabreTools.Serialization.Wrappers.PortableExecutable pex)
-                {
-                    Console.WriteLine("Only portable executables are supported");
-                    Console.WriteLine();
+                if (exe == null)
                     return;
+
+                // New Executable
+                if (exe is SabreTools.Serialization.Wrappers.NewExecutable nex)
+                {
+                    // Wise Installer
+                    var wi = new WiseInstaller();
+                    if (wi.CheckExecutable(file, nex, includeDebug) != null)
+                        wi.Extract(file, nex, outputDirectory, includeDebug);
                 }
 
-                // 7-zip SFX
-                var szsfx = new SevenZipSFX();
-                if (szsfx.CheckExecutable(file, pex, includeDebug) != null)
-                    szsfx.Extract(file, pex, outputDirectory, includeDebug);
+                // Portable Executable
+                else if (exe is SabreTools.Serialization.Wrappers.PortableExecutable pex)
+                {
+                    // 7-zip SFX
+                    var szsfx = new SevenZipSFX();
+                    if (szsfx.CheckExecutable(file, pex, includeDebug) != null)
+                        szsfx.Extract(file, pex, outputDirectory, includeDebug);
 
-                // CExe
-                var ce = new CExe();
-                if (ce.CheckExecutable(file, pex, includeDebug) != null)
-                    ce.Extract(file, pex, outputDirectory, includeDebug);
+                    // CExe
+                    var ce = new CExe();
+                    if (ce.CheckExecutable(file, pex, includeDebug) != null)
+                        ce.Extract(file, pex, outputDirectory, includeDebug);
 
-                // Embedded archives
-                var ea = new EmbeddedArchive();
-                if (ea.CheckExecutable(file, pex, includeDebug) != null)
-                    ea.Extract(file, pex, outputDirectory, includeDebug);
+                    // Embedded archives
+                    var ea = new EmbeddedArchive();
+                    if (ea.CheckExecutable(file, pex, includeDebug) != null)
+                        ea.Extract(file, pex, outputDirectory, includeDebug);
 
-                // Embedded executables
-                var ee = new EmbeddedExecutable();
-                if (ee.CheckExecutable(file, pex, includeDebug) != null)
-                    ee.Extract(file, pex, outputDirectory, includeDebug);
+                    // Embedded executables
+                    var ee = new EmbeddedExecutable();
+                    if (ee.CheckExecutable(file, pex, includeDebug) != null)
+                        ee.Extract(file, pex, outputDirectory, includeDebug);
 
-                // WinRAR SFX
-                var wrsfx = new WinRARSFX();
-                if (wrsfx.CheckExecutable(file, pex, includeDebug) != null)
-                    wrsfx.Extract(file, pex, outputDirectory, includeDebug);
+                    // WinRAR SFX
+                    var wrsfx = new WinRARSFX();
+                    if (wrsfx.CheckExecutable(file, pex, includeDebug) != null)
+                        wrsfx.Extract(file, pex, outputDirectory, includeDebug);
 
-                // WinZip SFX
-                var wzsfx = new WinZipSFX();
-                if (wzsfx.CheckExecutable(file, pex, includeDebug) != null)
-                    wzsfx.Extract(file, pex, outputDirectory, includeDebug);
+                    // WinZip SFX
+                    var wzsfx = new WinZipSFX();
+                    if (wzsfx.CheckExecutable(file, pex, includeDebug) != null)
+                        wzsfx.Extract(file, pex, outputDirectory, includeDebug);
 
-                // Wise Installer
-                var wi = new WiseInstaller();
-                if (wi.CheckExecutable(file, pex, includeDebug) != null)
-                    wi.Extract(file, pex, outputDirectory, includeDebug);
+                    // Wise Installer
+                    var wi = new WiseInstaller();
+                    if (wi.CheckExecutable(file, pex, includeDebug) != null)
+                        wi.Extract(file, pex, outputDirectory, includeDebug);
+                }
             }
 
             // GCF
