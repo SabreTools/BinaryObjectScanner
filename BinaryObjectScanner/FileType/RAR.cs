@@ -57,9 +57,6 @@ namespace BinaryObjectScanner.FileType
                         rarFile = RarArchive.Open(file!, readerOptions);
                 }
 
-                if (!rarFile.IsComplete)
-                    return false;
-
                 if (rarFile.IsSolid)
                     return ExtractSolid(rarFile, outDir, includeDebug);
                 else
