@@ -103,7 +103,7 @@ namespace ExtractionTool
             // Create the output directory
             Directory.CreateDirectory(outputDirectory);
 
-            // 7-zip
+            // 7-zip -- Implementation moved to Serialization
             if (ft == WrapperType.SevenZip)
             {
                 // Build the archive information
@@ -138,7 +138,7 @@ namespace ExtractionTool
                 bsp.ExtractAllLumps(outputDirectory);
             }
 
-            // bzip2
+            // bzip2 -- Implementation moved to Serialization
             else if (ft == WrapperType.BZip2)
             {
                 // Build the bzip2 information
@@ -150,7 +150,7 @@ namespace ExtractionTool
                 bzip2.Extract(stream, file, outputDirectory, includeDebug: true);
             }
 
-            // CFB
+            // CFB -- Implementation moved to Serialization
             else if (ft == WrapperType.CFB)
             {
                 // Build the installer information
@@ -167,7 +167,7 @@ namespace ExtractionTool
 #endif
             }
 
-            // Executable
+            // Executable -- Implementation partially moved to Serialization
             else if (ft == WrapperType.Executable)
             {
                 // Build the executable information
@@ -237,7 +237,7 @@ namespace ExtractionTool
                 gcf.ExtractAll(outputDirectory);
             }
 
-            // gzip
+            // gzip -- Implementation moved to Serialization
             else if (ft == WrapperType.GZIP)
             {
                 // Build the gzip information
@@ -347,7 +347,7 @@ namespace ExtractionTool
                 pff.ExtractAll(outputDirectory);
             }
 
-            // PKZIP
+            // PKZIP -- Implementation moved to Serialization
             else if (ft == WrapperType.PKZIP)
             {
                 // Build the archive information
@@ -364,7 +364,7 @@ namespace ExtractionTool
 #endif
             }
 
-            // Quantum
+            // Quantum -- Implementation moved to Serialization
             else if (ft == WrapperType.Quantum)
             {
                 // Build the archive information
@@ -376,7 +376,7 @@ namespace ExtractionTool
                 quantum.Extract(stream, file, outputDirectory, includeDebug: true);
             }
 
-            // RAR
+            // RAR -- Implementation moved to Serialization
             else if (ft == WrapperType.RAR)
             {
                 // Build the archive information
@@ -402,7 +402,7 @@ namespace ExtractionTool
                 sga.ExtractAll(outputDirectory);
             }
 
-            // Tape Archive
+            // Tape Archive -- Implementation moved to Serialization
             else if (ft == WrapperType.TapeArchive)
             {
                 // Build the archive information
@@ -446,7 +446,7 @@ namespace ExtractionTool
                 wad.ExtractAllLumps(outputDirectory);
             }
 
-            // xz
+            // xz -- Implementation moved to Serialization
             else if (ft == WrapperType.XZ)
             {
                 // Build the xz information
