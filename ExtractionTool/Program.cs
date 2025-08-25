@@ -297,7 +297,7 @@ namespace ExtractionTool
                 szdd.Extract(Path.GetFileName(file), outputDirectory);
             }
 
-            // Microsoft Cabinet archive
+            // Microsoft Cabinet archive -- Implementation partially moved to Serialization
             else if (ft == WrapperType.MicrosoftCAB)
             {
                 // Build the cabinet information
