@@ -93,12 +93,12 @@ namespace ExtractionTool
             // Get the file type
             WrapperType ft = WrapperFactory.GetFileType(magic, extension);
             var wrapper = WrapperFactory.CreateWrapper(ft, stream);
-            if (wrapper == null)
-            {
-                Console.WriteLine("Could not determine the file format, skipping...");
-                Console.WriteLine();
-                return;
-            }
+            // if (wrapper == null)
+            // {
+            //     Console.WriteLine("Could not determine the file format, skipping...");
+            //     Console.WriteLine();
+            //     return;
+            // }
 
             // Create the output directory
             Directory.CreateDirectory(outputDirectory);

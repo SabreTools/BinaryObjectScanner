@@ -50,13 +50,13 @@ namespace BinaryObjectScanner.FileType
                 {
                     // Find all file parts
                     FileInfo[] parts = [.. ArchiveFactory.GetFileParts(new FileInfo(file))];
+                    
+                    // If there are multiple parts
+                    if (parts.Length > 1)
+                        sevenZip = SevenZipArchive.Open(parts, readerOptions);
 
                     // Try to read the file path if no entries are found
-                    if (sevenZip.Entries.Count == 0)
-                        sevenZip = SevenZipArchive.Open(parts, readerOptions);
-                    
-                    // If there's any multipart items, try reading the file as well
-                    else if (parts.Length > 1)
+                    else if (sevenZip.Entries.Count == 0)
                         sevenZip = SevenZipArchive.Open(parts, readerOptions);
                 }
 

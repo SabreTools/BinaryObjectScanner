@@ -51,12 +51,12 @@ namespace BinaryObjectScanner.FileType
                     // Find all file parts
                     FileInfo[] parts = [.. ArchiveFactory.GetFileParts(new FileInfo(file))];
 
-                    // Try to read the file path if no entries are found
-                    if (rarFile.Entries.Count == 0)
+                    // If there are multiple parts
+                    if (parts.Length > 1)
                         rarFile = RarArchive.Open(parts, readerOptions);
 
-                    // If there's any multipart items, try reading the file as well
-                    else if (parts.Length > 1)
+                    // Try to read the file path if no entries are found
+                    else if (rarFile.Entries.Count == 0)
                         rarFile = RarArchive.Open(parts, readerOptions);
                 }
 
