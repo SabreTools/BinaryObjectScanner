@@ -1,9 +1,3 @@
 [submodule "BinaryObjectScanner/_EXTERNAL/stormlibsharp"]
 	path = BinaryObjectScanner/_EXTERNAL/stormlibsharp
 	url = https://github.com/robpaveza/stormlibsharp.git
-[submodule "BinaryObjectScanner/_EXTERNAL/libmspack4n"]
-	path = BinaryObjectScanner/_EXTERNAL/libmspack4n
-	url = https://github.com/activescott/libmspack4n.git
-[submodule "BinaryObjectScanner/_EXTERNAL/LessIO"]
-	path = BinaryObjectScanner/_EXTERNAL/LessIO
-	url = https://github.com/activescott/LessIO.git

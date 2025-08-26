@@ -41,9 +41,6 @@
         <DefaultItemExcludes>
             $(DefaultItemExcludes);
             **\AssemblyInfo.cs;
-            _EXTERNAL\LessIO\src\LessIO.Tests\**;
-            _EXTERNAL\libmspack4n\lib\**;
-            _EXTERNAL\libmspack4n\libmspack4ntest\**;
             _EXTERNAL\stormlibsharp\lib\**;
             _EXTERNAL\stormlibsharp\src\TestConsole\**
         </DefaultItemExcludes>

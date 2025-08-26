@@ -297,14 +297,12 @@ namespace ExtractionTool
                 szdd.Extract(Path.GetFileName(file), outputDirectory);
             }
 
-            // Microsoft Cabinet archive -- Implementation partially moved to Serialization
+            // Microsoft Cabinet archive -- Implementation moved to Serialization
             else if (ft == WrapperType.MicrosoftCAB)
             {
                 // Build the cabinet information
                 Console.WriteLine("Extracting MS-CAB contents");
-#if NET20 || NET35 || !WINX86
-                Console.WriteLine("WARNING: LZX compression not supported so some files may be skipped!");
-#endif
+                Console.WriteLine("WARNING: LZX and Quantum compression schemes are not supported so some files may be skipped!");
                 Console.WriteLine();
 
                 // Extract using the FileType

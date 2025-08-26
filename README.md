@@ -6,8 +6,6 @@ C# protection, packer, and archive scanning library. This currently compiles as 
 
 The following non-project libraries (or ports thereof) are used for file handling:
 
-- [LessIO](https://github.com/activescott/LessIO) - Used by libmspack4n for IO handling
-- [libmspack4n](https://github.com/activescott/libmspack4n) MS-CAB extraction [Unused in .NET Framework 2.0/3.5, non-Windows, and non-x86 builds due to Windows-specific libraries]
 - [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
 - [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Framework 2.0/3.5/4.0, non-Windows, and non-x86 builds due to Windows-specific libraries]
 - [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
@@ -212,7 +210,7 @@ Below is a list of container formats that are supported in some way:
 | InstallShield CAB | Yes | Yes | Yes | Via `UnshieldSharp` |
 | Linear Executable | No | No | No | Skeleton only |
 | Link Data Security encrypted file | No | Yes | No | |
-| Microsoft cabinet file | Yes | Yes | Yes* | Via `libmspack4n`, Windows x86 only, .NET Framework 4.5.2 and above |
+| Microsoft cabinet file | Yes | Yes | Yes* | Does not support LZX or Quantum compression |
 | Microsoft LZ-compressed files | No | Yes | Yes | |
 | MoPaQ game data archive (MPQ) | No | Yes | Yes* | Via `StormLibSharp`, Windows x86 only, .NET Framework 4.5.2 and above |
 | MS-DOS Executable | Yes | Yes | No | Incomplete |

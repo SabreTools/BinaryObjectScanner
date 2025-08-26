@@ -2,11 +2,7 @@
 using System.IO;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
-#if (NET40_OR_GREATER || NETCOREAPP) && WINX86
-using LibMSPackN;
-#else
 using SabreTools.Models.MicrosoftCabinet;
-#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -30,7 +26,6 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-#if NET20 || NET35 || !WINX86
             // TODO: Remove once Serialization is updated
 
             // Get a wrapper for the set, if possible
@@ -61,46 +56,6 @@ namespace BinaryObjectScanner.FileType
             }
 
             return true;
-#else
-            try
-            {
-                if (!File.Exists(file))
-                    return false;
-
-                // Loop over each entry
-                var cabArchive = new MSCabinet(file);
-                foreach (var compressedFile in cabArchive.GetFiles())
-                {
-                    try
-                    {
-                        // Ensure directory separators are consistent
-                        string fileName = compressedFile.Filename;
-                        if (Path.DirectorySeparatorChar == '\\')
-                            fileName = fileName.Replace('/', '\\');
-                        else if (Path.DirectorySeparatorChar == '/')
-                            fileName = fileName.Replace('\\', '/');
-                        
-                        string tempFile = Path.Combine(outDir, fileName);
-                        var directoryName = Path.GetDirectoryName(tempFile);
-                        if (directoryName != null && !Directory.Exists(directoryName))
-                            Directory.CreateDirectory(directoryName);
-
-                        compressedFile.ExtractTo(tempFile);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (includeDebug) Console.Error.WriteLine(ex);
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-                return false;
-            }
-#endif
         }
 
         /// <summary>
