@@ -196,17 +196,17 @@ namespace ExtractionTool
                     if (szsfx.CheckExecutable(file, pex, includeDebug) != null)
                         szsfx.Extract(file, pex, outputDirectory, includeDebug);
 
-                    // CExe
+                    // CExe -- Implementation moved to Serialization
                     var ce = new CExe();
                     if (ce.CheckExecutable(file, pex, includeDebug) != null)
                         ce.Extract(file, pex, outputDirectory, includeDebug);
 
-                    // Embedded archives
+                    // Embedded archives -- Implementation moved to Serialization
                     var ea = new EmbeddedArchive();
                     if (ea.CheckExecutable(file, pex, includeDebug) != null)
                         ea.Extract(file, pex, outputDirectory, includeDebug);
 
-                    // Embedded executables
+                    // Embedded executables -- Implementation moved to Serialization
                     var ee = new EmbeddedExecutable();
                     if (ee.CheckExecutable(file, pex, includeDebug) != null)
                         ee.Extract(file, pex, outputDirectory, includeDebug);

@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-#if NET20 || NET35 || !WINX86
+#if NET20 || NET35 || !(WINX86 || WINX64)
             // Not supported for old .NET due to feature requirements
             // Not supported in non-Windows builds due to DLL requirements
             return false;
