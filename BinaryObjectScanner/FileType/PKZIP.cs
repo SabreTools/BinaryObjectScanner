@@ -48,14 +48,14 @@ namespace BinaryObjectScanner.FileType
                 if (!string.IsNullOrEmpty(file) && File.Exists(file!))
                 {
                     // Find all file parts
-                    var parts = ArchiveFactory.GetFileParts(new FileInfo(file));
+                    FileInfo[] parts = [.. ArchiveFactory.GetFileParts(new FileInfo(file))];
 
                     // Try to read the file path if no entries are found
                     if (zipFile.Entries.Count == 0)
                         zipFile = ZipArchive.Open(parts, readerOptions);
 
-                    // If there's any multipart items, try reading the file as well
-                    else if (!zipFile.IsComplete)
+                    // If there are multiple parts
+                    else if (parts.Length > 1)
                         zipFile = ZipArchive.Open(parts, readerOptions);
                 }
 
