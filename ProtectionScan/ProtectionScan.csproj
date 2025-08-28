@@ -33,11 +33,6 @@
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
             <TargetPath>CascLib.dll</TargetPath>
         </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\mspack.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <TargetPath>mspack.dll</TargetPath>
-        </ContentWithTargetPath>
         <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\StormLib.dll">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
