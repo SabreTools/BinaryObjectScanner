@@ -14,7 +14,6 @@ This is a guide for any developers who wish to research protections, implement n
 | `BinaryObjectScanner.Interfaces` | Namespace containing interface definitions for scanning and detection. |
 | `BinaryObjectScanner.Packer` | Namespace containing packer scanning definitions. |
 | `BinaryObjectScanner.Protection` | Namespace containing protection scanning definitions. |
-| `ExtractionTool` | Testing executable that allows for standalone testing of extraction features of the library. |
 | `ProtectionScan` | Testing executable that allows for standalone testing of protection detection features of the library. |
 
 ## Researching Protections

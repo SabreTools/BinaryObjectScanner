@@ -2,14 +2,9 @@
 
 [![Build and Test](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/SabreTools/BinaryObjectScanner/actions/workflows/build_and_test.yml)
 
-C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. Two reference applications called `ProtectionScan` and `ExtractionTool` are also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
+C# protection, packer, and archive scanning library. This currently compiles as a library so it can be used in any C# application. A reference application called `ProtectionScan` is also included to demonstrate the abilities of the library. For an example of a program implementing the library, see [MPF](https://github.com/SabreTools/MPF).
 
-The following non-project libraries (or ports thereof) are used for file handling:
-
-- [SharpCompress](https://github.com/adamhathcock/sharpcompress) - Common archive format extraction
-- [StormLibSharp](https://github.com/robpaveza/stormlibsharp) - MoPaQ extraction [Unused in .NET Framework 2.0/3.5/4.0, non-Windows, and non-x86 builds due to Windows-specific libraries]
-- [UnshieldSharp](https://github.com/mnadareski/UnshieldSharp) - InstallShield CAB extraction
-- [WiseUnpacker](https://github.com/mnadareski/WiseUnpacker) - Wise Installer extraction
+The former **ExtractionTool** application that was included is now included in the [SabreTools.Serialization repository](https://github.com/SabreTools/SabreTools.Serialization).
 
 The following projects have influenced this library:
 
@@ -17,7 +12,6 @@ The following projects have influenced this library:
 - [HLLibSharp](https://github.com/mnadareski/HLLibSharp) - Documentation around Valve package handling, including extraction.
 - [libbdplus](https://www.videolan.org/developers/libbdplus.html) - Documentation around the BD+ SVM files.
 - [libmspack](https://github.com/kyz/libmspack) - Documentation around the MS-CAB format and associated compression methods.
-- [NDecrypt](https://github.com/SabreTools/NDecrypt) - NDS (Nitro) and 3DS cart image file layouts and documentation, though not encrypt/decrypt.
 
 Please visit our sibling project, [DRML](https://github.com/TheRogueArchivist/DRML), the DRM Library for a more in-depth look at some of the protections detected.
 
@@ -35,12 +29,9 @@ Binary Object Scanner strives to have both full compatibility for scanning acros
 
 - **7-zip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **bzip2 archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
-- **gzip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
-- **MS-CAB** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
 - **MoPaQ** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
-- **PKZIP and derived files (ZIP, etc.)** - Extraction is only supported on .NET Framework 4.6.2 and higher
+- **PKZIP and derived files (ZIP, etc.)** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **RAR archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
-- **Tape archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **xz archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 
 ## Protections Detected
@@ -199,15 +190,15 @@ Below is a list of container formats that are supported in some way:
 | BFPK custom archive format | Yes | Yes | Yes | |
 | bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
 | Compound File Binary (CFB) | Yes* | Yes | Yes | Only CFB common pieces printable |
-| gzip archive | No | Yes | Yes | Via `SharpCompress` |
+| gzip archive | No | Yes | Yes | |
 | Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
 | Half-Life Level (BSP) | Yes | Yes | Yes | |
 | Half-Life Package File (PAK) | Yes | Yes | Yes | |
 | Half-Life Texture Package File (WAD3) | Yes | Yes | Yes | |
 | Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
 | INI configuration file | No | No | No | Used in other detections currently |
-| InstallShield Archive V3 (Z) | No | Yes | Yes | Via `UnshieldSharp` |
-| InstallShield CAB | Yes | Yes | Yes | Via `UnshieldSharp` |
+| InstallShield Archive V3 (Z) | No | Yes | Yes | |
+| InstallShield CAB | Yes | Yes | Yes | |
 | Linear Executable | No | No | No | Skeleton only |
 | Link Data Security encrypted file | No | Yes | No | |
 | Microsoft cabinet file | Yes | Yes | Yes* | Does not support LZX or Quantum compression |
@@ -226,7 +217,7 @@ Below is a list of container formats that are supported in some way:
 | RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
 | SGA game archive | Yes | Yes | Yes | |
 | StarForce Filesystem file (SFFS) | No | Yes | No | Skeleton only |
-| Tape archive (TAR) | No | Yes | Yes | Via `SharpCompress` |
+| Tape archive (TAR) | No | Yes | Yes | |
 | Valve Package File (VPK) | Yes | Yes | Yes | |
 | XBox Package File (XZP) | Yes | Yes | Yes | |
 | xz archive (XZ) | No | Yes | Yes | Via `SharpCompress` |
