@@ -73,9 +73,18 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Don't read entire file
-            var data = nex.ReadArbitraryRange();
-            if (data == null)
+            byte[]? data;
+            try
+            {
+                data = nex.ReadArbitraryRange();
+                if (data == null)
+                    return null;
+            }
+            catch
+            {
+                // Ignore errors reading ranges
                 return null;
+            }
 
             // TODO: Figure out what NE section this lives in
             var neMatchSets = new List<ContentMatchSet>

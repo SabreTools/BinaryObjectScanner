@@ -52,9 +52,18 @@ namespace BinaryObjectScanner.Protection
             }
 
             // TODO: Don't read entire file
-            var data = nex.ReadArbitraryRange();
-            if (data == null)
+            byte[]? data;
+            try
+            {
+                data = nex.ReadArbitraryRange();
+                if (data == null)
+                    return null;
+            }
+            catch
+            {
+                // Ignore errors reading ranges
                 return null;
+            }
 
             var neMatchSets = new List<ContentMatchSet>
             {

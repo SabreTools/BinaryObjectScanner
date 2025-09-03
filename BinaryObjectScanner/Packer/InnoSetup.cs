@@ -59,19 +59,27 @@ namespace BinaryObjectScanner.Packer
 
             // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
-            var data = nex.ReadArbitraryRange();
-            if (data != null)
+
+            byte[]? data;
+            try
             {
-                var matchers = new List<ContentMatchSet>
+                data = nex.ReadArbitraryRange();
+                if (data == null)
+                    return "Unknown 1.X";
+            }
+            catch
+            {
+                // Ignore errors reading ranges
+                return "Unknown 1.X";
+            }
+
+            var matchers = new List<ContentMatchSet>
                 {
                     // "rDlPtS02" + (char)0x87 + "eVx"
                     new(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";
-            }
-
-            return "Unknown 1.X";
+            return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";
         }
     }
 }
