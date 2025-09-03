@@ -1,4 +1,3 @@
-using System;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
@@ -16,18 +15,20 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Have this return all detected things, not just the first
+            byte[]? overlayData = null;
+            try { overlayData = nex.OverlayData; } catch { }
 
             // Check the overlay, if it exists
-            if (nex.OverlayData != null && nex.OverlayData.Length > 0)
+            if (overlayData != null && overlayData.Length > 0)
             {
                 // Set the output variables
                 int overlayOffset = 0;
 
                 // Only process the overlay if it is recognized
-                for (; overlayOffset < 0x100 && overlayOffset < nex.OverlayData.Length - 0x10; overlayOffset++)
+                for (; overlayOffset < 0x100 && overlayOffset < overlayData.Length - 0x10; overlayOffset++)
                 {
                     int temp = overlayOffset;
-                    byte[] overlaySample = nex.OverlayData.ReadBytes(ref temp, 0x10);
+                    byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x10);
 
                     if (overlaySample.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                     {
@@ -68,7 +69,7 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C]))
                     {
                         // 7-zip SFX script -- ";!@Install" to ";!@InstallEnd@!"
-                        overlayOffset = nex.OverlayData.FirstPosition([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C, 0x45, 0x6E, 0x64, 0x40, 0x21]);
+                        overlayOffset = overlayData.FirstPosition([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C, 0x45, 0x6E, 0x64, 0x40, 0x21]);
                         if (overlayOffset > -1)
                             return "Embedded 7-Zip Archive";
                     }
