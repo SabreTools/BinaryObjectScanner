@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            isv3.ExtractAll(outDir);
+            isv3.Extract(outDir, includeDebug);
 
             return true;
         }

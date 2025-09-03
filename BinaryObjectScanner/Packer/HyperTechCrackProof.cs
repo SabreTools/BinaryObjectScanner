@@ -9,7 +9,7 @@ namespace BinaryObjectScanner.Packer
     // https://www.reddit.com/r/riseofincarnates/comments/m3vbnm/subreddit_revival_does_anyone_still_have_rise_of/
     // https://steamcommunity.com/app/310950/discussions/0/4224890554455490819/
     // https://github.com/horsicq/Detect-It-Easy/blob/63a1aa8bb23ca02d8a7fd5936db8dbc5c5d52dea/db/PE/HyperTech%20Crackproof.2.sg
-    public class HyperTechCrackProof : IExtractableExecutable<PortableExecutable>
+    public class HyperTechCrackProof : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -23,12 +23,6 @@ namespace BinaryObjectScanner.Packer
                 return "HyperTech CrackProof";
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

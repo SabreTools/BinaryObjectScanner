@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Extract all files
             Directory.CreateDirectory(outDir);
-            pff.ExtractAll(outDir);
+            pff.Extract(outDir, includeDebug);
 
             return true;
         }

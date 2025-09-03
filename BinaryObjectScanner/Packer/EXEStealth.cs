@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class EXEStealth : IContentCheck, IExtractableExecutable<PortableExecutable>
+    public class EXEStealth : IContentCheck, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
@@ -61,12 +61,6 @@ namespace BinaryObjectScanner.Packer
                 return "EXE Stealth 2.76";
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

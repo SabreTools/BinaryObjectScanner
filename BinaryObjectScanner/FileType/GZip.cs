@@ -4,9 +4,9 @@ using BinaryObjectScanner.Interfaces;
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// bzip2 archive
+    /// gzip archive
     /// </summary>
-    public class BZip2 : IExtractable
+    public class GZip : IExtractable
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)
@@ -22,13 +22,13 @@ namespace BinaryObjectScanner.FileType
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
-            var bzip = SabreTools.Serialization.Wrappers.BZip2.Create(stream);
-            if (bzip == null)
+            var gcf = SabreTools.Serialization.Wrappers.GZip.Create(stream);
+            if (gcf == null)
                 return false;
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            bzip.Extract(outDir, includeDebug);
+            gcf.Extract(outDir, includeDebug);
 
             return true;
         }

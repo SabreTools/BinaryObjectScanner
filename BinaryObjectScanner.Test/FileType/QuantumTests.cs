@@ -40,29 +40,5 @@ namespace BinaryObjectScanner.Test.FileType
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
         }
-
-        [Fact]
-        public void ExtractAll_EmptyModel_False()
-        {
-            var model = new SabreTools.Models.Quantum.Archive();
-            var data = new MemoryStream();
-            var item = new SabreTools.Serialization.Wrappers.Quantum(model, data);
-            string outputDirectory = string.Empty;
-
-            bool actual = Quantum.ExtractAll(item, outputDirectory);
-            Assert.False(actual);
-        }
-
-        [Fact]
-        public void ExtractFile_EmptyModel_False()
-        {
-            var model = new SabreTools.Models.Quantum.Archive();
-            var data = new MemoryStream();
-            var item = new SabreTools.Serialization.Wrappers.Quantum(model, data);
-            string outputDirectory = string.Empty;
-
-            bool actual = Quantum.ExtractFile(item, 0, outputDirectory);
-            Assert.False(actual);
-        }
     }
 }

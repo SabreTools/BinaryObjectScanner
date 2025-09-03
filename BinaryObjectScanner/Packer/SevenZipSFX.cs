@@ -3,7 +3,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class SevenZipSFX : IExtractableExecutable<PortableExecutable>
+    public class SevenZipSFX : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -35,13 +35,6 @@ namespace BinaryObjectScanner.Packer
                 return "7-Zip SFX";
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            var sevenZip = new FileType.SevenZip();
-            return sevenZip.Extract(file, outDir, lookForHeader: true, includeDebug);
         }
     }
 }

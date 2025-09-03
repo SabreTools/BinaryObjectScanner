@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class UPX : IExtractableExecutable<PortableExecutable>
+    public class UPX : IExecutableCheck<PortableExecutable>
     {
         private static readonly Regex _oldUpxVersionMatch = new Regex(@"\$Id: UPX (.*?) Copyright \(C\)", RegexOptions.Compiled);
 
@@ -54,12 +54,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
 
         public static string GetVersion(string file, byte[] fileContent, List<int> positions)

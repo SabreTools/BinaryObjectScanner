@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Add extraction, which is possible but the only tools available that can
     // do this seem to be Universal Extractor 2 and InstallExplorer (https://totalcmd.net/plugring/InstallExplorer.html)
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class SetupFactory : IExtractableExecutable<PortableExecutable>
+    public class SetupFactory : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -30,12 +30,6 @@ namespace BinaryObjectScanner.Packer
             // "Setup Factory is a trademark of Indigo Rose Corporation"
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
 
         private static string GetVersion(PortableExecutable pex)

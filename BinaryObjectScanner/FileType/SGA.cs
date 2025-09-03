@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            sga.ExtractAll(outDir);
+            sga.Extract(outDir, includeDebug);
 
             return true;
         }

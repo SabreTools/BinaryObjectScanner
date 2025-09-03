@@ -1,9 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if NET462_OR_GREATER || NETCOREAPP
-using SharpCompress.Compressors.Xz;
-#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -25,43 +21,16 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-#if NET462_OR_GREATER || NETCOREAPP
-            if (stream == null || !stream.CanRead)
+            // Create the wrapper
+            var xz = SabreTools.Serialization.Wrappers.XZ.Create(stream);
+            if (xz == null)
                 return false;
 
-            try
-            {
-                // Try opening the stream
-                using var xzFile = new XZStream(stream);
+            // Loop through and extract all files
+            Directory.CreateDirectory(outDir);
+            xz.Extract(outDir, includeDebug);
 
-                // Ensure directory separators are consistent
-                string filename = Guid.NewGuid().ToString();
-                if (Path.DirectorySeparatorChar == '\\')
-                    filename = filename.Replace('/', '\\');
-                else if (Path.DirectorySeparatorChar == '/')
-                    filename = filename.Replace('\\', '/');
-
-                // Ensure the full output directory exists
-                filename = Path.Combine(outDir, filename);
-                var directoryName = Path.GetDirectoryName(filename);
-                if (directoryName != null && !Directory.Exists(directoryName))
-                    Directory.CreateDirectory(directoryName);
-
-                // Extract the file
-                using FileStream fs = File.OpenWrite(filename);
-                xzFile.CopyTo(fs);
-                fs.Flush();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-                return false;
-            }
-#else
-            return false;
-#endif
+            return true;
         }
     }
 }

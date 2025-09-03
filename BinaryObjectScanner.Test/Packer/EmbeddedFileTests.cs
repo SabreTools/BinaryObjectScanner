@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BinaryObjectScanner.Test.Packer
 {
-    public class ShrinkerTests
+    public class EmbeddedFileTests
     {
         [Fact]
         public void CheckPortableExecutableTest()
@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Test.Packer
             Stream source = new MemoryStream();
             SabreTools.Serialization.Wrappers.PortableExecutable pex = new(model, source);
 
-            var checker = new Shrinker();
+            var checker = new EmbeddedFile();
             string? actual = checker.CheckExecutable(file, pex, includeDebug: false);
             Assert.Null(actual);
         }

@@ -5,7 +5,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Better version detection - https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     // TODO: Add extraction
-    public class PECompact : IExtractableExecutable<PortableExecutable>
+    public class PECompact : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -32,12 +32,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

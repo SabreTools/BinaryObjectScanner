@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Packer
     // Created by IndigoRose (creators of Setup Factory), primarily to be used to create autorun menus for various media.
     // Official website: https://www.autoplay.org/
     // TODO: Add extraction
-    public class AutoPlayMediaStudio : IExtractableExecutable<PortableExecutable>
+    public class AutoPlayMediaStudio : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -23,12 +23,6 @@ namespace BinaryObjectScanner.Packer
             //     return $"AutoPlay Media Studio {GetVersion(pex)}";
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
 
         private static string GetVersion(PortableExecutable pex)

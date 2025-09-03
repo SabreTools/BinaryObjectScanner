@@ -5,7 +5,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class WinZipSFX : IExtractableExecutable<NewExecutable>, IExtractableExecutable<PortableExecutable>
+    public class WinZipSFX : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -55,23 +55,6 @@ namespace BinaryObjectScanner.Packer
         }
 
         // TODO: Find a way to generically detect 2.X versions and improve exact version detection for SFX PE versions bundled with WinZip 11+
-
-        /// <inheritdoc/>
-        public bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug)
-            => Extract(file, outDir, includeDebug);
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-            => Extract(file, outDir, includeDebug);
-
-        /// <summary>
-        /// Handle common extraction between executable types
-        /// </summary>
-        public static bool Extract(string file, string outDir, bool includeDebug)
-        {
-            var pkzip = new FileType.PKZIP();
-            return pkzip.Extract(file, outDir, lookForHeader: true, includeDebug);
-        }
 
         /// <summary>
         /// Get the version from the NE header value combinations

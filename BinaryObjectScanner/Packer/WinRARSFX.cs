@@ -3,7 +3,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    public class WinRARSFX : IExtractableExecutable<PortableExecutable>
+    public class WinRARSFX : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -16,13 +16,6 @@ namespace BinaryObjectScanner.Packer
                 return "WinRAR SFX";
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            var rar = new FileType.RAR();
-            return rar.Extract(file, outDir, lookForHeader: true, includeDebug);
         }
     }
 }

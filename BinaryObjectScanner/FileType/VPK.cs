@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            vpk.ExtractAll(outDir);
+            vpk.Extract(outDir, includeDebug);
 
             return true;
         }

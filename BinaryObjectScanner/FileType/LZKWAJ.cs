@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            kwaj.Extract(outDir);
+            kwaj.Extract(outDir, includeDebug);
 
             return true;
         }

@@ -4,7 +4,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
-    public class NSIS : IExtractableExecutable<PortableExecutable>
+    public class NSIS : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -22,12 +22,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

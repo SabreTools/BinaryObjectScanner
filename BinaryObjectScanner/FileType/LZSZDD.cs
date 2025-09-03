@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            szdd.Extract(Path.GetFileName(file), outDir);
+            szdd.Extract(outDir, includeDebug);
 
             return true;
         }

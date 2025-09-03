@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            qbasic.Extract(outDir);
+            qbasic.Extract(outDir, includeDebug);
 
             return true;
         }

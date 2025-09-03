@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            xzp.ExtractAll(outDir);
+            xzp.Extract(outDir, includeDebug);
 
             return true;
         }

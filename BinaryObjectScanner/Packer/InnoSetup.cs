@@ -8,8 +8,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InnoSetup : IExtractableExecutable<NewExecutable>,
-        IExtractableExecutable<PortableExecutable>
+    public class InnoSetup : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
@@ -50,18 +49,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug)
-        {
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
 
         private static string GetOldVersion(string file, NewExecutable nex)

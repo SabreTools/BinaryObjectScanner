@@ -149,8 +149,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | AutoPlay Media Studio | Yes | No | No | |
 | CExe | Yes | No | Yes | |
 | dotFuscator | Yes | No | No | |
-| Embedded Archive | Yes | No | Yes | Not technically a packer |
-| Embedded Executable | Yes | No | Yes | Not technically a packer |
+| Embedded File | Yes | No | Yes | Not technically a packer |
 | EXE Stealth | Yes | No | No | |
 | Gentee Installer | Yes | No | No | |
 | HyperTech CrackProof | Yes | No | No | |

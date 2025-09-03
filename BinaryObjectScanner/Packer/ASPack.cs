@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     // TODO: Research and add support for ASProtect. It seems to be an additional layer of protection for ASPack, making detecting it separately more difficult. 
-    public class ASPack : IExtractableExecutable<PortableExecutable>
+    public class ASPack : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -47,12 +47,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
 
         /// <summary>

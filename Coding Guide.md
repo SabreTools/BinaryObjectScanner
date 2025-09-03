@@ -378,10 +378,10 @@ Typed checks, such as `IExecutableCheck<T>` should always follow this order: `MS
 | --- | --- |
 | `BinaryObjectScanner` | Varies from file to file. |
 | `BinaryObjectScanner/FileType` | `IDetectable` implementations, `IExtractable` implementations, helper methods. |
-| `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, `IExtractableExecutable<T>` implementations, helper methods. |
+| `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, helper methods. |
 | `BinaryObjectScanner/Interfaces` | Methods ordered alphabetically. |
-| `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, `IExtractableExecutable<T>` implementations, helper methods. |
-| `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, `IExtractableExecutable<T>` implementations, helper methods. |
+| `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, helper methods. |
+| `BinaryObjectScanner/Protection` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, helper methods. |
 | `ProtectionScan` | New functionality should be added as a combination of a flag with a long and a short form, a new line in the help text, and a new method (if necessary). |
 
 If the project or directory you are looking for is not included in the above, please consider it to be outside the context of this document.

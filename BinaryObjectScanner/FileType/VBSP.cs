@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.FileType
 
             // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            vbsp.ExtractAllLumps(outDir);
+            vbsp.Extract(outDir, includeDebug);
 
             return true;
         }

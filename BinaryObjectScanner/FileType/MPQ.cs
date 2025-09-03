@@ -1,8 +1,5 @@
 ﻿using System.IO;
 using BinaryObjectScanner.Interfaces;
-#if (NET452_OR_GREATER || NETCOREAPP) && (WINX86 || WINX64)
-using StormLibSharp;
-#endif
 
 namespace BinaryObjectScanner.FileType
 {
@@ -21,73 +18,19 @@ namespace BinaryObjectScanner.FileType
             return Extract(fs, file, outDir, includeDebug);
         }
 
-        // TODO: Add stream opening support
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-#if NET20 || NET35 || !(WINX86 || WINX64)
-            // Not supported for old .NET due to feature requirements
-            // Not supported in non-Windows builds due to DLL requirements
-            return false;
-#else
-            try
-            {
-                if (!File.Exists(file))
-                    return false;
-
-                // Try to open the archive and listfile
-                var mpqArchive = new MpqArchive(file, FileAccess.Read);
-                string? listfile = null;
-                MpqFileStream listStream = mpqArchive.OpenFile("(listfile)");
-
-                // If we can't read the listfile, we just return
-                if (!listStream.CanRead)
-                    return false;
-
-                // Read the listfile in for processing
-                using (var sr = new StreamReader(listStream))
-                {
-                    listfile = sr.ReadToEnd();
-                }
-
-                // Split the listfile by newlines
-                string[] listfileLines = listfile.Replace("\r\n", "\n").Split('\n');
-
-                // Loop over each entry
-                foreach (string sub in listfileLines)
-                {
-                    // Ensure directory separators are consistent
-                    string filename = sub;
-                    if (Path.DirectorySeparatorChar == '\\')
-                        filename = filename.Replace('/', '\\');
-                    else if (Path.DirectorySeparatorChar == '/')
-                        filename = filename.Replace('\\', '/');
-
-                    // Ensure the full output directory exists
-                    filename = Path.Combine(outDir, filename);
-                    var directoryName = Path.GetDirectoryName(filename);
-                    if (directoryName != null && !Directory.Exists(directoryName))
-                        Directory.CreateDirectory(directoryName);
-
-                    // Try to write the data
-                    try
-                    {
-                        mpqArchive.ExtractFile(sub, filename);
-                    }
-                    catch (System.Exception ex)
-                    {
-                        if (includeDebug) System.Console.WriteLine(ex);
-                    }
-                }
-
-                return true;
-            }
-            catch (System.Exception ex)
-            {
-                if (includeDebug) System.Console.WriteLine(ex);
+            // Create the wrapper
+            var mpq = SabreTools.Serialization.Wrappers.MoPaQ.Create(stream);
+            if (mpq == null)
                 return false;
-            }
-#endif
+
+            // Loop through and extract all files
+            Directory.CreateDirectory(outDir);
+            mpq.Extract(outDir, includeDebug);
+
+            return true;
         }
     }
 }

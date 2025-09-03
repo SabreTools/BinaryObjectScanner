@@ -5,7 +5,7 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
     // TODO: Verify that all versions are detected
-    public class AdvancedInstaller : IExtractableExecutable<PortableExecutable>
+    public class AdvancedInstaller : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
@@ -19,12 +19,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

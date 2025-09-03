@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Test.FileType
         {
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new GZIP();
+            var extractable = new GZip();
 
             bool actual = extractable.Extract(file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = null;
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new GZIP();
+            var extractable = new GZip();
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = new MemoryStream();
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new GZIP();
+            var extractable = new GZip();
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
