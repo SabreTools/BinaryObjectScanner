@@ -64,9 +64,9 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            if (pex.OverlayStrings != null)
+            if (FileType.Executable.GetOverlayStrings(pex) != null)
             {
-                if (pex.OverlayStrings.Exists(s => s == "AddD"))
+                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s == "AddD"))
                     return $"SecuROM {GetV4Version(pex)}";
             }
 

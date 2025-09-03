@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
@@ -118,14 +119,14 @@ namespace BinaryObjectScanner.FileType
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
-            var exe = WrapperFactory.CreateExecutableWrapper(stream);
-            if (exe == null)
+            var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
+            if (wrapper == null)
                 return false;
 
             // Extract all files
             bool extractAny = false;
             Directory.CreateDirectory(outDir);
-            if (exe is PortableExecutable pex)
+            if (wrapper is PortableExecutable pex)
             {
                 if (new Packer.CExe().CheckExecutable(file, pex, includeDebug) != null)
                     extractAny |= pex.ExtractCExe(outDir, includeDebug);
@@ -139,12 +140,10 @@ namespace BinaryObjectScanner.FileType
                 if (new Packer.WiseInstaller().CheckExecutable(file, pex, includeDebug) != null)
                     extractAny |= pex.ExtractWise(outDir, includeDebug);
             }
-            else if (exe is NewExecutable nex)
+            else if (wrapper is NewExecutable nex)
             {
                 if (new Packer.EmbeddedFile().CheckExecutable(file, nex, includeDebug) != null)
-                {
                     extractAny |= nex.ExtractFromOverlay(outDir, includeDebug);
-                }
 
                 if (new Packer.WiseInstaller().CheckExecutable(file, nex, includeDebug) != null)
                     extractAny |= nex.ExtractWise(outDir, includeDebug);
@@ -235,6 +234,196 @@ namespace BinaryObjectScanner.FileType
 
             return protections;
         }
+
+        #endregion
+
+        #region Helpers -- Remove when dependent libraries updated
+
+        /// <summary>
+        /// Map to contain overlay strings to avoid rereading
+        /// </summary>
+        private static readonly Dictionary<WrapperBase, List<string>> _overlayStrings = [];
+
+        /// <summary>
+        /// Lock object for <see cref="_overlayStrings"/> 
+        /// </summary>
+        private static readonly object _overlayStringsLock = new();
+
+        /// <summary>
+        /// Overlay strings, if they exist
+        /// </summary>
+        public static List<string>? GetOverlayStrings(NewExecutable nex)
+        {
+            lock (_overlayStringsLock)
+            {
+                // Use the cached data if possible
+                if (_overlayStrings.TryGetValue(nex, out var strings))
+                    return strings;
+
+                // Get the available source length, if possible
+                long dataLength = nex.Length;
+                if (dataLength == -1)
+                    return null;
+
+                // If a required property is missing
+                if (nex.Header == null || nex.SegmentTable == null || nex.ResourceTable?.ResourceTypes == null)
+                    return null;
+
+                // Get the overlay data, if possible
+                byte[]? overlayData = nex.OverlayData;
+                if (overlayData == null || overlayData.Length == 0)
+                {
+                    _overlayStrings[nex] = [];
+                    return [];
+                }
+
+                // Otherwise, cache and return the strings
+                _overlayStrings[nex] = ReadStringsFrom(overlayData, charLimit: 3) ?? [];
+                return _overlayStrings[nex];
+            }
+        }
+
+        /// <summary>
+        /// Overlay strings, if they exist
+        /// </summary>
+        public static List<string>? GetOverlayStrings(PortableExecutable pex)
+        {
+            lock (_overlayStringsLock)
+            {
+                // Use the cached data if possible
+                if (_overlayStrings.TryGetValue(pex, out var strings))
+                    return strings;
+
+                // Get the available source length, if possible
+                long dataLength = pex.Length;
+                if (dataLength == -1)
+                    return null;
+
+                // If the section table is missing
+                if (pex.SectionTable == null)
+                    return null;
+
+                // Get the overlay data, if possible
+                byte[]? overlayData = pex.OverlayData;
+                if (overlayData == null || overlayData.Length == 0)
+                {
+                    _overlayStrings[pex] = [];
+                    return [];
+                }
+
+                // Otherwise, cache and return the strings
+                _overlayStrings[pex] = ReadStringsFrom(overlayData, charLimit: 3) ?? [];
+                return _overlayStrings[pex];
+            }
+        }
+
+        /// <summary>
+        /// Read string data from the source
+        /// </summary>
+        /// <param name="charLimit">Number of characters needed to be a valid string, default 5</param>
+        /// <returns>String list containing the requested data, null on error</returns>
+        private static List<string>? ReadStringsFrom(byte[]? input, int charLimit = 5)
+        {
+            // Validate the data
+            if (input == null || input.Length == 0)
+                return null;
+
+            // Check for ASCII strings
+            var asciiStrings = ReadStringsWithEncoding(input, charLimit, Encoding.ASCII);
+
+            // Check for UTF-8 strings
+            // We are limiting the check for Unicode characters with a second byte of 0x00 for now
+            var utf8Strings = ReadStringsWithEncoding(input, charLimit, Encoding.UTF8);
+
+            // Check for Unicode strings
+            // We are limiting the check for Unicode characters with a second byte of 0x00 for now
+            var unicodeStrings = ReadStringsWithEncoding(input, charLimit, Encoding.Unicode);
+
+            // Ignore duplicate strings across encodings
+            List<string> sourceStrings = [.. asciiStrings, .. utf8Strings, .. unicodeStrings];
+
+            // Sort the strings and return
+            sourceStrings.Sort();
+            return sourceStrings;
+        }
+
+        /// <summary>
+        /// Read string data from the source with an encoding
+        /// </summary>
+        /// <param name="bytes">Byte array representing the source data</param>
+        /// <param name="charLimit">Number of characters needed to be a valid string</param>
+        /// <param name="encoding">Character encoding to use for checking</param>
+        /// <returns>String list containing the requested data, empty on error</returns>
+        /// <remarks>
+        /// This method has a couple of notable implementation details:
+        /// - Strings can only have a maximum of 64 characters
+        /// - Characters that fall outside of the extended ASCII set will be unused
+        /// </remarks>
+#if NET20
+        private static List<string> ReadStringsWithEncoding(byte[]? bytes, int charLimit, Encoding encoding)
+#else
+        private static HashSet<string> ReadStringsWithEncoding(byte[]? bytes, int charLimit, Encoding encoding)
+#endif
+        {
+            if (bytes == null || bytes.Length == 0)
+                return [];
+            if (charLimit <= 0 || charLimit > bytes.Length)
+                return [];
+
+            // Create the string set to return
+#if NET20
+            var strings = new List<string>();
+#else
+            var strings = new HashSet<string>();
+#endif
+
+            // Open the text reader with the correct encoding
+            using var ms = new MemoryStream(bytes);
+            using var reader = new StreamReader(ms, encoding);
+
+            // Create a string builder for the loop
+            var sb = new StringBuilder();
+
+            // Check for strings
+            long lastOffset = 0;
+            while (!reader.EndOfStream)
+            {
+                // Read the next character from the stream
+                char c = (char)reader.Read();
+
+                // If the character is invalid
+                if (char.IsControl(c) || (c & 0xFF00) != 0)
+                {
+                    // Seek to the end of the last found string
+                    string str = sb.ToString();
+                    lastOffset += encoding.GetByteCount(str) + 1;
+                    ms.Seek(lastOffset, SeekOrigin.Begin);
+                    reader.DiscardBufferedData();
+
+                    // Add the string if long enough
+                    if (str.Length >= charLimit)
+                        strings.Add(str);
+
+                    // Clear the builder and continue
+#if NET20 || NET35
+                    sb = new();
+#else
+                    sb.Clear();
+#endif
+                    continue;
+                }
+
+                // Otherwise, add the character to the builder and continue
+                sb.Append(c);
+            }
+
+            // Handle any remaining data
+            if (sb.Length >= charLimit)
+                strings.Add(sb.ToString());
+
+            return strings;
+        }
+    
 
         #endregion
     }

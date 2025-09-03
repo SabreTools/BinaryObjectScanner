@@ -62,9 +62,9 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (pex.OverlayStrings != null)
+            if (FileType.Executable.GetOverlayStrings(pex) != null)
             {
-                if (pex.OverlayStrings.Exists(s => s.Contains("TMSAMVOH")))
+                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s.Contains("TMSAMVOH")))
                     return "ActiveMARK";
             }
 

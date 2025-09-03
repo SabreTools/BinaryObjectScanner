@@ -75,10 +75,10 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (pex.OverlayStrings != null)
+            if (FileType.Executable.GetOverlayStrings(pex) != null)
             {
                 // Found in Redump entry 84122.
-                if (pex.OverlayStrings.Exists(s => s.Contains("SETTEC0000")))
+                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s.Contains("SETTEC0000")))
                     return "Alpha-ROM";
             }
 
