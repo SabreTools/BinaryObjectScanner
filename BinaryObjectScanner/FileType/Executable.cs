@@ -332,8 +332,7 @@ namespace BinaryObjectScanner.FileType
             if (input.Length > 16384)
             {
                 int offset = 0;
-                byte[] temp = input.ReadBytes(ref offset, 16384);
-                input = temp;
+                input = input.ReadBytes(ref offset, 16384);
             }
 
             // Check for ASCII strings
