@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Test.FileType
         }
 
         [Fact]
-        public void ExtractStream_Empty_True()
+        public void ExtractStream_Empty_False()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
@@ -38,9 +38,7 @@ namespace BinaryObjectScanner.Test.FileType
             var extractable = new TapeArchive();
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
-
-            // Unexpected result -- Empty file recognized as valid in SharpCompress
-            Assert.True(actual);
+            Assert.False(actual);
         }
     }
 }

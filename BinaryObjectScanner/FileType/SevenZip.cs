@@ -21,6 +21,10 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
+            // Handle invalid inputs
+            if (stream == null || stream.Length == 0)
+                return false;
+
             // Create the wrapper
             var sevenZip = SabreTools.Serialization.Wrappers.SevenZip.Create(stream);
             if (sevenZip == null)

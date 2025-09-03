@@ -26,7 +26,8 @@ namespace BinaryObjectScanner.Test.FileType
             string outDir = string.Empty;
             var extractable = new InstallShieldCAB();
 
-            Assert.Throws<ArgumentException>(() => extractable.Extract(stream, file, outDir, includeDebug: false));
+            bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
+            Assert.False(actual);
         }
 
         [Fact]
@@ -37,7 +38,8 @@ namespace BinaryObjectScanner.Test.FileType
             string outDir = string.Empty;
             var extractable = new InstallShieldCAB();
 
-            Assert.Throws<ArgumentException>(() => extractable.Extract(stream, file, outDir, includeDebug: false));
+            bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
+            Assert.False(actual);
         }
     }
 }

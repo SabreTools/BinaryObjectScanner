@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Test
             WrapperType.BZip2,
             WrapperType.CFB,
             //WrapperType.CIA,
-            //WrapperType.Executable,
+            WrapperType.Executable,
             WrapperType.GCF,
             WrapperType.GZip,
             WrapperType.InstallShieldArchiveV3,
