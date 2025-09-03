@@ -123,13 +123,34 @@ namespace BinaryObjectScanner.FileType
                 return false;
 
             // Extract all files
+            bool extractAny = false;
             Directory.CreateDirectory(outDir);
             if (exe is PortableExecutable pex)
-                pex.Extract(outDir, includeDebug);
-            else if (exe is NewExecutable nex)
-                nex.Extract(outDir, includeDebug);
+            {
+                if (new Packer.CExe().CheckExecutable(file, pex, includeDebug) != null)
+                    extractAny |= pex.ExtractCExe(outDir, includeDebug);
 
-            return true;
+                if (new Packer.EmbeddedFile().CheckExecutable(file, pex, includeDebug) != null)
+                {
+                    extractAny |= pex.ExtractFromOverlay(outDir, includeDebug);
+                    extractAny |= pex.ExtractFromResources(outDir, includeDebug);
+                }
+
+                if (new Packer.WiseInstaller().CheckExecutable(file, pex, includeDebug) != null)
+                    extractAny |= pex.ExtractWise(outDir, includeDebug);
+            }
+            else if (exe is NewExecutable nex)
+            {
+                if (new Packer.EmbeddedFile().CheckExecutable(file, nex, includeDebug) != null)
+                {
+                    extractAny |= nex.ExtractFromOverlay(outDir, includeDebug);
+                }
+
+                if (new Packer.WiseInstaller().CheckExecutable(file, nex, includeDebug) != null)
+                    extractAny |= nex.ExtractWise(outDir, includeDebug);
+            }
+
+            return extractAny;
         }
 
         #region Check Runners
