@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.FileType
         public string? Detect(Stream stream, string file, bool includeDebug)
         {
             // Get all non-nested protections
-            var protections = DetectDict(stream, file, getProtections: null, includeDebug);
+            var protections = DetectDict(stream, file, includeDebug);
             if (protections.Count == 0)
                 return null;
 
@@ -46,10 +46,7 @@ namespace BinaryObjectScanner.FileType
         /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
         /// but due to the complexity of scanning, this is not currently possible.
         /// </remarks>
-        public ProtectionDictionary DetectDict(Stream stream,
-            string file,
-            Func<string, ProtectionDictionary>? getProtections,
-            bool includeDebug)
+        public ProtectionDictionary DetectDict(Stream stream, string file, bool includeDebug)
         {
             // Create the output dictionary
             var protections = new ProtectionDictionary();

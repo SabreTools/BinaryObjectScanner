@@ -271,7 +271,7 @@ namespace BinaryObjectScanner
                     // If we have an executable, it needs to bypass normal handling
                     if (detectable is Executable executable)
                     {
-                        var subProtections = executable.DetectDict(stream, fileName, GetProtections, _options.IncludeDebug);
+                        var subProtections = executable.DetectDict(stream, fileName, _options.IncludeDebug);
                         protections.Append(subProtections);
                     }
 
@@ -291,7 +291,7 @@ namespace BinaryObjectScanner
                 var extractable = Factory.CreateExtractable(fileType);
 
                 // If we're scanning archives
-                if (extractable != null && _options.ScanArchives)
+                if (extractable != null && (extractable is Executable || _options.ScanArchives))
                 {
                     // If the extractable file itself fails
                     try
