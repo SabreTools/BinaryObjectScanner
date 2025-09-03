@@ -312,7 +312,7 @@ namespace BinaryObjectScanner.FileType
                 }
 
                 // Otherwise, cache and return the strings
-                _overlayStrings[pex] = ReadStringsFrom(overlayData, charLimit: 3) ?? [];
+                _overlayStrings[pex] = ReadStringsFrom(overlayData, charLimit: 4) ?? [];
                 return _overlayStrings[pex];
             }
         }
@@ -328,8 +328,16 @@ namespace BinaryObjectScanner.FileType
             if (input == null || input.Length == 0)
                 return null;
 
+            // Limit to 16KiB of data
+            if (input.Length > 16384)
+            {
+                int offset = 0;
+                byte[] temp = input.ReadBytes(ref offset, 16384);
+                input = temp;
+            }
+
             // Check for ASCII strings
-            var asciiStrings = ReadStringsWithEncoding(input, charLimit, Encoding.ASCII);
+                var asciiStrings = ReadStringsWithEncoding(input, charLimit, Encoding.ASCII);
 
             // Check for UTF-8 strings
             // We are limiting the check for Unicode characters with a second byte of 0x00 for now
