@@ -335,12 +335,8 @@ namespace BinaryObjectScanner.FileType
             // We are limiting the check for Unicode characters with a second byte of 0x00 for now
             var utf8Strings = ReadStringsWithEncoding(input, charLimit, Encoding.UTF8);
 
-            // Check for Unicode strings
-            // We are limiting the check for Unicode characters with a second byte of 0x00 for now
-            var unicodeStrings = ReadStringsWithEncoding(input, charLimit, Encoding.Unicode);
-
             // Ignore duplicate strings across encodings
-            List<string> sourceStrings = [.. asciiStrings, .. utf8Strings, .. unicodeStrings];
+            List<string> sourceStrings = [.. asciiStrings, .. utf8Strings];
 
             // Sort the strings and return
             sourceStrings.Sort();
