@@ -15,6 +15,11 @@
         public string? Filename { get; }
 
         /// <summary>
+        /// Number of levels deep the file is
+        /// </summary>
+        public int Depth { get; }
+
+        /// <summary>
         /// Value between 0 and 1 representign the percentage completed
         /// </summary>
         public float Percentage { get; }
@@ -27,6 +32,15 @@
         public ProtectionProgress(string? filename, float percentage, string? protection)
         {
             Filename = filename;
+            Depth = 0;
+            Percentage = percentage;
+            Protection = protection;
+        }
+
+        public ProtectionProgress(string? filename, int depth, float percentage, string? protection)
+        {
+            Filename = filename;
+            Depth = depth;
             Percentage = percentage;
             Protection = protection;
         }

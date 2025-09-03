@@ -114,11 +114,15 @@ namespace BinaryObjectScanner
 
                         // Get the reportable file name
                         string reportableFileName = file;
+                        int depth = 0;
                         if (reportableFileName.StartsWith(tempFilePath))
-                            reportableFileName = $"--> {reportableFileName.Substring(tempFilePathWithGuid.Length)}";
+                        {
+                            depth = 1;
+                            reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+                        }
 
                         // Checkpoint
-                        _fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
+                        _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
                         if (_options.ScanPaths)
@@ -138,7 +142,7 @@ namespace BinaryObjectScanner
                         var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
                             ? string.Join(", ", [.. fullProtectionList])
                             : null;
-                        _fileProgress?.Report(new ProtectionProgress(reportableFileName, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
+                        _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
                     }
                 }
 
@@ -147,11 +151,15 @@ namespace BinaryObjectScanner
                 {
                     // Get the reportable file name
                     string reportableFileName = path;
+                    int depth = 0;
                     if (reportableFileName.StartsWith(tempFilePath))
-                        reportableFileName = $"--> {reportableFileName.Substring(tempFilePathWithGuid.Length)}";
+                    {
+                        depth = 1;
+                        reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+                    }
 
                     // Checkpoint
-                    _fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
+                    _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
                     if (_options.ScanPaths)
@@ -171,7 +179,7 @@ namespace BinaryObjectScanner
                     var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
                         ? string.Join(", ", [.. fullProtectionList])
                         : null;
-                    _fileProgress?.Report(new ProtectionProgress(reportableFileName, 1, fullProtection ?? string.Empty));
+                    _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 1, fullProtection ?? string.Empty));
                 }
 
                 // Throw on an invalid path

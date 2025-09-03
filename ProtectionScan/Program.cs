@@ -134,7 +134,13 @@ namespace ProtectionScan
         /// </summary>
         private static void Changed(object? source, ProtectionProgress value)
         {
-            Console.WriteLine($"{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
+            string prefix = string.Empty;
+            for (int i = 0; i < value.Depth; i++)
+            {
+                prefix += "--> ";
+            }
+
+            Console.WriteLine($"{prefix}{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
         }
     }
 }
