@@ -279,17 +279,25 @@ namespace BinaryObjectScanner.FileType
                 if (nex.Header == null || nex.SegmentTable == null || nex.ResourceTable?.ResourceTypes == null)
                     return null;
 
-                // Get the overlay data, if possible
-                byte[]? overlayData = nex.OverlayData;
-                if (overlayData == null || overlayData.Length == 0)
+                try
                 {
-                    _overlayStrings[nex] = [];
+                    // Get the overlay data, if possible
+                    byte[]? overlayData = nex.OverlayData;
+                    if (overlayData == null || overlayData.Length == 0)
+                    {
+                        _overlayStrings[nex] = [];
+                        return [];
+                    }
+
+                    // Otherwise, cache and return the strings
+                    _overlayStrings[nex] = ReadStringsFrom(overlayData, charLimit: 3) ?? [];
+                    return _overlayStrings[nex];
+                }
+                catch
+                {
+                    // Ignore the error for now
                     return [];
                 }
-
-                // Otherwise, cache and return the strings
-                _overlayStrings[nex] = ReadStringsFrom(overlayData, charLimit: 3) ?? [];
-                return _overlayStrings[nex];
             }
         }
 
@@ -369,7 +377,7 @@ namespace BinaryObjectScanner.FileType
                     _sectionStringData[pex]![index] = [];
                     return [];
                 }
-                
+
                 // Otherwise, cache and return the strings
                 _sectionStringData[pex]![index] = ReadStringsFrom(sectionData, charLimit: 4) ?? [];
                 return _sectionStringData[pex]![index];
