@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using BinaryObjectScanner.Interfaces;
+﻿using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
@@ -11,9 +9,16 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            // If the overlay header can be found
-            if (nex.FindWiseOverlayHeader() > -1)
-                return "Wise Installation Wizard Module";
+            try
+            {
+                // If the overlay header can be found
+                if (nex.FindWiseOverlayHeader() > -1)
+                    return "Wise Installation Wizard Module";
+            }
+            catch
+            {
+                // Ignore the error for now
+            }
 
             return null;
         }
