@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BinaryObjectScanner.FileType;
 using Xunit;
 
@@ -33,10 +32,9 @@ namespace BinaryObjectScanner.Test.FileType
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
-            Func<string, ProtectionDictionary>? getProtections = null;
             var detectable = new Executable();
 
-            ProtectionDictionary actual = detectable.DetectDict(stream, file, getProtections, includeDebug: false);
+            ProtectionDictionary actual = detectable.DetectDict(stream, file, includeDebug: false);
             Assert.Empty(actual);
         }
     }
