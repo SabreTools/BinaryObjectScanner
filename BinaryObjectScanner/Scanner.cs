@@ -115,7 +115,7 @@ namespace BinaryObjectScanner
                         // Get the reportable file name
                         string reportableFileName = file;
                         if (reportableFileName.StartsWith(tempFilePath))
-                            reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+                            reportableFileName = $"--> {reportableFileName.Substring(tempFilePathWithGuid.Length)}";
 
                         // Checkpoint
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
@@ -148,7 +148,7 @@ namespace BinaryObjectScanner
                     // Get the reportable file name
                     string reportableFileName = path;
                     if (reportableFileName.StartsWith(tempFilePath))
-                        reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+                        reportableFileName = $"--> {reportableFileName.Substring(tempFilePathWithGuid.Length)}";
 
                     // Checkpoint
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
