@@ -194,7 +194,7 @@ namespace BinaryObjectScanner.Protection
                 return "Rainbow Sentinel Driver";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
             if (strs != null)
             {
                 // Found in "ADESKSYS.DLL"/"WINADMIN.EXE"/"WINQUERY.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
@@ -207,7 +207,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rdata");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 // Found in "SP32W.DLL" in IA item "pcwkcd-1296".
@@ -232,7 +232,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rsrc section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rsrc");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, ".rsrc");
             if (strs != null)
             {
                 // Found in "WINMON.exe" in IA item "czchip199707cd".
@@ -241,7 +241,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .text section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".text");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
             if (strs != null)
             {
                 // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".

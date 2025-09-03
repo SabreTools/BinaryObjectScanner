@@ -51,7 +51,7 @@ namespace BinaryObjectScanner.Protection
                 return $"FlexLM {pex.ProductVersion}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
             if (strs != null)
             {
                 // Found in "FLEXLM.CPL", "INSTALLS.EXE", "LMGR326B.DLL", "LMGRD.EXE", and "TAKEFIVE.EXE" in IA item "prog-17_202403".

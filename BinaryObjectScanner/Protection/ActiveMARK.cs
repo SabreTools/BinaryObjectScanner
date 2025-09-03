@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .data section strings, if they exist
-            var strs = pex.GetLastSectionStrings(".data");
+            var strs = FileType.Executable.GetLastSectionStrings(pex, ".data");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("MPRMMGVA"))
@@ -69,7 +69,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the last .bss section strings, if they exist
-            strs = pex.GetLastSectionStrings(".bss");
+            strs = FileType.Executable.GetLastSectionStrings(pex, ".bss");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("TMSAMVOF")))

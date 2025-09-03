@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .data section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data");
             if (strs != null)
             {
                 // Found in "rebound.exe" in the installation directory for "Rebound" in IA item "Nova_RealArcadeCD_USA".

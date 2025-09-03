@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
                 foreach (var sectionName in Array.FindAll(pex.SectionNames ?? [], s => s != null && s.EndsWith("1")))
                 {
                     // Get the section strings, if they exist
-                    var strs = pex.GetFirstSectionStrings(sectionName);
+                    var strs = FileType.Executable.GetFirstSectionStrings(pex, sectionName);
                     if (strs != null)
                     {
                         if (strs.Exists(s => s.Contains("ARMDEBUG")))

@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
             if (strs != null)
             {
                 var str = strs.Find(s => s.Contains("V SUHPISYS"));

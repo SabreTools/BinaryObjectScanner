@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rdata section strings, if they exist
             bool containsCheck2 = false;
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 containsCheck2 = strs.Exists(s => s.EndsWith("ATTLIST"))

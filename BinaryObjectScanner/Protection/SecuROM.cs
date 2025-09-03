@@ -98,7 +98,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`

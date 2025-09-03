@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .rdata section strings, if they exist
-            List<string>? strs = pex.GetFirstSectionStrings(".rdata");
+            List<string>? strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("XCP.DAT")))

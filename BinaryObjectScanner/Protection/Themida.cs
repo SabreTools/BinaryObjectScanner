@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the "Arcsoft " section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("Arcsoft ");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, "Arcsoft ");
             if (strs != null)
             {
                 // Found in "uDigital Theatre.exe" in http://downloads.fyxm.net/ArcSoft-TotalMedia-23085.html (https://web.archive.org/web/20221114042838/http://files.fyxm.net/23/23085/totalmediatheatre3platinum_retail_tbyb_all.exe).

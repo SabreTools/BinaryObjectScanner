@@ -250,6 +250,16 @@ namespace BinaryObjectScanner.FileType
         private static readonly object _overlayStringsLock = new();
 
         /// <summary>
+        /// Cached found string data in sections
+        /// </summary>
+        private static readonly Dictionary<WrapperBase, List<string>[]?> _sectionStringData = [];
+
+        /// <summary>
+        /// Lock object for <see cref="_sectionStringData"/> 
+        /// </summary>
+        private static readonly object _sectionStringDataLock = new();
+
+        /// <summary>
         /// Overlay strings, if they exist
         /// </summary>
         public static List<string>? GetOverlayStrings(NewExecutable nex)
@@ -318,6 +328,97 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <summary>
+        /// Get the section strings based on index, if possible
+        /// </summary>
+        /// <param name="index">Index of the section to check for</param>
+        /// <returns>Section strings on success, null on error</returns>
+        public static List<string>? GetSectionStrings(PortableExecutable pex, int index)
+        {
+            lock (_sectionStringDataLock)
+            {
+                // If we already have cached data, just use that immediately
+                if (_sectionStringData.TryGetValue(pex, out var strings)
+                    && strings != null
+                    && strings[index] != null
+                    && strings[index].Count > 0)
+                {
+                    return strings[index];
+                }
+
+                // If we have no sections
+                if (pex.SectionNames == null || pex.SectionNames.Length == 0 || pex.SectionTable == null || pex.SectionTable.Length == 0)
+                    return null;
+
+                // Create the section string array if we have to
+                if (!_sectionStringData.ContainsKey(pex))
+                    _sectionStringData[pex] = new List<string>[pex.SectionNames.Length];
+
+                // If the section doesn't exist
+                if (index < 0 || index >= pex.SectionTable.Length)
+                    return null;
+
+                // Get the section data from the table
+                var section = pex.SectionTable[index];
+                if (section == null)
+                    return null;
+
+                // Get the section data, if possible
+                byte[]? sectionData = pex.GetSectionData(index);
+                if (sectionData == null || sectionData.Length == 0)
+                {
+                    _sectionStringData[pex]![index] = [];
+                    return [];
+                }
+                
+                // Otherwise, cache and return the strings
+                _sectionStringData[pex]![index] = ReadStringsFrom(sectionData, charLimit: 4) ?? [];
+                return _sectionStringData[pex]![index];
+            }
+        }
+
+        /// <summary>
+        /// Get the first section strings based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section strings on success, null on error</returns>
+        public static List<string>? GetFirstSectionStrings(PortableExecutable pex, string? name, bool exact = false)
+        {
+            // If we have no sections
+            if (pex.SectionNames == null || pex.SectionNames.Length == 0 || pex.SectionTable == null || pex.SectionTable.Length == 0)
+                return null;
+
+            // If the section doesn't exist
+            if (!pex.ContainsSection(name, exact))
+                return null;
+
+            // Get the first index of the section
+            int index = Array.IndexOf(pex.SectionNames, name);
+            return GetSectionStrings(pex, index);
+        }
+
+        /// <summary>
+        /// Get the last section strings based on name, if possible
+        /// </summary>
+        /// <param name="name">Name of the section to check for</param>
+        /// <param name="exact">True to enable exact matching of names, false for starts-with</param>
+        /// <returns>Section strings on success, null on error</returns>
+        public static List<string>? GetLastSectionStrings(PortableExecutable pex, string? name, bool exact = false)
+        {
+            // If we have no sections
+            if (pex.SectionNames == null || pex.SectionNames.Length == 0 || pex.SectionTable == null || pex.SectionTable.Length == 0)
+                return null;
+
+            // If the section doesn't exist
+            if (!pex.ContainsSection(name, exact))
+                return null;
+
+            // Get the last index of the section
+            int index = Array.LastIndexOf(pex.SectionNames, name);
+            return GetSectionStrings(pex, index);
+        }
+
+        /// <summary>
         /// Read string data from the source
         /// </summary>
         /// <param name="charLimit">Number of characters needed to be a valid string, default 5</param>
@@ -336,7 +437,7 @@ namespace BinaryObjectScanner.FileType
             }
 
             // Check for ASCII strings
-                var asciiStrings = ReadStringsWithEncoding(input, charLimit, Encoding.ASCII);
+            var asciiStrings = ReadStringsWithEncoding(input, charLimit, Encoding.ASCII);
 
             // Check for UTF-8 strings
             // We are limiting the check for Unicode characters with a second byte of 0x00 for now
@@ -426,7 +527,7 @@ namespace BinaryObjectScanner.FileType
 
             return strings;
         }
-    
+
 
         #endregion
     }

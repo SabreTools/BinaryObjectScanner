@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the code/CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, "code") ?? FileType.Executable.GetFirstSectionStrings(pex, "CODE");
             if (strs != null)
             {
                 // Found in "NECRO95.EXE" in IA item "NBECRORV11".

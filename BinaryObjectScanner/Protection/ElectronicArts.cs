@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
                 return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("EReg Config Form")))
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rdata");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("GenericEA")) && strs.Exists(s => s.Contains("Activation")))
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".text");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("GenericEA")) && strs.Exists(s => s.Contains("Activation")))

@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.Protection
                 return $"ChosenBytes Code-Lock {pex.ProductVersion}";
 
             // Get the .text section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".text");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("CODE-LOCK.OCX")))

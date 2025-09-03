@@ -80,7 +80,7 @@ namespace BinaryObjectScanner.Protection
                     return "copy-X [Check disc for physical ring]";
             }
 
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 // Samples: Redump ID 82475, German Emergency 2 Deluxe, Redump ID 48393

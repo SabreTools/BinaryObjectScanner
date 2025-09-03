@@ -79,7 +79,7 @@ namespace BinaryObjectScanner.Protection
             for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)
             {
                 // Get the nth section strings, if they exist
-                var strs = pex.GetSectionStrings(i);
+                var strs = FileType.Executable.GetSectionStrings(pex, i);
                 if (strs != null)
                 {
                     var str = strs.Find(s => s.Contains("Solidshield "));

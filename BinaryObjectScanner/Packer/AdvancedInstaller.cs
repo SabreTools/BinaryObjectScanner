@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .rdata section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("Software\\Caphyon\\Advanced Installer")))

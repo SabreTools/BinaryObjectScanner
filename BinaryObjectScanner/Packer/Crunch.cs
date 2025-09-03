@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Packer
         {
             // Get the last section strings, if they exist
             var sections = pex.Model.SectionTable ?? [];
-            var strs = pex.GetSectionStrings(sections.Length - 1);
+            var strs = FileType.Executable.GetSectionStrings(pex, sections.Length - 1);
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("BITARTS")))

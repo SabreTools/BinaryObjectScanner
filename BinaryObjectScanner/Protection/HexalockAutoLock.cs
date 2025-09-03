@@ -50,7 +50,7 @@ namespace BinaryObjectScanner.Protection
                 return $"Hexalock AutoLock 4.5";
 
             // Get the .text section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".text");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
             if (strs != null)
             {
                 // Found in "The Sudoku Challenge Collection.exe" in "The Sudoku Challenge! Collection" by Play at Joe's.
@@ -59,7 +59,7 @@ namespace BinaryObjectScanner.Protection
             }
             
             // Get the code/CODE section strings, if they exist
-            strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, "code") ?? FileType.Executable.GetFirstSectionStrings(pex, "CODE");
             if (strs != null)
             {
                 // Found in "launcher.exe" in "Sea Adventure / Adventure de la Mer" by Compedia.
@@ -68,7 +68,7 @@ namespace BinaryObjectScanner.Protection
             }
             
             // Get the UPX1 section strings, if they exist
-            strs = pex.GetFirstSectionStrings("UPX1");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, "UPX1");
             if (strs != null)
             {
                 // Found in "postmanpat.exe" in "Postman Pat" by Compedia.

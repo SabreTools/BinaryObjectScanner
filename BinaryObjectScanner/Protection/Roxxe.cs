@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the code/CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            var strs = FileType.Executable.GetFirstSectionStrings(pex, "code") ?? FileType.Executable.GetFirstSectionStrings(pex, "CODE");
             if (strs != null)
             {
                 // Found in "Owar.exe" in IA item "game4u-22-cd".
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rsrc section strings, if they exist
             // TODO: Check for these strings specifically within the application-defined resource that they're found in, not just the generic resource section.
-            strs = pex.GetFirstSectionStrings(".rsrc");
+            strs = FileType.Executable.GetFirstSectionStrings(pex, ".rsrc");
             if (strs != null)
             {
                 // Found in "Owar.exe" in IA items "game4u-22-cd" and "original-war".
