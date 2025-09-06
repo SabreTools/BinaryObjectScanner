@@ -11,39 +11,39 @@ namespace BinaryObjectScanner
 {
     public class Scanner
     {
-        #region Properties
+        #region Instance Variables
 
         /// <summary>
         /// Determines whether archives are decompressed and scanned
         /// </summary>
-        public bool ScanArchives { get; private set; }
+        private readonly bool _scanArchives;
 
         /// <summary>
         /// Determines if content matches are used
         /// </summary>
-        public bool ScanContents { get; private set; }
+        private readonly bool _scanContents;
 
         /// <summary>
         /// Determines if path matches are used
         /// </summary>
-        public bool ScanPaths { get; private set; }
+        private readonly bool _scanPaths;
 
         /// <summary>
         /// Determines if subdirectories are scanned
         /// </summary>
-        public bool ScanSubdirectories { get; private set; }
+        private readonly bool _scanSubdirectories;
 
         /// <summary>
         /// Determines if debug information is output
         /// </summary>
-        public bool IncludeDebug { get; private set; }
-
-        #endregion
+        private readonly bool _includeDebug;
 
         /// <summary>
         /// Optional progress callback during scanning
         /// </summary>
         private readonly IProgress<ProtectionProgress>? _fileProgress;
+
+        #endregion
 
         /// <summary>
         /// Constructor
@@ -61,11 +61,11 @@ namespace BinaryObjectScanner
             bool includeDebug,
             IProgress<ProtectionProgress>? fileProgress = null)
         {
-            ScanArchives = scanArchives;
-            ScanContents = scanContents;
-            ScanPaths = scanPaths;
-            ScanSubdirectories = scanSubdirectories;
-            IncludeDebug = includeDebug;
+            _scanArchives = scanArchives;
+            _scanContents = scanContents;
+            _scanPaths = scanPaths;
+            _scanSubdirectories = scanSubdirectories;
+            _includeDebug = includeDebug;
             _fileProgress = fileProgress;
 
 #if NET462_OR_GREATER || NETCOREAPP
@@ -131,11 +131,11 @@ namespace BinaryObjectScanner
                 if (Directory.Exists(path))
                 {
                     // Enumerate all files at first for easier access
-                    SearchOption searchOption = ScanSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                    SearchOption searchOption = _scanSubdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
                     List<string> files = [.. IOExtensions.SafeGetFiles(path, "*", searchOption)];
 
                     // Scan for path-detectable protections
-                    if (ScanPaths)
+                    if (_scanPaths)
                     {
                         var directoryPathProtections = HandlePathChecks(path, files);
                         protections.Append(directoryPathProtections);
@@ -156,7 +156,7 @@ namespace BinaryObjectScanner
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
 
                         // Scan for path-detectable protections
-                        if (ScanPaths)
+                        if (_scanPaths)
                         {
                             var filePathProtections = HandlePathChecks(file, files: null);
                             if (filePathProtections != null && filePathProtections.Count > 0)
@@ -189,7 +189,7 @@ namespace BinaryObjectScanner
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
 
                     // Scan for path-detectable protections
-                    if (ScanPaths)
+                    if (_scanPaths)
                     {
                         var filePathProtections = HandlePathChecks(path, files: null);
                         if (filePathProtections != null && filePathProtections.Count > 0)
@@ -221,7 +221,7 @@ namespace BinaryObjectScanner
             protections.ClearEmptyKeys();
 
             // If we're in debug, output the elasped time to console
-            if (IncludeDebug)
+            if (_includeDebug)
                 Console.WriteLine($"Time elapsed: {DateTime.UtcNow.Subtract(startTime)}");
 
             return protections;
@@ -247,10 +247,10 @@ namespace BinaryObjectScanner
             }
             catch (Exception ex)
             {
-                if (IncludeDebug) Console.WriteLine(ex);
+                if (_includeDebug) Console.WriteLine(ex);
 
                 var protections = new ProtectionDictionary();
-                protections.Append(file, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                protections.Append(file, _includeDebug ? ex.ToString() : "[Exception opening file, please try again]");
                 protections.ClearEmptyKeys();
                 return protections;
             }
@@ -287,7 +287,7 @@ namespace BinaryObjectScanner
                 }
                 catch (Exception ex)
                 {
-                    if (IncludeDebug) Console.WriteLine(ex);
+                    if (_includeDebug) Console.WriteLine(ex);
 
                     return [];
                 }
@@ -306,9 +306,9 @@ namespace BinaryObjectScanner
                 var detectable = Factory.CreateDetectable(fileType, wrapper);
 
                 // If we're scanning file contents
-                if (detectable != null && ScanContents)
+                if (detectable != null && _scanContents)
                 {
-                    var subProtection = detectable.Detect(stream, fileName, IncludeDebug);
+                    var subProtection = detectable.Detect(stream, fileName, _includeDebug);
                     protections.Append(fileName, subProtection);
                 }
 
@@ -317,7 +317,7 @@ namespace BinaryObjectScanner
                 #region Archive File Types
 
                 // If we're scanning archives
-                if (wrapper is IExtractable extractable && ScanArchives)
+                if (wrapper is IExtractable extractable && _scanArchives)
                 {
                     // If the extractable file itself fails
                     try
@@ -325,7 +325,7 @@ namespace BinaryObjectScanner
                         // Extract and get the output path
                         string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                         Directory.CreateDirectory(tempPath);
-                        bool extracted = extractable.Extract(tempPath, IncludeDebug);
+                        bool extracted = extractable.Extract(tempPath, _includeDebug);
 
                         // Collect and format all found protections
                         ProtectionDictionary? subProtections = null;
@@ -340,7 +340,7 @@ namespace BinaryObjectScanner
                         }
                         catch (Exception ex)
                         {
-                            if (IncludeDebug) Console.WriteLine(ex);
+                            if (_includeDebug) Console.WriteLine(ex);
                         }
 
                         // Prepare the returned protections
@@ -351,7 +351,7 @@ namespace BinaryObjectScanner
                     }
                     catch (Exception ex)
                     {
-                        if (IncludeDebug) Console.WriteLine(ex);
+                        if (_includeDebug) Console.WriteLine(ex);
                     }
                 }
 
@@ -359,8 +359,8 @@ namespace BinaryObjectScanner
             }
             catch (Exception ex)
             {
-                if (IncludeDebug) Console.WriteLine(ex);
-                protections.Append(fileName, IncludeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                if (_includeDebug) Console.WriteLine(ex);
+                protections.Append(fileName, _includeDebug ? ex.ToString() : "[Exception opening file, please try again]");
             }
 
             // Clear out any empty keys
