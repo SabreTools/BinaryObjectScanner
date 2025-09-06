@@ -46,14 +46,9 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
+        /// <remarks>Uses the already-generated wrapper</remarks>
         public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+            => Extract(null, file, outDir, includeDebug);
 
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
