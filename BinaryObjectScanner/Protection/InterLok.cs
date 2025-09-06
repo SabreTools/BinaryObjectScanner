@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .rsrc section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rsrc");
+            var strs = pex.GetFirstSectionStrings(".rsrc");
             if (strs != null)
             {
                 // Found in "nfsc_link.exe" in IA item "nfscorigin".

@@ -56,7 +56,7 @@ namespace BinaryObjectScanner.Protection
             // and dialog boxes. See if any of those are unique to SoftLock.
 
             // Found in "TafseerVer4.exe" in IA item "TAFSEERVER4SETUP"
-            var strings = FileType.Executable.GetFirstSectionStrings(pex, ".section") ?? [];
+            var strings = pex.GetFirstSectionStrings(".section") ?? [];
             if (strings.Exists(s => s.Contains("SOFTLOCKPROTECTION")))
                 return "SoftLock";
 

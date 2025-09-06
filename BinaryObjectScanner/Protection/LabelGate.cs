@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.Protection
                 return $"LabelGate CD2 Media Player";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "START.EXE" (Redump entry 95010 and product ID SVWC-7185).

@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 var str = strs.Find(s => s.StartsWith("Inno Setup Setup Data"));

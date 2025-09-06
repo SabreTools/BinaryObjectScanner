@@ -48,7 +48,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Add version detection for Alpha-ROM.
 
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("\\SETTEC")))
@@ -59,7 +59,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
+            strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("This Game is Japan Only")))
@@ -75,10 +75,10 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (FileType.Executable.GetOverlayStrings(pex) != null)
+            if (pex.OverlayStrings != null)
             {
                 // Found in Redump entry 84122.
-                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s.Contains("SETTEC0000")))
+                if (pex.OverlayStrings.Exists(s => s.Contains("SETTEC0000")))
                     return "Alpha-ROM";
             }
 

@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.Protection
                     resultsList.Add(sectionMatch);
 
                 // Get the .data section, if it exists, for protected sections.
-                sectionMatch = CheckSectionForProtection(file, includeDebug, FileType.Executable.GetFirstSectionStrings(pex, ".data"), pex.GetFirstSectionData(".data"), true);
+                sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
                 if (sectionMatch != null)
                     resultsList.Add(sectionMatch!);
 
@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Protection
                     resultsList.Add(sectionMatch);
 
                 // Check the .data section, if it exists, for protected sections.
-                sectionMatch = CheckSectionForProtection(file, includeDebug, FileType.Executable.GetFirstSectionStrings(pex, ".data"), pex.GetFirstSectionData(".data"), false);
+                sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
                 if (sectionMatch != null)
                     resultsList.Add(sectionMatch);
             }

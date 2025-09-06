@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .data section strings, if they exist
-            var strs = FileType.Executable.GetLastSectionStrings(pex, ".data");
+            var strs = pex.GetLastSectionStrings(".data");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("MPRMMGVA"))
@@ -62,14 +62,14 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (FileType.Executable.GetOverlayStrings(pex) != null)
+            if (pex.OverlayStrings != null)
             {
-                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s.Contains("TMSAMVOH")))
+                if (pex.OverlayStrings.Exists(s => s.Contains("TMSAMVOH")))
                     return "ActiveMARK";
             }
 
             // Get the last .bss section strings, if they exist
-            strs = FileType.Executable.GetLastSectionStrings(pex, ".bss");
+            strs = pex.GetLastSectionStrings(".bss");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("TMSAMVOF")))

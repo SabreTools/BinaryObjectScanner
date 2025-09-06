@@ -82,7 +82,7 @@ namespace BinaryObjectScanner.Protection
                 return "ByteShield";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "LineRider2.exe" in Redump entry 6236
@@ -91,7 +91,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
+            strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Found in "ByteShield.dll" in Redump entry 6236
@@ -108,7 +108,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .ret section strings, if they exist
-            strs = FileType.Executable.GetFirstSectionStrings(pex, ".ret");
+            strs = pex.GetFirstSectionStrings(".ret");
             if (strs != null)
             {
                 // TODO: Figure out if this specifically indicates if the file is encrypted

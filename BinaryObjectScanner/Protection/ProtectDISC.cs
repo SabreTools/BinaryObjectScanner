@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Protection
             if (sections.Length > 1)
             {
                 // Get the n - 1 section strings, if they exist
-                var strs = FileType.Executable.GetSectionStrings(pex, sections.Length - 2);
+                var strs = pex.GetSectionStrings(sections.Length - 2);
                 if (strs != null)
                 {
                     var str = strs.Find(s => s.Contains("VOB ProtectCD"));

@@ -64,9 +64,9 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            if (FileType.Executable.GetOverlayStrings(pex) != null)
+            if (pex.OverlayStrings != null)
             {
-                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s == "AddD"))
+                if (pex.OverlayStrings.Exists(s => s == "AddD"))
                     return $"SecuROM {GetV4Version(pex)}";
             }
 
@@ -98,7 +98,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
+            var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`

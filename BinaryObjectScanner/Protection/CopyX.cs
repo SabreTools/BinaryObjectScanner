@@ -66,7 +66,7 @@ namespace BinaryObjectScanner.Protection
             if (sections == null)
                 return null;
 
-            if (FileType.Executable.GetOverlayStrings(pex) != null)
+            if (pex.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. 
                 // This might be better removed later, as Redump ID 82475 is a false positive, and also doesn't actually
@@ -76,11 +76,11 @@ namespace BinaryObjectScanner.Protection
                 // TODO: This might need to check every single section. Unsure until more samples are acquired.
                 // TODO: TKKG also has an NE 3.1x executable with a reference. This can be added later.
                 // Samples: Redump ID 108150
-                if (FileType.Executable.GetOverlayStrings(pex)!.Exists(s => s.Contains("optgraph.dll")))
+                if (pex.OverlayStrings.Exists(s => s.Contains("optgraph.dll")))
                     return "copy-X [Check disc for physical ring]";
             }
 
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
+            var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Samples: Redump ID 82475, German Emergency 2 Deluxe, Redump ID 48393

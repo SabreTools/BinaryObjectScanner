@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
             //}
 
             // Get the code/CODE section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, "code") ?? FileType.Executable.GetFirstSectionStrings(pex, "CODE");
+            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("~0017.tmp")))

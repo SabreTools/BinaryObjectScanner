@@ -39,7 +39,7 @@ namespace BinaryObjectScanner.Protection
                 return $"Kalypso Launcher {pex.GetInternalVersion()}";
 
             // Get the .text section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".rdata");
+            var strs = pex.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Found in "TFT.exe" in Redump entry 95617.

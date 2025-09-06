@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
         {
             // Get the .text section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
+            var strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("DotfuscatorAttribute")))

@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.Protection
                 return "WTM Protection Viewer";
 
             // Get the code/CODE section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, "code") ?? FileType.Executable.GetFirstSectionStrings(pex, "CODE");
+            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("wtmdum.imp")))
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .text section strings, if they exist
-            strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
+            strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("WTM DIGITAL Photo Protect")))

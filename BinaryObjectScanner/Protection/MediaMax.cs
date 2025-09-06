@@ -37,7 +37,7 @@ namespace BinaryObjectScanner.Protection
             // "This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players."
 
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("CD3 Launch Error")))

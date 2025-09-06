@@ -20,7 +20,7 @@ namespace BinaryObjectScanner.Packer
                 return $"Microsoft CAB SFX {GetVersion(pex)}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("wextract_cleanup")))
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Packer
             }
 
             // Get the .text section strings, if they exist
-            strs = FileType.Executable.GetFirstSectionStrings(pex, ".text");
+            strs = pex.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 // This detects a different but similar type of SFX that uses Microsoft CAB files.

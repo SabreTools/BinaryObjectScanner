@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Packer
                 return $"NSIS {name!.Substring("Nullsoft Install System".Length).Trim()}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = FileType.Executable.GetFirstSectionStrings(pex, ".data") ?? FileType.Executable.GetFirstSectionStrings(pex, "DATA");
+            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("NullsoftInst")))
