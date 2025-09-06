@@ -9,20 +9,10 @@ namespace BinaryObjectScanner.FileType
     /// StarForce Filesystem file
     /// </summary>
     /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
-    public class SFFS : IExtractable, IDetectable
+    public class SFFS : DetectableBase, IExtractable
     {
         /// <inheritdoc/>
-        public string? Detect(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Detect(fs, file, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public string? Detect(Stream stream, string file, bool includeDebug)
+        public override string? Detect(Stream stream, string file, bool includeDebug)
         {
             try
             {

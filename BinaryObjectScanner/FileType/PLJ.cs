@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 
 namespace BinaryObjectScanner.FileType
@@ -8,20 +7,10 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// PlayJ audio file
     /// </summary>
-    public class PLJ : IDetectable<SabreTools.Serialization.Wrappers.PlayJAudioFile>
+    public class PLJ : DetectableBase<SabreTools.Serialization.Wrappers.PlayJAudioFile>
     {
         /// <inheritdoc/>
-        public string? Detect(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Detect(fs, file, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public string? Detect(Stream stream, string file, bool includeDebug)
+        public override string? Detect(Stream stream, string file, bool includeDebug)
         {
             try
             {

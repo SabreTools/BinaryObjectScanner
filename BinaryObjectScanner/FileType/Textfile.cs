@@ -2,27 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Various generic textfile formats
     /// </summary>
-    public class Textfile : IDetectable
+    public class Textfile : DetectableBase
     {
         /// <inheritdoc/>
-        public string? Detect(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Detect(fs, file, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public string? Detect(Stream stream, string file, bool includeDebug)
+        public override string? Detect(Stream stream, string file, bool includeDebug)
         {
             // Files can be protected in multiple ways
             var protections = new List<string>();
