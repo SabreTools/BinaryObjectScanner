@@ -11,24 +11,11 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
-    public abstract class Executable<T> : DetectableBase<T>, IExtractable
+    public abstract class Executable<T> : DetectableBase<T>
         where T : WrapperBase
     {
         /// <inheritdoc/>
         public Executable(T? wrapper) : base(wrapper) { }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public abstract bool Extract(Stream? stream, string file, string outDir, bool includeDebug);
 
         #region Check Runners
 

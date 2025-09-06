@@ -43,8 +43,5 @@ namespace BinaryObjectScanner.FileType
 
             return string.Join(";", [.. protectionList]);
         }
-
-        /// <inheritdoc/>
-        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug) => false;
     }
 }
