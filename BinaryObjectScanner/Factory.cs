@@ -67,13 +67,11 @@ namespace BinaryObjectScanner
                 case GZip: return new FileType.GZip();
                 case InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
                 case InstallShieldCabinet: return new FileType.InstallShieldCAB();
-                case LinearExecutable obj: return new FileType.LinearExecutable(obj);
                 case LZKWAJ: return new FileType.LZKWAJ();
                 case LZQBasic: return new FileType.LZQBasic();
                 case LZSZDD: return new FileType.LZSZDD();
                 case MicrosoftCabinet: return new FileType.MicrosoftCAB();
                 case MoPaQ: return new FileType.MPQ();
-                case MSDOS obj: return new FileType.MSDOS(obj);
                 // case N3DS: return new FileType.N3DS();
                 // case NCF: return new FileType.NCF();
                 case NewExecutable obj: return new FileType.NewExecutable(obj);
