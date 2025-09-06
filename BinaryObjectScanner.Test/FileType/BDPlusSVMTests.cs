@@ -20,15 +20,14 @@ namespace BinaryObjectScanner.Test.FileType
         }
 
         [Fact]
-        public void DetectStream_EmptyStream_Empty()
+        public void DetectStream_EmptyStream_DefaultValue()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
             var detectable = new BDPlusSVM(wrapper);
 
             string? actual = detectable.Detect(stream, file, includeDebug: false);
-            Assert.NotNull(actual);
-            Assert.Empty(actual);
+            Assert.Equal("BD+ 0000-00-00", actual);
         }
     }
 }
