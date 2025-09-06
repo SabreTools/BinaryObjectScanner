@@ -15,8 +15,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
             // TODO: Have this return all detected things, not just the first
-            byte[]? overlayData = null;
-            try { overlayData = nex.OverlayData; } catch { }
+            byte[]? overlayData = nex.OverlayData;
 
             // Check the overlay, if it exists
             if (overlayData != null && overlayData.Length > 0)
