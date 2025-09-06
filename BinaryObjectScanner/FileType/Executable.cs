@@ -149,7 +149,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        public IDictionary<IContentCheck, string> RunContentChecks(string? file, Stream stream, bool includeDebug)
+        private static IDictionary<IContentCheck, string> RunContentChecks(string? file, Stream stream, bool includeDebug)
         {
             // Create the output dictionary
             var protections = new CheckDictionary<IContentCheck>();
@@ -202,7 +202,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="scanner">Scanner for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        public IDictionary<U, string> RunExecutableChecks<T, U>(string file, T exe, List<U> checks, bool includeDebug)
+        private static IDictionary<U, string> RunExecutableChecks<T, U>(string file, T exe, List<U> checks, bool includeDebug)
             where T : WrapperBase
             where U : IExecutableCheck<T>
         {
