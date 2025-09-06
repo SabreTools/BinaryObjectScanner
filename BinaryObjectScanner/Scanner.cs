@@ -4,6 +4,7 @@ using System.IO;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
+using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner
@@ -287,7 +288,7 @@ namespace BinaryObjectScanner
                 #region Archive File Types
 
                 // If we're scanning archives
-                if (wrapper is SabreTools.Serialization.Interfaces.IExtractable extractable && _options.ScanArchives)
+                if (wrapper is IExtractable extractable && _options.ScanArchives)
                 {
                     // If the extractable file itself fails
                     try
