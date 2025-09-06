@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using BinaryObjectScanner.Data;
 using Xunit;
 
-namespace BinaryObjectScanner.Test
+namespace BinaryObjectScanner.Test.Data
 {
     public class ProtectionDictionaryTests
     {

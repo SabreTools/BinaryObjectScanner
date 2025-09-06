@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 
-namespace BinaryObjectScanner
+namespace BinaryObjectScanner.Data
 {
     /// <summary>
     /// Represents a mapping from file to a set of protections

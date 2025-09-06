@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 using Xunit;
 
-namespace BinaryObjectScanner.Test
+namespace BinaryObjectScanner.Test.Data
 {
     public class FactoryTests
     {

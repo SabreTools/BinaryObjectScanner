@@ -1,9 +1,9 @@
 ﻿using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
-namespace BinaryObjectScanner
+namespace BinaryObjectScanner.Data
 {
-    public static class Factory
+    internal static class Factory
     {
         /// <summary>
         /// Create an instance of a detectable based on file type

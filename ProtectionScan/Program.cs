@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using BinaryObjectScanner;
+using BinaryObjectScanner.Data;
 
 namespace ProtectionScan
 {
