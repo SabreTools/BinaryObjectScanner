@@ -113,7 +113,7 @@ namespace ProtectionScan
         {
             Console.WriteLine("Protection Scanner");
             Console.WriteLine();
-            Console.WriteLine("ProtectionScan <options> file|directory ...");
+            Console.WriteLine("ProtectionScan <options> <path> ...");
             Console.WriteLine();
             Console.WriteLine("Options:");
             Console.WriteLine("-?, -h, --help           Display this help text and quit");
