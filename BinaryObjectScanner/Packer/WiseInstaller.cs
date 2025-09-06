@@ -9,16 +9,9 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
         {
-            try
-            {
-                // If the overlay header can be found
-                if (nex.FindWiseOverlayHeader() > -1)
-                    return "Wise Installation Wizard Module";
-            }
-            catch
-            {
-                // Ignore the error for now
-            }
+            // If the overlay header can be found
+            if (nex.FindWiseOverlayHeader() > -1)
+                return "Wise Installation Wizard Module";
 
             return null;
         }

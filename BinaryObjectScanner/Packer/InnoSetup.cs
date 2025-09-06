@@ -60,18 +60,9 @@ namespace BinaryObjectScanner.Packer
             // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
 
-            byte[]? data;
-            try
-            {
-                data = nex.ReadArbitraryRange();
-                if (data == null)
-                    return "Unknown 1.X";
-            }
-            catch
-            {
-                // Ignore errors reading ranges
+            byte[]? data = nex.ReadArbitraryRange();
+            if (data == null)
                 return "Unknown 1.X";
-            }
 
             var matchers = new List<ContentMatchSet>
                 {
