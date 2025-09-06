@@ -12,24 +12,13 @@ namespace BinaryObjectScanner.FileType
     public class NewExecutable : Executable<SabreTools.Serialization.Wrappers.NewExecutable>
     {
         /// <inheritdoc/>
+        public NewExecutable(SabreTools.Serialization.Wrappers.NewExecutable? wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
         {
             // Create the output dictionary
             var protections = new ProtectionDictionary();
-
-            // Try to create a wrapper for the proper executable type
-            SabreTools.Serialization.Interfaces.IWrapper? wrapper;
-            try
-            {
-                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-                if (wrapper == null)
-                    return null;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-                return null;
-            }
 
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
@@ -38,13 +27,9 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, contentProtections.Values);
             }
 
-            // Only handle NE
-            if (wrapper is not SabreTools.Serialization.Wrappers.NewExecutable nex)
-                return null;
-
             // Standard checks
             var subProtections
-                = RunExecutableChecks(file, nex, StaticChecks.NewExecutableCheckClasses, includeDebug);
+                = RunExecutableChecks(file, _wrapper, StaticChecks.NewExecutableCheckClasses, includeDebug);
             protections.Append(file, subProtections.Values);
 
             // If there are no protections

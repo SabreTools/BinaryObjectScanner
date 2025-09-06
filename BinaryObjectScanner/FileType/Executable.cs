@@ -11,21 +11,11 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
-    public abstract class Executable<T> : IDetectable, IExtractable
+    public abstract class Executable<T> : DetectableBase<T>, IExtractable
         where T : WrapperBase
     {
         /// <inheritdoc/>
-        public string? Detect(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Detect(fs, file, includeDebug);
-        }
-
-        /// <inheritdoc/>
-        public abstract string? Detect(Stream stream, string file, bool includeDebug);
+        public Executable(T? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

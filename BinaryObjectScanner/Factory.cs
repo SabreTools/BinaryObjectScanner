@@ -19,30 +19,23 @@ namespace BinaryObjectScanner
             // Use the wrapper before the type
             switch (wrapper)
             {
-                case AACSMediaKeyBlock: return new FileType.AACSMediaKeyBlock();
-                case BDPlusSVM: return new FileType.BDPlusSVM();
-                // case CIA => new FileType.CIA(),
-                case LinearExecutable: return new FileType.LinearExecutable();
-                case MSDOS: return new FileType.MSDOS();
-                // case N3DS: return new FileType.N3DS();
-                case NewExecutable: return new FileType.NewExecutable();
-                case PlayJAudioFile: return new FileType.PLJ();
-                case PortableExecutable: return new FileType.PortableExecutable();
+                case AACSMediaKeyBlock obj: return new FileType.AACSMediaKeyBlock(obj);
+                case BDPlusSVM obj: return new FileType.BDPlusSVM(obj);
+                // case CIA obj => new FileType.CIA(obj),
+                case LinearExecutable obj: return new FileType.LinearExecutable(obj);
+                case MSDOS obj: return new FileType.MSDOS(obj);
+                // case N3DS obj: return new FileType.N3DS(obj);
+                case NewExecutable obj: return new FileType.NewExecutable(obj);
+                case PlayJAudioFile obj: return new FileType.PLJ(obj);
+                case PortableExecutable obj: return new FileType.PortableExecutable(obj);
             }
 
             // Fall back on the file type for types not implemented in Serialization
             return fileType switch
             {
-                WrapperType.AACSMediaKeyBlock => new FileType.AACSMediaKeyBlock(),
-                WrapperType.BDPlusSVM => new FileType.BDPlusSVM(),
                 // WrapperType.CIA => new FileType.CIA(),
                 WrapperType.LDSCRYPT => new FileType.LDSCRYPT(),
-                // WrapperType.LinearExecutable => new FileType.LinearExecutable(),
-                // WrapperType.MSDOS => new FileType.MSDOS(),
                 // WrapperType.N3DS => new FileType.N3DS(),
-                // WrapperType.NewExecutable => new FileType.NewExecutable(),
-                WrapperType.PlayJAudioFile => new FileType.PLJ(),
-                // WrapperType.PortableExecutable => new FileType.PortableExecutable(),
                 WrapperType.RealArcadeInstaller => new FileType.RealArcadeInstaller(),
                 WrapperType.RealArcadeMezzanine => new FileType.RealArcadeMezzanine(),
                 WrapperType.SFFS => new FileType.SFFS(),
@@ -74,22 +67,22 @@ namespace BinaryObjectScanner
                 case GZip: return new FileType.GZip();
                 case InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
                 case InstallShieldCabinet: return new FileType.InstallShieldCAB();
-                case LinearExecutable: return new FileType.LinearExecutable();
+                case LinearExecutable obj: return new FileType.LinearExecutable(obj);
                 case LZKWAJ: return new FileType.LZKWAJ();
                 case LZQBasic: return new FileType.LZQBasic();
                 case LZSZDD: return new FileType.LZSZDD();
                 case MicrosoftCabinet: return new FileType.MicrosoftCAB();
                 case MoPaQ: return new FileType.MPQ();
-                case MSDOS: return new FileType.MSDOS();
+                case MSDOS obj: return new FileType.MSDOS(obj);
                 // case N3DS: return new FileType.N3DS();
                 // case NCF: return new FileType.NCF();
-                case NewExecutable: return new FileType.NewExecutable();
+                case NewExecutable obj: return new FileType.NewExecutable(obj);
                 // case Nitro: return new FileType.Nitro();
                 case PAK: return new FileType.PAK();
                 case PFF: return new FileType.PFF();
                 case PKZIP: return new FileType.PKZIP();
                 // case PlayJAudioFile: return new FileType.PLJ();
-                case PortableExecutable: return new FileType.PortableExecutable();
+                case PortableExecutable obj: return new FileType.PortableExecutable(obj);
                 case Quantum: return new FileType.Quantum();
                 case RAR: return new FileType.RAR();
                 case SevenZip: return new FileType.SevenZip();

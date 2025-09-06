@@ -12,14 +12,14 @@ namespace BinaryObjectScanner.Test
 
         private static readonly List<WrapperType> _detectableTypes =
         [
-            WrapperType.AACSMediaKeyBlock,
-            WrapperType.BDPlusSVM,
-            //WrapperType.CIA,
-            //WrapperType.Executable,
+            // WrapperType.AACSMediaKeyBlock, // TODO: Create wrapper to reenable test
+            // WrapperType.BDPlusSVM, // TODO: Create wrapper to reenable test
+            // WrapperType.CIA,
+            // WrapperType.Executable, // TODO: This needs to be split internally
             WrapperType.LDSCRYPT,
-            //WrapperType.N3DS,
-            //WrapperType.Nitro,
-            WrapperType.PlayJAudioFile,
+            // WrapperType.N3DS,
+            // WrapperType.Nitro,
+            // WrapperType.PlayJAudioFile, // TODO: Create wrapper to reenable test
             WrapperType.RealArcadeInstaller,
             WrapperType.RealArcadeMezzanine,
             WrapperType.SFFS,
@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Test
             WrapperType.BZip2,
             WrapperType.CFB,
             //WrapperType.CIA,
-            //WrapperType.Executable,
+            //WrapperType.Executable, // TODO: This needs to be split internally
             WrapperType.GCF,
             WrapperType.GZip,
             WrapperType.InstallShieldArchiveV3,
@@ -79,7 +79,7 @@ namespace BinaryObjectScanner.Test
             WrapperType.PAK,
             WrapperType.PFF,
             WrapperType.PKZIP,
-            //WrapperType.PlayJAudioFile,
+            //WrapperType.PlayJAudioFile, // TODO: Create wrapper to reenable test
             //WrapperType.Quantum,
             WrapperType.RAR,
             WrapperType.SevenZip,

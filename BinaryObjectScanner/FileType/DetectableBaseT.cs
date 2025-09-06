@@ -1,3 +1,4 @@
+using System;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Interfaces;
 
@@ -8,6 +9,25 @@ namespace BinaryObjectScanner.FileType
     /// </summary>
     public abstract class DetectableBase<T> : DetectableBase, IDetectable<T> where T : IWrapper
     {
-        
+        #region Protected Instance Variables
+
+        /// <summary>
+        /// Wrapper representing the detectable
+        /// </summary>
+        protected T _wrapper { get; private set; }
+
+        #endregion
+
+        #region Constructors
+
+        public DetectableBase(T? wrapper)
+        {
+            if (wrapper == null)
+                throw new ArgumentNullException(nameof(wrapper));
+
+            _wrapper = wrapper;
+        }
+
+        #endregion
     }
 }

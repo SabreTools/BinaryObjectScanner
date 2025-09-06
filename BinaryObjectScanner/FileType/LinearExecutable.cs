@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
-using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -12,24 +10,13 @@ namespace BinaryObjectScanner.FileType
     public class LinearExecutable : Executable<SabreTools.Serialization.Wrappers.LinearExecutable>
     {
         /// <inheritdoc/>
+        public LinearExecutable(SabreTools.Serialization.Wrappers.LinearExecutable? wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
         {
             // Create the output dictionary
             var protections = new ProtectionDictionary();
-
-            // Try to create a wrapper for the proper executable type
-            SabreTools.Serialization.Interfaces.IWrapper? wrapper;
-            try
-            {
-                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-                if (wrapper == null)
-                    return null;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-                return null;
-            }
 
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
@@ -38,13 +25,9 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, contentProtections.Values);
             }
 
-            // Only handle LE/LX
-            if (wrapper is not SabreTools.Serialization.Wrappers.LinearExecutable lex)
-                return null;
-
             // Standard checks
             var subProtections
-                = RunExecutableChecks(file, lex, StaticChecks.LinearExecutableCheckClasses, includeDebug);
+                = RunExecutableChecks(file, _wrapper, StaticChecks.LinearExecutableCheckClasses, includeDebug);
             protections.Append(file, subProtections.Values);
 
             // If there are no protections

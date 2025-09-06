@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
@@ -12,24 +11,13 @@ namespace BinaryObjectScanner.FileType
     public class PortableExecutable : Executable<SabreTools.Serialization.Wrappers.PortableExecutable>
     {
         /// <inheritdoc/>
+        public PortableExecutable(SabreTools.Serialization.Wrappers.PortableExecutable? wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
         {
             // Create the output dictionary
             var protections = new ProtectionDictionary();
-
-            // Try to create a wrapper for the proper executable type
-            SabreTools.Serialization.Interfaces.IWrapper? wrapper;
-            try
-            {
-                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-                if (wrapper == null)
-                    return null;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-                return null;
-            }
 
             // Only use generic content checks if we're in debug mode
             if (includeDebug)
@@ -38,13 +26,9 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, contentProtections.Values);
             }
 
-            // Only handle PE
-            if (wrapper is not SabreTools.Serialization.Wrappers.PortableExecutable pex)
-                return null;
-
             // Standard checks
             var subProtections
-                = RunExecutableChecks(file, pex, StaticChecks.PortableExecutableCheckClasses, includeDebug);
+                = RunExecutableChecks(file, _wrapper, StaticChecks.PortableExecutableCheckClasses, includeDebug);
             protections.Append(file, subProtections.Values);
 
             // If there are no protections
