@@ -9,7 +9,7 @@ namespace ProtectionScan
     {
         static void Main(string[] args)
         {
-#if NET462_OR_GREATER || NETCOREAPP
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // Register the codepages
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif

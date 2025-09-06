@@ -1,5 +1,5 @@
 using System;
-#if NET40_OR_GREATER || NETCOREAPP
+#if NET40_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
 using System.Collections.Concurrent;
 #endif
 using System.Collections.Generic;
