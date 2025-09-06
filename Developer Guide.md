@@ -33,7 +33,7 @@ Adding a new checker or format should happen in a few distinct steps:
 
 1. Create a skeleton class representing the new checker or format
 
-    - If it is a new supported file type (such as an archive format), create the file in `BinaryObjectScanner.FileType`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IDetectable` or `BinaryObjectScanner.Interfaces.IExtractable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
+    - If it is a new supported file type (such as an archive format), create the file in `BinaryObjectScanner.FileType`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IDetectable`. Do not implement any other interfaces. Please consider asking project maintainers before doing this work, especially if there are external dependencies.
 
     - If it is a new supported game engine or standard library, create the file in `BinaryObjectScanner.GameEngine`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IExecutableCheck<T>`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
 

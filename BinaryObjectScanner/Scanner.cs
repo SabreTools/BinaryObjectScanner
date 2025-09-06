@@ -286,18 +286,16 @@ namespace BinaryObjectScanner
 
                 #region Archive File Types
 
-                // Create an extractable for the given file type
-                var extractable = Factory.CreateExtractable(fileType, wrapper);
-
                 // If we're scanning archives
-                if (extractable != null && _options.ScanArchives)
+                if (wrapper is SabreTools.Serialization.Interfaces.IExtractable extractable && _options.ScanArchives)
                 {
                     // If the extractable file itself fails
                     try
                     {
                         // Extract and get the output path
                         string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                        bool extracted = extractable.Extract(stream, fileName, tempPath, _options.IncludeDebug);
+                        Directory.CreateDirectory(tempPath);
+                        bool extracted = extractable.Extract(tempPath, _options.IncludeDebug);
 
                         // Collect and format all found protections
                         ProtectionDictionary? subProtections = null;

@@ -8,7 +8,8 @@ namespace BinaryObjectScanner.FileType
     /// StarForce Filesystem file
     /// </summary>
     /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
-    public class SFFS : DetectableExtractableBase
+    /// TODO: Implement extraction
+    public class SFFS : DetectableBase
     {
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
@@ -27,12 +28,6 @@ namespace BinaryObjectScanner.FileType
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

@@ -43,28 +43,5 @@ namespace BinaryObjectScanner.FileType
 
             return string.Join(";", [.. protectionList]);
         }
-
-        /// <inheritdoc/>
-        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
-        {
-            // Create the output directory
-            Directory.CreateDirectory(outDir);
-
-            // Extract all files
-            bool extractAny = false;
-            if (new Packer.CExe().CheckExecutable(file, _wrapper, includeDebug) != null)
-                extractAny |= _wrapper.ExtractCExe(outDir, includeDebug);
-
-            if (new Packer.EmbeddedFile().CheckExecutable(file, _wrapper, includeDebug) != null)
-            {
-                extractAny |= _wrapper.ExtractFromOverlay(outDir, includeDebug);
-                extractAny |= _wrapper.ExtractFromResources(outDir, includeDebug);
-            }
-
-            if (new Packer.WiseInstaller().CheckExecutable(file, _wrapper, includeDebug) != null)
-                extractAny |= _wrapper.ExtractWise(outDir, includeDebug);
-
-            return extractAny;
-        }
     }
 }

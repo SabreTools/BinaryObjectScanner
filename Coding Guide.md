@@ -377,7 +377,7 @@ Typed checks, such as `IExecutableCheck<T>` should always follow this order: `MS
 | Project | Description |
 | --- | --- |
 | `BinaryObjectScanner` | Varies from file to file. |
-| `BinaryObjectScanner/FileType` | `IDetectable` implementations, `IExtractable` implementations, helper methods. |
+| `BinaryObjectScanner/FileType` | `IDetectable` implementations, helper methods. |
 | `BinaryObjectScanner/GameEngine` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, helper methods. |
 | `BinaryObjectScanner/Interfaces` | Methods ordered alphabetically. |
 | `BinaryObjectScanner/Packer` | `IContentCheck` implementations, `IExecutableCheck<T>` implementations, `IPathCheck` implementations, helper methods. |
