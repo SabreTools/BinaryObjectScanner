@@ -66,29 +66,32 @@ namespace BinaryObjectScanner
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
         public Dictionary<string, List<string>> GetProtections(string path)
-            => GetProtectionsImpl(path).ToDictionary();
+            => GetProtectionsImpl(path, depth: 0).ToDictionary();
 
         /// <summary>
         /// Scan the list of paths and get all found protections
         /// </summary>
+        /// <param name="paths">Paths to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
         public Dictionary<string, List<string>> GetProtections(List<string>? paths)
-            => GetProtectionsImpl(paths).ToDictionary();
+            => GetProtectionsImpl(paths, depth: 0).ToDictionary();
 
         /// <summary>
         /// Scan a single path and get all found protections
         /// </summary>
         /// <param name="path">Path to scan</param>
+        /// <param name="depth">Depth of the current scanner pertaining to extracted data</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ProtectionDictionary GetProtectionsImpl(string path)
-            => GetProtectionsImpl([path]);
+        private ProtectionDictionary GetProtectionsImpl(string path, int depth)
+            => GetProtectionsImpl([path], depth);
 
         /// <summary>
         /// Scan a single path and get all found protections
         /// </summary>
-        /// <param name="path">Path to scan</param>
+        /// <param name="paths">Paths to scan</param>
+        /// <param name="depth">Depth of the current scanner pertaining to extracted data</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ProtectionDictionary GetProtectionsImpl(List<string>? paths)
+        private ProtectionDictionary GetProtectionsImpl(List<string>? paths, int depth)
         {
             // If we have no paths, we can't scan
             if (paths == null || paths.Count == 0)
@@ -130,12 +133,8 @@ namespace BinaryObjectScanner
 
                         // Get the reportable file name
                         string reportableFileName = file;
-                        int depth = 0;
                         if (reportableFileName.StartsWith(tempFilePath))
-                        {
-                            depth = 1;
                             reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
-                        }
 
                         // Checkpoint
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
@@ -149,7 +148,7 @@ namespace BinaryObjectScanner
                         }
 
                         // Scan for content-detectable protections
-                        var fileProtections = GetInternalProtections(file);
+                        var fileProtections = GetInternalProtections(file, depth);
                         if (fileProtections != null && fileProtections.Count > 0)
                             protections.Append(fileProtections);
 
@@ -167,12 +166,8 @@ namespace BinaryObjectScanner
                 {
                     // Get the reportable file name
                     string reportableFileName = path;
-                    int depth = 0;
                     if (reportableFileName.StartsWith(tempFilePath))
-                    {
-                        depth = 1;
                         reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
-                    }
 
                     // Checkpoint
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
@@ -186,7 +181,7 @@ namespace BinaryObjectScanner
                     }
 
                     // Scan for content-detectable protections
-                    var fileProtections = GetInternalProtections(path);
+                    var fileProtections = GetInternalProtections(path, depth);
                     if (fileProtections != null && fileProtections.Count > 0)
                         protections.Append(fileProtections);
 
@@ -220,8 +215,9 @@ namespace BinaryObjectScanner
         /// Get the content-detectable protections associated with a single path
         /// </summary>
         /// <param name="file">Path to the file to scan</param>
+        /// <param name="depth">Depth of the current scanner pertaining to extracted data</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ProtectionDictionary GetInternalProtections(string file)
+        private ProtectionDictionary GetInternalProtections(string file, int depth)
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
@@ -231,7 +227,7 @@ namespace BinaryObjectScanner
             try
             {
                 using FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                return GetInternalProtections(fs.Name, fs);
+                return GetInternalProtections(fs.Name, fs, depth);
             }
             catch (Exception ex)
             {
@@ -249,8 +245,9 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="fileName">Name of the source file of the stream, for tracking</param>
         /// <param name="stream">Stream to scan the contents of</param>
+        /// <param name="depth">Depth of the current scanner pertaining to extracted data</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        private ProtectionDictionary GetInternalProtections(string fileName, Stream stream)
+        private ProtectionDictionary GetInternalProtections(string fileName, Stream stream, int depth)
         {
             // Quick sanity check before continuing
             if (!stream.CanRead)
@@ -317,7 +314,7 @@ namespace BinaryObjectScanner
                         // Collect and format all found protections
                         ProtectionDictionary? subProtections = null;
                         if (extracted)
-                            subProtections = GetProtectionsImpl(tempPath);
+                            subProtections = GetProtectionsImpl(tempPath, depth + 1);
 
                         // If temp directory cleanup fails
                         try
