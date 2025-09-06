@@ -107,13 +107,13 @@ namespace ProtectionScan
         }
 
         /// <summary>
-        /// Display help text
+        /// Display a basic help text
         /// </summary>
         public static void DisplayHelp()
         {
             Console.WriteLine("Protection Scanner");
             Console.WriteLine();
-            Console.WriteLine("ProtectionScan.exe <options> file|directory ...");
+            Console.WriteLine("ProtectionScan <options> file|directory ...");
             Console.WriteLine();
             Console.WriteLine("Options:");
             Console.WriteLine("-?, -h, --help           Display this help text and quit");
