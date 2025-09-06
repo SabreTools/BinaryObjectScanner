@@ -1,25 +1,17 @@
 ﻿using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// InstallShield archive v3
     /// </summary>
-    public class InstallShieldArchiveV3 : IExtractable<SabreTools.Serialization.Wrappers.InstallShieldArchiveV3>
+    public class InstallShieldArchiveV3 : ExtractableBase<SabreTools.Serialization.Wrappers.InstallShieldArchiveV3>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public InstallShieldArchiveV3(SabreTools.Serialization.Wrappers.InstallShieldArchiveV3? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var isv3 = SabreTools.Serialization.Wrappers.InstallShieldArchiveV3.Create(stream);

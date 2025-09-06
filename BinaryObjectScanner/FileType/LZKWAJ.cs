@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// LZ-compressed file, KWAJ variant
     /// </summary>
-    public class LZKWAJ : IExtractable<SabreTools.Serialization.Wrappers.LZKWAJ>
+    public class LZKWAJ : ExtractableBase<SabreTools.Serialization.Wrappers.LZKWAJ>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public LZKWAJ(SabreTools.Serialization.Wrappers.LZKWAJ? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var kwaj = SabreTools.Serialization.Wrappers.LZKWAJ.Create(stream);

@@ -1,25 +1,17 @@
 ﻿using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Compound File Binary
     /// </summary>
-    public class CFB : IExtractable<SabreTools.Serialization.Wrappers.CFB>
+    public class CFB : ExtractableBase<SabreTools.Serialization.Wrappers.CFB>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public CFB(SabreTools.Serialization.Wrappers.CFB? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var cfb = SabreTools.Serialization.Wrappers.CFB.Create(stream);

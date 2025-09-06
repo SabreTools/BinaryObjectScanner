@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// SGA game archive
     /// </summary>
-    public class SGA : IExtractable<SabreTools.Serialization.Wrappers.SGA>
+    public class SGA : ExtractableBase<SabreTools.Serialization.Wrappers.SGA>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public SGA(SabreTools.Serialization.Wrappers.SGA? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var sga = SabreTools.Serialization.Wrappers.SGA.Create(stream);

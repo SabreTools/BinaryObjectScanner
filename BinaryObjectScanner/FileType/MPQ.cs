@@ -1,25 +1,17 @@
 ﻿using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// MoPaQ game data archive
     /// </summary>
-    public class MPQ : IExtractable<SabreTools.Serialization.Wrappers.MoPaQ>
+    public class MPQ : ExtractableBase<SabreTools.Serialization.Wrappers.MoPaQ>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public MPQ(SabreTools.Serialization.Wrappers.MoPaQ? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var mpq = SabreTools.Serialization.Wrappers.MoPaQ.Create(stream);

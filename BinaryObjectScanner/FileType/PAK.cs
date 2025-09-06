@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Half-Life Package File
     /// </summary>
-    public class PAK : IExtractable<SabreTools.Serialization.Wrappers.PAK>
+    public class PAK : ExtractableBase<SabreTools.Serialization.Wrappers.PAK>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public PAK(SabreTools.Serialization.Wrappers.PAK? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var pak = SabreTools.Serialization.Wrappers.PAK.Create(stream);

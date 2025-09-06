@@ -1,25 +1,17 @@
 ﻿using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// bzip2 archive
     /// </summary>
-    public class BZip2 : IExtractable<SabreTools.Serialization.Wrappers.BZip2>
+    public class BZip2 : ExtractableBase<SabreTools.Serialization.Wrappers.BZip2>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public BZip2(SabreTools.Serialization.Wrappers.BZip2? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Handle invalid inputs
             if (stream == null || stream.Length == 0)

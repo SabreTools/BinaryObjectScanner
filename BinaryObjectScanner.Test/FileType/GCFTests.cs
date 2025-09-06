@@ -6,12 +6,15 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class GCFTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.GCF wrapper
+            = new(new SabreTools.Models.GCF.File(), new MemoryStream());
+
         [Fact]
         public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new GCF();
+            var extractable = new GCF(wrapper);
 
             bool actual = extractable.Extract(file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -23,7 +26,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = null;
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new GCF();
+            var extractable = new GCF(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -35,7 +38,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = new MemoryStream();
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new GCF();
+            var extractable = new GCF(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);

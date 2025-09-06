@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// NovaLogic Game Archive Format
     /// </summary>
-    public class PFF : IExtractable<SabreTools.Serialization.Wrappers.PFF>
+    public class PFF : ExtractableBase<SabreTools.Serialization.Wrappers.PFF>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public PFF(SabreTools.Serialization.Wrappers.PFF? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var pff = SabreTools.Serialization.Wrappers.PFF.Create(stream);

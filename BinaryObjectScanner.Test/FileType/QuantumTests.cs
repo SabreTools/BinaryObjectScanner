@@ -6,12 +6,15 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class QuantumTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.Quantum wrapper
+            = new(new SabreTools.Models.Quantum.Archive(), new MemoryStream());
+
         [Fact]
         public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new Quantum();
+            var extractable = new Quantum(wrapper);
 
             bool actual = extractable.Extract(file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -23,7 +26,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = null;
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new Quantum();
+            var extractable = new Quantum(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -35,7 +38,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = new MemoryStream();
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new Quantum();
+            var extractable = new Quantum(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);

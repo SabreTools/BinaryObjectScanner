@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Half-Life Level
     /// </summary>
-    public class BSP : IExtractable<SabreTools.Serialization.Wrappers.BSP>
+    public class BSP : ExtractableBase<SabreTools.Serialization.Wrappers.BSP>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public BSP(SabreTools.Serialization.Wrappers.BSP? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var bsp = SabreTools.Serialization.Wrappers.BSP.Create(stream);

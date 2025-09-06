@@ -58,81 +58,50 @@ namespace BinaryObjectScanner
             // Use the wrapper before the type
             switch (wrapper)
             {
-                case BFPK: return new FileType.BFPK();
-                case BSP: return new FileType.BSP();
-                case BZip2: return new FileType.BZip2();
-                case CFB: return new FileType.CFB();
+                case BFPK obj: return new FileType.BFPK(obj);
+                case BSP obj: return new FileType.BSP(obj);
+                case BZip2 obj: return new FileType.BZip2(obj);
+                case CFB obj: return new FileType.CFB(obj);
                 // case CIA => new FileType.CIA(),
-                case GCF: return new FileType.GCF();
-                case GZip: return new FileType.GZip();
-                case InstallShieldArchiveV3: return new FileType.InstallShieldArchiveV3();
-                case InstallShieldCabinet: return new FileType.InstallShieldCAB();
-                case LZKWAJ: return new FileType.LZKWAJ();
-                case LZQBasic: return new FileType.LZQBasic();
-                case LZSZDD: return new FileType.LZSZDD();
-                case MicrosoftCabinet: return new FileType.MicrosoftCAB();
-                case MoPaQ: return new FileType.MPQ();
+                case GCF obj: return new FileType.GCF(obj);
+                case GZip obj: return new FileType.GZip(obj);
+                case InstallShieldArchiveV3 obj: return new FileType.InstallShieldArchiveV3(obj);
+                case InstallShieldCabinet obj: return new FileType.InstallShieldCAB(obj);
+                case LZKWAJ obj: return new FileType.LZKWAJ(obj);
+                case LZQBasic obj: return new FileType.LZQBasic(obj);
+                case LZSZDD obj: return new FileType.LZSZDD(obj);
+                case MicrosoftCabinet obj: return new FileType.MicrosoftCAB(obj);
+                case MoPaQ obj: return new FileType.MPQ(obj);
                 // case N3DS: return new FileType.N3DS();
                 // case NCF: return new FileType.NCF();
                 case NewExecutable obj: return new FileType.NewExecutable(obj);
                 // case Nitro: return new FileType.Nitro();
-                case PAK: return new FileType.PAK();
-                case PFF: return new FileType.PFF();
-                case PKZIP: return new FileType.PKZIP();
+                case PAK obj: return new FileType.PAK(obj);
+                case PFF obj: return new FileType.PFF(obj);
+                case PKZIP obj: return new FileType.PKZIP(obj);
                 // case PlayJAudioFile: return new FileType.PLJ();
                 case PortableExecutable obj: return new FileType.PortableExecutable(obj);
-                case Quantum: return new FileType.Quantum();
-                case RAR: return new FileType.RAR();
-                case SevenZip: return new FileType.SevenZip();
-                case SGA: return new FileType.SGA();
-                case TapeArchive: return new FileType.TapeArchive();
-                case VBSP: return new FileType.VBSP();
-                case VPK: return new FileType.VPK();
-                case WAD3: return new FileType.WAD3();
-                case XZ: return new FileType.XZ();
-                case XZP: return new FileType.XZP();
+                case Quantum obj: return new FileType.Quantum(obj);
+                case RAR obj: return new FileType.RAR(obj);
+                case SevenZip obj: return new FileType.SevenZip(obj);
+                case SGA obj: return new FileType.SGA(obj);
+                case TapeArchive obj: return new FileType.TapeArchive(obj);
+                case VBSP obj: return new FileType.VBSP(obj);
+                case VPK obj: return new FileType.VPK(obj);
+                case WAD3 obj: return new FileType.WAD3(obj);
+                case XZ obj: return new FileType.XZ(obj);
+                case XZP obj: return new FileType.XZP(obj);
             }
 
             // Fall back on the file type for types not implemented in Serialization
             return fileType switch
             {
-                WrapperType.BFPK => new FileType.BFPK(),
-                WrapperType.BSP => new FileType.BSP(),
-                WrapperType.BZip2 => new FileType.BZip2(),
-                WrapperType.CFB => new FileType.CFB(),
                 // WrapperType.CIA => new FileType.CIA(),
-                // WrapperType.Executable => new FileType.Executable(),
-                WrapperType.GCF => new FileType.GCF(),
-                WrapperType.GZip => new FileType.GZip(),
-                WrapperType.InstallShieldArchiveV3 => new FileType.InstallShieldArchiveV3(),
-                WrapperType.InstallShieldCAB => new FileType.InstallShieldCAB(),
-                // WrapperType.LinearExecutable => new FileType.LinearExecutable(),
-                WrapperType.LZKWAJ => new FileType.LZKWAJ(),
-                WrapperType.LZQBasic => new FileType.LZQBasic(),
-                WrapperType.LZSZDD => new FileType.LZSZDD(),
-                WrapperType.MicrosoftCAB => new FileType.MicrosoftCAB(),
-                WrapperType.MoPaQ => new FileType.MPQ(),
-                // WrapperType.MSDOS => new FileType.MSDOS(),
                 // WrapperType.N3DS => new FileType.N3DS(),
                 // WrapperType.NCF => new FileType.NCF(),
-                // WrapperType.NewExecutable => new FileType.NewExecutable(),
                 // WrapperType.Nitro => new FileType.Nitro(),
-                WrapperType.PAK => new FileType.PAK(),
-                WrapperType.PFF => new FileType.PFF(),
-                WrapperType.PKZIP => new FileType.PKZIP(),
                 // WrapperType.PlayJAudioFile => new FileType.PLJ(),
-                // WrapperType.PortableExecutable => new FileType.PortableExecutable(),
-                // WrapperType.Quantum => new FileType.Quantum(),
-                WrapperType.RAR => new FileType.RAR(),
-                WrapperType.SevenZip => new FileType.SevenZip(),
                 WrapperType.SFFS => new FileType.SFFS(),
-                WrapperType.SGA => new FileType.SGA(),
-                WrapperType.TapeArchive => new FileType.TapeArchive(),
-                WrapperType.VBSP => new FileType.VBSP(),
-                WrapperType.VPK => new FileType.VPK(),
-                WrapperType.WAD => new FileType.WAD3(),
-                WrapperType.XZ => new FileType.XZ(),
-                WrapperType.XZP => new FileType.XZP(),
                 _ => null,
             };
         }

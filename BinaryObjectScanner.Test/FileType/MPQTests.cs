@@ -6,12 +6,15 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class MPQTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.MoPaQ wrapper
+            = new(new SabreTools.Models.MoPaQ.Archive(), new MemoryStream());
+
         [Fact]
         public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new MPQ();
+            var extractable = new MPQ(wrapper);
 
             bool actual = extractable.Extract(file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -23,7 +26,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = null;
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new MPQ();
+            var extractable = new MPQ(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -35,7 +38,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = new MemoryStream();
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new MPQ();
+            var extractable = new MPQ(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);

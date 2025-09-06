@@ -1,25 +1,17 @@
 ﻿using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Tape archive
     /// </summary>
-    public class TapeArchive : IExtractable<SabreTools.Serialization.Wrappers.TapeArchive>
+    public class TapeArchive : ExtractableBase<SabreTools.Serialization.Wrappers.TapeArchive>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public TapeArchive(SabreTools.Serialization.Wrappers.TapeArchive? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var tar = SabreTools.Serialization.Wrappers.TapeArchive.Create(stream);

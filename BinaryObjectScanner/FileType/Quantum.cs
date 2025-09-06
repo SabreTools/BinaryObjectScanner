@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Quantum Archive
     /// </summary>
-    public class Quantum : IExtractable<SabreTools.Serialization.Wrappers.Quantum>
+    public class Quantum : ExtractableBase<SabreTools.Serialization.Wrappers.Quantum>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public Quantum(SabreTools.Serialization.Wrappers.Quantum? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var qtm = SabreTools.Serialization.Wrappers.Quantum.Create(stream);

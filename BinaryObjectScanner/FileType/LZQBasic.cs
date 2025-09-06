@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// LZ-compressed file, QBasic variant
     /// </summary>
-    public class LZQBasic : IExtractable<SabreTools.Serialization.Wrappers.LZQBasic>
+    public class LZQBasic : ExtractableBase<SabreTools.Serialization.Wrappers.LZQBasic>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public LZQBasic(SabreTools.Serialization.Wrappers.LZQBasic? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var qbasic = SabreTools.Serialization.Wrappers.LZQBasic.Create(stream);

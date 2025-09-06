@@ -1,25 +1,17 @@
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// LZ-compressed file, SZDD variant
     /// </summary>
-    public class LZSZDD : IExtractable<SabreTools.Serialization.Wrappers.LZSZDD>
+    public class LZSZDD : ExtractableBase<SabreTools.Serialization.Wrappers.LZSZDD>
     {
         /// <inheritdoc/>
-        public bool Extract(string file, string outDir, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return false;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Extract(fs, file, outDir, includeDebug);
-        }
+        public LZSZDD(SabreTools.Serialization.Wrappers.LZSZDD? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the wrapper
             var szdd = SabreTools.Serialization.Wrappers.LZSZDD.Create(stream);

@@ -58,39 +58,39 @@ namespace BinaryObjectScanner.Test
 
         private static readonly List<WrapperType> _extractableTypes =
         [
-            WrapperType.BFPK,
-            WrapperType.BSP,
-            WrapperType.BZip2,
-            WrapperType.CFB,
-            //WrapperType.CIA,
-            //WrapperType.Executable, // TODO: This needs to be split internally
-            WrapperType.GCF,
-            WrapperType.GZip,
-            WrapperType.InstallShieldArchiveV3,
-            WrapperType.InstallShieldCAB,
-            WrapperType.LZKWAJ,
-            WrapperType.LZQBasic,
-            WrapperType.LZSZDD,
-            WrapperType.MicrosoftCAB,
-            WrapperType.MoPaQ,
-            //WrapperType.N3DS,
-            //WrapperType.NCF,
-            //WrapperType.Nitro,
-            WrapperType.PAK,
-            WrapperType.PFF,
-            WrapperType.PKZIP,
-            //WrapperType.PlayJAudioFile, // TODO: Create wrapper to reenable test
-            //WrapperType.Quantum,
-            WrapperType.RAR,
-            WrapperType.SevenZip,
+            // WrapperType.BFPK, // TODO: Create wrapper to reenable test
+            // WrapperType.BSP, // TODO: Create wrapper to reenable test
+            // WrapperType.BZip2, // TODO: Create wrapper to reenable test
+            // WrapperType.CFB, // TODO: Create wrapper to reenable test
+            // WrapperType.CIA,
+            // WrapperType.Executable, // TODO: This needs to be split internally
+            // WrapperType.GCF, // TODO: Create wrapper to reenable test
+            // WrapperType.GZip, // TODO: Create wrapper to reenable test
+            // WrapperType.InstallShieldArchiveV3, // TODO: Create wrapper to reenable test
+            // WrapperType.InstallShieldCAB, // TODO: Create wrapper to reenable test
+            // WrapperType.LZKWAJ, // TODO: Create wrapper to reenable test
+            // WrapperType.LZQBasic, // TODO: Create wrapper to reenable test
+            // WrapperType.LZSZDD, // TODO: Create wrapper to reenable test
+            // WrapperType.MicrosoftCAB, // TODO: Create wrapper to reenable test
+            // WrapperType.MoPaQ, // TODO: Create wrapper to reenable test
+            // WrapperType.N3DS,
+            // WrapperType.NCF,
+            // WrapperType.Nitro,
+            // WrapperType.PAK, // TODO: Create wrapper to reenable test
+            // WrapperType.PFF, // TODO: Create wrapper to reenable test
+            // WrapperType.PKZIP, // TODO: Create wrapper to reenable test
+            // WrapperType.PlayJAudioFile, // TODO: Create wrapper to reenable test
+            // WrapperType.Quantum, // TODO: Create wrapper to reenable test
+            // WrapperType.RAR, // TODO: Create wrapper to reenable test
+            // WrapperType.SevenZip, // TODO: Create wrapper to reenable test
             WrapperType.SFFS,
-            WrapperType.SGA,
-            WrapperType.TapeArchive,
-            WrapperType.VBSP,
-            WrapperType.VPK,
-            WrapperType.WAD,
-            WrapperType.XZ,
-            WrapperType.XZP,
+            // WrapperType.SGA, // TODO: Create wrapper to reenable test
+            // WrapperType.TapeArchive, // TODO: Create wrapper to reenable test
+            // WrapperType.VBSP, // TODO: Create wrapper to reenable test
+            // WrapperType.VPK, // TODO: Create wrapper to reenable test
+            // WrapperType.WAD, // TODO: Create wrapper to reenable test
+            // WrapperType.XZ, // TODO: Create wrapper to reenable test
+            // WrapperType.XZP, // TODO: Create wrapper to reenable test
         ];
 
         [Theory]

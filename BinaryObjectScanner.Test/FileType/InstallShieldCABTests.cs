@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using BinaryObjectScanner.FileType;
 using Xunit;
 
@@ -7,12 +6,15 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class InstallShieldCABTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.InstallShieldCabinet wrapper
+            = new(new SabreTools.Models.InstallShieldCabinet.Cabinet(), new MemoryStream());
+
         [Fact]
         public void ExtractFile_EmptyString_False()
         {
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new InstallShieldCAB();
+            var extractable = new InstallShieldCAB(wrapper);
 
             bool actual = extractable.Extract(file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -24,7 +26,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = null;
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new InstallShieldCAB();
+            var extractable = new InstallShieldCAB(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
@@ -36,7 +38,7 @@ namespace BinaryObjectScanner.Test.FileType
             Stream? stream = new MemoryStream();
             string file = string.Empty;
             string outDir = string.Empty;
-            var extractable = new InstallShieldCAB();
+            var extractable = new InstallShieldCAB(wrapper);
 
             bool actual = extractable.Extract(stream, file, outDir, includeDebug: false);
             Assert.False(actual);
