@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -59,31 +58,22 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            // Create the wrapper
-            var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-            if (wrapper == null)
-                return false;
-
-            // Only handle PE
-            if (wrapper is not SabreTools.Serialization.Wrappers.PortableExecutable pex)
-                return false;
-
             // Create the output directory
             Directory.CreateDirectory(outDir);
 
             // Extract all files
             bool extractAny = false;
-            if (new Packer.CExe().CheckExecutable(file, pex, includeDebug) != null)
-                extractAny |= pex.ExtractCExe(outDir, includeDebug);
+            if (new Packer.CExe().CheckExecutable(file, _wrapper, includeDebug) != null)
+                extractAny |= _wrapper.ExtractCExe(outDir, includeDebug);
 
-            if (new Packer.EmbeddedFile().CheckExecutable(file, pex, includeDebug) != null)
+            if (new Packer.EmbeddedFile().CheckExecutable(file, _wrapper, includeDebug) != null)
             {
-                extractAny |= pex.ExtractFromOverlay(outDir, includeDebug);
-                extractAny |= pex.ExtractFromResources(outDir, includeDebug);
+                extractAny |= _wrapper.ExtractFromOverlay(outDir, includeDebug);
+                extractAny |= _wrapper.ExtractFromResources(outDir, includeDebug);
             }
 
-            if (new Packer.WiseInstaller().CheckExecutable(file, pex, includeDebug) != null)
-                extractAny |= pex.ExtractWise(outDir, includeDebug);
+            if (new Packer.WiseInstaller().CheckExecutable(file, _wrapper, includeDebug) != null)
+                extractAny |= _wrapper.ExtractWise(outDir, includeDebug);
 
             return extractAny;
         }

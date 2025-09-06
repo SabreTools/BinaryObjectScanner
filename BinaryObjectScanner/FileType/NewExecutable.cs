@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -59,25 +58,16 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            // Create the wrapper
-            var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-            if (wrapper == null)
-                return false;
-
-            // Only handle NE
-            if (wrapper is not SabreTools.Serialization.Wrappers.NewExecutable nex)
-                return false;
-
             // Create the output directory
             Directory.CreateDirectory(outDir);
 
             // Extract all files
             bool extractAny = false;
-            if (new Packer.EmbeddedFile().CheckExecutable(file, nex, includeDebug) != null)
-                extractAny |= nex.ExtractFromOverlay(outDir, includeDebug);
+            if (new Packer.EmbeddedFile().CheckExecutable(file, _wrapper, includeDebug) != null)
+                extractAny |= _wrapper.ExtractFromOverlay(outDir, includeDebug);
 
-            if (new Packer.WiseInstaller().CheckExecutable(file, nex, includeDebug) != null)
-                extractAny |= nex.ExtractWise(outDir, includeDebug);
+            if (new Packer.WiseInstaller().CheckExecutable(file, _wrapper, includeDebug) != null)
+                extractAny |= _wrapper.ExtractWise(outDir, includeDebug);
 
             return extractAny;
         }
