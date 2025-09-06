@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// New executable (NE)
     /// </summary>
-    public class NewExecutable : Executable<SabreTools.Serialization.Wrappers.NewExecutable>, IExtractable
+    public class NewExecutable : Executable<SabreTools.Serialization.Wrappers.NewExecutable>
     {
         /// <inheritdoc/>
         public NewExecutable(SabreTools.Serialization.Wrappers.NewExecutable? wrapper) : base(wrapper) { }
@@ -46,12 +45,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-        /// <remarks>Uses the already-generated wrapper</remarks>
-        public bool Extract(string file, string outDir, bool includeDebug)
-            => Extract(null, file, outDir, includeDebug);
-
-        /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
+        public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
             // Create the output directory
             Directory.CreateDirectory(outDir);

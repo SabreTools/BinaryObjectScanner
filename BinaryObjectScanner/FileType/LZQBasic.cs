@@ -13,16 +13,8 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            // Create the wrapper
-            var qbasic = SabreTools.Serialization.Wrappers.LZQBasic.Create(stream);
-            if (qbasic == null)
-                return false;
-
-            // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            qbasic.Extract(outDir, includeDebug);
-
-            return true;
+            return _wrapper.Extract(outDir, includeDebug);
         }
     }
 }

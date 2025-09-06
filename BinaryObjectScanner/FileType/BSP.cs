@@ -13,18 +13,8 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public override bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
         {
-            // Create the wrapper
-            var bsp = SabreTools.Serialization.Wrappers.BSP.Create(stream);
-            if (bsp == null)
-                return false;
-
-            // TODO: Introduce helper methods for all specialty lump types
-
-            // Loop through and extract all files
             Directory.CreateDirectory(outDir);
-            bsp.Extract(outDir, includeDebug);
-
-            return true;
+            return _wrapper.Extract(outDir, includeDebug);
         }
     }
 }

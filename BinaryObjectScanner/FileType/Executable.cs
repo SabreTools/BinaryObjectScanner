@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
-    public abstract class Executable<T> : DetectableBase<T>
+    public abstract class Executable<T> : DetectableExtractableBase<T>
         where T : WrapperBase
     {
         /// <inheritdoc/>
