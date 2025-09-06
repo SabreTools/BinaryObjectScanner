@@ -65,14 +65,30 @@ namespace BinaryObjectScanner
         /// </summary>
         /// <param name="path">Path to scan</param>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public ProtectionDictionary GetProtections(string path)
-            => GetProtections([path]);
+        public Dictionary<string, List<string>> GetProtections(string path)
+            => GetProtectionsImpl(path).ToDictionary();
 
         /// <summary>
         /// Scan the list of paths and get all found protections
         /// </summary>
         /// <returns>Dictionary of list of strings representing the found protections</returns>
-        public ProtectionDictionary GetProtections(List<string>? paths)
+        public Dictionary<string, List<string>> GetProtections(List<string>? paths)
+            => GetProtectionsImpl(paths).ToDictionary();
+
+        /// <summary>
+        /// Scan a single path and get all found protections
+        /// </summary>
+        /// <param name="path">Path to scan</param>
+        /// <returns>Dictionary of list of strings representing the found protections</returns>
+        private ProtectionDictionary GetProtectionsImpl(string path)
+            => GetProtectionsImpl([path]);
+
+        /// <summary>
+        /// Scan a single path and get all found protections
+        /// </summary>
+        /// <param name="path">Path to scan</param>
+        /// <returns>Dictionary of list of strings representing the found protections</returns>
+        private ProtectionDictionary GetProtectionsImpl(List<string>? paths)
         {
             // If we have no paths, we can't scan
             if (paths == null || paths.Count == 0)
@@ -301,7 +317,7 @@ namespace BinaryObjectScanner
                         // Collect and format all found protections
                         ProtectionDictionary? subProtections = null;
                         if (extracted)
-                            subProtections = GetProtections(tempPath);
+                            subProtections = GetProtectionsImpl(tempPath);
 
                         // If temp directory cleanup fails
                         try

@@ -11,11 +11,13 @@ namespace BinaryObjectScanner.Data
     /// Represents a mapping from file to a set of protections
     /// </summary>
 #if NET20 || NET35
-    public class ProtectionDictionary : Dictionary<string, Queue<string>>
+    internal class ProtectionDictionary : Dictionary<string, Queue<string>>
 #else
-    public class ProtectionDictionary : ConcurrentDictionary<string, ConcurrentQueue<string>>
+    internal class ProtectionDictionary : ConcurrentDictionary<string, ConcurrentQueue<string>>
 #endif
     {
+        #region Accessors
+
         /// <summary>
         /// Append one result to a results dictionary
         /// </summary>
@@ -197,6 +199,32 @@ namespace BinaryObjectScanner.Data
                 }
             }
         }
+
+        #endregion
+
+        #region Conversion
+
+        /// <summary>
+        /// Reformat a protection dictionary for standard output
+        /// </summary>
+        /// <returns>Reformatted dictionary on success, empty on error</returns>
+        public Dictionary<string, List<string>> ToDictionary()
+        {
+            // Null or empty protections return empty
+            if (Count == 0)
+                return [];
+
+            // Reformat each set into a List
+            var newDict = new Dictionary<string, List<string>>();
+            foreach (string key in Keys)
+            {
+                newDict[key] = [.. this[key]];
+            }
+
+            return newDict;
+        }
+
+        #endregion
 
         #region Helpers
 

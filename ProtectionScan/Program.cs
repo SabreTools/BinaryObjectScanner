@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner;
-using BinaryObjectScanner.Data;
 
 namespace ProtectionScan
 {
@@ -86,7 +86,7 @@ namespace ProtectionScan
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
-        private static void WriteProtectionResultFile(string path, ProtectionDictionary? protections)
+        private static void WriteProtectionResultFile(string path, Dictionary<string, List<string>> protections)
         {
             if (protections == null)
             {
@@ -113,11 +113,12 @@ namespace ProtectionScan
             foreach (string key in keys)
             {
                 // Skip over files with no protection
-                if (protections[key] == null || protections[key].Count == 0)
+                var value = protections[key];
+                if (value.Count == 0)
                     continue;
 
                 // Sort the detected protections for consistent output
-                string[] fileProtections = [.. protections[key]];
+                string[] fileProtections = [.. value];
                 Array.Sort(fileProtections);
 
                 // Format and output the line
