@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// RAR archive
     /// </summary>
-    public class RAR : IExtractable
+    public class RAR : IExtractable<SabreTools.Serialization.Wrappers.RAR>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

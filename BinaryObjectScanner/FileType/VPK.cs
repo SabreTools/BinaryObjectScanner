@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Valve Package File
     /// </summary>
-    public class VPK : IExtractable
+    public class VPK : IExtractable<SabreTools.Serialization.Wrappers.VPK>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

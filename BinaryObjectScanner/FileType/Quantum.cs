@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Quantum Archive
     /// </summary>
-    public class Quantum : IExtractable
+    public class Quantum : IExtractable<SabreTools.Serialization.Wrappers.Quantum>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

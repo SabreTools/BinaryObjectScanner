@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// InstallShield archive v3
     /// </summary>
-    public class InstallShieldArchiveV3 : IExtractable
+    public class InstallShieldArchiveV3 : IExtractable<SabreTools.Serialization.Wrappers.InstallShieldArchiveV3>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

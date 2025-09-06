@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// xz archive
     /// </summary>
-    public class XZ : IExtractable
+    public class XZ : IExtractable<SabreTools.Serialization.Wrappers.XZ>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

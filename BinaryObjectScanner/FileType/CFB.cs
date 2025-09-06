@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Compound File Binary
     /// </summary>
-    public class CFB : IExtractable
+    public class CFB : IExtractable<SabreTools.Serialization.Wrappers.CFB>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

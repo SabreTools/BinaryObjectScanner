@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// bzip2 archive
     /// </summary>
-    public class BZip2 : IExtractable
+    public class BZip2 : IExtractable<SabreTools.Serialization.Wrappers.BZip2>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

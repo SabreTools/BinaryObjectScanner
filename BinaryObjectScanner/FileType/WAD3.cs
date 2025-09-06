@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Half-Life Texture Package File
     /// </summary>
-    public class WAD3 : IExtractable
+    public class WAD3 : IExtractable<SabreTools.Serialization.Wrappers.WAD3>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

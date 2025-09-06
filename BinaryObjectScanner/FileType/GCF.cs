@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Half-Life Game Cache File
     /// </summary>
-    public class GCF : IExtractable
+    public class GCF : IExtractable<SabreTools.Serialization.Wrappers.GCF>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

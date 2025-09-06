@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// LZ-compressed file, KWAJ variant
     /// </summary>
-    public class LZKWAJ : IExtractable
+    public class LZKWAJ : IExtractable<SabreTools.Serialization.Wrappers.LZKWAJ>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

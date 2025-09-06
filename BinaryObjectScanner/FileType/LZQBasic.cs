@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// LZ-compressed file, QBasic variant
     /// </summary>
-    public class LZQBasic : IExtractable
+    public class LZQBasic : IExtractable<SabreTools.Serialization.Wrappers.LZQBasic>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

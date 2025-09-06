@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// PKWARE ZIP archive and derivatives
     /// </summary>
-    public class PKZIP : IExtractable
+    public class PKZIP : IExtractable<SabreTools.Serialization.Wrappers.PKZIP>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

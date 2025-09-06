@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// 7-zip archive
     /// </summary>
-    public class SevenZip : IExtractable
+    public class SevenZip : IExtractable<SabreTools.Serialization.Wrappers.SevenZip>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

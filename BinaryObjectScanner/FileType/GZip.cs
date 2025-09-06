@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// gzip archive
     /// </summary>
-    public class GZip : IExtractable
+    public class GZip : IExtractable<SabreTools.Serialization.Wrappers.GZip>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

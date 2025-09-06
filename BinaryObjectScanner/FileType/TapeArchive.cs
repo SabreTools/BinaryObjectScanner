@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Tape archive
     /// </summary>
-    public class TapeArchive : IExtractable
+    public class TapeArchive : IExtractable<SabreTools.Serialization.Wrappers.TapeArchive>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// LZ-compressed file, SZDD variant
     /// </summary>
-    public class LZSZDD : IExtractable
+    public class LZSZDD : IExtractable<SabreTools.Serialization.Wrappers.LZSZDD>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

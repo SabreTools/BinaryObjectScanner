@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// SGA game archive
     /// </summary>
-    public class SGA : IExtractable
+    public class SGA : IExtractable<SabreTools.Serialization.Wrappers.SGA>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

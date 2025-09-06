@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// XBox Package File
     /// </summary>
-    public class XZP : IExtractable
+    public class XZP : IExtractable<SabreTools.Serialization.Wrappers.XZP>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

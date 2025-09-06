@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// MoPaQ game data archive
     /// </summary>
-    public class MPQ : IExtractable
+    public class MPQ : IExtractable<SabreTools.Serialization.Wrappers.MoPaQ>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

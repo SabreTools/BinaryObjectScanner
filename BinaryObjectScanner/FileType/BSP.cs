@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Half-Life Level
     /// </summary>
-    public class BSP : IExtractable
+    public class BSP : IExtractable<SabreTools.Serialization.Wrappers.BSP>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

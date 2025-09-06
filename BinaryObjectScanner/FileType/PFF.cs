@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// NovaLogic Game Archive Format
     /// </summary>
-    public class PFF : IExtractable
+    public class PFF : IExtractable<SabreTools.Serialization.Wrappers.PFF>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

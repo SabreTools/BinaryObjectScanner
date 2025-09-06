@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Half-Life Package File
     /// </summary>
-    public class PAK : IExtractable
+    public class PAK : IExtractable<SabreTools.Serialization.Wrappers.PAK>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

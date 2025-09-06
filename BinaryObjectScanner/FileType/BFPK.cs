@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// BFPK custom archive format
     /// </summary>
-    public class BFPK : IExtractable
+    public class BFPK : IExtractable<SabreTools.Serialization.Wrappers.BFPK>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)

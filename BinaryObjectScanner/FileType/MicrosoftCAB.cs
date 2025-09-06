@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Microsoft cabinet file
     /// </summary>
-    public class MicrosoftCAB : IExtractable
+    public class MicrosoftCAB : IExtractable<SabreTools.Serialization.Wrappers.MicrosoftCabinet>
     {
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)
