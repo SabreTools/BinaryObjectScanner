@@ -11,7 +11,8 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Executable or library
     /// </summary>
-    public class Executable : IDetectable, IExtractable
+    public abstract class Executable<T> : IDetectable, IExtractable
+        where T : WrapperBase
     {
         /// <inheritdoc/>
         public string? Detect(string file, bool includeDebug)
@@ -24,74 +25,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-        public string? Detect(Stream stream, string file, bool includeDebug)
-        {
-            // Create the output dictionary
-            var protections = new ProtectionDictionary();
-
-            // Try to create a wrapper for the proper executable type
-            SabreTools.Serialization.Interfaces.IWrapper? wrapper;
-            try
-            {
-                wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-                if (wrapper == null)
-                    return null;
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-                return null;
-            }
-
-            // Only use generic content checks if we're in debug mode
-            if (includeDebug)
-            {
-                var subProtections = RunContentChecks(file, stream, includeDebug);
-                protections.Append(file, subProtections.Values);
-            }
-
-            if (wrapper is MSDOS mz)
-            {
-                // Standard checks
-                var subProtections
-                    = RunExecutableChecks(file, mz, StaticChecks.MSDOSExecutableCheckClasses, includeDebug);
-                protections.Append(file, subProtections.Values);
-            }
-            else if (wrapper is LinearExecutable lex)
-            {
-                // Standard checks
-                var subProtections
-                    = RunExecutableChecks(file, lex, StaticChecks.LinearExecutableCheckClasses, includeDebug);
-                protections.Append(file, subProtections.Values);
-            }
-            else if (wrapper is NewExecutable nex)
-            {
-                // Standard checks
-                var subProtections
-                    = RunExecutableChecks(file, nex, StaticChecks.NewExecutableCheckClasses, includeDebug);
-                protections.Append(file, subProtections.Values);
-            }
-            else if (wrapper is PortableExecutable pex)
-            {
-                // Standard checks
-                var subProtections
-                    = RunExecutableChecks(file, pex, StaticChecks.PortableExecutableCheckClasses, includeDebug);
-                protections.Append(file, subProtections.Values);
-            }
-
-            // If there are no protections
-            if (protections.Count == 0)
-                return null;
-
-            // Create the internal list
-            var protectionList = new List<string>();
-            foreach (string key in protections.Keys)
-            {
-                protectionList.AddRange(protections[key]);
-            }
-
-            return string.Join(";", [.. protectionList]);
-        }
+        public abstract string? Detect(Stream stream, string file, bool includeDebug);
 
         /// <inheritdoc/>
         public bool Extract(string file, string outDir, bool includeDebug)
@@ -104,41 +38,7 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <inheritdoc/>
-        public bool Extract(Stream? stream, string file, string outDir, bool includeDebug)
-        {
-            // Create the wrapper
-            var wrapper = WrapperFactory.CreateExecutableWrapper(stream);
-            if (wrapper == null)
-                return false;
-
-            // Extract all files
-            bool extractAny = false;
-            Directory.CreateDirectory(outDir);
-            if (wrapper is PortableExecutable pex)
-            {
-                if (new Packer.CExe().CheckExecutable(file, pex, includeDebug) != null)
-                    extractAny |= pex.ExtractCExe(outDir, includeDebug);
-
-                if (new Packer.EmbeddedFile().CheckExecutable(file, pex, includeDebug) != null)
-                {
-                    extractAny |= pex.ExtractFromOverlay(outDir, includeDebug);
-                    extractAny |= pex.ExtractFromResources(outDir, includeDebug);
-                }
-
-                if (new Packer.WiseInstaller().CheckExecutable(file, pex, includeDebug) != null)
-                    extractAny |= pex.ExtractWise(outDir, includeDebug);
-            }
-            else if (wrapper is NewExecutable nex)
-            {
-                if (new Packer.EmbeddedFile().CheckExecutable(file, nex, includeDebug) != null)
-                    extractAny |= nex.ExtractFromOverlay(outDir, includeDebug);
-
-                if (new Packer.WiseInstaller().CheckExecutable(file, nex, includeDebug) != null)
-                    extractAny |= nex.ExtractWise(outDir, includeDebug);
-            }
-
-            return extractAny;
-        }
+        public abstract bool Extract(Stream? stream, string file, string outDir, bool includeDebug);
 
         #region Check Runners
 
@@ -149,7 +49,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="stream">Stream to scan the contents of</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        private static IDictionary<IContentCheck, string> RunContentChecks(string? file, Stream stream, bool includeDebug)
+        protected IDictionary<IContentCheck, string> RunContentChecks(string? file, Stream stream, bool includeDebug)
         {
             // Create the output dictionary
             var protections = new CheckDictionary<IContentCheck>();
@@ -202,8 +102,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="scanner">Scanner for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        private static IDictionary<U, string> RunExecutableChecks<T, U>(string file, T exe, List<U> checks, bool includeDebug)
-            where T : WrapperBase
+        protected IDictionary<U, string> RunExecutableChecks<U>(string file, T exe, List<U> checks, bool includeDebug)
             where U : IExecutableCheck<T>
         {
             // Create the output dictionary

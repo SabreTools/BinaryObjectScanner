@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
-using BinaryObjectScanner.FileType;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
@@ -268,10 +267,13 @@ namespace BinaryObjectScanner
                 if (fileType == WrapperType.UNKNOWN)
                     return [];
 
+                // Get the wrapper, if possible
+                var wrapper = WrapperFactory.CreateWrapper(fileType, stream);
+
                 #region Non-Archive File Types
 
                 // Create a detectable for the given file type
-                var detectable = Factory.CreateDetectable(fileType);
+                var detectable = Factory.CreateDetectable(fileType, wrapper);
 
                 // If we're scanning file contents
                 if (detectable != null && _options.ScanContents)
@@ -285,10 +287,10 @@ namespace BinaryObjectScanner
                 #region Archive File Types
 
                 // Create an extractable for the given file type
-                var extractable = Factory.CreateExtractable(fileType);
+                var extractable = Factory.CreateExtractable(fileType, wrapper);
 
                 // If we're scanning archives
-                if (extractable != null && (extractable is Executable || _options.ScanArchives))
+                if (extractable != null && _options.ScanArchives)
                 {
                     // If the extractable file itself fails
                     try

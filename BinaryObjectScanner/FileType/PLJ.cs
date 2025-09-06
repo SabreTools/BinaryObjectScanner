@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// PlayJ audio file
     /// </summary>
-    public class PLJ : IDetectable
+    public class PLJ : IDetectable<SabreTools.Serialization.Wrappers.PlayJAudioFile>
     {
         /// <inheritdoc/>
         public string? Detect(string file, bool includeDebug)

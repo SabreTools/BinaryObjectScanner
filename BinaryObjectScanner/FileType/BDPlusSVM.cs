@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// BD+ SVM
     /// </summary>
-    public class BDPlusSVM : IDetectable
+    public class BDPlusSVM : IDetectable<SabreTools.Serialization.Wrappers.BDPlusSVM>
     {
         /// <inheritdoc/>
         public string? Detect(string file, bool includeDebug)

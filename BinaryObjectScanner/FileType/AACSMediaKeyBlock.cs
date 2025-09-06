@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// AACS media key block
     /// </summary>
-    public class AACSMediaKeyBlock : IDetectable
+    public class AACSMediaKeyBlock : IDetectable<SabreTools.Serialization.Wrappers.AACSMediaKeyBlock>
     {
         /// <inheritdoc/>
         public string? Detect(string file, bool includeDebug)

@@ -4,13 +4,13 @@ using Xunit;
 
 namespace BinaryObjectScanner.Test.FileType
 {
-    public class ExecutableTests
+    public class PortableExecutableTests
     {
         [Fact]
         public void DetectFile_EmptyString_Null()
         {
             string file = string.Empty;
-            var detectable = new Executable();
+            var detectable = new PortableExecutable();
 
             string? actual = detectable.Detect(file, includeDebug: false);
             Assert.Null(actual);
@@ -21,7 +21,7 @@ namespace BinaryObjectScanner.Test.FileType
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
-            var detectable = new Executable();
+            var detectable = new PortableExecutable();
 
             string? actual = detectable.Detect(stream, file, includeDebug: false);
             Assert.Null(actual);
