@@ -26,28 +26,6 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public string? Detect(Stream stream, string file, bool includeDebug)
         {
-            // Get all non-nested protections
-            var protections = DetectDict(stream, file, includeDebug);
-            if (protections.Count == 0)
-                return null;
-
-            // Create the internal list
-            var protectionList = new List<string>();
-            foreach (string key in protections.Keys)
-            {
-                protectionList.AddRange(protections[key]);
-            }
-
-            return string.Join(";", [.. protectionList]);
-        }
-
-        /// <inheritdoc cref="IDetectable.Detect(Stream, string, bool)"/>
-        /// <remarks>
-        /// Ideally, we wouldn't need to circumvent the proper handling of file types just for Executable,
-        /// but due to the complexity of scanning, this is not currently possible.
-        /// </remarks>
-        public ProtectionDictionary DetectDict(Stream stream, string file, bool includeDebug)
-        {
             // Create the output dictionary
             var protections = new ProtectionDictionary();
 
@@ -57,12 +35,12 @@ namespace BinaryObjectScanner.FileType
             {
                 wrapper = WrapperFactory.CreateExecutableWrapper(stream);
                 if (wrapper == null)
-                    return protections;
+                    return null;
             }
             catch (Exception ex)
             {
                 if (includeDebug) Console.Error.WriteLine(ex);
-                return protections;
+                return null;
             }
 
             // Only use generic content checks if we're in debug mode
@@ -101,7 +79,18 @@ namespace BinaryObjectScanner.FileType
                 protections.Append(file, subProtections.Values);
             }
 
-            return protections;
+            // If there are no protections
+            if (protections.Count == 0)
+                return null;
+
+            // Create the internal list
+            var protectionList = new List<string>();
+            foreach (string key in protections.Keys)
+            {
+                protectionList.AddRange(protections[key]);
+            }
+
+            return string.Join(";", [.. protectionList]);
         }
 
         /// <inheritdoc/>

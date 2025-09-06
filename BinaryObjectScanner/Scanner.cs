@@ -276,19 +276,8 @@ namespace BinaryObjectScanner
                 // If we're scanning file contents
                 if (detectable != null && _options.ScanContents)
                 {
-                    // If we have an executable, it needs to bypass normal handling
-                    if (detectable is Executable executable)
-                    {
-                        var subProtections = executable.DetectDict(stream, fileName, _options.IncludeDebug);
-                        protections.Append(subProtections);
-                    }
-
-                    // Otherwise, use the default implementation
-                    else
-                    {
-                        var subProtection = detectable.Detect(stream, fileName, _options.IncludeDebug);
-                        protections.Append(fileName, subProtection);
-                    }
+                    var subProtection = detectable.Detect(stream, fileName, _options.IncludeDebug);
+                    protections.Append(fileName, subProtection);
                 }
 
                 #endregion

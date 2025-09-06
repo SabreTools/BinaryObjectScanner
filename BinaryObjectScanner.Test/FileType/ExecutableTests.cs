@@ -26,16 +26,5 @@ namespace BinaryObjectScanner.Test.FileType
             string? actual = detectable.Detect(stream, file, includeDebug: false);
             Assert.Null(actual);
         }
-
-        [Fact]
-        public void DetectDict_EmptyStream_Empty()
-        {
-            Stream? stream = new MemoryStream();
-            string file = string.Empty;
-            var detectable = new Executable();
-
-            ProtectionDictionary actual = detectable.DetectDict(stream, file, includeDebug: false);
-            Assert.Empty(actual);
-        }
     }
 }
