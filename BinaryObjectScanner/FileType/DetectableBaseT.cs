@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.FileType
         /// <summary>
         /// Wrapper representing the detectable
         /// </summary>
-        protected T _wrapper { get; private set; }
+        protected readonly T _wrapper;
 
         #endregion
 
