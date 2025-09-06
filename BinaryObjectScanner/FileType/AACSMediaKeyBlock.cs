@@ -14,12 +14,11 @@ namespace BinaryObjectScanner.FileType
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
         {
-            // Derive the version, if possible
-            var typeAndVersion = Array.Find(_wrapper.Records ?? [], r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
-            if (typeAndVersion == null)
-                return "AACS (Unknown Version)";
-            else
-                return $"AACS {(typeAndVersion as SabreTools.Models.AACS.TypeAndVersionRecord)?.VersionNumber}";
+            var record = Array.Find(_wrapper.Records, r => r.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
+            if (record is SabreTools.Models.AACS.TypeAndVersionRecord tavr)
+                return $"AACS {tavr.VersionNumber}";
+
+            return "AACS (Unknown Version)";
         }
     }
 }
