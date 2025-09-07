@@ -65,6 +65,10 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 114428
                 new(new FilePathMatch("saAuditMD.dll"), "Uniloc SoftAnchor"),
+
+                // Found in Alpha Protocol -- TODO: Get Redump ID(s)
+                new(new FilePathMatch("saAudit2005MD.dll"), "Uniloc SoftAnchor"),
+                new(new FilePathMatch("SANativeUIDLL.dll"), "Uniloc SoftAnchor"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);
@@ -82,6 +86,10 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 114428
                 new(new FilePathMatch("saAuditMD.dll"), "Uniloc SoftAnchor"),
+
+                // Found in Alpha Protocol -- TODO: Get Redump ID(s)
+                new(new FilePathMatch("saAudit2005MD.dll"), "Uniloc SoftAnchor"),
+                new(new FilePathMatch("SANativeUIDLL.dll"), "Uniloc SoftAnchor"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
