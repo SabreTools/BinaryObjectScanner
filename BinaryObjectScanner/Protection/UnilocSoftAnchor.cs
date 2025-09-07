@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
