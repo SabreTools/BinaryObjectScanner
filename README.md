@@ -123,6 +123,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Themida/WinLicense/Code Virtualizer | True | False | Only certain products/versions currently detected |
 | ~~Tivola Ring Protection~~ | False | True | Existing checks found to actually be indicators of copy-X, rather than some Tivola-specific ring protection. |
 | TZCopyProtection | False | True | Partially unconfirmed² |
+| Ubisoft Orbit | False | True | |
 | Uniloc SoftAnchor | True | True | Version finding is not implemented |
 | Uplay | True | True | |
 | Windows Media Data Session DRM | True | True | |

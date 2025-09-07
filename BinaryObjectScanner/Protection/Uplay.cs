@@ -6,7 +6,9 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    // Got renamed to Ubisoft Connect / Ubisoft Game Launcher
+    /// <summary>
+    /// Got renamed to Ubisoft Connect / Ubisoft Game Launcher
+    /// </summary>
     public class Uplay : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
