@@ -81,6 +81,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Games for Windows - Live | True | True | |
 | Gefest Protection System | True | False | |
 | Hexalock AutoLock | True | True | |
+| Hudson huPPPX | True | True | Basically unknown protection |
 | Impulse Reactor / Stardock Product Activation | True | True | |
 | IndyVCD | False | True | Unconfirmed¹ |
 | INTENIUM Trial & Buy Protection | True | False | |

@@ -78,6 +78,13 @@ namespace BinaryObjectScanner.FileType
                 else if (fileContent.Contains("FREELOCK"))
                     protections.Add("Freelock");
 
+                // Hudson huPPPX
+                // Found in setup.inx
+                if (fileContent.Contains("HVRCD_IS_"))
+                    return "Hudson huPPPX";
+                else if (fileContent.Contains("HVCDISSR"))
+                    return "Hudson huPPPX";
+
                 // MediaCloQ
                 if (fileContent.Contains("SunnComm MediaCloQ"))
                     protections.Add("MediaCloQ");
