@@ -25,8 +25,14 @@ namespace BinaryObjectScanner.Protection
             // TODO: Come to an agreement as to what the version should be
 
             // Found in Redump entry 114428
+            // Found in Alpha Protocol -- TODO: Get Redump ID(s)
             var name = exe.CompanyName;
-            if (name.OptionalStartsWith("Uniloc USA Inc."))
+            if (name.OptionalStartsWith("Uniloc USA"))
+                return "Uniloc SoftAnchor";
+
+            // Found in Alpha Protocol -- TODO: Get Redump ID(s)
+            name = exe.InternalName;
+            if (name.OptionalStartsWith("saAudit"))
                 return "Uniloc SoftAnchor";
 
             // Found in Redump entry 114428
