@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.Protection
                 return "Uniloc SoftAnchor";
 
             // Found in Redump entry 114428
-            if (Array.IndexOf(exe.SectionNames, "SAAC0") > -1)
+            if (exe.ContainsSection("SAAC0"))
                 return "Uniloc SoftAnchor";
 
             return null;

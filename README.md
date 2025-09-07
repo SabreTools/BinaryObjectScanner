@@ -165,6 +165,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | NSIS | Yes | No | No | |
 | PECompact | Yes | No | No | |
 | PEtite | Yes | No | No | |
+| PKLITE32 | Yes | No | No | |
 | Setup Factory | Yes | No | No | |
 | Shrinker | Yes | No | No | |
 | UPX and UPX (NOS Variant) | Yes | No | No | |
