@@ -12,14 +12,14 @@ namespace BinaryObjectScanner.Packer
     public class HyperTechCrackProof : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // This check may be overly limiting, as it excludes the sample provided to DiE (https://github.com/horsicq/Detect-It-Easy/issues/102).
             // TODO: Find further samples and invesitgate if the "peC" section is only present on specific versions.
-            bool importTableMatch = Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [],
+            bool importTableMatch = Array.Exists(exe.Model.ImportTable?.ImportDirectoryTable ?? [],
                 idte => idte?.Name == "KeRnEl32.dLl");
 
-            if (pex.ContainsSection("peC", exact: true) && importTableMatch)
+            if (exe.ContainsSection("peC", exact: true) && importTableMatch)
                 return "HyperTech CrackProof";
 
             return null;

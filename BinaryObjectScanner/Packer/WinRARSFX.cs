@@ -6,13 +6,13 @@ namespace BinaryObjectScanner.Packer
     public class WinRARSFX : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.AssemblyDescription;
+            var name = exe.AssemblyDescription;
             if (name.OptionalContains("WinRAR archiver"))
                 return "WinRAR SFX";
 
-            if (pex.FindDialogByTitle("WinRAR self-extracting archive").Count > 0)
+            if (exe.FindDialogByTitle("WinRAR self-extracting archive").Count > 0)
                 return "WinRAR SFX";
 
             return null;

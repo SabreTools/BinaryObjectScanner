@@ -17,15 +17,15 @@ namespace BinaryObjectScanner.Protection
     public class OpenMG : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in many different OpenMG related files ("Touch" by Amerie).
-            var name = pex.LegalTrademarks;
+            var name = exe.LegalTrademarks;
             if (name.OptionalStartsWith("OpenMG", StringComparison.OrdinalIgnoreCase))
                 return $"OpenMG";
 
             // Found in "OMGDBP.OCX" ("Touch" by Amerie).
-            name = pex.FileDescription;
+            name = exe.FileDescription;
             if (name.OptionalStartsWith("LGDiscComp Module", StringComparison.OrdinalIgnoreCase))
                 return $"OpenMG";
 

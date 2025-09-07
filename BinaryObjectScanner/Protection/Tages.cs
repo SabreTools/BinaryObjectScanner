@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Protection
     public class TAGES : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Known TAGES Driver Setup filenames:
             // - DrvSetup.exe
@@ -24,23 +24,23 @@ namespace BinaryObjectScanner.Protection
             // - TagesClient.exe
             // - TagesClient.dat (Does not always exist)
 
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase))
-                return $"TAGES Driver Setup {GetVersion(pex)}";
+                return $"TAGES Driver Setup {GetVersion(exe)}";
             else if (name.OptionalStartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase))
-                return $"TAGES Activation Client {GetVersion(pex)}";
+                return $"TAGES Activation Client {GetVersion(exe)}";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase))
-                return $"TAGES Driver Setup {GetVersion(pex)}";
+                return $"TAGES Driver Setup {GetVersion(exe)}";
             else if (name.OptionalStartsWith("T@GES", StringComparison.OrdinalIgnoreCase))
-                return $"TAGES Activation Client {GetVersion(pex)}";
+                return $"TAGES Activation Client {GetVersion(exe)}";
 
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Tages.2.sg
 
             // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
@@ -210,10 +210,10 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private static string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable exe)
         {
             // Check the internal versions
-            var version = pex.GetInternalVersion();
+            var version = exe.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version!;
 

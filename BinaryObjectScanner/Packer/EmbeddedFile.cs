@@ -12,10 +12,10 @@ namespace BinaryObjectScanner.Packer
     public class EmbeddedFile : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Have this return all detected things, not just the first
-            byte[]? overlayData = nex.OverlayData;
+            byte[]? overlayData = exe.OverlayData;
 
             // Check the overlay, if it exists
             if (overlayData != null && overlayData.Length > 0)
@@ -79,15 +79,15 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Have this return all detected things, not just the first
 
             // Only process the overlay if it is recognized
-            if (pex.ResourceData != null)
+            if (exe.ResourceData != null)
             {
                 // Cache the resource data for easier reading
-                var resourceData = pex.ResourceData;
+                var resourceData = exe.ResourceData;
 
                 // Get the resources that have an archive signature
                 foreach (var value in resourceData.Values)
@@ -127,16 +127,16 @@ namespace BinaryObjectScanner.Packer
             }
 
             // Check the overlay, if it exists
-            if (pex.OverlayData != null && pex.OverlayData.Length > 0)
+            if (exe.OverlayData != null && exe.OverlayData.Length > 0)
             {
                 // Set the output variables
                 int overlayOffset = 0;
 
                 // Only process the overlay if it is recognized
-                for (; overlayOffset < 0x100 && overlayOffset < pex.OverlayData.Length - 0x10; overlayOffset++)
+                for (; overlayOffset < 0x100 && overlayOffset < exe.OverlayData.Length - 0x10; overlayOffset++)
                 {
                     int temp = overlayOffset;
-                    byte[] overlaySample = pex.OverlayData.ReadBytes(ref temp, 0x10);
+                    byte[] overlaySample = exe.OverlayData.ReadBytes(ref temp, 0x10);
 
                     if (overlaySample.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                     {
@@ -177,7 +177,7 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C]))
                     {
                         // 7-zip SFX script -- ";!@Install" to ";!@InstallEnd@!"
-                        overlayOffset = pex.OverlayData.FirstPosition([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C, 0x45, 0x6E, 0x64, 0x40, 0x21]);
+                        overlayOffset = exe.OverlayData.FirstPosition([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C, 0x45, 0x6E, 0x64, 0x40, 0x21]);
                         if (overlayOffset > -1)
                             return "Embedded 7-Zip Archive";
                     }

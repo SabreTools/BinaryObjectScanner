@@ -22,9 +22,9 @@ namespace BinaryObjectScanner.Protection
          */
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            if (pex.FindGenericResource("NO NESTED PRMS SUPPORTED").Count > 0)
+            if (exe.FindGenericResource("NO NESTED PRMS SUPPORTED").Count > 0)
                 return "INTENIUM Trial & Buy Protection";
 
             return null;

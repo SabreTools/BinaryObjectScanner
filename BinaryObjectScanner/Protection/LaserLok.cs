@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Protection
     public class LaserLok : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Add entry point check
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Laserlok.2.sg
@@ -59,21 +59,21 @@ namespace BinaryObjectScanner.Protection
                 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73,
                 0x2E, 0x50, 0x45
             ];
-            int endDosStub = (int)(pex.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
+            int endDosStub = (int)(exe.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
             int position = -1;
 
             // Check the executable tables
-            position = pex.StubExecutableData?.FirstPosition(check) ?? -1;
+            position = exe.StubExecutableData?.FirstPosition(check) ?? -1;
             bool containsCheck = position > -1;
-            bool containsCheck2 = Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
-                && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
-                && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
-                && Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
+            bool containsCheck2 = Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
+                && Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
+                && Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
+                && Array.Exists(exe.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
 
             int position2 = -1;
 
             // Get the .text section, if it exists
-            if (containsCheck2 && pex.ContainsSection(".text"))
+            if (containsCheck2 && exe.ContainsSection(".text"))
             {
                 // GetModuleHandleA + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + GetProcAddress + (char)0x00 + (char)0x00 + (char)0x00 + (char)0x00 + LoadLibraryA + (char)0x00 + (char)0x00 + KERNEL32.dll + (char)0x00 + ëy + (char)0x01 + SNIF/MPVI
                 byte?[] check2 =
@@ -89,7 +89,7 @@ namespace BinaryObjectScanner.Protection
                     0x00, 0xEB, 0x79, 0x01, null, null, null, null,
                 ];
 
-                position2 = pex.GetFirstSectionData(".text")?.FirstPosition(check2) ?? -1;
+                position2 = exe.GetFirstSectionData(".text")?.FirstPosition(check2) ?? -1;
                 containsCheck2 = position2 > -1;
             }
             else
@@ -100,11 +100,11 @@ namespace BinaryObjectScanner.Protection
             }
 
             if (containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(pex.GetFirstSectionData(".text"), position2)} {GetBuild(pex.GetFirstSectionData(".text"), true)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(exe.GetFirstSectionData(".text"), position2)} {GetBuild(exe.GetFirstSectionData(".text"), true)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position}, {position2})" : string.Empty);
             else if (containsCheck && !containsCheck2)
-                return $"LaserLok Marathon {GetBuild(pex.GetFirstSectionData(".text"), false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position})" : string.Empty);
+                return $"LaserLok Marathon {GetBuild(exe.GetFirstSectionData(".text"), false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position})" : string.Empty);
             else if (!containsCheck && containsCheck2)
-                return $"LaserLok {GetVersion(pex.GetFirstSectionData(".text"), --position2)} {GetBuild(pex.GetFirstSectionData(".text"), false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position2})" : string.Empty);
+                return $"LaserLok {GetVersion(exe.GetFirstSectionData(".text"), --position2)} {GetBuild(exe.GetFirstSectionData(".text"), false)} [Check disc for physical ring]" + (includeDebug ? $" (Index {position2})" : string.Empty);
 
             return null;
         }

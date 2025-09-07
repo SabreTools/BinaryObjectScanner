@@ -14,20 +14,20 @@ namespace BinaryObjectScanner.Protection
     public class PlayJ : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("PlayJ Music Player", StringComparison.OrdinalIgnoreCase))
                 return $"PlayJ Music Player";
 
             // Found in "PJSTREAM.DLL" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
-            name = pex.FileDescription;
+            name = exe.FileDescription;
             if (name.OptionalStartsWith("EVAUX32 Module", StringComparison.OrdinalIgnoreCase))
                 return $"PlayJ Music Player Component";
 
             // Found in "PlayJ.exe" (https://web.archive.org/web/20010417025347/http://dlp.playj.com:80/playj/PlayJIns266.exe) and "CACTUSPJ.exe" ("Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427])).
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("PlayJ", StringComparison.OrdinalIgnoreCase))
                 return $"PlayJ";
 

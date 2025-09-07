@@ -21,25 +21,25 @@ namespace BinaryObjectScanner.Protection
     public class KalypsoLauncher : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Investigate if there are any viable checks for the game EXE itself.
             // "Styx" is found as the File Description and Product Name in "KalypsoLauncher.dll", but checks aren't included due to the risk of false positives.
 
-            var name = pex.InternalName;
+            var name = exe.InternalName;
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name.OptionalContains("KalypsoLauncher.dll"))
-                return $"Kalypso Launcher {pex.GetInternalVersion()}";
+                return $"Kalypso Launcher {exe.GetInternalVersion()}";
 
-            name = pex.OriginalFilename;
+            name = exe.OriginalFilename;
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name.OptionalContains("KalypsoLauncher.dll"))
-                return $"Kalypso Launcher {pex.GetInternalVersion()}";
+                return $"Kalypso Launcher {exe.GetInternalVersion()}";
 
             // Get the .text section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Found in "TFT.exe" in Redump entry 95617.

@@ -17,11 +17,11 @@ namespace BinaryObjectScanner.Packer
     {
         // TODO: Find samples of NeoLite 1.X.
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .neolit section, if it exists.
             // TODO: Check if this section is also present in NeoLite 1.X.
-            if (pex.ContainsSection(".neolit", exact: true))
+            if (exe.ContainsSection(".neolit", exact: true))
                 return "NeoLite";
 
             // If more specific or additional checks are needed, "NeoLite Executable File Compressor" should be present

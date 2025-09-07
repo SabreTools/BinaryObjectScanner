@@ -19,15 +19,15 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? RipGuardCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? RipGuardCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))
                 return "RipGuard";
 
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))
                 return "RipGuard";
 

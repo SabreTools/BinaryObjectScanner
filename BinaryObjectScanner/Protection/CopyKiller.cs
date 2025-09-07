@@ -18,11 +18,11 @@ namespace BinaryObjectScanner.Protection
     public class CopyKiller : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Figure out why this check doesn't work.
             // Found in "autorun.exe" in CopyKiller V3.64, V3.99, and V3.99a.
-            var name = pex.ProductName;
+            var name = exe.ProductName;
             if (name.OptionalStartsWith("CopyKiller", StringComparison.OrdinalIgnoreCase))
                 return "CopyKiller V3.64+";
 

@@ -42,13 +42,13 @@ namespace BinaryObjectScanner.Protection
     public class AlphaROM : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Add support for detecting Alpha-ROM found in older games made with the RealLive engine. 
             // TODO: Add version detection for Alpha-ROM.
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("\\SETTEC")))
@@ -59,7 +59,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rdata");
+            strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("This Game is Japan Only")))
@@ -75,10 +75,10 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (pex.OverlayStrings != null)
+            if (exe.OverlayStrings != null)
             {
                 // Found in Redump entry 84122.
-                if (pex.OverlayStrings.Exists(s => s.Contains("SETTEC0000")))
+                if (exe.OverlayStrings.Exists(s => s.Contains("SETTEC0000")))
                     return "Alpha-ROM";
             }
 

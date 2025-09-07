@@ -22,9 +22,9 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Add support for detecting older versions, especially versions made before Easy Anti-Cheat was purchased by Epic Games.
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             // Found in "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam).
             if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";
@@ -50,7 +50,7 @@ namespace BinaryObjectScanner.Protection
             // "EasyAntiCheat Server" -> "eac_server.dll" from "Intruder" (Update 2287, Steam).
             // "EasyAntiCheat Service" -> "EasyAntiCheat.exe", which is found installed in "Program Files (x86)\EasyAntiCheat" and "EasyAntiCheat_Setup.exe" ("Intruder", Update 2287, Steam).
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             // Found in multiple files, including "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam) and "start_protected_game.exe" ("VRChat", Version 2022.2.2p2, Oculus).
             if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";

@@ -17,10 +17,10 @@ namespace BinaryObjectScanner.Protection
         // "Replay.exe" not detected, doesn't detect "[FL Disc]" (Redump entry 81756).
         // Doesn't detect "[Pro]" (Redump entry 91336).
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Find what fvinfo field actually maps to this
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
 
             // There are some File Description checks that are currently too generic to use.
             // "Host Library" - Found in "protect.dll" in Redump entry 81756.
@@ -33,71 +33,71 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "protect.exe" in Redump entry 94805.
             if (name.OptionalContains("FrontLine Protection GUI Application"))
-                return $"StarForce {pex.GetInternalVersion()}";
+                return $"StarForce {exe.GetInternalVersion()}";
 
             // Found in "protect.dll" in Redump entry 94805.
             if (name.OptionalContains("FrontLine Protection Library"))
-                return $"StarForce {pex.GetInternalVersion()}";
+                return $"StarForce {exe.GetInternalVersion()}";
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
             if (name.OptionalContains("FrontLine Helper"))
-                return $"StarForce {pex.GetInternalVersion()}";
+                return $"StarForce {exe.GetInternalVersion()}";
 
             // TODO: Find a sample of this check.
             if (name.OptionalContains("Protected Module"))
                 return $"StarForce 5";
 
-            name = pex.LegalCopyright;
+            name = exe.LegalCopyright;
             if (name.OptionalStartsWith("(c) Protection Technology")) // (c) Protection Technology (StarForce)?
-                return $"StarForce {pex.GetInternalVersion()}";
+                return $"StarForce {exe.GetInternalVersion()}";
             else if (name.OptionalContains("Protection Technology")) // Protection Technology (StarForce)?
-                return $"StarForce {pex.GetInternalVersion()}";
+                return $"StarForce {exe.GetInternalVersion()}";
             
             // FrontLine ProActive (digital activation), samples: 
             // https://dbox.tools/titles/pc/46450FA4/ 
             // https://dbox.tools/titles/pc/4F430FA0/ 
             // https://dbox.tools/titles/pc/53450FA1/
-            name = pex.TradeName;
+            name = exe.TradeName;
             if (name.OptionalContains("FL ProActive")) 
                 return $"FrontLine ProActive";
 
             // TODO: Decide if internal name checks are safe to use.
-            name = pex.InternalName;
+            name = exe.InternalName;
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
             if (name.OptionalEquals("CORE.ADMIN", StringComparison.Ordinal))
-                return $"StarForce {pex.GetInternalVersion()}";
+                return $"StarForce {exe.GetInternalVersion()}";
 
 
             // These checks currently disabled due being possibly too generic:
             // Found in "protect.dll" in Redump entry 94805.
             // if (name.OptionalEquals("CORE.DLL", StringComparison.Ordinal))
-            //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
+            //     return $"StarForce {Tools.Utilities.GetInternalVersion(exe)}";
             //
             // Found in "protect.exe" in Redump entry 94805.
             // if (name.OptionalEquals("CORE.EXE", StringComparison.Ordinal))
-            //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
+            //     return $"StarForce {Tools.Utilities.GetInternalVersion(exe)}";
             //
             // else if (name.OptionalEquals("protect.exe", StringComparison.Ordinal))
-            //     return $"StarForce {Tools.Utilities.GetInternalVersion(pex)}";
+            //     return $"StarForce {Tools.Utilities.GetInternalVersion(exe)}";
 
             // Check the export name table
-            if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
+            if (exe.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
                 // TODO: Should we just check for "PSA_*" instead of a single entry?
-                if (Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s == "PSA_GetDiscLabel"))
-                    return $"StarForce {pex.GetInternalVersion()}";
+                if (Array.Exists(exe.Model.ExportTable.ExportNameTable.Strings, s => s == "PSA_GetDiscLabel"))
+                    return $"StarForce {exe.GetInternalVersion()}";
             }
 
             // TODO: Check to see if there are any missing checks
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/StarForce.2.sg
 
             // Get the .brick section, if it exists
-            if (pex.ContainsSection(".brick", exact: true))
+            if (exe.ContainsSection(".brick", exact: true))
                 return "StarForce 3-5";
 
             // Get the .sforce* section, if it exists
-            if (pex.ContainsSection(".sforce", exact: false))
+            if (exe.ContainsSection(".sforce", exact: false))
                 return "StarForce 3-5";
 
             return null;

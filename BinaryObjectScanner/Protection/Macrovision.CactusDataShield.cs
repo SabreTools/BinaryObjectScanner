@@ -30,10 +30,10 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? CactusDataShieldCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? CactusDataShieldCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("\\*.CDS")))
@@ -44,11 +44,11 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
             // Modified version of the PlayJ Music Player specificaly for CDS, as indicated by the About page present when running the executable.
-            if (pex.FindGenericResource("CactusPJ").Count > 0)
+            if (exe.FindGenericResource("CactusPJ").Count > 0)
                 return "PlayJ Music Player (Cactus Data Shield 200)";
 
             // Found in various files in "Les Paul & Friends" (Barcode 4 98806 834170).
-            var name = pex.ProductName;
+            var name = exe.ProductName;
             if (name.OptionalEquals("CDS300", StringComparison.OrdinalIgnoreCase))
                 return $"Cactus Data Shield 300";
 

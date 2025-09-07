@@ -15,16 +15,16 @@ namespace BinaryObjectScanner.Packer
         private static readonly Regex _upxVersionMatch = new Regex(@"^([0-9]\.[0-9]{2})$", RegexOptions.Compiled);
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Check header padding strings
-            if (pex.HeaderPaddingStrings != null && pex.HeaderPaddingStrings.Count > 0)
+            if (exe.HeaderPaddingStrings != null && exe.HeaderPaddingStrings.Count > 0)
             {
-                var match = pex.HeaderPaddingStrings.Find(s => s.Contains("UPX!"));
+                var match = exe.HeaderPaddingStrings.Find(s => s.Contains("UPX!"));
                 //if (match != null)
                 //    return "UPX";
 
-                match = pex.HeaderPaddingStrings.Find(s => s.StartsWith("$Id: UPX"));
+                match = exe.HeaderPaddingStrings.Find(s => s.StartsWith("$Id: UPX"));
                 if (match != null)
                 {
                     var regexMatch = _oldUpxVersionMatch.Match(match);
@@ -34,8 +34,8 @@ namespace BinaryObjectScanner.Packer
                         return "UPX (Unknown Version)";
                 }
 
-                match = pex.HeaderPaddingStrings.Find(s => _upxVersionMatch.IsMatch(s));
-                if (match != null && pex.HeaderPaddingStrings.Exists(s => s == "UPX!"))
+                match = exe.HeaderPaddingStrings.Find(s => _upxVersionMatch.IsMatch(s));
+                if (match != null && exe.HeaderPaddingStrings.Exists(s => s == "UPX!"))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Packer
                     else
                         return "UPX (Unknown Version)";
                 }
-                else if (match != null && pex.HeaderPaddingStrings.Exists(s => s == "NOS "))
+                else if (match != null && exe.HeaderPaddingStrings.Exists(s => s == "NOS "))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)

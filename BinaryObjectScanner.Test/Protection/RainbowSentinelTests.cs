@@ -13,10 +13,10 @@ namespace BinaryObjectScanner.Test.Protection
             string file = "filename";
             SabreTools.Models.NewExecutable.Executable model = new();
             Stream source = new MemoryStream();
-            SabreTools.Serialization.Wrappers.NewExecutable nex = new(model, source);
+            SabreTools.Serialization.Wrappers.NewExecutable exe = new(model, source);
 
             var checker = new RainbowSentinel();
-            string? actual = checker.CheckExecutable(file, nex, includeDebug: false);
+            string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
 
@@ -26,10 +26,10 @@ namespace BinaryObjectScanner.Test.Protection
             string file = "filename";
             SabreTools.Models.PortableExecutable.Executable model = new();
             Stream source = new MemoryStream();
-            SabreTools.Serialization.Wrappers.PortableExecutable pex = new(model, source);
+            SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
 
             var checker = new RainbowSentinel();
-            string? actual = checker.CheckExecutable(file, pex, includeDebug: false);
+            string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
 

@@ -11,23 +11,23 @@ namespace BinaryObjectScanner.Packer
     public class ASPack : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .aspack section, if it exists
-            if (pex.ContainsSection(".aspack", exact: true))
+            if (exe.ContainsSection(".aspack", exact: true))
                 return "ASPack 2.29";
 
             // Use the entry point data, if it exists
-            if (pex.EntryPointData != null)
+            if (exe.EntryPointData != null)
             {
                 var matchers = GenerateMatchers();
-                var match = MatchUtil.GetFirstMatch(file, pex.EntryPointData, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, exe.EntryPointData, matchers, includeDebug);
                 if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
             // Get the .adata* section, if it exists
-            var adataSectionRaw = pex.GetFirstSectionData(".adata", exact: false);
+            var adataSectionRaw = exe.GetFirstSectionData(".adata", exact: false);
             if (adataSectionRaw != null)
             {
                 var matchers = GenerateMatchers();
@@ -37,7 +37,7 @@ namespace BinaryObjectScanner.Packer
             }
 
             // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
             {
                 var matchers = GenerateMatchers();

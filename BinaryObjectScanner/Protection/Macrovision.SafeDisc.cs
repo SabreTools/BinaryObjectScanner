@@ -48,24 +48,24 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? SafeDiscCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? SafeDiscCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in Redump entry 57986.
-            if (pex.Model.ImportTable?.HintNameTable != null)
+            if (exe.Model.ImportTable?.HintNameTable != null)
             {
-                if (Array.Exists(pex.Model.ImportTable.HintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
+                if (Array.Exists(exe.Model.ImportTable.HintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
                     return "SafeDisc Lite";
             }
 
             // Found in Redump entry 57986.
-            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
+                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
                     return "SafeDisc Lite";
             }
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in Redump entries 14928, 25579, 32751.
@@ -81,23 +81,23 @@ namespace BinaryObjectScanner.Protection
                     return "Macrovision SecDrv Update Installer";
             }
 
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             // Present in "Diag.exe" files from SafeDisc 4.50.000+.
             if (name.OptionalEquals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase))
-                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(exe)}";
 
             // Present in "Setup.exe" from the later "safedisc.exe" driver update provided by Macrovision.
             if (name.OptionalEquals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase))
                 return "Macrovision SecDrv Update Installer";
 
             // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalEquals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc 1.00.025-1.01.044";
 
             // Present in "Diag.exe" files from SafeDisc 4.50.000+.
             else if (name.OptionalEquals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase))
-                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(pex)}";
+                return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(exe)}";
 
             // Present in "Setup.exe" from the later "safedisc.exe" driver update provided by Macrovision.
             if (name.OptionalEquals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase))
@@ -107,11 +107,11 @@ namespace BinaryObjectScanner.Protection
             // This filename is confirmed by the file properties in SafeDisc 4+ (such as Redump entry 35382).
             // It is only found extracted into the Windows Temp directory when a protected application is run, and is renamed to begin with a "~" and have the ".tmp" extension.
             else if (name.OptionalEquals("SafeDisc AuthServ APP", StringComparison.OrdinalIgnoreCase))
-                return $"SafeDisc AuthServ APP {GetSafeDiscAuthServVersion(pex)}";
+                return $"SafeDisc AuthServ APP {GetSafeDiscAuthServVersion(exe)}";
 
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
-            name = pex.FileDescription;
+            name = exe.FileDescription;
             if (name.OptionalEquals("SafeDisc", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc";
 
@@ -119,9 +119,9 @@ namespace BinaryObjectScanner.Protection
             {
                 // Found in Redump entries 20729 and 65569.
                 // Get the debug data
-                if (pex.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
+                if (exe.FindCodeViewDebugTableByPath("SafeDisc").Count > 0)
                     return "SafeDisc";
-                if (pex.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
+                if (exe.FindCodeViewDebugTableByPath("Safedisk").Count > 0)
                     return "SafeDisc";
             }
             catch
@@ -386,10 +386,10 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private static string GetSafeDiscAuthServVersion(PortableExecutable pex)
+        private static string GetSafeDiscAuthServVersion(PortableExecutable exe)
         {
             // Different versions of this executable correspond to different SafeDisc versions.
-            var version = pex.FileVersion;
+            var version = exe.FileVersion;
             if (!string.IsNullOrEmpty(version))
             {
                 return version switch
@@ -1167,10 +1167,10 @@ namespace BinaryObjectScanner.Protection
             // "SPLSH256.BMP": Found in SafeDisc versions 1.00.025-1.01.044 (Redump entries 66005 and 81619).
         }
 
-        private static string GetSafeDiscDiagExecutableVersion(PortableExecutable pex)
+        private static string GetSafeDiscDiagExecutableVersion(PortableExecutable exe)
         {
             // Different versions of this executable correspond to different SafeDisc versions.
-            var version = pex.FileVersion;
+            var version = exe.FileVersion;
             if (!string.IsNullOrEmpty(version))
             {
                 return version switch

@@ -16,10 +16,10 @@ namespace BinaryObjectScanner.Protection
     public class RealArcade : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .data section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data");
+            var strs = exe.GetFirstSectionStrings(".data");
             if (strs != null)
             {
                 // Found in "rebound.exe" in the installation directory for "Rebound" in IA item "Nova_RealArcadeCD_USA".
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Found in "RngInterstitial.dll" in the RealArcade installation directory in IA item "Nova_RealArcadeCD_USA".
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalContains("RngInterstitial"))
                 return "RealArcade";
 

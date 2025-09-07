@@ -19,12 +19,12 @@ namespace BinaryObjectScanner.Protection
     public class Gefest : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the header padding strings, if it exists
-            if (pex.HeaderPaddingStrings != null)
+            if (exe.HeaderPaddingStrings != null)
             {
-                var match = pex.HeaderPaddingStrings.Find(s => s.Contains("Gefest Protection System"));
+                var match = exe.HeaderPaddingStrings.Find(s => s.Contains("Gefest Protection System"));
                 if (match != null)
                     return $"Gefest Protection System {GetVersion(match)}";
             }

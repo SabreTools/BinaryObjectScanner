@@ -12,13 +12,13 @@ namespace BinaryObjectScanner.Packer
     public class CExe : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // If there are exactly 2 resources with type 99
-            if (pex.FindResourceByNamedType("99, ").Count == 2)
+            if (exe.FindResourceByNamedType("99, ").Count == 2)
                 return "CExe";
 
-            if (pex.StubExecutableData != null)
+            if (exe.StubExecutableData != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Packer
                     }, "CExe")
                 };
 
-                var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, exe.StubExecutableData, matchers, includeDebug);
                 if (!string.IsNullOrEmpty(match))
                     return match;
             }

@@ -8,10 +8,10 @@ namespace BinaryObjectScanner.Packer
     public class PEtite : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .petite section, if it exists -- TODO: Is there a version number that can be found?
-            if (pex.ContainsSection(".petite", exact: true))
+            if (exe.ContainsSection(".petite", exact: true))
                 return "PEtite";
 
             return null;

@@ -16,19 +16,19 @@ namespace BinaryObjectScanner.Protection
     public class WMDS : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase))
                 return "Windows Media Data Session DRM";
 
             // Found in "autorun.exe" ("Touch" by Amerie).
-            if (pex.FindDialogBoxByItemTitle("If you attempt to play this content on a computer without a license, you will first have to acquire a license before it will play.").Count > 0)
+            if (exe.FindDialogBoxByItemTitle("If you attempt to play this content on a computer without a license, you will first have to acquire a license before it will play.").Count > 0)
                 return "Windows Media Data Session DRM";
 
             // Found in "autorun.exe" ("Touch" by Amerie).
-            if (pex.FindDialogBoxByItemTitle("You cannot generate a licence to play the protected Windows Media files without an original disc.").Count > 0)
+            if (exe.FindDialogBoxByItemTitle("You cannot generate a licence to play the protected Windows Media files without an original disc.").Count > 0)
                 return "Windows Media Data Session DRM";
 
             return null;

@@ -19,19 +19,19 @@ namespace BinaryObjectScanner.Protection
     public class LabelGate : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Should be present on all LabelGate CD2 discs (Redump entry 95010 and product ID SVWC-7185).
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase))
                 return $"LabelGate CD2 Media Player";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("MQSTART", StringComparison.OrdinalIgnoreCase))
                 return $"LabelGate CD2 Media Player";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "START.EXE" (Redump entry 95010 and product ID SVWC-7185).

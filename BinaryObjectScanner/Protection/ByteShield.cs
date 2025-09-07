@@ -40,49 +40,49 @@ namespace BinaryObjectScanner.Protection
     public class ByteShield : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in "LineRider2.exe" in Redump entry 6236
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalEquals("ByteShield Client"))
-                return $"ByteShield Activation Client {pex.GetInternalVersion()}";
+                return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            name = pex.InternalName;
+            name = exe.InternalName;
             if (name.OptionalEquals("ByteShield"))
-                return $"ByteShield Activation Client {pex.GetInternalVersion()}";
+                return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            name = pex.OriginalFilename;
+            name = exe.OriginalFilename;
             if (name.OptionalEquals("ByteShield.EXE"))
-                return $"ByteShield Activation Client {pex.GetInternalVersion()}";
+                return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalEquals("ByteShield Client"))
-                return $"ByteShield Activation Client {pex.GetInternalVersion()}";
+                return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
             // Found in "ByteShield.dll" in Redump entry 6236
-            name = pex.Model.ExportTable?.ExportDirectoryTable?.Name;
+            name = exe.Model.ExportTable?.ExportDirectoryTable?.Name;
             if (name.OptionalEquals("ByteShield Client"))
                 return "ByteShield Component Module";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            if (pex.FindStringTableByEntry("ByteShield").Count > 0)
-                return $"ByteShield Activation Client {pex.GetInternalVersion()}";
+            if (exe.FindStringTableByEntry("ByteShield").Count > 0)
+                return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
             // Found in "LineRider2.exe" in Redump entry 6236
-            if (pex.FindDialogByTitle("About ByteShield").Count > 0)
+            if (exe.FindDialogByTitle("About ByteShield").Count > 0)
                 return "ByteShield";
 
             // TODO: See if the version number is anywhere else
             // TODO: Parse the version number out of the dialog box item
             // Found in "LineRider2.exe" in Redump entry 6236
-            if (pex.FindDialogBoxByItemTitle("ByteShield Version 1.0").Count > 0)
+            if (exe.FindDialogBoxByItemTitle("ByteShield Version 1.0").Count > 0)
                 return "ByteShield";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "LineRider2.exe" in Redump entry 6236
@@ -91,7 +91,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rdata");
+            strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Found in "ByteShield.dll" in Redump entry 6236
@@ -108,7 +108,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .ret section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".ret");
+            strs = exe.GetFirstSectionStrings(".ret");
             if (strs != null)
             {
                 // TODO: Figure out if this specifically indicates if the file is encrypted

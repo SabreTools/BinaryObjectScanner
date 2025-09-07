@@ -9,11 +9,11 @@ namespace BinaryObjectScanner.Packer
     public class Crunch : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the last section strings, if they exist
-            var sections = pex.Model.SectionTable ?? [];
-            var strs = pex.GetSectionStrings(sections.Length - 1);
+            var sections = exe.Model.SectionTable ?? [];
+            var strs = exe.GetSectionStrings(sections.Length - 1);
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("BITARTS")))

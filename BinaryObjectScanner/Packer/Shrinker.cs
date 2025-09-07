@@ -8,10 +8,10 @@ namespace BinaryObjectScanner.Packer
     public class Shrinker : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .shrink0 and .shrink2 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            if (pex.ContainsSection(".shrink0", true) || pex.ContainsSection(".shrink2", true))
+            if (exe.ContainsSection(".shrink0", true) || exe.ContainsSection(".shrink2", true))
                 return "Shrinker";
 
             return null;

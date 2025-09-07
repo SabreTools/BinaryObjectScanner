@@ -9,10 +9,10 @@ namespace BinaryObjectScanner.Packer
     public class PKLite : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // <see href="https://www.virustotal.com/gui/file/601573f263115035921f621598f7a81ace998bf325e081165aa698b981822013/details"/>
-            if (pex.ContainsSection(".pklstb"))
+            if (exe.ContainsSection(".pklstb"))
                 return "PKLITE32"; // TODO: Figure out how to determine version
 
             return null;

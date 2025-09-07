@@ -9,41 +9,41 @@ namespace BinaryObjectScanner.Packer
     public class MicrosoftCABSFX : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.InternalName;
+            var name = exe.InternalName;
             if (name.OptionalEquals("Wextract", StringComparison.OrdinalIgnoreCase))
-                return $"Microsoft CAB SFX {GetVersion(pex)}";
+                return $"Microsoft CAB SFX {GetVersion(exe)}";
 
-            name = pex.OriginalFilename;
+            name = exe.OriginalFilename;
             if (name.OptionalEquals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
-                return $"Microsoft CAB SFX {GetVersion(pex)}";
+                return $"Microsoft CAB SFX {GetVersion(exe)}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("wextract_cleanup")))
-                    return $"Microsoft CAB SFX {GetVersion(pex)}";
+                    return $"Microsoft CAB SFX {GetVersion(exe)}";
             }
 
             // Get the .text section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".text");
+            strs = exe.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 // This detects a different but similar type of SFX that uses Microsoft CAB files.
                 // Further research is needed to see if it's just a different version or entirely separate.
                 if (strs.Exists(s => s.Contains("MSCFu")))
-                    return $"Microsoft CAB SFX {GetVersion(pex)}";
+                    return $"Microsoft CAB SFX {GetVersion(exe)}";
             }
 
             return null;
         }
 
-        private static string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable exe)
         {
             // Check the internal versions
-            var version = pex.GetInternalVersion();
+            var version = exe.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return $"v{version}";
 

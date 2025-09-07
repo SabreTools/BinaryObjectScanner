@@ -70,10 +70,10 @@ namespace BinaryObjectScanner.Protection
     public class CDDVDCops : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Don't read entire file
-            byte[]? data = nex.ReadArbitraryRange();
+            byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
 
@@ -120,14 +120,14 @@ namespace BinaryObjectScanner.Protection
                 return match;
 
             // Get the resident and non-resident name table strings
-            var nrntStrs = Array.ConvertAll(nex.Model.NonResidentNameTable ?? [],
+            var nrntStrs = Array.ConvertAll(exe.Model.NonResidentNameTable ?? [],
                 nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
-            if (nex.Model.ImportedNameTable != null)
+            if (exe.Model.ImportedNameTable != null)
             {
-                foreach (var inte in nex.Model.ImportedNameTable.Values)
+                foreach (var inte in exe.Model.ImportedNameTable.Values)
                 {
                     if (inte.NameString.IsNullOrEmpty())
                         continue;
@@ -147,10 +147,10 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the stub executable data, if it exists
-            if (pex.StubExecutableData != null)
+            if (exe.StubExecutableData != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -162,26 +162,26 @@ namespace BinaryObjectScanner.Protection
                     }, "WEB-Cops")
                 };
 
-                var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, exe.StubExecutableData, matchers, includeDebug);
                 if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
             // Get the .grand section, if it exists
             // Found in "AGENTHUG.QZ_" in Redump entry 84517 and "h3blade.QZ_" in Redump entry 85077.
-            if (pex.ContainsSection(".grand", exact: true))
+            if (exe.ContainsSection(".grand", exact: true))
                 return "CD/DVD/WEB-Cops";
 
             // Get the UNICops section, if it exists
             // Found in "FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
-            if (pex.ContainsSection("UNICops", exact: true))
+            if (exe.ContainsSection("UNICops", exact: true))
                 return "UNI-Cops";
 
             // Get the DATA section, if it exists
             // Found in "bib.dll" in IA item "https://archive.org/details/cover_202501"
             // This contains the version section that the Content Check looked for. There are likely other sections
             // that may contain it. Update when more are found.
-            var strs = pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 var match = strs.Find(s => s.Contains(" ver. ") && (s.Contains("CD-Cops, ") || s.Contains("DVD-Cops, ")));

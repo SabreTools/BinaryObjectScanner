@@ -16,15 +16,15 @@ namespace BinaryObjectScanner.Protection
         // TODO: "Karaoke Spotlight Series - Pop Hits - Vol. 132" - Sound Choice (SC8732)" is currently undetected, due to there seeming to be no reference to MediaCloQ in the disc's contents.
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase))
                 return $"MediaCloQ";
 
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("scvfy Application", StringComparison.OrdinalIgnoreCase))
                 return $"MediaCloQ";
 

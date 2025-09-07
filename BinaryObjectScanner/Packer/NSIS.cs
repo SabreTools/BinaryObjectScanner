@@ -7,14 +7,14 @@ namespace BinaryObjectScanner.Packer
     public class NSIS : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.AssemblyDescription;
+            var name = exe.AssemblyDescription;
             if (name.OptionalStartsWith("Nullsoft Install System"))
                 return $"NSIS {name!.Substring("Nullsoft Install System".Length).Trim()}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("NullsoftInst")))

@@ -12,10 +12,10 @@ namespace BinaryObjectScanner.Test.Protection
             string file = "filename";
             SabreTools.Models.PortableExecutable.Executable model = new();
             Stream source = new MemoryStream();
-            SabreTools.Serialization.Wrappers.PortableExecutable pex = new(model, source);
+            SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
 
             var checker = new MGIRegistration();
-            string? actual = checker.CheckExecutable(file, pex, includeDebug: false);
+            string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
     }

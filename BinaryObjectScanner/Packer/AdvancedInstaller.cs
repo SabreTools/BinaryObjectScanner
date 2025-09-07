@@ -8,10 +8,10 @@ namespace BinaryObjectScanner.Packer
     public class AdvancedInstaller : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .rdata section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("Software\\Caphyon\\Advanced Installer")))

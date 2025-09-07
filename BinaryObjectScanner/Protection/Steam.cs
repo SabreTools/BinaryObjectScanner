@@ -9,19 +9,19 @@ namespace BinaryObjectScanner.Protection
     public class Steam : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalContains("Steam Autorun Setup"))
                 return "Steam";
             else if (name.OptionalContains("Steam Client API"))
                 return "Steam";
             else if (name.OptionalContains("Steam Client Engine"))
-                return $"Steam Client Engine {pex.GetInternalVersion()}";
+                return $"Steam Client Engine {exe.GetInternalVersion()}";
             else if (name.OptionalContains("Steam Client Service"))
                 return "Steam";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalContains("Steam Autorun Setup"))
                 return "Steam";
             else if (name.OptionalContains("Steam Client API"))

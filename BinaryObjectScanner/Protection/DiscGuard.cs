@@ -38,40 +38,40 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Add checks for the game executables, which seem likely to contain some kind of indicators that can be checked for. The game executables all seem to import "Ord(1)" from one of the varying DLLs present.
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
             // Found in "T29.dll" (Redump entry 31914).
             if (name.OptionalStartsWith("TTR Technologies DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
-                return $"DiscGuard {GetVersion(pex)}";
+                return $"DiscGuard {GetVersion(exe)}";
 
             // Found in "T29.dll" (Redump entry 31914).
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
             // Found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
             List<Dictionary<int, string?>?> resources =
             [
-                .. pex.FindStringTableByEntry("DiscGuard"),
-                .. pex.FindStringTableByEntry("The file Dg.vbn was not found."),
-                .. pex.FindStringTableByEntry("The file IosLink.VxD was not found."),
-                .. pex.FindStringTableByEntry("The file IosLink.sys was not found."),
+                .. exe.FindStringTableByEntry("DiscGuard"),
+                .. exe.FindStringTableByEntry("The file Dg.vbn was not found."),
+                .. exe.FindStringTableByEntry("The file IosLink.VxD was not found."),
+                .. exe.FindStringTableByEntry("The file IosLink.sys was not found."),
             ];
             if (resources.Count > 0)
                 return "DiscGuard";
 
             // Get the .vbn section, if it exists
-            var vbnData = pex.GetFirstSectionData(".vbn");
+            var vbnData = exe.GetFirstSectionData(".vbn");
             if (vbnData != null)
             {
                 var matchers = new List<ContentMatchSet>
@@ -178,10 +178,10 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        private static string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable exe)
         {
             // Check the internal versions
-            var version = pex.GetInternalVersion();
+            var version = exe.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version!;
 

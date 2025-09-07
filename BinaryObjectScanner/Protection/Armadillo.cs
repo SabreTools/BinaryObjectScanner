@@ -21,19 +21,19 @@ namespace BinaryObjectScanner.Protection
     public class Armadillo : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .nicode section, if it exists
-            if (pex.ContainsSection(".nicode", exact: true))
+            if (exe.ContainsSection(".nicode", exact: true))
                 return "Armadillo";
 
             // Loop through all "extension" sections -- usually .data1 or .text1
-            if (pex.SectionNames != null)
+            if (exe.SectionNames != null)
             {
-                foreach (var sectionName in Array.FindAll(pex.SectionNames ?? [], s => s != null && s.EndsWith("1")))
+                foreach (var sectionName in Array.FindAll(exe.SectionNames ?? [], s => s != null && s.EndsWith("1")))
                 {
                     // Get the section strings, if they exist
-                    var strs = pex.GetFirstSectionStrings(sectionName);
+                    var strs = exe.GetFirstSectionStrings(sectionName);
                     if (strs != null)
                     {
                         if (strs.Exists(s => s.Contains("ARMDEBUG")))

@@ -23,10 +23,10 @@ namespace BinaryObjectScanner.Protection
     public class Channelware : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in "AbeWincw.dll" in Redump entry 116358 and in "TOYSGMcw.dll" in the "TOYSTORY" installation folder from Redump entry 12354.
-            var name = pex.ProductName;
+            var name = exe.ProductName;
             if (name.OptionalEquals("ChannelWare Utilities"))
                 return "Channelware";
 
@@ -42,12 +42,12 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Channelware Authorization Server Browser Launcher"))
                 return "Channelware";
 
-            name = pex.FileDescription;
+            name = exe.FileDescription;
             // Found in "cwuninst.exe" in the "Channelware" folder installed from Redump entry 12354.
             if (name.OptionalEquals("Channelware Launcher Uninstall"))
                 return "Channelware";
 
-            name = pex.LegalTrademarks;
+            name = exe.LegalTrademarks;
             // Found in "CWAuto.dll" and "Upgrader.exe" in the "TOYSTORY" installation folder from Redump entry 12354.
             if (name.OptionalEquals("Channelware"))
                 return "Channelware";

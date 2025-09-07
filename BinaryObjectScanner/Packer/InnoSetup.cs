@@ -11,15 +11,15 @@ namespace BinaryObjectScanner.Packer
     public class InnoSetup : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // Check for "Inno" in the reserved words
-            var reserved2 = nex.Model.Stub?.Header?.Reserved2;
+            var reserved2 = exe.Model.Stub?.Header?.Reserved2;
             if (reserved2 != null && reserved2.Length > 5)
             {
                 if (reserved2[4] == 0x6E49 && reserved2[5] == 0x6F6E)
                 {
-                    string version = GetOldVersion(file, nex);
+                    string version = GetOldVersion(file, exe);
                     if (!string.IsNullOrEmpty(version))
                         return $"Inno Setup {version}";
 
@@ -31,10 +31,10 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 var str = strs.Find(s => s.StartsWith("Inno Setup Setup Data"));
@@ -51,7 +51,7 @@ namespace BinaryObjectScanner.Packer
             return null;
         }
 
-        private static string GetOldVersion(string file, NewExecutable nex)
+        private static string GetOldVersion(string file, NewExecutable exe)
         {
             // Notes:
             // Look into `SETUPLDR` in the resident-name table
@@ -60,7 +60,7 @@ namespace BinaryObjectScanner.Packer
             // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
 
-            byte[]? data = nex.ReadArbitraryRange();
+            byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return "Unknown 1.X";
 

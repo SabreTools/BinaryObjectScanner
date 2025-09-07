@@ -7,24 +7,24 @@ namespace BinaryObjectScanner.Packer
     public class WiseInstaller : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // If the overlay header can be found
-            if (nex.FindWiseOverlayHeader() > -1)
+            if (exe.FindWiseOverlayHeader() > -1)
                 return "Wise Installation Wizard Module";
 
             return null;
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // If the overlay header can be found
-            if (pex.FindWiseOverlayHeader() > -1)
+            if (exe.FindWiseOverlayHeader() > -1)
                 return "Wise Installation Wizard Module";
 
             // If the section header can be found
-            if (pex.FindWiseSection() != null)
+            if (exe.FindWiseSection() != null)
                 return "Wise Installation Wizard Module";
 
             return null;

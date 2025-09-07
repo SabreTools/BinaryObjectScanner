@@ -22,16 +22,16 @@ namespace BinaryObjectScanner.Protection
     public class NEACProtect : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Most of the relevant executables are highly obfuscated, making executable detection mostly impractical.
 
             // Get the .neac0 and .neac1 sections, if they exist.
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
-            if (pex.ContainsSection(".neac0", exact: true) || pex.ContainsSection(".neac1", exact: true))
+            if (exe.ContainsSection(".neac0", exact: true) || exe.ContainsSection(".neac1", exact: true))
                 return "NEAC Protect";
 
-            var name = pex.ProductName;
+            var name = exe.ProductName;
 
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
             // TODO: Fix Product Name not being properly grabbed from the file.

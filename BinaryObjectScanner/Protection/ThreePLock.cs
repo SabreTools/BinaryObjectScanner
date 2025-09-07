@@ -11,13 +11,13 @@ namespace BinaryObjectScanner.Protection
     public class ThreePLock : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // This produced false positives in some DirectX 9.0c installer files
             //"Y" + (char)0xC3 + "U" + (char)0x8B + (char)0xEC + (char)0x83 + (char)0xEC + "0SVW"
 
             // Get the .ldr and .ldt sections, if they exist
-            if (pex.ContainsSection(".ldr", exact: true) && pex.ContainsSection(".ldt", exact: true))
+            if (exe.ContainsSection(".ldr", exact: true) && exe.ContainsSection(".ldt", exact: true))
                 return $"3P-Lock Copy Protection";
 
             return null;

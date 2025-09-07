@@ -9,18 +9,18 @@ namespace BinaryObjectScanner.Protection
 {
     public class SmartE : IPathCheck, IExecutableCheck<PortableExecutable>
     {
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
            // Only works on stub generated from running the program yourself
-           if (pex.InternalName.OptionalEquals("SmarteSECURE"))
+           if (exe.InternalName.OptionalEquals("SmarteSECURE"))
                return "SmartE";
            
-           var sections = pex.Model.SectionTable ?? [];
+           var sections = exe.Model.SectionTable ?? [];
 
            if (sections.Length > 0)
            {
                // Get the last section data, if it exists
-               var lastSectionData = pex.GetSectionData(sections.Length - 1);
+               var lastSectionData = exe.GetSectionData(sections.Length - 1);
                if (lastSectionData != null)
                {
                    // All sections seen so far are the last sections, so this is "technically"
