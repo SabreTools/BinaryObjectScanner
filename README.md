@@ -153,6 +153,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | Embedded File | Yes | No | Yes | Not technically a packer |
 | EXE Stealth | Yes | No | No | |
 | Gentee Installer | Yes | No | No | |
+| GkWare SFX | Yes | No | No | |
 | HyperTech CrackProof | Yes | No | No | |
 | Inno Setup | Yes | No | No | |
 | InstallAnywhere | Yes | No | No | |
