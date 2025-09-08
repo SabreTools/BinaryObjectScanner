@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Check if executable is a Securom PA Module
-            var paModule = CheckSecuromProductActivationModule(exe);
+            var paModule = CheckProductActivation(exe);
             if (paModule != null)
             {
                 return paModule;
@@ -268,8 +268,11 @@ namespace BinaryObjectScanner.Protection
             return $"{major}.{minor:00}.{patch:0000}";
         }
 
-        /// <inheritdoc/>
-        private static string? CheckSecuromProductActivationModule(PortableExecutable exe)
+
+        /// <summary>
+        /// Helper method to check if a given PortableExecutable is a SecuROM PA module.
+        /// </summary>
+        private static string? CheckProductActivation(PortableExecutable exe)
         {
             var name = exe.FileDescription;
             if (name.OptionalContains("SecuROM PA"))
