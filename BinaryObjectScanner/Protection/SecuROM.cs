@@ -15,46 +15,12 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
-            if (name.OptionalContains("SecuROM PA"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            name = exe.InternalName;
-            if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase))
+            // Check if executable is a Securom PA Module
+            var paModule = CheckProductActivation(exe);
+            if (paModule != null)
             {
-                if (exe.ProductName.OptionalEquals("drEAm"))
-                    return $"SecuROM Product Activation v{exe.GetInternalVersion()} - EA Game Authorization Management";
-                else
-                    return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+                return paModule;
             }
-            else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
-            {
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-            }
-            else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
-            {
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-            }
-
-            name = exe.OriginalFilename;
-            if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            name = exe.ProductName;
-            if (name.OptionalContains("SecuROM Activate & Play"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
-            // variants. PiD refers to this as "SecuROM Modified PA Module".
-            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
-            // both, Softstar and Aurogon respectively(?), seem to have some connection, and use similar-looking
-            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be. 
-            // Regardless, even if these are given their own named variant later, this check should remain in order to
-            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
-            // detection abilities.
-            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
-            if (name.OptionalEquals("drm_pagui_doit"))
-                return $"SecuROM Product Activation - Modified";
             
             // Get the matrosch section, if it exists
             if (exe.ContainsSection("matrosch", exact: true))
@@ -300,6 +266,55 @@ namespace BinaryObjectScanner.Protection
             int patch = dataSectionRaw[position + 0xAC + 2] ^ 0x51;
 
             return $"{major}.{minor:00}.{patch:0000}";
+        }
+
+
+        /// <summary>
+        /// Helper method to check if a given PortableExecutable is a SecuROM PA module.
+        /// </summary>
+        private static string? CheckProductActivation(PortableExecutable exe)
+        {
+            var name = exe.FileDescription;
+            if (name.OptionalContains("SecuROM PA"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            name = exe.InternalName;
+            
+            // Checks if ProductName isn't drEAm to organize custom module checks at the end.
+            if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase) ^ exe.ProductName.OptionalEquals("drEAm"))
+                    return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+            else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+            else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            name = exe.OriginalFilename;
+            if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            name = exe.ProductName;
+            if (name.OptionalContains("SecuROM Activate & Play"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            // Custom Module Checks
+            
+            if (exe.ProductName.OptionalEquals("drEAm")) 
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()} - EA Game Authorization Management";
+            
+            // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
+            // variants. PiD refers to this as "SecuROM Modified PA Module".
+            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
+            // both, Softstar and Aurogon respectively(?), seem to have some connection, and use similar-looking
+            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be. 
+            // Regardless, even if these are given their own named variant later, this check should remain in order to
+            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
+            // detection abilities.
+            // TODO: Decide whether to get internal version or not in the future.
+            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
+            if (name.OptionalEquals("drm_pagui_doit"))
+                return $"SecuROM Product Activation - Modified";
+            
+            return null;
         }
     }
 }
