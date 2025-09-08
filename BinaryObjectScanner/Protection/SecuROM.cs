@@ -5,8 +5,6 @@ using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
 using SabreTools.Matching.Paths;
-using SabreTools.Models.PortableExecutable;
-using SabreTools.Serialization;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -54,7 +52,7 @@ namespace BinaryObjectScanner.Protection
             // Regardless, even if these are given their own named variant later, this check should remain in order to
             // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
             // detection abilities.
-            name = exe.Model.ExportTable?.ExportNameTable?.Strings?[0];
+            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
             if (name.OptionalEquals("drm_pagui_doit"))
                 return $"SecuROM Product Activation - Modified";
             
