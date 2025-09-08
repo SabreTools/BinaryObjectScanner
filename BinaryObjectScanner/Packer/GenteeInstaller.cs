@@ -21,6 +21,10 @@ namespace BinaryObjectScanner.Packer
                     return "Gentee Installer";
             }
 
+            // TODO: Add assembly identity name check as well: "Gentee.Installer.Install"
+            // Requires adding a helper to get the first Assembly Identity whose name is not null
+            // This was found in a "Create Install 2003"-made installer
+
             return null;
         }
     }
