@@ -41,11 +41,9 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            if (exe.OverlayStrings != null)
-            {
-                if (exe.OverlayStrings.Exists(s => s == "AddD"))
-                    return $"SecuROM {GetV4Version(exe)}";
-            }
+            string? v4Version = GetV4Version(exe);
+            if (v4Version != null)
+                return $"SecuROM {v4Version}";
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
             var sections = exe.SectionTable ?? [];
@@ -144,12 +142,17 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private static string GetV4Version(PortableExecutable exe)
+        /// <summary>
+        /// Try to get the SecuROM v4 version from the overlay, if possible
+        /// </summary>
+        /// <param name="exe">Executable to retrieve the overlay from</param>
+        /// <returns>The version on success, null otherwise</returns>
+        private static string? GetV4Version(PortableExecutable exe)
         {
             // Cache the overlay data for easier access
             var overlayData = exe.OverlayData;
             if (overlayData == null || overlayData.Length < 20)
-                return "(very old, v3 or less)";
+                return null;
 
             // Search for the "AddD" string in the overlay
             bool found = false;
@@ -167,7 +170,7 @@ namespace BinaryObjectScanner.Protection
 
             // If the string wasn't found in the first 0x100 bytes
             if (!found)
-                return "(very old, v3 or less)";
+                return null;
 
             // Read the version starting 4 bytes after the signature
             index += 8;
