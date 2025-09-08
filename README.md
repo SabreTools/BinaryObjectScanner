@@ -163,7 +163,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | Installer VISE | Yes | No | No | |
 | Intel Installation Framework | Yes | No | No | |
 | Microsoft CAB SFX | Yes | No | No | |
-| MPRESS | Yes | No | No |
+| MPRESS | Yes | No | No | |
 | NeoLite | Yes | No | No | Only confirmed to detect version 2.X |
 | NSIS | Yes | No | No | |
 | PECompact | Yes | No | No | |
@@ -171,7 +171,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | PKLITE32 | Yes | No | No | |
 | Setup Factory | Yes | No | No | |
 | Shrinker | Yes | No | No | |
-| Smart Install Maker | Yes | No | No |
+| Smart Install Maker | Yes | No | No | |
 | Spoon Installer | Yes | No | No | |
 | UPX and UPX (NOS Variant) | Yes | No | No | |
 | WinRAR SFX | Yes | No | Yes | |
