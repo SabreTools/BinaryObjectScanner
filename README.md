@@ -171,6 +171,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | PKLITE32 | Yes | No | No | |
 | Setup Factory | Yes | No | No | |
 | Shrinker | Yes | No | No | |
+| Spoon Installer | Yes | No | No | |
 | UPX and UPX (NOS Variant) | Yes | No | No | |
 | WinRAR SFX | Yes | No | Yes | |
 | WinZip SFX | Yes | No | Yes | |
