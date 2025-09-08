@@ -131,6 +131,7 @@ Below is a list of protections detected by BinaryObjectScanner. The two columns 
 | Winlock | False | True | |
 | WTM CD Protect | True | True | |
 | XCP | True | True | |
+| yuPlay Launcher | False | True | |
 | Zzxzz | False | True | |
 
 ### Notes
