@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
             // Checks for Professional
             // PEX checks intentionally only detect Professional
 
-            var sections = exe.Model.SectionTable;
+            var sections = exe.SectionTable;
             if (sections == null)
                 return null;
 

@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
                 return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
             // Found in "ByteShield.dll" in Redump entry 6236
-            name = exe.Model.ExportTable?.ExportDirectoryTable?.Name;
+            name = exe.ExportTable?.ExportDirectoryTable?.Name;
             if (name.OptionalEquals("ByteShield Client"))
                 return "ByteShield Component Module";
 

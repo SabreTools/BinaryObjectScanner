@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // Check for "Inno" in the reserved words
-            var reserved2 = exe.Model.Stub?.Header?.Reserved2;
+            var reserved2 = exe.Stub?.Header?.Reserved2;
             if (reserved2 != null && reserved2.Length > 5)
             {
                 if (reserved2[4] == 0x6E49 && reserved2[5] == 0x6F6E)

@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Protection
            if (exe.InternalName.OptionalEquals("SmarteSECURE"))
                return "SmartE";
            
-           var sections = exe.Model.SectionTable ?? [];
+           var sections = exe.SectionTable ?? [];
 
            if (sections.Length > 0)
            {

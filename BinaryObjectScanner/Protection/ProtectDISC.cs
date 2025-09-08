@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the 4th and 5th sections, if they exist (example names: ACE4/ACE5) (Found in Redump entries 94792, 94793)
-            var sections = exe.Model.SectionTable ?? [];
+            var sections = exe.SectionTable ?? [];
             for (int i = 3; i < sections.Length; i++)
             {
                 var nthSectionData = exe.GetSectionData(i);

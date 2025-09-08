@@ -51,16 +51,16 @@ namespace BinaryObjectScanner.Protection
         internal static string? SafeDiscCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in Redump entry 57986.
-            if (exe.Model.ImportTable?.HintNameTable != null)
+            if (exe.ImportTable?.HintNameTable != null)
             {
-                if (Array.Exists(exe.Model.ImportTable.HintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
+                if (Array.Exists(exe.ImportTable.HintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
                     return "SafeDisc Lite";
             }
 
             // Found in Redump entry 57986.
-            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
+                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
                     return "SafeDisc Lite";
             }
 

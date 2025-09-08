@@ -19,7 +19,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // TODO: Find what fvinfo field actually maps to this
+            #region File Description
+
             var name = exe.FileDescription;
 
             // There are some File Description checks that are currently too generic to use.
@@ -47,18 +48,26 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalContains("Protected Module"))
                 return $"StarForce 5";
 
+            #endregion
+
+            #region Legal Copyright
+
             name = exe.LegalCopyright;
             if (name.OptionalStartsWith("(c) Protection Technology")) // (c) Protection Technology (StarForce)?
                 return $"StarForce {exe.GetInternalVersion()}";
             else if (name.OptionalContains("Protection Technology")) // Protection Technology (StarForce)?
                 return $"StarForce {exe.GetInternalVersion()}";
-            
+
+            #endregion
+
+            #region Trade Name
+
             // FrontLine ProActive (digital activation), samples: 
             // https://dbox.tools/titles/pc/46450FA4/ 
             // https://dbox.tools/titles/pc/4F430FA0/ 
             // https://dbox.tools/titles/pc/53450FA1/
             name = exe.TradeName;
-            if (name.OptionalContains("FL ProActive")) 
+            if (name.OptionalContains("FL ProActive"))
                 return "FrontLine ProActive";
 
             // StarForce Crypto (SF Crypto)
@@ -66,13 +75,16 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalContains("SF Crypto"))
                 return "StarForce Crypto";
 
+            #endregion
+
+            #region Internal Name
+
             // TODO: Decide if internal name checks are safe to use.
-                name = exe.InternalName;
+            name = exe.InternalName;
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
             if (name.OptionalEquals("CORE.ADMIN", StringComparison.Ordinal))
                 return $"StarForce {exe.GetInternalVersion()}";
-
 
             // These checks currently disabled due being possibly too generic:
             // Found in "protect.dll" in Redump entry 94805.
@@ -86,11 +98,13 @@ namespace BinaryObjectScanner.Protection
             // else if (name.OptionalEquals("protect.exe", StringComparison.Ordinal))
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(exe)}";
 
+            #endregion
+
             // Check the export name table
-            if (exe.Model.ExportTable?.ExportNameTable?.Strings != null)
+            if (exe.ExportTable?.ExportNameTable?.Strings != null)
             {
                 // TODO: Should we just check for "PSA_*" instead of a single entry?
-                if (Array.Exists(exe.Model.ExportTable.ExportNameTable.Strings, s => s == "PSA_GetDiscLabel"))
+                if (Array.Exists(exe.ExportTable.ExportNameTable.Strings, s => s == "PSA_GetDiscLabel"))
                     return $"StarForce {exe.GetInternalVersion()}";
             }
 

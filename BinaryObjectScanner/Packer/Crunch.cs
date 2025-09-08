@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the last section strings, if they exist
-            var sections = exe.Model.SectionTable ?? [];
+            var sections = exe.SectionTable ?? [];
             var strs = exe.GetSectionStrings(sections.Length - 1);
             if (strs != null)
             {

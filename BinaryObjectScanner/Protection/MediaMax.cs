@@ -45,9 +45,9 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the export name table
-            if (exe.Model.ExportTable?.ExportNameTable?.Strings != null)
+            if (exe.ExportTable?.ExportNameTable?.Strings != null)
             {
-                if (Array.Exists(exe.Model.ExportTable.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
+                if (Array.Exists(exe.ExportTable.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
                     return "MediaMax CD-3";
             }
 

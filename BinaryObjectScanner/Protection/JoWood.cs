@@ -19,8 +19,8 @@ namespace BinaryObjectScanner.Protection
             // Get the .ext     section, if it exists
             if (exe.ContainsSection(".ext    ", exact: true))
             {
-                bool importTableMatches = Array.Exists(exe.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "kernel32.dll")
-                    && Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], s => s?.Name == "VirtualProtect");
+                bool importTableMatches = Array.Exists(exe.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "kernel32.dll")
+                    && Array.Exists(exe.ImportTable?.HintNameTable ?? [], s => s?.Name == "VirtualProtect");
 
                 // Get the .dcrtext section, if it exists
                 if (exe.ContainsSection(".dcrtext") && importTableMatches)

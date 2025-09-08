@@ -59,16 +59,16 @@ namespace BinaryObjectScanner.Protection
                 0x6C, 0x61, 0x6D, 0x65, 0x6E, 0x74, 0x61, 0x73,
                 0x2E, 0x50, 0x45
             ];
-            int endDosStub = (int)(exe.Model.Stub?.Header?.NewExeHeaderAddr ?? 0);
+            int endDosStub = (int)(exe.Stub?.Header?.NewExeHeaderAddr ?? 0);
             int position = -1;
 
             // Check the executable tables
             position = exe.StubExecutableData?.FirstPosition(check) ?? -1;
             bool containsCheck = position > -1;
-            bool containsCheck2 = Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
-                && Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
-                && Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
-                && Array.Exists(exe.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
+            bool containsCheck2 = Array.Exists(exe.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
+                && Array.Exists(exe.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
+                && Array.Exists(exe.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
+                && Array.Exists(exe.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
 
             int position2 = -1;
 

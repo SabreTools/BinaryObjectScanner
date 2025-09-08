@@ -10,9 +10,9 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Indicates Hypertech Crack Proof as well?
             //// Get the import directory table
-            //if (exe.Model.ImportTable?.ImportDirectoryTable != null)
+            //if (exe.ImportTable?.ImportDirectoryTable != null)
             //{
-            //    bool match = exe.Model.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "KeRnEl32.dLl");
+            //    bool match = exe.ImportTable.ImportDirectoryTable.Any(idte => idte.Name == "KeRnEl32.dLl");
             //    if (match)
             //        return "CDSHiELD SE";
             //}

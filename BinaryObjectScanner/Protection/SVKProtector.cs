@@ -72,7 +72,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // 0x504B5653 is "SVKP"
-            if (exe.Model.COFFFileHeader?.PointerToSymbolTable == 0x504B5653)
+            if (exe.COFFFileHeader?.PointerToSymbolTable == 0x504B5653)
                 return "SVKP";
 
             // Get the .svkp section, if it exists.

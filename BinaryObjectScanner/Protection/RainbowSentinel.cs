@@ -105,7 +105,7 @@ namespace BinaryObjectScanner.Protection
                 return match;
 
             // Get the resident and non-resident name table strings
-            var nrntStrs = Array.ConvertAll(exe.Model.NonResidentNameTable ?? [],
+            var nrntStrs = Array.ConvertAll(exe.NonResidentNameTable ?? [],
                 rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
 
             // Check the nonresident-name table

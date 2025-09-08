@@ -75,7 +75,7 @@ namespace BinaryObjectScanner.Protection
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
-            var sections = exe.Model.SectionTable ?? [];
+            var sections = exe.SectionTable ?? [];
             for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)
             {
                 // Get the nth section strings, if they exist
@@ -89,15 +89,15 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the import directory table, if it exists
-            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
+                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
                     return "SolidShield EXE Wrapper v1";
 
-                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
+                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
                     return "SolidShield EXE Wrapper v2";
 
-                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
+                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
                     return "SolidShield EXE Wrapper v2";
             }
 

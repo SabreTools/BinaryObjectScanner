@@ -49,7 +49,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
-            var sections = exe.Model.SectionTable ?? [];
+            var sections = exe.SectionTable ?? [];
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];

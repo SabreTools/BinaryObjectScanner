@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/_denuvoComplete.2.sg
 
             // Denuvo Protector
-            if (exe.Model.OptionalHeader?.Magic == OHMN.PE32Plus
+            if (exe.OptionalHeader?.Magic == OHMN.PE32Plus
                 && exe.EntryPointData != null)
             {
                 byte?[] denuvoProtector =
@@ -95,7 +95,7 @@ namespace BinaryObjectScanner.Protection
                 // || exe.ContainsSection(".srdata")
                 || !string.IsNullOrEmpty(timingMatch))
             {
-                if (exe.Model.OptionalHeader?.Magic == OHMN.PE32Plus)
+                if (exe.OptionalHeader?.Magic == OHMN.PE32Plus)
                 {
                     var matchers = new List<ContentMatchSet>
                     {

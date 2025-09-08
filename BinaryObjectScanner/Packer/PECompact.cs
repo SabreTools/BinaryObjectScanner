@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // 0x4F434550 is "PECO"
-            if (exe.Model.COFFFileHeader?.PointerToSymbolTable == 0x4F434550)
+            if (exe.COFFFileHeader?.PointerToSymbolTable == 0x4F434550)
                 return "PE Compact v1.x";
 
             // TODO: Get more granular version detection. PiD is somehow able to detect version ranges based

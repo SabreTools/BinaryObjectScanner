@@ -120,14 +120,14 @@ namespace BinaryObjectScanner.Protection
                 return match;
 
             // Get the resident and non-resident name table strings
-            var nrntStrs = Array.ConvertAll(exe.Model.NonResidentNameTable ?? [],
+            var nrntStrs = Array.ConvertAll(exe.NonResidentNameTable ?? [],
                 nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
-            if (exe.Model.ImportedNameTable != null)
+            if (exe.ImportedNameTable != null)
             {
-                foreach (var inte in exe.Model.ImportedNameTable.Values)
+                foreach (var inte in exe.ImportedNameTable.Values)
                 {
                     if (inte.NameString.IsNullOrEmpty())
                         continue;

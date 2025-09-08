@@ -43,9 +43,9 @@ namespace BinaryObjectScanner.Protection
         internal static string? SafeCastCheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // Check for the CDAC01AA name string.
-            if (exe.Model.ResidentNameTable != null)
+            if (exe.ResidentNameTable != null)
             {
-                var residentNames = Array.ConvertAll(exe.Model.ResidentNameTable,
+                var residentNames = Array.ConvertAll(exe.ResidentNameTable,
                     rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
                 if (Array.Exists(residentNames, s => s.Contains("CDAC01AA")))
                     return "SafeCast";
@@ -74,9 +74,9 @@ namespace BinaryObjectScanner.Protection
             // TODO: Invesitgate if the "AdobeLM.dll" file (along with mentions of "AdobeLM" in executables) uniquely identifies SafeCast, or if it can be used with different DRM. (Found in IA item ccd0605)
 
             // Get the import directory table, if it exists
-            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable,
+                if (Array.Exists(exe.ImportTable.ImportDirectoryTable,
                     idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "SafeCast";

@@ -20,9 +20,9 @@ namespace BinaryObjectScanner.Protection
                 return $"Games for Windows LIVE {exe.GetInternalVersion()}";
 
             // Get the import directory table
-            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "xlive.dll"))
+                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "xlive.dll"))
                     return "Games for Windows LIVE";
             }
 
