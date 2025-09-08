@@ -59,10 +59,15 @@ namespace BinaryObjectScanner.Protection
             // https://dbox.tools/titles/pc/53450FA1/
             name = exe.TradeName;
             if (name.OptionalContains("FL ProActive")) 
-                return $"FrontLine ProActive";
+                return "FrontLine ProActive";
+
+            // StarForce Crypto (SF Crypto)
+            // Found in "pcnsl.exe" in Redump entry 119679
+            if (name.OptionalContains("SF Crypto"))
+                return "StarForce Crypto";
 
             // TODO: Decide if internal name checks are safe to use.
-            name = exe.InternalName;
+                name = exe.InternalName;
 
             // Found in "protect.x64" and "protect.x86" in Redump entry 94805.
             if (name.OptionalEquals("CORE.ADMIN", StringComparison.Ordinal))
