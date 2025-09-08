@@ -180,6 +180,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | WinRAR SFX | Yes | No | Yes | |
 | WinZip SFX | Yes | No | Yes | |
 | WISE Installer | Yes | No | Yes | |
+| Zylom Wrapper | Yes | No | No | |
 
 ## Game Engines Detected
 
