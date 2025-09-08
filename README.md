@@ -154,7 +154,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | dotFuscator | Yes | No | No | |
 | Embedded File | Yes | No | Yes | Not technically a packer |
 | EXE Stealth | Yes | No | No | |
-| Gentee Installer | Yes | No | No | |
+| Gentee Installer | Yes | No | No | Includes "Create Install 2003" |
 | GkWare SFX | Yes | No | No | |
 | GP-Install | Yes | No | No | |
 | HyperTech CrackProof | Yes | No | No | |
