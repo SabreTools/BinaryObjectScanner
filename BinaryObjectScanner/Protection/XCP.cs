@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
     public class XCP : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .rdata section strings, if they exist
-            List<string>? strs = pex.GetFirstSectionStrings(".rdata");
+            List<string>? strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("XCP.DAT")))

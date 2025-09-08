@@ -13,10 +13,10 @@ namespace BinaryObjectScanner.Protection
     public class Cucko : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .text section, if it exists
-            var textData = pex.GetFirstSectionData(".text");
+            var textData = exe.GetFirstSectionData(".text");
             if (textData != null)
             {
                 var matchers = new List<ContentMatchSet>

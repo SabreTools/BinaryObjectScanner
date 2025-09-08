@@ -16,28 +16,28 @@ namespace BinaryObjectScanner.Protection
     public class MediaMax : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Used to detect "LicGen.exe", found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
                 return $"MediaMax CD-3";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
                 return $"MediaMax CD-3";
 
-            if (pex.FindGenericResource("Cd3Ctl").Count > 0)
+            if (exe.FindGenericResource("Cd3Ctl").Count > 0)
                 return $"MediaMax CD-3";
 
-            if (pex.FindDialogBoxByItemTitle("This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players.").Count > 0)
+            if (exe.FindDialogBoxByItemTitle("This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players.").Count > 0)
                 return $"MediaMax CD-3";
 
             // TODO: Investigate the following dialog item title resource
             // "This limited production advanced CD is not playable on your computer. It is solely intended for playback on standard CD players."
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("CD3 Launch Error")))
@@ -45,9 +45,9 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the export name table
-            if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
+            if (exe.Model.ExportTable?.ExportNameTable?.Strings != null)
             {
-                if (Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
+                if (Array.Exists(exe.Model.ExportTable.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
                     return "MediaMax CD-3";
             }
 

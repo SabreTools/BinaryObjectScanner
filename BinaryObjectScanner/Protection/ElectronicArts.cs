@@ -7,27 +7,27 @@ namespace BinaryObjectScanner.Protection
     public class ElectronicArts : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalContains("EReg MFC Application"))
-                return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
+                return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
             else if (name.OptionalContains("Registration code installer program"))
-                return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
+                return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
             else if (name.OptionalEquals("EA DRM Helper", StringComparison.OrdinalIgnoreCase))
-                return $"EA DRM Protection {pex.GetInternalVersion()}";
+                return $"EA DRM Protection {exe.GetInternalVersion()}";
 
-            name = pex.InternalName;
+            name = exe.InternalName;
             if (name.OptionalEquals("CDCode", StringComparison.Ordinal))
-                return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
+                return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
 
-            if (pex.FindDialogByTitle("About CDKey").Count > 0)
-                return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
-            else if (pex.FindGenericResource("About CDKey").Count > 0)
-                return $"EA CdKey Registration Module {pex.GetInternalVersion()}";
+            if (exe.FindDialogByTitle("About CDKey").Count > 0)
+                return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
+            else if (exe.FindGenericResource("About CDKey").Count > 0)
+                return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("EReg Config Form")))
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rdata");
+            strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("GenericEA")) && strs.Exists(s => s.Contains("Activation")))
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".text");
+            strs = exe.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("GenericEA")) && strs.Exists(s => s.Contains("Activation")))

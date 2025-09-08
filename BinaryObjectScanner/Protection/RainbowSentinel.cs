@@ -38,10 +38,10 @@ namespace BinaryObjectScanner.Protection
     public class RainbowSentinel : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Don't read entire file
-            var data = nex.ReadArbitraryRange();
+            byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
 
@@ -105,7 +105,7 @@ namespace BinaryObjectScanner.Protection
                 return match;
 
             // Get the resident and non-resident name table strings
-            var nrntStrs = Array.ConvertAll(nex.Model.NonResidentNameTable ?? [],
+            var nrntStrs = Array.ConvertAll(exe.Model.NonResidentNameTable ?? [],
                 rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
 
             // Check the nonresident-name table
@@ -127,35 +127,35 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Figure out why resources for "RNBOVTMP.DLL", "SENTTEMP.DLL", "SNTI386.DLL", and "SX32W.DL_"/"SX32W.DLL" aren't getting read properly, causing checks for these files to not work.
 
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
 
             // Found in "RNBOVTMP.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name.OptionalEquals("Rainbow Technologies Virtual Device Driver", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "SENTTEMP.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name.OptionalEquals("Rainbow Technologies Sentinel Driver", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "SETUPX86.EXE"/"SENTW95.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name.OptionalEquals("Sentinel Driver Setup DLL", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "SNTI386.DLL"/"SENTW95.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name.OptionalEquals("Install, Setup - Sentinel Driver", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "wd126.zip/WDSHARE.EXE/SX32W.DL_" in IA item "ASMEsMechanicalEngineeringToolkit1997December" and "WDSHARE.ZIP/WDSHARE.EXE/SX32W.DL_" in IA item "aplicaciones-windows".
             if (name.OptionalEquals("Rainbow Technologies SentinelSuperPro WIN32 DLL", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel SuperPro {pex.ProductVersion}";
+                return $"Rainbow Sentinel SuperPro {exe.ProductVersion}";
 
             // Found in "SP32W.DLL" in IA item "pcwkcd-1296".
             if (name.OptionalEquals("Rainbow Technologies SentinelPro WIN32 DLL", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow SentinelPro {pex.ProductVersion}";
+                return $"Rainbow SentinelPro {exe.ProductVersion}";
 
             // Found in "NSRVGX.EXE" in IA item "czchip199707cd".
             if (name.OptionalEquals("NetSentinel Server for WIN 32", StringComparison.OrdinalIgnoreCase))
@@ -166,27 +166,27 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Rainbow Technologies Sentinel Device Driver", StringComparison.OrdinalIgnoreCase))
                 return "Rainbow Sentinel Driver";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
 
             // Found in multiple files in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", including "RNBOVTMP.DLL", "SENTTEMP.DLL", and "SNTI386.DLL".
             if (name.OptionalEquals("Rainbow Technologies Sentinel", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "SETUPX86.EXE"/"SENTW95.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name.OptionalEquals("Sentinel Driver Setup", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "wd126.zip/WDSHARE.EXE/SX32W.DL_" in IA item "ASMEsMechanicalEngineeringToolkit1997December" and "WDSHARE.ZIP/WDSHARE.EXE/SX32W.DL_" in IA item "aplicaciones-windows".
             if (name.OptionalEquals("Rainbow Technologies SentinelSuperPro WIN32 DLL", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel SuperPro {pex.ProductVersion}";
+                return $"Rainbow Sentinel SuperPro {exe.ProductVersion}";
 
             // Found in "SP32W.DLL" in IA item "pcwkcd-1296".
             if (name.OptionalEquals("Rainbow Technologies SentinelPro WIN32 DLL", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow SentinelPro {pex.ProductVersion}";
+                return $"Rainbow SentinelPro {exe.ProductVersion}";
 
             // Found in "F481_SetupSysDriver.exe.B391C18A_6953_11D4_82CB_00D0B72E1DB9"/"SetupSysDriver.exe" in IA item "chip-cds-2001-08".
             if (name.OptionalEquals("Sentinel System Driver", StringComparison.OrdinalIgnoreCase))
-                return $"Rainbow Sentinel {pex.ProductVersion}";
+                return $"Rainbow Sentinel {exe.ProductVersion}";
 
             // Found in "\disc4\cad\sdcc_200.zip\DISK1\_USER1.HDR\Language_Independent_Intel_32_Files\SNTNLUSB.SYS" in "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
             // TODO: Check if the version included with this is useful.
@@ -194,7 +194,7 @@ namespace BinaryObjectScanner.Protection
                 return "Rainbow Sentinel Driver";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "ADESKSYS.DLL"/"WINADMIN.EXE"/"WINQUERY.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
@@ -207,7 +207,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rdata");
+            strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Found in "SP32W.DLL" in IA item "pcwkcd-1296".
@@ -232,7 +232,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rsrc section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".rsrc");
+            strs = exe.GetFirstSectionStrings(".rsrc");
             if (strs != null)
             {
                 // Found in "WINMON.exe" in IA item "czchip199707cd".
@@ -241,7 +241,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .text section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".text");
+            strs = exe.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".

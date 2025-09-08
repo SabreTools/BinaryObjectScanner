@@ -19,19 +19,19 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Add support for detecting older versions, especially versions made before Easy Anti-Cheat was purchased by Epic Games.
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Contains("EA Anticheat"))
                 return "EA Anti Cheat";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Contains("EA Anticheat"))
                 return "EA Anti Cheat";
 
-            name = pex.InternalName;
+            name = exe.InternalName;
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Equals("skyfall"))
                 return "EA Anti Cheat";

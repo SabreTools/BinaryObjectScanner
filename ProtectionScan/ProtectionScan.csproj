@@ -4,6 +4,7 @@
         <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
@@ -25,37 +26,6 @@
     <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`osx-arm`))">
         <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
-
-    <!-- These are needed for dealing with native Windows DLLs -->
-    <ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\CascLib.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <TargetPath>CascLib.dll</TargetPath>
-        </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\mspack.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <TargetPath>mspack.dll</TargetPath>
-        </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x86\native\StormLib.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <TargetPath>StormLib.dll</TargetPath>
-        </ContentWithTargetPath>
-    </ItemGroup>
-    <ItemGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\native\CascLib.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <TargetPath>CascLib.dll</TargetPath>
-        </ContentWithTargetPath>
-        <ContentWithTargetPath Include="..\BinaryObjectScanner\runtimes\win-x64\native\StormLib.dll">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-            <TargetPath>StormLib.dll</TargetPath>
-        </ContentWithTargetPath>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />

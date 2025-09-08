@@ -13,46 +13,46 @@ namespace BinaryObjectScanner.Protection
     public class SolidShield : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield {pex.GetInternalVersion()}";
+                return $"SolidShield {exe.GetInternalVersion()}";
 
             else if (name.OptionalStartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {pex.GetInternalVersion()}";
+                return $"SolidShield Core.dll {exe.GetInternalVersion()}";
 
             else if (name.OptionalStartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
+                return $"SolidShield Activation Manager Module {GetInternalVersion(exe)}";
 
             // Found in Redump entry 63719.
             else if (name.OptionalStartsWith("Solidshield - Activation Wizard", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
+                return $"SolidShield Activation Manager Module {GetInternalVersion(exe)}";
 
             // Found in "tvdm.dll" in Redump entry 68166.
             else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield {GetInternalVersion(pex)}";
+                return $"SolidShield {GetInternalVersion(exe)}";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {pex.GetInternalVersion()}";
+                return $"SolidShield Core.dll {exe.GetInternalVersion()}";
 
             else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Core.dll {pex.GetInternalVersion()}";
+                return $"SolidShield Core.dll {exe.GetInternalVersion()}";
 
             else if (name.OptionalStartsWith("Activation Manager", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield Activation Manager Module {GetInternalVersion(pex)}";
+                return $"SolidShield Activation Manager Module {GetInternalVersion(exe)}";
 
             // Found in "tvdm.dll" in Redump entry 68166.
             else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
-                return $"SolidShield {GetInternalVersion(pex)}";
+                return $"SolidShield {GetInternalVersion(exe)}";
 
             // Get the .init section, if it exists
-            if (pex.ContainsSection(".init"))
+            if (exe.ContainsSection(".init"))
             {
-                var initData = pex.GetFirstSectionData(".init");
+                var initData = exe.GetFirstSectionData(".init");
                 if (initData != null)
                 {
                     var matchers = new List<ContentMatchSet>
@@ -71,15 +71,15 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the wrapper resource, if it exists
-            if (pex.FindResourceByNamedType("BIN, IDR_SGT").Count > 0)
+            if (exe.FindResourceByNamedType("BIN, IDR_SGT").Count > 0)
                 return "SolidShield EXE Wrapper v1";
 
             // Search the last two available sections
-            var sections = pex.Model.SectionTable ?? [];
+            var sections = exe.Model.SectionTable ?? [];
             for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)
             {
                 // Get the nth section strings, if they exist
-                var strs = pex.GetSectionStrings(i);
+                var strs = exe.GetSectionStrings(i);
                 if (strs != null)
                 {
                     var str = strs.Find(s => s.Contains("Solidshield "));
@@ -89,15 +89,15 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the import directory table, if it exists
-            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
+                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
                     return "SolidShield EXE Wrapper v1";
 
-                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
+                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
                     return "SolidShield EXE Wrapper v2";
 
-                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
+                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
                     return "SolidShield EXE Wrapper v2";
             }
 
@@ -216,11 +216,11 @@ namespace BinaryObjectScanner.Protection
             return string.Empty;
         }
 
-        private static string GetInternalVersion(PortableExecutable pex)
+        private static string GetInternalVersion(PortableExecutable exe)
         {
-            var companyName = pex.CompanyName?.ToLowerInvariant();
+            var companyName = exe.CompanyName?.ToLowerInvariant();
             if (!string.IsNullOrEmpty(companyName) && (companyName!.Contains("solidshield") || companyName.Contains("tages")))
-                return pex.GetInternalVersion() ?? string.Empty;
+                return exe.GetInternalVersion() ?? string.Empty;
 
             return string.Empty;
         }

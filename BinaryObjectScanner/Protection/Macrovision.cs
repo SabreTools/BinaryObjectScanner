@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-#if NET35_OR_GREATER || NETCOREAPP
-using System.Linq;
-#endif
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
@@ -23,17 +20,17 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             var resultsList = new List<string>();
 
             // Run C-Dilla NE checks
-            var cDilla = CDillaCheckExecutable(file, nex, includeDebug);
+            var cDilla = CDillaCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(cDilla))
                 resultsList.Add(cDilla!);
 
             // Run SafeCast NE checks
-            var safeCast = SafeCastCheckExecutable(file, nex, includeDebug);
+            var safeCast = SafeCastCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
@@ -44,23 +41,23 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Check for specific indications for individual Macrovision protections.
             var resultsList = new List<string>();
 
             // Check for generic indications of Macrovision protections first.
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
 
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (name.OptionalEquals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))
-                resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(pex)}");
+                resultsList.Add($"Macrovision Security Driver {GetSecDrvExecutableVersion(exe)}");
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Windows (2.00R)(Intuit)(2002)(352282)".
             // Known versions:
             // 4.16.050 Windows NT 2002/04/24
             if (name.OptionalEquals("Macrovision RTS Service", StringComparison.OrdinalIgnoreCase))
-                resultsList.Add($"Macrovision RTS Service {pex.FileVersion}");
+                resultsList.Add($"Macrovision RTS Service {exe.FileVersion}");
 
             // The stxt371 and stxt774 sections are found in various newer Macrovision products, including various versions of CDS-300, SafeCast, and SafeDisc.
             // A stxt381 section has also been found in the "~df89e9.tmp" file, which is extracted into the Windows temp directory when running Redump entry 42034 on Windows 9x.
@@ -69,20 +66,20 @@ namespace BinaryObjectScanner.Protection
             // Almost every single sample known has both sections, though one only contains the "stxt371" section. It is unknown if this is intentional, or if the game functions without it.
             // It is present in the "Texas HoldEm!" game in "boontybox_PCGamer_DVD.exe" in IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58.
             // Other games in this set also aren't functional despite having the normal layout of stxt sections, and the primary program doesn't install at all due to activation servers being down.
-            if (pex.ContainsSection("stxt371", exact: true) || pex.ContainsSection("stxt774", exact: true))
+            if (exe.ContainsSection("stxt371", exact: true) || exe.ContainsSection("stxt774", exact: true))
             {
                 // Check the header padding for protected sections.
-                var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, true);
+                var sectionMatch = CheckSectionForProtection(file, includeDebug, exe.HeaderPaddingStrings, exe.HeaderPaddingData, true);
                 if (sectionMatch != null)
                     resultsList.Add(sectionMatch);
 
                 // Get the .data section, if it exists, for protected sections.
-                sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), true);
+                sectionMatch = CheckSectionForProtection(file, includeDebug, exe.GetFirstSectionStrings(".data"), exe.GetFirstSectionData(".data"), true);
                 if (sectionMatch != null)
                     resultsList.Add(sectionMatch!);
 
-                int entryPointIndex = pex.FindEntryPointSectionIndex();
-                var entryPointSectionName = pex.SectionNames?[entryPointIndex];
+                int entryPointIndex = exe.FindEntryPointSectionIndex();
+                var entryPointSectionName = exe.SectionNames?[entryPointIndex];
 
                 switch (entryPointSectionName)
                 {
@@ -105,43 +102,43 @@ namespace BinaryObjectScanner.Protection
             else
             {
                 // Check the header padding for protected sections.
-                var sectionMatch = CheckSectionForProtection(file, includeDebug, pex.HeaderPaddingStrings, pex.HeaderPaddingData, false);
+                var sectionMatch = CheckSectionForProtection(file, includeDebug, exe.HeaderPaddingStrings, exe.HeaderPaddingData, false);
                 if (sectionMatch != null)
                     resultsList.Add(sectionMatch);
 
                 // Check the .data section, if it exists, for protected sections.
-                sectionMatch = CheckSectionForProtection(file, includeDebug, pex.GetFirstSectionStrings(".data"), pex.GetFirstSectionData(".data"), false);
+                sectionMatch = CheckSectionForProtection(file, includeDebug, exe.GetFirstSectionStrings(".data"), exe.GetFirstSectionData(".data"), false);
                 if (sectionMatch != null)
                     resultsList.Add(sectionMatch);
             }
 
             // Run Cactus Data Shield PE checks
-            var match = CactusDataShieldCheckExecutable(file, pex, includeDebug);
+            var match = CactusDataShieldCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run C-Dilla PE checks
-            match = CDillaCheckExecutable(file, pex, includeDebug);
+            match = CDillaCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run RipGuard PE checks
-            match = RipGuardCheckExecutable(file, pex, includeDebug);
+            match = RipGuardCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeCast PE checks
-            match = SafeCastCheckExecutable(file, pex, includeDebug);
+            match = SafeCastCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run SafeDisc PE checks
-            match = SafeDiscCheckExecutable(file, pex, includeDebug);
+            match = SafeDiscCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
             // Run FLEXnet PE checks
-            match = FLEXnetCheckExecutable(file, pex, includeDebug);
+            match = FLEXnetCheckExecutable(file, exe, includeDebug);
             if (!string.IsNullOrEmpty(match))
                 resultsList.Add(match!);
 
@@ -271,7 +268,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        internal static string? Get00000001TMPVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string? Get00000001TMPVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -296,7 +293,7 @@ namespace BinaryObjectScanner.Protection
         }
 
         // TODO: Verify these checks and remove any that may not be needed, file version checks should remove the need for any checks for 2.80+.
-        internal static string? GetSecdrvFileSizeVersion(string firstMatchedString, IEnumerable<string>? files)
+        internal static string? GetSecdrvFileSizeVersion(string firstMatchedString, List<string>? files)
         {
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -392,11 +389,11 @@ namespace BinaryObjectScanner.Protection
         }
 
         // TODO: Combine with filesize version checks if possible.
-        private static string GetSecDrvExecutableVersion(PortableExecutable pex)
+        private static string GetSecDrvExecutableVersion(PortableExecutable exe)
         {
             // Different versions of this driver correspond to different SafeDisc versions.
             // TODO: Check if earlier versions of this driver contain the version string in a less obvious place. 
-            var version = pex.FileVersion;
+            var version = exe.FileVersion;
             if (!string.IsNullOrEmpty(version))
             {
                 return version switch
@@ -787,7 +784,6 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get distinct and order
-#if NET20
             var distinct = new List<string>();
             foreach (string result in resultsList)
             {
@@ -797,9 +793,6 @@ namespace BinaryObjectScanner.Protection
 
             distinct.Sort();
             return distinct;
-#else
-            return [.. resultsList.Distinct().OrderBy(s => s)];
-#endif
         }
     }
 }

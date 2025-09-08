@@ -24,15 +24,15 @@ namespace BinaryObjectScanner.Protection
         // TODO: Find 1.4+ samples.
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Investigate the "Debugger or tool for monitoring detected!!!.Application cannot be run with debugger or monitoring tool(s) loaded!.            Please unload it and restart the application" strings present in seemingly every version.
 
             // Get the entry point data, if it exists.
-            if (pex.EntryPointData != null)
+            if (exe.EntryPointData != null)
             {
                 // Found in the SVKP 1.05 demo.
-                if (pex.EntryPointData.StartsWith(new byte?[]
+                if (exe.EntryPointData.StartsWith(new byte?[]
                 {
                     0xEB, 0x03, 0xC7, 0x84, 0xE8, 0x60, 0xEB, 0x03,
                     0xC7, 0x84, 0xE8, 0xEB, 0x03, 0xC7, 0x84, 0x9A,
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
                     return "SVKP v1.05";
 
                 // Found in the SVKP 1.051 demo.
-                if (pex.EntryPointData.StartsWith(new byte?[]
+                if (exe.EntryPointData.StartsWith(new byte?[]
                 {
                     0x60, 0xEB, 0x03, 0xC7, 0x84, 0xE8, 0xEB, 0x03,
                     0xC7, 0x84, 0x9A, 0xE8, 0x00, 0x00, 0x00, 0x00,
@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Protection
                     return "SVKP v1.051";
 
                 // Found in the SVKP 1.11 demo.
-                if (pex.EntryPointData.StartsWith(new byte?[]
+                if (exe.EntryPointData.StartsWith(new byte?[]
                 {
                     0x60, 0xE8, null, null, null, null, 0x5D, 0x81,
                     0xED, 0x06, null, null, null, 0x64, 0xA0, 0x23
@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
                     return "SVKP v1.11";
 
                 // Found in the SVKP 1.32 demo and Redump entry 84122.
-                if (pex.EntryPointData.StartsWith(new byte?[]
+                if (exe.EntryPointData.StartsWith(new byte?[]
                 {
                     0x60, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81,
                     0xED, 0x06, 0x00, 0x00, 0x00, 0xEB, 0x05, 0xB8,
@@ -72,12 +72,12 @@ namespace BinaryObjectScanner.Protection
             }
 
             // 0x504B5653 is "SVKP"
-            if (pex.Model.COFFFileHeader?.PointerToSymbolTable == 0x504B5653)
+            if (exe.Model.COFFFileHeader?.PointerToSymbolTable == 0x504B5653)
                 return "SVKP";
 
             // Get the .svkp section, if it exists.
             // This section is present in at least versions 1.05-1.32, but isn't present in every known sample of these versions. Removing this section name may be a perk of the licensed version.
-            if (pex.ContainsSection(".svkp", exact: true))
+            if (exe.ContainsSection(".svkp", exact: true))
                 return "SVKP";
 
             return null;

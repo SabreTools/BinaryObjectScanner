@@ -11,18 +11,18 @@ namespace BinaryObjectScanner.Protection
     public class GFWL : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase))
-                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {pex.GetInternalVersion()}";
+                return $"Games for Windows LIVE - Zero Day Piracy Protection Module {exe.GetInternalVersion()}";
             else if (name.OptionalStartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase))
-                return $"Games for Windows LIVE {pex.GetInternalVersion()}";
+                return $"Games for Windows LIVE {exe.GetInternalVersion()}";
 
             // Get the import directory table
-            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "xlive.dll"))
+                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable, idte => idte?.Name == "xlive.dll"))
                     return "Games for Windows LIVE";
             }
 

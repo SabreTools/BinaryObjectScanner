@@ -32,12 +32,12 @@ namespace BinaryObjectScanner.Protection
         // https://www.pcgamingwiki.com/wiki/Denuvo#Redeem.exe
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // All current checks for Denuvo Anti-Cheat come from Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
             // Found in "denuvo-anti-cheat.sys".
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalEquals("Denuvo Anti-Cheat Driver", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
@@ -62,8 +62,8 @@ namespace BinaryObjectScanner.Protection
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/_denuvoComplete.2.sg
 
             // Denuvo Protector
-            if (pex.Model.OptionalHeader?.Magic == OHMN.PE32Plus
-                && pex.EntryPointData != null)
+            if (exe.Model.OptionalHeader?.Magic == OHMN.PE32Plus
+                && exe.EntryPointData != null)
             {
                 byte?[] denuvoProtector =
                 [
@@ -72,7 +72,7 @@ namespace BinaryObjectScanner.Protection
                     0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 ];
 
-                if (pex.EntryPointData.StartsWith(denuvoProtector))
+                if (exe.EntryPointData.StartsWith(denuvoProtector))
                     return "Denuvo Protector";
             }
 
@@ -86,16 +86,16 @@ namespace BinaryObjectScanner.Protection
                         0x69, 0x6D, 0x69, 0x6E, 0x67,
             }, "Denuvo")
             };
-            var timingMatch = MatchUtil.GetFirstMatch(file, pex.EntryPointData, timingMatchers, includeDebug);
+            var timingMatch = MatchUtil.GetFirstMatch(file, exe.EntryPointData, timingMatchers, includeDebug);
 
             // TODO: Re-enable all Entry Point checks after implementing
-            if (pex.ContainsSection(".arch")
+            if (exe.ContainsSection(".arch")
                 // Disabled scanning in files with the ".srdata" section due to numerous false positives.
                 // These include Redump entry 112733 and Bus Hound 5.04 (https://web.archive.org/web/20070129204350/http://www.perisoft.net/bin/bhe504.exe).
-                // || pex.ContainsSection(".srdata")
+                // || exe.ContainsSection(".srdata")
                 || !string.IsNullOrEmpty(timingMatch))
             {
-                if (pex.Model.OptionalHeader?.Magic == OHMN.PE32Plus)
+                if (exe.Model.OptionalHeader?.Magic == OHMN.PE32Plus)
                 {
                     var matchers = new List<ContentMatchSet>
                     {
@@ -165,7 +165,7 @@ namespace BinaryObjectScanner.Protection
                         "Denuvo v3.0b (x64)"),
                     };
 
-                    var match = MatchUtil.GetFirstMatch(file, pex.EntryPointData, matchers, includeDebug);
+                    var match = MatchUtil.GetFirstMatch(file, exe.EntryPointData, matchers, includeDebug);
                     if (!string.IsNullOrEmpty(match))
                         return match;
 
@@ -231,7 +231,7 @@ namespace BinaryObjectScanner.Protection
                         "Denuvo v2.0 (x86)"),
                     };
 
-                    var match = MatchUtil.GetFirstMatch(file, pex.EntryPointData, matchers, includeDebug);
+                    var match = MatchUtil.GetFirstMatch(file, exe.EntryPointData, matchers, includeDebug);
                     if (!string.IsNullOrEmpty(match))
                         return match;
 

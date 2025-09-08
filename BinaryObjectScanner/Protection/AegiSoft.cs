@@ -20,7 +20,7 @@ namespace BinaryObjectScanner.Protection
     public class AegiSoft : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // There are possibly identifying Product Names for some files used in AegiSoft License Manager, but they were deemed too overmatching to use for the time being (Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA")..
             // "Asc001.dll" has the Product Name "Install Dynamic Link Library".
@@ -34,12 +34,12 @@ namespace BinaryObjectScanner.Protection
             // "Asc002.dll" has the string "AscActivate"
 
             // Get string table resources
-            var resource = pex.FindStringTableByEntry("AegiSoft License Manager");
+            var resource = exe.FindStringTableByEntry("AegiSoft License Manager");
             if (resource.Count > 0)
                 return "AegiSoft License Manager";
 
             // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>

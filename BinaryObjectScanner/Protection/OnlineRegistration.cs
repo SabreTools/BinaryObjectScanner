@@ -7,12 +7,12 @@ namespace BinaryObjectScanner.Protection
     public class OnlineRegistration : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Is this too broad in general?
-            var name = pex.InternalName;
+            var name = exe.InternalName;
             if (name.OptionalStartsWith("EReg", StringComparison.OrdinalIgnoreCase))
-                return $"Executable-Based Online Registration {pex.GetInternalVersion()}";
+                return $"Executable-Based Online Registration {exe.GetInternalVersion()}";
 
             return null;
         }

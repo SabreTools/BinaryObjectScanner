@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-#if NET35_OR_GREATER || NETCOREAPP
-using System.Linq;
-#endif
 using System.Text;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
 using SabreTools.Matching.Paths;
@@ -68,14 +66,14 @@ namespace BinaryObjectScanner.Protection
     // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
     // TODO: Investigate cdcode.key for redump ID 108167, may be key-less cd-cops?
     // TODO: Document update 12 for redump ID 108167 bumping version, adding key, adding vista(?) support
-    
+
     public class CDDVDCops : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Don't read entire file
-            var data = nex.ReadArbitraryRange();
+            byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
 
@@ -122,35 +120,23 @@ namespace BinaryObjectScanner.Protection
                 return match;
 
             // Get the resident and non-resident name table strings
-            var nrntStrs = Array.ConvertAll(nex.Model.NonResidentNameTable ?? [],
+            var nrntStrs = Array.ConvertAll(exe.Model.NonResidentNameTable ?? [],
                 nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
-#if NET20
-            bool intMatch = false;
-            if (nex.Model.ImportedNameTable?.Values != null)
+            if (exe.Model.ImportedNameTable != null)
             {
-                foreach (var inte in nex.Model.ImportedNameTable.Values)
+                foreach (var inte in exe.Model.ImportedNameTable.Values)
                 {
-                    if (inte?.NameString == null || inte.NameString.Length == 0)
+                    if (inte.NameString.IsNullOrEmpty())
                         continue;
 
-                    string ns = Encoding.ASCII.GetString(inte.NameString);
+                    string ns = Encoding.ASCII.GetString(inte.NameString!);
                     if (ns.Contains("CDCOPS"))
-                    {
-                        intMatch = true;
-                        break;
-                    }
+                        return "CD-Cops";
                 }
             }
-#else
-            bool intMatch = nex.Model.ImportedNameTable?.Values?
-                .Select(inte => inte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(inte.NameString))
-                .Any(s => s.Contains("CDCOPS")) ?? false;
-#endif
-            if (intMatch)
-                return "CD-Cops";
 
             // Check the nonresident-name table
             // Found in "CDCOPS.DLL" in Redump entry 85077.
@@ -161,10 +147,10 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the stub executable data, if it exists
-            if (pex.StubExecutableData != null)
+            if (exe.StubExecutableData != null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -176,36 +162,36 @@ namespace BinaryObjectScanner.Protection
                     }, "WEB-Cops")
                 };
 
-                var match = MatchUtil.GetFirstMatch(file, pex.StubExecutableData, matchers, includeDebug);
+                var match = MatchUtil.GetFirstMatch(file, exe.StubExecutableData, matchers, includeDebug);
                 if (!string.IsNullOrEmpty(match))
                     return match;
             }
 
             // Get the .grand section, if it exists
             // Found in "AGENTHUG.QZ_" in Redump entry 84517 and "h3blade.QZ_" in Redump entry 85077.
-            if (pex.ContainsSection(".grand", exact: true))
+            if (exe.ContainsSection(".grand", exact: true))
                 return "CD/DVD/WEB-Cops";
 
             // Get the UNICops section, if it exists
             // Found in "FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
-            if (pex.ContainsSection("UNICops", exact: true))
+            if (exe.ContainsSection("UNICops", exact: true))
                 return "UNI-Cops";
-            
+
             // Get the DATA section, if it exists
             // Found in "bib.dll" in IA item "https://archive.org/details/cover_202501"
             // This contains the version section that the Content Check looked for. There are likely other sections
             // that may contain it. Update when more are found.
-            var strs = pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
-                var match = strs.Find(s =>  s.Contains(" ver. ") && (s.Contains("CD-Cops, ") || s.Contains("DVD-Cops, ")));
+                var match = strs.Find(s => s.Contains(" ver. ") && (s.Contains("CD-Cops, ") || s.Contains("DVD-Cops, ")));
                 if (match != null)
                     if (match.Contains("CD-Cops"))
                         return $"CD-Cops {GetVersionString(match)}";
                     else if (match.Contains("DVD-Cops"))
                         return $"DVD-Cops {GetVersionString(match)}";
             }
-            
+
             return null;
         }
 
@@ -281,7 +267,7 @@ namespace BinaryObjectScanner.Protection
 
             return version;
         }
-        
+
         private static string GetVersionString(string match)
         {
             // Full string ends with # (i.e. "CD-Cops,  ver. 1.72,  #"), use that to compensate for comma in version 
@@ -290,7 +276,7 @@ namespace BinaryObjectScanner.Protection
             var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,\s{1,}#)");
             if (versionMatch.Success)
                 return versionMatch.Value;
-            
+
             return "(Unknown Version - Please report to us on GitHub)";
         }
     }

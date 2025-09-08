@@ -6,25 +6,28 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class PLJTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.PlayJAudioFile wrapper
+            = new(new SabreTools.Models.PlayJ.AudioFile(), new MemoryStream());
+
         [Fact]
         public void DetectFile_EmptyString_Null()
         {
             string file = string.Empty;
-            var detectable = new PLJ();
+            var detectable = new PLJ(wrapper);
 
             string? actual = detectable.Detect(file, includeDebug: false);
             Assert.Null(actual);
         }
 
         [Fact]
-        public void DetectStream_EmptyStream_Null()
+        public void DetectStream_EmptyStream_DefaultValue()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
-            var detectable = new PLJ();
+            var detectable = new PLJ(wrapper);
 
             string? actual = detectable.Detect(stream, file, includeDebug: false);
-            Assert.Null(actual);
+            Assert.Equal("PlayJ Audio File", actual);
         }
     }
 }

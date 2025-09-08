@@ -1,8 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-#if NET35_OR_GREATER || NETCOREAPP
-using System.Linq;
-#endif
 using BinaryObjectScanner;
 
 namespace ProtectionScan
@@ -11,7 +9,7 @@ namespace ProtectionScan
     {
         static void Main(string[] args)
         {
-#if NET462_OR_GREATER || NETCOREAPP
+#if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // Register the codepages
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
@@ -53,6 +51,9 @@ namespace ProtectionScan
         /// <param name="path">File or directory path</param>
         private static void GetAndWriteProtections(Scanner scanner, string path)
         {
+            // Normalize by getting the full path
+            path = Path.GetFullPath(path);
+
             // An invalid path can't be scanned
             if (!Directory.Exists(path) && !File.Exists(path))
             {
@@ -85,7 +86,7 @@ namespace ProtectionScan
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
-        private static void WriteProtectionResultFile(string path, ProtectionDictionary? protections)
+        private static void WriteProtectionResultFile(string path, Dictionary<string, List<string>> protections)
         {
             if (protections == null)
             {
@@ -104,25 +105,23 @@ namespace ProtectionScan
                 Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
             }
 
-#if NET20
-            var keysArr = new string[protections.Keys.Count];
-            protections.Keys.CopyTo(keysArr, 0);
-            Array.Sort(keysArr);
-            foreach (string key in keysArr)
-#else
-            foreach (string key in protections.Keys.OrderBy(k => k))
-#endif
+            // Sort the keys for consistent output
+            string[] keys = [.. protections.Keys];
+            Array.Sort(keys);
+
+            // Loop over all keys
+            foreach (string key in keys)
             {
                 // Skip over files with no protection
-                if (protections[key] == null || protections[key].Count == 0)
+                var value = protections[key];
+                if (value.Count == 0)
                     continue;
 
-#if NET20
-                string[] fileProtections = [.. protections[key]];
+                // Sort the detected protections for consistent output
+                string[] fileProtections = [.. value];
                 Array.Sort(fileProtections);
-#else
-                string[] fileProtections = [.. protections[key].OrderBy(p => p)];
-#endif
+
+                // Format and output the line
                 string line = $"{key}: {string.Join(", ", fileProtections)}";
                 Console.WriteLine(line);
                 sw?.WriteLine(line);
@@ -137,7 +136,13 @@ namespace ProtectionScan
         /// </summary>
         private static void Changed(object? source, ProtectionProgress value)
         {
-            Console.WriteLine($"{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
+            string prefix = string.Empty;
+            for (int i = 0; i < value.Depth; i++)
+            {
+                prefix += "--> ";
+            }
+
+            Console.WriteLine($"{prefix}{value.Percentage * 100:N2}%: {value.Filename} - {value.Protection}");
         }
     }
 }

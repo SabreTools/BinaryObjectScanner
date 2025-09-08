@@ -14,18 +14,18 @@ namespace BinaryObjectScanner.Protection
     public class JoWood : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .ext     section, if it exists
-            if (pex.ContainsSection(".ext    ", exact: true))
+            if (exe.ContainsSection(".ext    ", exact: true))
             {
-                bool importTableMatches = Array.Exists(pex.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "kernel32.dll")
-                    && Array.Exists(pex.Model.ImportTable?.HintNameTable ?? [], s => s?.Name == "VirtualProtect");
+                bool importTableMatches = Array.Exists(exe.Model.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "kernel32.dll")
+                    && Array.Exists(exe.Model.ImportTable?.HintNameTable ?? [], s => s?.Name == "VirtualProtect");
 
                 // Get the .dcrtext section, if it exists
-                if (pex.ContainsSection(".dcrtext") && importTableMatches)
+                if (exe.ContainsSection(".dcrtext") && importTableMatches)
                 {
-                    var dcrtextData = pex.GetFirstSectionData(".dcrtext");
+                    var dcrtextData = exe.GetFirstSectionData(".dcrtext");
                     if (dcrtextData != null)
                     {
                         var matchers = new List<ContentMatchSet>
@@ -50,12 +50,12 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the HC09     section, if it exists
-            bool hc09Section = pex.ContainsSection("HC09    ", exact: true);
+            bool hc09Section = exe.ContainsSection("HC09    ", exact: true);
             if (hc09Section)
                 return "JoWood X-Prot v2"; // TODO: Can we get more granular with the version?
 
             // Get the XPROT    section, if it exists
-            var xprotSection = pex.ContainsSection("XPROT   ", exact: true);
+            var xprotSection = exe.ContainsSection("XPROT   ", exact: true);
             if (xprotSection)
                 return "JoWood X-Prot v1.4+"; // TODO: Can we get more granular with the version?
 

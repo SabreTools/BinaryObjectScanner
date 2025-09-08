@@ -6,25 +6,28 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class AACSMediaKeyBlockTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.AACSMediaKeyBlock wrapper
+            = new(new SabreTools.Models.AACS.MediaKeyBlock(), new MemoryStream());
+
         [Fact]
         public void DetectFile_EmptyString_Null()
         {
             string file = string.Empty;
-            var detectable = new AACSMediaKeyBlock();
+            var detectable = new AACSMediaKeyBlock(wrapper);
 
             string? actual = detectable.Detect(file, includeDebug: false);
             Assert.Null(actual);
         }
 
         [Fact]
-        public void DetectStream_EmptyStream_Null()
+        public void DetectStream_EmptyStream_DefaultValue()
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
-            var detectable = new AACSMediaKeyBlock();
+            var detectable = new AACSMediaKeyBlock(wrapper);
 
             string? actual = detectable.Detect(stream, file, includeDebug: false);
-            Assert.Null(actual);
+            Assert.Equal("AACS (Unknown Version)", actual);
         }
     }
 }

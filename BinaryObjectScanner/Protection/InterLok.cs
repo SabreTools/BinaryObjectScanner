@@ -7,10 +7,10 @@ namespace BinaryObjectScanner.Protection
     public class InterLok : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .rsrc section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".rsrc");
+            var strs = exe.GetFirstSectionStrings(".rsrc");
             if (strs != null)
             {
                 // Found in "nfsc_link.exe" in IA item "nfscorigin".

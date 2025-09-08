@@ -1,38 +1,24 @@
 using System;
 using System.IO;
-using BinaryObjectScanner.Interfaces;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// AACS media key block
     /// </summary>
-    public class AACSMediaKeyBlock : IDetectable
+    public class AACSMediaKeyBlock : DetectableBase<SabreTools.Serialization.Wrappers.AACSMediaKeyBlock>
     {
         /// <inheritdoc/>
-        public string? Detect(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Detect(fs, file, includeDebug);
-        }
+        public AACSMediaKeyBlock(SabreTools.Serialization.Wrappers.AACSMediaKeyBlock? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public string? Detect(Stream stream, string file, bool includeDebug)
+        public override string? Detect(Stream stream, string file, bool includeDebug)
         {
-            // Create the wrapper
-            var mkb = SabreTools.Serialization.Wrappers.AACSMediaKeyBlock.Create(stream);
-            if (mkb == null)
-                return null;
+            var record = Array.Find(_wrapper.Records, r => r.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
+            if (record is SabreTools.Models.AACS.TypeAndVersionRecord tavr)
+                return $"AACS {tavr.VersionNumber}";
 
-            // Derive the version, if possible
-            var typeAndVersion = Array.Find(mkb.Records ?? [], r => r?.RecordType == SabreTools.Models.AACS.RecordType.TypeAndVersion);
-            if (typeAndVersion == null)
-                return "AACS (Unknown Version)";
-            else
-                return $"AACS {(typeAndVersion as SabreTools.Models.AACS.TypeAndVersionRecord)?.VersionNumber}";
+            return "AACS (Unknown Version)";
         }
     }
 }

@@ -15,27 +15,27 @@ namespace BinaryObjectScanner.Protection
     public class CenegaProtectDVD : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the export directory table
-            if (pex.Model.ExportTable?.ExportDirectoryTable != null)
+            if (exe.Model.ExportTable?.ExportDirectoryTable != null)
             {
                 // Found in "cenega.dll" in IA item "speed-pack".
-                bool match = pex.Model.ExportTable.ExportDirectoryTable.Name.OptionalEquals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase);
+                bool match = exe.Model.ExportTable.ExportDirectoryTable.Name.OptionalEquals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase);
                 if (match)
                     return "Cenega ProtectDVD";
             }
 
             // Get the .cenega section, if it exists. Seems to be found in the protected game executable ("game.exe" in Redump entry 31422 and "Classic Car Racing.exe" in IA item "speed-pack").
-            if (pex.ContainsSection(".cenega", exact: true))
+            if (exe.ContainsSection(".cenega", exact: true))
                 return "Cenega ProtectDVD";
 
             // Get the .cenega0 through .cenega2 sections, if they exists. Found in "cenega.dll" in Redump entry 31422 and IA item "speed-pack".
-            if (pex.ContainsSection(".cenega0", exact: true))
+            if (exe.ContainsSection(".cenega0", exact: true))
                 return "Cenega ProtectDVD";
-            if (pex.ContainsSection(".cenega1", exact: true))
+            if (exe.ContainsSection(".cenega1", exact: true))
                 return "Cenega ProtectDVD";
-            if (pex.ContainsSection(".cenega2", exact: true))
+            if (exe.ContainsSection(".cenega2", exact: true))
                 return "Cenega ProtectDVD";
 
             return null;

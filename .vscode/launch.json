@@ -15,20 +15,8 @@
             "cwd": "${workspaceFolder}/ProtectionScan",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Launch (ExtractionTool)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ExtractionTool/bin/Debug/net9.0/ExtractionTool.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/ExtractionTool",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
-            "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "justMyCode": false,
         },
         {
             "name": ".NET Core Attach",

@@ -26,20 +26,20 @@ namespace BinaryObjectScanner.Protection
     public class DigiGuard : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalEquals("DigiGuard3 Client"))
                 return $"DigiGuard3";
 
             // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-            name = pex.LegalTrademarks;
+            name = exe.LegalTrademarks;
             if (name.OptionalEquals("DigiGuard"))
                 return $"DigiGuard";
 
             // Found in "PJS3.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalEquals("Greenleaf Wrapper3"))
                 return $"DigiGuard";
 

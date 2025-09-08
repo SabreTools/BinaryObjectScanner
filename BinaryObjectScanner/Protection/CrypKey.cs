@@ -13,10 +13,10 @@ namespace BinaryObjectScanner.Protection
     public class CrypKey : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the code/CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 // Found in "NECRO95.EXE" in IA item "NBECRORV11".
@@ -36,25 +36,25 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the CrypKey version from the VersionInfo, if it exists
-            string version = pex.GetVersionInfoString("CrypKey Version") ?? string.Empty;
+            string version = exe.GetVersionInfoString("CrypKey Version") ?? string.Empty;
 
             // Found in 'cki32k.dll'
-            var name = pex.CompanyName;
+            var name = exe.CompanyName;
             if (name.OptionalStartsWith("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 
-            name = pex.FileDescription;
+            name = exe.FileDescription;
 
             // Found in "CKSEC_32.DLL" in IA item "NBECRORV11".
             if (name.OptionalStartsWith("CrypKey Instant security library"))
-                return $"CrypKey Instant {pex.GetInternalVersion()}";
+                return $"CrypKey Instant {exe.GetInternalVersion()}";
 
             // Found in 'cki32k.dll'
             if (name.OptionalStartsWith("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 
             // Found in 'cki32k.dll'
-            name = pex.LegalCopyright;
+            name = exe.LegalCopyright;
             if (name.OptionalContains("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 

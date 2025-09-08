@@ -31,45 +31,45 @@ namespace BinaryObjectScanner.Protection
         // TODO: Add text check for the string mentioned in https://github.com/mnadareski/BinaryObjectScanner/issues/154.
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Investigate if there are any viable checks for the game EXE itself.
 
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598, and "Soulworker" (Steam Depot 1377581, Manifest 5092481117079359342).
             if (name.OptionalContains("nProtect GameGuard Launcher"))
-                return $"nProtect GameGuard ({pex.GetInternalVersion()})";
+                return $"nProtect GameGuard ({exe.GetInternalVersion()})";
 
             // Found in "npkcrypt.dll" in Redump entry 90526.
             if (name.OptionalContains("nProtect KeyCrypt Driver Support Dll"))
-                return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
+                return $"nProtect KeyCrypt ({exe.GetInternalVersion()})";
 
             // Found in "npkcrypt.sys" and "npkcusb.sys" in Redump entry 90526.
             if (name.OptionalContains("nProtect KeyCrypt Driver"))
-                return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
+                return $"nProtect KeyCrypt ({exe.GetInternalVersion()})";
 
             // Found in "npkpdb.dll" in Redump entry 90526.
             if (name.OptionalContains("nProtect KeyCrypt Program Database DLL"))
-                return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
+                return $"nProtect KeyCrypt ({exe.GetInternalVersion()})";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598.
             if (name.OptionalContains("nProtect GameGuard Launcher"))
-                return $"nProtect GameGuard ({pex.GetInternalVersion()})";
+                return $"nProtect GameGuard ({exe.GetInternalVersion()})";
 
             // Found in "npkcrypt.dll" in Redump entry 90526.
             if (name.OptionalContains("nProtect KeyCrypt Driver Support Dll"))
-                return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
+                return $"nProtect KeyCrypt ({exe.GetInternalVersion()})";
 
             // Found in "npkcrypt.sys" and "npkcusb.sys" in Redump entry 90526.
             if (name.OptionalContains("nProtect KeyCrypt Driver"))
-                return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
+                return $"nProtect KeyCrypt ({exe.GetInternalVersion()})";
 
             // Found in "npkpdb.dll" in Redump entry 90526.
             if (name.OptionalContains("nProtect KeyCrypt Program Database DLL"))
-                return $"nProtect KeyCrypt ({pex.GetInternalVersion()})";
+                return $"nProtect KeyCrypt ({exe.GetInternalVersion()})";
 
             return null;
         }

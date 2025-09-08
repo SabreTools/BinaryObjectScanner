@@ -14,10 +14,10 @@ namespace BinaryObjectScanner.Protection
     public class Roxxe : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the code/CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 // Found in "Owar.exe" in IA item "game4u-22-cd".
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rsrc section strings, if they exist
             // TODO: Check for these strings specifically within the application-defined resource that they're found in, not just the generic resource section.
-            strs = pex.GetFirstSectionStrings(".rsrc");
+            strs = exe.GetFirstSectionStrings(".rsrc");
             if (strs != null)
             {
                 // Found in "Owar.exe" in IA items "game4u-22-cd" and "original-war".
@@ -45,10 +45,10 @@ namespace BinaryObjectScanner.Protection
 
             // If any dialog boxes match
             // Found in "Data6.OWP" in IA item "game4u-22-cd".
-            if (pex.FindDialogBoxByItemTitle("SharpTiny Version 1.0").Count > 0)
+            if (exe.FindDialogBoxByItemTitle("SharpTiny Version 1.0").Count > 0)
                 return "Roxxe";
             // Found in "Data8.OWP" in IA item "game4u-22-cd".
-            else if (pex.FindDialogBoxByItemTitle("T32xWin Version 1.0").Count > 0)
+            else if (exe.FindDialogBoxByItemTitle("T32xWin Version 1.0").Count > 0)
                 return "Roxxe";
 
             return null;

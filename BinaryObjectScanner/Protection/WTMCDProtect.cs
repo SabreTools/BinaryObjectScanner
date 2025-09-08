@@ -10,22 +10,22 @@ namespace BinaryObjectScanner.Protection
     public class WTMCDProtect : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalContains("Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
-            name = pex.LegalTrademarks;
+            name = exe.LegalTrademarks;
             if (name.OptionalContains("WTM Copy Protection"))
                 return "WTM Protection Viewer";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalContains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
             // Get the code/CODE section strings, if they exist
-            var strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("wtmdum.imp")))
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .text section strings, if they exist
-            strs = pex.GetFirstSectionStrings(".text");
+            strs = exe.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("WTM DIGITAL Photo Protect")))

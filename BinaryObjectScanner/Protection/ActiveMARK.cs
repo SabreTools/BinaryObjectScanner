@@ -29,18 +29,18 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the entry point data, if it exists
-            if (pex.EntryPointData != null)
+            if (exe.EntryPointData != null)
             {
                 // Found in "Zuma.exe"
-                if (pex.EntryPointData.StartsWith(new byte?[] { 0x89, 0x25, 0x04, 0xF0, 0x86, 0x00, 0x68, 0x30 }))
+                if (exe.EntryPointData.StartsWith(new byte?[] { 0x89, 0x25, 0x04, 0xF0, 0x86, 0x00, 0x68, 0x30 }))
                     return "ActiveMark v5.3.1078 (Packer Version)";
             }
 
             // Get the .data section strings, if they exist
-            var strs = pex.GetLastSectionStrings(".data");
+            var strs = exe.GetLastSectionStrings(".data");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("MPRMMGVA"))
@@ -51,7 +51,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get "REGISTRY, AMINTERNETPROTOCOL" resource items
-            var resources = pex.FindResourceByNamedType("REGISTRY, AMINTERNETPROTOCOL");
+            var resources = exe.FindResourceByNamedType("REGISTRY, AMINTERNETPROTOCOL");
             if (resources.Count > 0)
             {
                 bool match = resources
@@ -62,14 +62,14 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (pex.OverlayStrings != null)
+            if (exe.OverlayStrings != null)
             {
-                if (pex.OverlayStrings.Exists(s => s.Contains("TMSAMVOH")))
+                if (exe.OverlayStrings.Exists(s => s.Contains("TMSAMVOH")))
                     return "ActiveMARK";
             }
 
             // Get the last .bss section strings, if they exist
-            strs = pex.GetLastSectionStrings(".bss");
+            strs = exe.GetLastSectionStrings(".bss");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("TMSAMVOF")))

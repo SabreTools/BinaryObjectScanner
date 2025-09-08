@@ -40,19 +40,19 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? SafeCastCheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        internal static string? SafeCastCheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // Check for the CDAC01AA name string.
-            if (nex.Model.ResidentNameTable != null)
+            if (exe.Model.ResidentNameTable != null)
             {
-                var residentNames = Array.ConvertAll(nex.Model.ResidentNameTable,
+                var residentNames = Array.ConvertAll(exe.Model.ResidentNameTable,
                     rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
                 if (Array.Exists(residentNames, s => s.Contains("CDAC01AA")))
                     return "SafeCast";
             }
 
             // TODO: Don't read entire file
-            var data = nex.ReadArbitraryRange();
+            byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
 
@@ -67,16 +67,16 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? SafeCastCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? SafeCastCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Investigate import hint/name table entry "CdaSysInstall"
             // TODO: Investigate string table entries: "CDWP02DG", "CDWP02DG", "CDWS02DG"
             // TODO: Invesitgate if the "AdobeLM.dll" file (along with mentions of "AdobeLM" in executables) uniquely identifies SafeCast, or if it can be used with different DRM. (Found in IA item ccd0605)
 
             // Get the import directory table, if it exists
-            if (pex.Model.ImportTable?.ImportDirectoryTable != null)
+            if (exe.Model.ImportTable?.ImportDirectoryTable != null)
             {
-                if (Array.Exists(pex.Model.ImportTable.ImportDirectoryTable,
+                if (Array.Exists(exe.Model.ImportTable.ImportDirectoryTable,
                     idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "SafeCast";
@@ -85,11 +85,11 @@ namespace BinaryObjectScanner.Protection
 
             // Get the dialog box resources
             // Found in "CDAC21BA.DLL" in Redump entry 95524.
-            if (pex.FindDialogByTitle("SafeCast API").Count > 0)
+            if (exe.FindDialogByTitle("SafeCast API").Count > 0)
                 return "SafeCast";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
@@ -98,7 +98,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Found in "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalEquals("SafeCast2", StringComparison.OrdinalIgnoreCase))
                 return "SafeCast";
 
@@ -117,7 +117,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "SCRfrsh.exe" in Redump entry 102979.
             if (name.OptionalEquals("32-bit SafeCast Toolkit", StringComparison.OrdinalIgnoreCase))
-                return $"SafeCast {pex.FileVersion}";
+                return $"SafeCast {exe.FileVersion}";
 
             // Found in "CDAC14BA.DLL" in Redump entry 95524.
             if (name.OptionalEquals("32-bit SafeCast Anchor Installer", StringComparison.OrdinalIgnoreCase))
@@ -128,7 +128,7 @@ namespace BinaryObjectScanner.Protection
                 return $"SafeCast";
 
             // Found in hidden resource of "32bit\Tax02\cdac14ba.dll" in IA item "TurboTax Deluxe Tax Year 2002 for Wndows (2.00R)(Intuit)(2002)(352282)".
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalEquals("SafeCast Windows NT", StringComparison.OrdinalIgnoreCase))
                 return "SafeCast";
 

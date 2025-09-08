@@ -13,28 +13,28 @@ namespace BinaryObjectScanner.Protection
     public class ImpulseReactor : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalContains("ImpulseReactor Dynamic Link Library"))
-                return $"Impulse Reactor Core Module {pex.GetInternalVersion()}";
+                return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalContains("ImpulseReactor Dynamic Link Library"))
-                return $"Impulse Reactor Core Module {pex.GetInternalVersion()}";
+                return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
 
-            name = pex.OriginalFilename;
+            name = exe.OriginalFilename;
             if (name.OptionalContains("ReactorActivate.exe"))
-                return $"Stardock Product Activation {pex.GetInternalVersion()}";
+                return $"Stardock Product Activation {exe.GetInternalVersion()}";
 
             // TODO: Check for CVP* instead?
             bool containsCheck = false;
-            if (pex.Model.ExportTable?.ExportNameTable?.Strings != null)
-                containsCheck = Array.Exists(pex.Model.ExportTable.ExportNameTable.Strings, s => s.OptionalStartsWith("CVPInitializeClient"));
+            if (exe.Model.ExportTable?.ExportNameTable?.Strings != null)
+                containsCheck = Array.Exists(exe.Model.ExportTable.ExportNameTable.Strings, s => s.OptionalStartsWith("CVPInitializeClient"));
 
             // Get the .rdata section strings, if they exist
             bool containsCheck2 = false;
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 containsCheck2 = strs.Exists(s => s.EndsWith("ATTLIST"))
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             if (containsCheck && containsCheck2)
-                return $"Impulse Reactor Core Module {pex.GetInternalVersion()}";
+                return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
             else if (containsCheck && !containsCheck2)
                 return $"Impulse Reactor";
 
@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private string? GetInternalVersion(string firstMatchedString, IEnumerable<string>? files)
+        private string? GetInternalVersion(string firstMatchedString, List<string>? files)
         {
             try
             {

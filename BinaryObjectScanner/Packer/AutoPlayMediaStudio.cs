@@ -7,39 +7,33 @@ namespace BinaryObjectScanner.Packer
     // Created by IndigoRose (creators of Setup Factory), primarily to be used to create autorun menus for various media.
     // Official website: https://www.autoplay.org/
     // TODO: Add extraction
-    public class AutoPlayMediaStudio : IExtractableExecutable<PortableExecutable>
+    public class AutoPlayMediaStudio : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Known to detect versions 5.0.0.3 - 8.1.0.0
-            var name = pex.ProductName;
+            var name = exe.ProductName;
             if (name.OptionalStartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))
-                return $"AutoPlay Media Studio {GetVersion(pex)}";
+                return $"AutoPlay Media Studio {GetVersion(exe)}";
 
             // TODO: Currently too vague, may be re-enabled in the future
-            // name  = Utilities.GetLegalCopyright(pex);
+            // name  = Utilities.GetLegalCopyright(exe);
             // if (name.OptionalStartsWith("Runtime Engine", StringComparison.OrdinalIgnoreCase))
-            //     return $"AutoPlay Media Studio {GetVersion(pex)}";
+            //     return $"AutoPlay Media Studio {GetVersion(exe)}";
 
             return null;
         }
 
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
-        }
-
-        private static string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable exe)
         {
             // Check the product version explicitly
-            var version = pex.ProductVersion;
+            var version = exe.ProductVersion;
             if (!string.IsNullOrEmpty(version))
                 return version!;
 
             // Check the internal versions
-            version = pex.GetInternalVersion();
+            version = exe.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version!;
 

@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Packer
     // TODO: Detect 3.15 and up (maybe looking for `Metamorphism`)
     // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class EXEStealth : IContentCheck, IExtractableExecutable<PortableExecutable>
+    public class EXEStealth : IContentCheck, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckContents(string file, byte[] fileContent, bool includeDebug)
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // The ExeS/EXES/*mtw sections seem to map to the Import Table
             // 2.6/2.51
@@ -47,26 +47,20 @@ namespace BinaryObjectScanner.Packer
             //  `ExeStealth V2 Shareware not for public - This text not in registered version - www.webtoolmaster.com`
 
             // Get the ExeS/EXES section, if it exists
-            if (pex.ContainsSection("ExeS", exact: true))
+            if (exe.ContainsSection("ExeS", exact: true))
                 return "EXE Stealth 2.41-2.75";
-            if (pex.ContainsSection("EXES", exact: true))
+            if (exe.ContainsSection("EXES", exact: true))
                 return "EXE Stealth 2.41-2.75";
 
             // Get the mtw section, if it exists
-            if (pex.ContainsSection("mtw", exact: true))
+            if (exe.ContainsSection("mtw", exact: true))
                 return "EXE Stealth 1.1";
 
             // Get the rsrr section, if it exists
-            if (pex.ContainsSection("rsrr", exact: true))
+            if (exe.ContainsSection("rsrr", exact: true))
                 return "EXE Stealth 2.76";
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
         }
     }
 }

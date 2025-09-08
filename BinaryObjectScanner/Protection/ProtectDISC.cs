@@ -14,13 +14,13 @@ namespace BinaryObjectScanner.Protection
     public class ProtectDISC : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the 4th and 5th sections, if they exist (example names: ACE4/ACE5) (Found in Redump entries 94792, 94793)
-            var sections = pex.Model.SectionTable ?? [];
+            var sections = exe.Model.SectionTable ?? [];
             for (int i = 3; i < sections.Length; i++)
             {
-                var nthSectionData = pex.GetSectionData(i);
+                var nthSectionData = exe.GetSectionData(i);
                 if (nthSectionData == null)
                     continue;
 
@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
             if (dataSectionRaw != null)
             {
                 var matchers = new List<ContentMatchSet>
@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Protection
             if (sections.Length > 1)
             {
                 // Get the n - 1 section strings, if they exist
-                var strs = pex.GetSectionStrings(sections.Length - 2);
+                var strs = exe.GetSectionStrings(sections.Length - 2);
                 if (strs != null)
                 {
                     var str = strs.Find(s => s.Contains("VOB ProtectCD"));
@@ -66,7 +66,7 @@ namespace BinaryObjectScanner.Protection
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
             if (sections.Length > 0)
             {
-                var lastSectionData = pex.GetSectionData(sections.Length - 1);
+                var lastSectionData = exe.GetSectionData(sections.Length - 1);
                 if (lastSectionData != null)
                 {
                     var matchers = new List<ContentMatchSet>
@@ -85,7 +85,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .vob.pcd section, if it exists
-            if (pex.ContainsSection(".vob.pcd", exact: true))
+            if (exe.ContainsSection(".vob.pcd", exact: true))
                 return "VOB ProtectCD";
 
             return null;

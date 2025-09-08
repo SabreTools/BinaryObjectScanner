@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <!-- Assembly Properties -->
-        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -28,62 +28,18 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
-    <!-- Set build flags for Windows specifically -->
-    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-        <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
-        <DefineConstants>$(DefineConstants);WINX64</DefineConstants>
-    </PropertyGroup>
-
-    <!-- Exclude certain parts of external modules for by default -->
-    <PropertyGroup>
-        <DefaultItemExcludes>
-            $(DefaultItemExcludes);
-            **\AssemblyInfo.cs;
-            _EXTERNAL\LessIO\src\LessIO.Tests\**;
-            _EXTERNAL\libmspack4n\lib\**;
-            _EXTERNAL\libmspack4n\libmspack4ntest\**;
-            _EXTERNAL\stormlibsharp\lib\**;
-            _EXTERNAL\stormlibsharp\src\TestConsole\**
-        </DefaultItemExcludes>
-    </PropertyGroup>
-
-    <!-- Exclude all external modules for .NET Framework 2.0, .NET Framework 3.5, or non-Windows
-    builds -->
-    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR !$(RuntimeIdentifier.StartsWith(`win-x86`))">
-        <DefaultItemExcludes>
-            $(DefaultItemExcludes);
-            _EXTERNAL\**
-        </DefaultItemExcludes>
-    </PropertyGroup>
-
-    <!-- These are needed for dealing with native Windows DLLs -->
-    <ItemGroup>
-        <Content Include="runtimes\**\*">
-            <PackagePath>%(Identity)</PackagePath>
-            <Pack>true</Pack>
-        </Content>
-    </ItemGroup>
-
     <ItemGroup>
         <InternalsVisibleTo Include="BinaryObjectScanner.Test" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MinAsyncBridge" Version="0.12.4" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))" />
-        <PackageReference Include="Net35.Actions" Version="1.4.0" Condition="$(TargetFramework.StartsWith(`net2`))" />
-        <PackageReference Include="OpenMcdf" Version="2.4.1" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`))" />
-        <PackageReference Include="SabreTools.Compression" Version="0.6.3" />
-        <PackageReference Include="SabreTools.Hashing" Version="1.4.2" />
-        <PackageReference Include="SabreTools.IO" Version="1.6.3" />
-        <PackageReference Include="SabreTools.Matching" Version="1.5.2" />
-        <PackageReference Include="SabreTools.Models" Version="1.5.8" />
-        <PackageReference Include="SabreTools.Serialization" Version="1.8.6" />
-        <PackageReference Include="SharpCompress" Version="0.39.0" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.2" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
-        <PackageReference Include="UnshieldSharp" Version="1.9.4" />
-        <PackageReference Include="WiseUnpacker" Version="1.5.6" />
+        <PackageReference Include="SabreTools.Hashing" Version="1.5.0" />
+        <PackageReference Include="SabreTools.IO" Version="1.7.2" />
+        <PackageReference Include="SabreTools.Matching" Version="1.6.0" />
+        <PackageReference Include="SabreTools.Models" Version="1.7.1" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.9.1" />
+        <PackageReference Include="SharpCompress" Version="0.40.0" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.8" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
     </ItemGroup>
 
 </Project>

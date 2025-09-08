@@ -15,36 +15,36 @@ namespace BinaryObjectScanner.Protection
     public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalContains("SecuROM PA"))
-                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 
-            name = pex.InternalName;
+            name = exe.InternalName;
             if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase))
             {
-                if (pex.ProductName.OptionalEquals("drEAm"))
-                    return $"SecuROM Product Activation v{pex.GetInternalVersion()} - EA Game Authorization Management";
+                if (exe.ProductName.OptionalEquals("drEAm"))
+                    return $"SecuROM Product Activation v{exe.GetInternalVersion()} - EA Game Authorization Management";
                 else
-                    return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+                    return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
             }
             else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
             {
-                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
             }
             else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
             {
-                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
             }
 
-            name = pex.OriginalFilename;
+            name = exe.OriginalFilename;
             if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
-                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalContains("SecuROM Activate & Play"))
-                return $"SecuROM Product Activation v{pex.GetInternalVersion()}";
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 
             // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
             // variants. PiD refers to this as "SecuROM Modified PA Module".
@@ -59,33 +59,33 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Product Activation - Modified";
             
             // Get the matrosch section, if it exists
-            if (pex.ContainsSection("matrosch", exact: true))
+            if (exe.ContainsSection("matrosch", exact: true))
                 return $"SecuROM Matroschka Package";
 
             // Get the rcpacker section, if it exists
-            if (pex.ContainsSection("rcpacker", exact: true))
+            if (exe.ContainsSection("rcpacker", exact: true))
                 return $"SecuROM Release Control";
 
-            if (pex.ContainsSection(".dsstext", exact: true))
+            if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
 
             // Get the .securom section, if it exists
-            if (pex.ContainsSection(".securom", exact: true))
-                return $"SecuROM {GetV7Version(pex)}";
+            if (exe.ContainsSection(".securom", exact: true))
+                return $"SecuROM {GetV7Version(exe)}";
 
             // Get the .sll section, if it exists
-            if (pex.ContainsSection(".sll", exact: true))
+            if (exe.ContainsSection(".sll", exact: true))
                 return $"SecuROM SLL Protected (for SecuROM v8.x)";
 
             // Search after the last section
-            if (pex.OverlayStrings != null)
+            if (exe.OverlayStrings != null)
             {
-                if (pex.OverlayStrings.Exists(s => s == "AddD"))
-                    return $"SecuROM {GetV4Version(pex)}";
+                if (exe.OverlayStrings.Exists(s => s == "AddD"))
+                    return $"SecuROM {GetV4Version(exe)}";
             }
 
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
-            var sections = pex.Model.SectionTable ?? [];
+            var sections = exe.Model.SectionTable ?? [];
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];
@@ -95,7 +95,7 @@ namespace BinaryObjectScanner.Protection
                 string nthSectionName = Encoding.ASCII.GetString(nthSection.Name ?? []).TrimEnd('\0');
                 if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
-                    var nthSectionData = pex.GetFirstSectionData(nthSectionName);
+                    var nthSectionData = exe.GetFirstSectionData(nthSectionName);
                     if (nthSectionData == null)
                         continue;
 
@@ -112,18 +112,18 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".rdata");
+            var strs = exe.GetFirstSectionStrings(".rdata");
             if (strs != null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`
                 if (strs.Exists(s => s.Contains("/secuexp")))
-                    return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
+                    return $"SecuROM {GetV8WhiteLabelVersion(exe)} (White Label)";
                 else if (strs.Exists(s => s.Contains("SecuExp.exe")))
-                    return $"SecuROM {GetV8WhiteLabelVersion(pex)} (White Label)";
+                    return $"SecuROM {GetV8WhiteLabelVersion(exe)} (White Label)";
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            if (pex.ContainsSection(".cmd_d", true) || pex.ContainsSection(".cms_t", true))
+            if (exe.ContainsSection(".cmd_d", true) || exe.ContainsSection(".cms_t", true))
                 return $"SecuROM 1-3";
 
             return null;
@@ -181,19 +181,19 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-        private static string GetV4Version(PortableExecutable pex)
+        private static string GetV4Version(PortableExecutable exe)
         {
             int index = 8; // Begin reading after "AddD"
-            char major = (char)pex.OverlayData![index];
+            char major = (char)exe.OverlayData![index];
             index += 2;
 
-            string minor = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
+            string minor = Encoding.ASCII.GetString(exe.OverlayData, index, 2);
             index += 3;
 
-            string patch = Encoding.ASCII.GetString(pex.OverlayData, index, 2);
+            string patch = Encoding.ASCII.GetString(exe.OverlayData, index, 2);
             index += 3;
 
-            string revision = Encoding.ASCII.GetString(pex.OverlayData, index, 4);
+            string revision = Encoding.ASCII.GetString(exe.OverlayData, index, 4);
 
             if (!char.IsNumber(major))
                 return "(very old, v3 or less)";
@@ -239,30 +239,30 @@ namespace BinaryObjectScanner.Protection
         }
 
         // These live in the MS-DOS stub, for some reason
-        private static string GetV7Version(PortableExecutable pex)
+        private static string GetV7Version(PortableExecutable exe)
         {
             // If SecuROM is stripped, the MS-DOS stub might be shorter.
             // We then know that SecuROM -was- there, but we don't know what exact version.
-            if (pex.StubExecutableData == null)
+            if (exe.StubExecutableData == null)
                 return "7 remnants";
 
             //SecuROM 7 new and 8 -- 64 bytes for DOS stub, 236 bytes in total
             int index = 172;
-            if (pex.StubExecutableData.Length >= 176 && pex.StubExecutableData[index + 3] == 0x5C)
+            if (exe.StubExecutableData.Length >= 176 && exe.StubExecutableData[index + 3] == 0x5C)
             {
-                int major = pex.StubExecutableData[index + 0] ^ 0xEA;
-                int minor = pex.StubExecutableData[index + 1] ^ 0x2C;
-                int patch = pex.StubExecutableData[index + 2] ^ 0x08;
+                int major = exe.StubExecutableData[index + 0] ^ 0xEA;
+                int minor = exe.StubExecutableData[index + 1] ^ 0x2C;
+                int patch = exe.StubExecutableData[index + 2] ^ 0x08;
 
                 return $"{major}.{minor:00}.{patch:0000}";
             }
 
             // SecuROM 7 old -- 64 bytes for DOS stub, 122 bytes in total
             index = 58;
-            if (pex.StubExecutableData.Length >= 62)
+            if (exe.StubExecutableData.Length >= 62)
             {
-                int minor = pex.StubExecutableData[index + 0] ^ 0x10;
-                int patch = pex.StubExecutableData[index + 1] ^ 0x10;
+                int minor = exe.StubExecutableData[index + 0] ^ 0x10;
+                int patch = exe.StubExecutableData[index + 1] ^ 0x10;
 
                 //return "7.01-7.10"
                 return $"7.{minor:00}.{patch:0000}";
@@ -273,10 +273,10 @@ namespace BinaryObjectScanner.Protection
             return "7 remnants";
         }
 
-        private static string GetV8WhiteLabelVersion(PortableExecutable pex)
+        private static string GetV8WhiteLabelVersion(PortableExecutable exe)
         {
             // Get the .data/DATA section, if it exists
-            var dataSectionRaw = pex.GetFirstSectionData(".data") ?? pex.GetFirstSectionData("DATA");
+            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
             if (dataSectionRaw == null)
                 return "8";
 

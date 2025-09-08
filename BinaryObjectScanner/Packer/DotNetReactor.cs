@@ -15,16 +15,16 @@ namespace BinaryObjectScanner.Packer
     /// 
     /// Resource that could be useful for extraction: https://github.com/SychicBoy/NETReactorSlayer
     /// </summary>
-    public class DotNetReactor : IExtractableExecutable<PortableExecutable>
+    public class DotNetReactor : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Detect version
             // TODO: Further refine checks using https://github.com/horsicq/Detect-It-Easy/blob/075a70b1484d1d84d1dc37c86aac16188d5a84e7/db/PE/NetReactor.2.sg and https://github.com/cod3nym/detection-rules/blob/main/yara/dotnet/obf_net_reactor.yar
 
             // Get the .text section, if it exists
-            var textData = pex.GetFirstSectionData(".text");
+            var textData = exe.GetFirstSectionData(".text");
             if (textData != null)
             {
                 var matchers = new List<ContentMatchSet>
@@ -86,13 +86,6 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            // TODO: Add extraction
-            return false;
         }
     }
 }

@@ -8,19 +8,18 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction - https://github.com/dscharrer/InnoExtract
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InnoSetup : IExtractableExecutable<NewExecutable>,
-        IExtractableExecutable<PortableExecutable>
+    public class InnoSetup : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // Check for "Inno" in the reserved words
-            var reserved2 = nex.Model.Stub?.Header?.Reserved2;
+            var reserved2 = exe.Model.Stub?.Header?.Reserved2;
             if (reserved2 != null && reserved2.Length > 5)
             {
                 if (reserved2[4] == 0x6E49 && reserved2[5] == 0x6F6E)
                 {
-                    string version = GetOldVersion(file, nex);
+                    string version = GetOldVersion(file, exe);
                     if (!string.IsNullOrEmpty(version))
                         return $"Inno Setup {version}";
 
@@ -32,10 +31,10 @@ namespace BinaryObjectScanner.Packer
         }
 
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 var str = strs.Find(s => s.StartsWith("Inno Setup Setup Data"));
@@ -52,19 +51,7 @@ namespace BinaryObjectScanner.Packer
             return null;
         }
 
-        /// <inheritdoc/>
-        public bool Extract(string file, NewExecutable nex, string outDir, bool includeDebug)
-        {
-            return false;
-        }
-
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
-        }
-
-        private static string GetOldVersion(string file, NewExecutable nex)
+        private static string GetOldVersion(string file, NewExecutable exe)
         {
             // Notes:
             // Look into `SETUPLDR` in the resident-name table
@@ -72,19 +59,18 @@ namespace BinaryObjectScanner.Packer
 
             // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
-            var data = nex.ReadArbitraryRange();
-            if (data != null)
-            {
-                var matchers = new List<ContentMatchSet>
+
+            byte[]? data = exe.ReadArbitraryRange();
+            if (data == null)
+                return "Unknown 1.X";
+
+            var matchers = new List<ContentMatchSet>
                 {
                     // "rDlPtS02" + (char)0x87 + "eVx"
                     new(new byte?[] { 0x72, 0x44, 0x6C, 0x50, 0x74, 0x53, 0x30, 0x32, 0x87, 0x65, 0x56, 0x78 }, "1.2.16 or earlier"),
                 };
 
-                return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";
-            }
-
-            return "Unknown 1.X";
+            return MatchUtil.GetFirstMatch(file, data, matchers, false) ?? "Unknown 1.X";
         }
     }
 }

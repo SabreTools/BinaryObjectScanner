@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Protection
     public partial class Macrovision
     {
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? CDillaCheckExecutable(string file, NewExecutable nex, bool includeDebug)
+        internal static string? CDillaCheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Implement NE checks for "CDILLA05", "CDILLA10", "CDILLA16", and "CDILLA40".
 
@@ -60,9 +60,9 @@ namespace BinaryObjectScanner.Protection
         }
 
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
-        internal static string? CDillaCheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        internal static string? CDillaCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
 
             // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.
             if (name.OptionalEquals("32-bit C-Dilla DLL", StringComparison.OrdinalIgnoreCase))
@@ -70,50 +70,50 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "CdaIns32.dll" and "CdSet32.exe" from version 3.27.000 of C-Dilla LMS.
             if (name.OptionalEquals("C-Dilla Windows 32-Bit RTS Installer", StringComparison.OrdinalIgnoreCase))
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
+                return $"C-Dilla License Management System Version {exe.ProductVersion}";
 
             // Found in "CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 3.1.
             if (name.OptionalEquals("C-Dilla Windows 3.1x RTS", StringComparison.OrdinalIgnoreCase))
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
+                return $"C-Dilla License Management System Version {exe.ProductVersion}";
 
             // Found in "CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMS version 3.27.000 for Windows 95.
             if (name.OptionalEquals("C-Dilla Windows 95 RTS", StringComparison.OrdinalIgnoreCase))
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
+                return $"C-Dilla License Management System Version {exe.ProductVersion}";
 
             // Found in "CDANT.SYS"/"CDILLA13.DLL"/"CDILLA32.DLL"/"CDILLA64.EXE" from C-Dilla LMSversion 3.27.000 for Windows NT.
             if (name.OptionalEquals("C-Dilla Windows NT RTS", StringComparison.OrdinalIgnoreCase))
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
+                return $"C-Dilla License Management System Version {exe.ProductVersion}";
 
             // Found in "CDANTSRV.EXE" from C-Dilla LMS version 3.27.000 for Windows NT, and an embedded executable contained in Redump entry 95524.
             if (name.OptionalEquals("C-Dilla RTS Service", StringComparison.OrdinalIgnoreCase))
-                return $"C-Dilla RTS Service Version {pex.ProductVersion}";
+                return $"C-Dilla RTS Service Version {exe.ProductVersion}";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
 
             // Found in "CDANTSRV.EXE" from version 3.27.000 of C-Dilla LMS.
             if (name.OptionalEquals("CD-Secure/CD-Compress Windows NT", StringComparison.OrdinalIgnoreCase))
-                return $"C-Dilla License Management System Version {pex.ProductVersion}";
+                return $"C-Dilla License Management System Version {exe.ProductVersion}";
 
             // Get string table resources
-            if (pex.FindStringTableByEntry("C-Dilla Licence Management System").Count > 0)
+            if (exe.FindStringTableByEntry("C-Dilla Licence Management System").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("C-DiIla Licence Management System").Count > 0)
+            if (exe.FindStringTableByEntry("C-DiIla Licence Management System").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("C-DILLA_BITMAP_NAMES_TAG").Count > 0)
+            if (exe.FindStringTableByEntry("C-DILLA_BITMAP_NAMES_TAG").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("C-DILLA_EDITABLE_STRINGS_TAG").Count > 0)
+            if (exe.FindStringTableByEntry("C-DILLA_EDITABLE_STRINGS_TAG").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("CdaLMS.exe").Count > 0)
+            if (exe.FindStringTableByEntry("CdaLMS.exe").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("cdilla51.dll").Count > 0)
+            if (exe.FindStringTableByEntry("cdilla51.dll").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("cdilla52.dll").Count > 0)
+            if (exe.FindStringTableByEntry("cdilla52.dll").Count > 0)
                 return $"C-Dilla License Management System";
-            if (pex.FindStringTableByEntry("http://www.c-dilla.com/support/lms.html").Count > 0)
+            if (exe.FindStringTableByEntry("http://www.c-dilla.com/support/lms.html").Count > 0)
                 return $"C-Dilla License Management System";
 
             // Get the .data/DATA section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".data") ?? pex.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".

@@ -6,32 +6,26 @@ namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction, which may be possible with the current libraries but needs to be investigated further.
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
-    public class InstallAnywhere : IExtractableExecutable<PortableExecutable>
+    public class InstallAnywhere : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase))
-                return $"InstallAnywhere {GetVersion(pex)}";
+                return $"InstallAnywhere {GetVersion(exe)}";
 
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase))
-                return $"InstallAnywhere {GetVersion(pex)}";
+                return $"InstallAnywhere {GetVersion(exe)}";
 
             return null;
         }
 
-        /// <inheritdoc/>
-        public bool Extract(string file, PortableExecutable pex, string outDir, bool includeDebug)
-        {
-            return false;
-        }
-
-        private static string GetVersion(PortableExecutable pex)
+        private static string GetVersion(PortableExecutable exe)
         {
             // Check the internal versions
-            var version = pex.GetInternalVersion();
+            var version = exe.GetInternalVersion();
             if (!string.IsNullOrEmpty(version))
                 return version!;
 

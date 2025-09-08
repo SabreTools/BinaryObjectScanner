@@ -32,11 +32,11 @@ namespace BinaryObjectScanner.Protection
     public class HexalockAutoLock : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable pex, bool includeDebug)
+        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // TODO: Fix the following checks, as this information is visible via Windows Explorer but isn't currently being seen by BOS.
             // Found in "HCPSMng.exe".
-            var name = pex.FileDescription;
+            var name = exe.FileDescription;
             if (name.OptionalStartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
@@ -45,12 +45,12 @@ namespace BinaryObjectScanner.Protection
                 return $"Hexalock AutoLock 4.5";
 
             // Found in both "HCPSMng.exe" and in the file typically named "Start_Here.exe".
-            name = pex.ProductName;
+            name = exe.ProductName;
             if (name.OptionalStartsWith("HCPS", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
             // Get the .text section strings, if they exist
-            var strs = pex.GetFirstSectionStrings(".text");
+            var strs = exe.GetFirstSectionStrings(".text");
             if (strs != null)
             {
                 // Found in "The Sudoku Challenge Collection.exe" in "The Sudoku Challenge! Collection" by Play at Joe's.
@@ -59,7 +59,7 @@ namespace BinaryObjectScanner.Protection
             }
             
             // Get the code/CODE section strings, if they exist
-            strs = pex.GetFirstSectionStrings("code") ?? pex.GetFirstSectionStrings("CODE");
+            strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
             if (strs != null)
             {
                 // Found in "launcher.exe" in "Sea Adventure / Adventure de la Mer" by Compedia.
@@ -68,7 +68,7 @@ namespace BinaryObjectScanner.Protection
             }
             
             // Get the UPX1 section strings, if they exist
-            strs = pex.GetFirstSectionStrings("UPX1");
+            strs = exe.GetFirstSectionStrings("UPX1");
             if (strs != null)
             {
                 // Found in "postmanpat.exe" in "Postman Pat" by Compedia.

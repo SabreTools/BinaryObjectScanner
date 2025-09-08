@@ -1,42 +1,17 @@
-﻿using System;
-using System.IO;
-using BinaryObjectScanner.Interfaces;
-using SabreTools.Matching;
+﻿using System.IO;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// PlayJ audio file
     /// </summary>
-    public class PLJ : IDetectable
+    public class PLJ : DetectableBase<SabreTools.Serialization.Wrappers.PlayJAudioFile>
     {
         /// <inheritdoc/>
-        public string? Detect(string file, bool includeDebug)
-        {
-            if (!File.Exists(file))
-                return null;
-
-            using var fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            return Detect(fs, file, includeDebug);
-        }
+        public PLJ(SabreTools.Serialization.Wrappers.PlayJAudioFile? wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
-        public string? Detect(Stream stream, string file, bool includeDebug)
-        {
-            try
-            {
-                byte[] magic = new byte[16];
-                int read = stream.Read(magic, 0, 16);
-
-                if (magic.StartsWith(new byte?[] { 0xFF, 0x9D, 0x53, 0x4B }))
-                    return "PlayJ Audio File";
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.WriteLine(ex);
-            }
-
-            return null;
-        }
+        public override string? Detect(Stream stream, string file, bool includeDebug)
+            => "PlayJ Audio File";
     }
 }
