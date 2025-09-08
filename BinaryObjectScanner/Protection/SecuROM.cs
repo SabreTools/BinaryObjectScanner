@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
 using SabreTools.Matching.Paths;
@@ -18,10 +19,8 @@ namespace BinaryObjectScanner.Protection
             // Check if executable is a Securom PA Module
             var paModule = CheckProductActivation(exe);
             if (paModule != null)
-            {
                 return paModule;
-            }
-            
+
             // Get the matrosch section, if it exists
             if (exe.ContainsSection("matrosch", exact: true))
                 return $"SecuROM Matroschka Package";
@@ -147,17 +146,41 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetV4Version(PortableExecutable exe)
         {
-            int index = 8; // Begin reading after "AddD"
-            char major = (char)exe.OverlayData![index];
+            // Cache the overlay data for easier access
+            var overlayData = exe.OverlayData;
+            if (overlayData == null || overlayData.Length < 20)
+                return "(very old, v3 or less)";
+
+            // Search for the "AddD" string in the overlay
+            bool found = false;
+            int index = 0;
+            for (; index < 0x100; index++)
+            {
+                int temp = index;
+                byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x04);
+                if (overlaySample.EqualsExactly([0x41, 0x64, 0x64, 0x44]))
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            // If the string wasn't found in the first 0x100 bytes
+            if (!found)
+                return "(very old, v3 or less)";
+
+            // Read the version starting 4 bytes after the signature
+            index += 8;
+            char major = (char)overlayData[index];
             index += 2;
 
-            string minor = Encoding.ASCII.GetString(exe.OverlayData, index, 2);
+            string minor = Encoding.ASCII.GetString(overlayData, index, 2);
             index += 3;
 
-            string patch = Encoding.ASCII.GetString(exe.OverlayData, index, 2);
+            string patch = Encoding.ASCII.GetString(overlayData, index, 2);
             index += 3;
 
-            string revision = Encoding.ASCII.GetString(exe.OverlayData, index, 4);
+            string revision = Encoding.ASCII.GetString(overlayData, index, 4);
 
             if (!char.IsNumber(major))
                 return "(very old, v3 or less)";
@@ -268,7 +291,6 @@ namespace BinaryObjectScanner.Protection
             return $"{major}.{minor:00}.{patch:0000}";
         }
 
-
         /// <summary>
         /// Helper method to check if a given PortableExecutable is a SecuROM PA module.
         /// </summary>
@@ -279,10 +301,10 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 
             name = exe.InternalName;
-            
+
             // Checks if ProductName isn't drEAm to organize custom module checks at the end.
             if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase) ^ exe.ProductName.OptionalEquals("drEAm"))
-                    return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
             else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
             else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
@@ -297,10 +319,10 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 
             // Custom Module Checks
-            
-            if (exe.ProductName.OptionalEquals("drEAm")) 
+
+            if (exe.ProductName.OptionalEquals("drEAm"))
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()} - EA Game Authorization Management";
-            
+
             // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
             // variants. PiD refers to this as "SecuROM Modified PA Module".
             // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
@@ -313,7 +335,7 @@ namespace BinaryObjectScanner.Protection
             name = exe.ExportTable?.ExportNameTable?.Strings?[0];
             if (name.OptionalEquals("drm_pagui_doit"))
                 return $"SecuROM Product Activation - Modified";
-            
+
             return null;
         }
     }
