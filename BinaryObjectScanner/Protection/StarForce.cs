@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Protection
     {
         // TODO: Bring up to par with PiD.
         // Known issues: 
-        // "Game.exe" not detected, "SF Crypto" not found in protect.* files (Redump entry 96137).
+        // "Game.exe" not detected (Redump entry 96137).
         // "HR.exe" Themida not detected, doesn't detect "[Builder]" (Is that the default StarForce?) (Redump entry 94805).
         // "ChromeEngine3.dll" and "SGP4.dll" not detected, doesn't detect "[FL Disc]" (Redump entry 93098).
         // "Replay.exe" not detected, doesn't detect "[FL Disc]" (Redump entry 81756).
