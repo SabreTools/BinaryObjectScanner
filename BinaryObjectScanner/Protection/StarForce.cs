@@ -105,6 +105,13 @@ namespace BinaryObjectScanner.Protection
             if (exe.ContainsSection(".sforce", exact: false))
                 return "StarForce 3-5";
 
+            // TODO: Investigate the .common and .ps4 sections found in apache.exe
+            // .common doesn't map to any table
+            //      The section is largely empty with a 3 or 4 byte value at
+            //      offset 0x40. Sample has "D4 DB DD 00"
+            // .ps4 has a virtual size of 4096 and a physical size of 0
+            //      The physical offset is the end of the file
+
             return null;
         }
 
