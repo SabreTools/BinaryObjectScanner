@@ -65,6 +65,10 @@ namespace BinaryObjectScanner.Packer
                     {
                         return "Embedded RAR Archive";
                     }
+                    else if (overlaySample.StartsWith([0x55, 0x48, 0x41, 0x06]))
+                    {
+                        return "Embedded UHARC Archive";
+                    }
                     else if (overlaySample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
                     {
                         return "Embedded XZ Archive";
@@ -91,7 +95,7 @@ namespace BinaryObjectScanner.Packer
         {
             // TODO: Have this return all detected things, not just the first
 
-            // Only process the overlay if it is recognized
+            // Only process the resources if they are recognized
             if (exe.ResourceData != null)
             {
                 // Cache the resource data for easier reading
@@ -130,6 +134,8 @@ namespace BinaryObjectScanner.Packer
                             return "Embedded RAR Archive";
                         else if (resourceSample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
                             return "Embedded RAR Archive";
+                        else if (resourceSample.StartsWith([0x55, 0x48, 0x41, 0x06]))
+                            return "Embedded UHARC Archive";
                         else if (resourceSample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
                             return "Embedded XZ Archive";
                         else if (resourceSample.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
@@ -185,6 +191,10 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
                     {
                         return "Embedded RAR Archive";
+                    }
+                    else if (overlaySample.StartsWith([0x55, 0x48, 0x41, 0x06]))
+                    {
+                        return "Embedded UHARC Archive";
                     }
                     else if (overlaySample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
                     {
