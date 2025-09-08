@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Packer
                 int overlayOffset = 0;
 
                 // Only process the overlay if it is recognized
-                for (; overlayOffset < 0x100 && overlayOffset < overlayData.Length - 0x10; overlayOffset++)
+                for (; overlayOffset < 0x400 && overlayOffset < overlayData.Length - 0x10; overlayOffset++)
                 {
                     int temp = overlayOffset;
                     byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x10);
@@ -36,6 +36,10 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith(SabreTools.Models.MicrosoftCabinet.Constants.SignatureBytes))
                     {
                         return "Embedded MS-CAB Archive";
+                    }
+                    else if (overlaySample.StartsWith([0x42, 0x5A, 0x68]))
+                    {
+                        return "Embedded BZip2 Archive";
                     }
                     else if (overlaySample.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
                     {
@@ -60,6 +64,10 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
                     {
                         return "Embedded RAR Archive";
+                    }
+                    else if (overlaySample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
+                    {
+                        return "Embedded XZ Archive";
                     }
                     else if (overlaySample.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
                     {
@@ -99,13 +107,15 @@ namespace BinaryObjectScanner.Packer
                     int resourceOffset = 0;
 
                     // Only process the resource if it a recognized signature
-                    for (; resourceOffset < 0x100 && resourceOffset < ba.Length - 0x10; resourceOffset++)
+                    for (; resourceOffset < 0x400 && resourceOffset < ba.Length - 0x10; resourceOffset++)
                     {
                         int temp = resourceOffset;
                         byte[] resourceSample = ba.ReadBytes(ref temp, 0x10);
 
                         if (resourceSample.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                             return "Embedded 7-Zip Archive";
+                        else if (resourceSample.StartsWith([0x42, 0x5A, 0x68]))
+                            return "Embedded BZip2 Archive";
                         else if (resourceSample.StartsWith(SabreTools.Models.MicrosoftCabinet.Constants.SignatureBytes))
                             return "Embedded MS-CAB Archive";
                         else if (resourceSample.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
@@ -120,6 +130,8 @@ namespace BinaryObjectScanner.Packer
                             return "Embedded RAR Archive";
                         else if (resourceSample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
                             return "Embedded RAR Archive";
+                        else if (resourceSample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
+                            return "Embedded XZ Archive";
                         else if (resourceSample.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
                             return "Embedded Executable";
                     }
@@ -133,7 +145,7 @@ namespace BinaryObjectScanner.Packer
                 int overlayOffset = 0;
 
                 // Only process the overlay if it is recognized
-                for (; overlayOffset < 0x100 && overlayOffset < exe.OverlayData.Length - 0x10; overlayOffset++)
+                for (; overlayOffset < 0x400 && overlayOffset < exe.OverlayData.Length - 0x10; overlayOffset++)
                 {
                     int temp = overlayOffset;
                     byte[] overlaySample = exe.OverlayData.ReadBytes(ref temp, 0x10);
@@ -141,6 +153,10 @@ namespace BinaryObjectScanner.Packer
                     if (overlaySample.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
                     {
                         return "Embedded 7-Zip Archive";
+                    }
+                    else if (overlaySample.StartsWith([0x42, 0x5A, 0x68]))
+                    {
+                        return "Embedded BZip2 Archive";
                     }
                     else if (overlaySample.StartsWith(SabreTools.Models.MicrosoftCabinet.Constants.SignatureBytes))
                     {
@@ -169,6 +185,10 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
                     {
                         return "Embedded RAR Archive";
+                    }
+                    else if (overlaySample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
+                    {
+                        return "Embedded XZ Archive";
                     }
                     else if (overlaySample.StartsWith(SabreTools.Models.MSDOS.Constants.SignatureBytes))
                     {
