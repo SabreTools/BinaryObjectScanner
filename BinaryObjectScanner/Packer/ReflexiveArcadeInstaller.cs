@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Matching;
+using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
@@ -6,7 +9,7 @@ namespace BinaryObjectScanner.Packer
     /// <summary>
     /// Reflexive Arcade Installer
     /// </summary>
-    public class ReflexiveArcadeInstaller : IExecutableCheck<PortableExecutable>
+    public class ReflexiveArcadeInstaller : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -25,6 +28,28 @@ namespace BinaryObjectScanner.Packer
             }
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        public List<string> CheckDirectoryPath(string path, List<string>? files)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                new(new FilePathMatch("ReflexiveArcade.dll"), "Reflexive Arcade Installer"),
+            };
+
+            return MatchUtil.GetAllMatches(files, matchers, any: true);
+        }
+
+        /// <inheritdoc/>
+        public string? CheckFilePath(string path)
+        {
+            var matchers = new List<PathMatchSet>
+            {
+                new(new FilePathMatch("ReflexiveArcade.dll"), "Reflexive Arcade Installer"),
+            };
+
+            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
     }
 }

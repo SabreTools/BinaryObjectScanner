@@ -171,7 +171,7 @@ Below is a list of executable packers detected by BinaryObjectScanner. The three
 | PECompact | Yes | No | No | |
 | PEtite | Yes | No | No | |
 | PKLITE32 | Yes | No | No | |
-| Reflexive Arcade Installer | Yes | No | No | |
+| Reflexive Arcade Installer | Yes | Yes | No | |
 | Setup Factory | Yes | No | No | |
 | Shrinker | Yes | No | No | |
 | Smart Install Maker | Yes | No | No | |
