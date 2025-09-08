@@ -1,4 +1,3 @@
-using System;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Matching;
 using SabreTools.Serialization.Wrappers;
