@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
                     return "Hudson huPPPX";
 
                 // Found in Bomberman Vol 2 (Japan)
-                if (Array.Exists(exportTable.ExportNameTable?.Strings, s => s.StartsWith("HVRCD_IS_")))
+                if (Array.Exists(exportTable.ExportNameTable?.Strings ?? [], s => s.StartsWith("HVRCD_IS_")))
                     return "Hudson huPPPX";
             }
 
