@@ -44,6 +44,18 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalContains("SecuROM Activate & Play"))
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 
+            // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
+            // variants. PiD refers to this as "SecuROM Modified PA Module".
+            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
+            // both, Softstar and Aurogon respectively(?), seem to have some connection, and use similar-looking
+            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be. 
+            // Regardless, even if these are given their own named variant later, this check should remain in order to
+            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
+            // detection abilities.
+            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
+            if (name.OptionalEquals("drm_pagui_doit"))
+                return $"SecuROM Product Activation - Modified";
+            
             // Get the matrosch section, if it exists
             if (exe.ContainsSection("matrosch", exact: true))
                 return $"SecuROM Matroschka Package";
