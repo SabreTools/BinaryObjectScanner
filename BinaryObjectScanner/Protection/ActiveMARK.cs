@@ -31,6 +31,10 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            // Investigation notes:
+            // - After the section table, "Code_Name=ActiveMARK[TM]_R5.41" was found. It's not in a section.
+            // - In the stub data, there's a string for the download: "http://d.trymedia.com/dd/..."
+
             // Get the entry point data, if it exists
             if (exe.EntryPointData != null)
             {
