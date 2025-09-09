@@ -35,6 +35,10 @@ namespace BinaryObjectScanner.Packer
                     {
                         embeddedTypes.Add("Embedded 7-Zip Archive");
                     }
+                    else if (overlaySample.StartsWith([0x1F, 0x8B]))
+                    {
+                        embeddedTypes.Add("Embedded GZip Archive");
+                    }
                     else if (overlaySample.StartsWith(SabreTools.Models.MicrosoftCabinet.Constants.SignatureBytes))
                     {
                         embeddedTypes.Add("Embedded MS-CAB Archive");
@@ -125,6 +129,8 @@ namespace BinaryObjectScanner.Packer
                             embeddedTypes.Add("Embedded 7-Zip Archive");
                         else if (resourceSample.StartsWith([0x42, 0x5A, 0x68]))
                             embeddedTypes.Add("Embedded BZip2 Archive");
+                        else if (resourceSample.StartsWith([0x1F, 0x8B]))
+                            embeddedTypes.Add("Embedded GZip Archive");
                         else if (resourceSample.StartsWith(SabreTools.Models.MicrosoftCabinet.Constants.SignatureBytes))
                             embeddedTypes.Add("Embedded MS-CAB Archive");
                         else if (resourceSample.StartsWith(SabreTools.Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
@@ -169,6 +175,10 @@ namespace BinaryObjectScanner.Packer
                     else if (overlaySample.StartsWith([0x42, 0x5A, 0x68]))
                     {
                         embeddedTypes.Add("Embedded BZip2 Archive");
+                    }
+                    else if (overlaySample.StartsWith([0x1F, 0x8B]))
+                    {
+                        embeddedTypes.Add("Embedded GZip Archive");
                     }
                     else if (overlaySample.StartsWith(SabreTools.Models.MicrosoftCabinet.Constants.SignatureBytes))
                     {
