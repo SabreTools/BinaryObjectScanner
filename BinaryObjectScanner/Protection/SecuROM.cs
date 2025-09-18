@@ -1,473 +1,575 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using BinaryObjectScanner.Interfaces;
+using System.IO;
+using SabreTools.IO.Compression.zlib;
 using SabreTools.IO.Extensions;
 using SabreTools.Matching;
-using SabreTools.Matching.Content;
-using SabreTools.Matching.Paths;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Serialization.Interfaces;
 
-namespace BinaryObjectScanner.Protection
+namespace SabreTools.Serialization.Wrappers
 {
-    // TODO: Investigate SecuROM for Macintosh
-    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
+    public partial class PortableExecutable : IExtractable
     {
         /// <inheritdoc/>
-        public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
+        /// <remarks>
+        /// This extracts the following data:
+        /// - Archives and executables in the overlay
+        /// - Archives and executables in resource data
+        /// - CExe-compressed resource data
+        /// - SFX archives (7z, MS-CAB, PKZIP, RAR)
+        /// - Wise installers
+        /// </remarks>
+        public bool Extract(string outputDirectory, bool includeDebug)
         {
-            // Check if executable is a Securom PA Module
-            var paModule = CheckProductActivation(exe);
-            if (paModule != null)
-                return paModule;
+            bool cexe = ExtractCExe(outputDirectory, includeDebug);
+            bool overlay = ExtractFromOverlay(outputDirectory, includeDebug);
+            bool resources = ExtractFromResources(outputDirectory, includeDebug);
+            bool wise = ExtractWise(outputDirectory, includeDebug);
+            bool matroschka = ExtractMatroschka(outputDirectory, includeDebug);
+            // TODO: extract matroschka here
 
-            // Check if executable contains a SecuROM Matroschka Package
+            return cexe || overlay || resources | wise | matroschka;
+        }
 
-            if (exe.MatroschkaPackage != null)
+        /// <summary>
+        /// Extract a CExe-compressed executable
+        /// </summary>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        public bool ExtractCExe(string outputDirectory, bool includeDebug)
+        {
+            try
             {
-                var matroschka = CheckMatroschkaPackage(exe, includeDebug);
-                if (matroschka != null)
-                    return matroschka;
+                // Get all resources of type 99 with index 2
+                var resources = FindResourceByNamedType("99, 2");
+                if (resources == null || resources.Count == 0)
+                    return false;
+
+                // Get the first resource of type 99 with index 2
+                var resource = resources[0];
+                if (resource == null || resource.Length == 0)
+                    return false;
+
+                // Create the output data buffer
+                byte[]? data = [];
+
+                // If we had the decompression DLL included, it's zlib
+                if (FindResourceByNamedType("99, 1").Count > 0)
+                    data = DecompressCExeZlib(resource);
+                else
+                    data = DecompressCExeLZ(resource);
+
+                // If we have no data
+                if (data == null)
+                    return false;
+
+                // Create the temp filename
+                string tempFile = string.IsNullOrEmpty(Filename) ? "temp.sxe" : $"{Path.GetFileNameWithoutExtension(Filename)}.sxe";
+                tempFile = Path.Combine(outputDirectory, tempFile);
+                var directoryName = Path.GetDirectoryName(tempFile);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                    Directory.CreateDirectory(directoryName);
+
+                // Write the file data to a temp file
+                var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                tempStream.Write(data, 0, data.Length);
+
+                return true;
             }
-
-            if (exe.ContainsSection(".dsstext", exact: true))
-                return $"SecuROM 8.03.03+";
-
-            // Get the .securom section, if it exists
-            if (exe.ContainsSection(".securom", exact: true))
-                return $"SecuROM {GetV7Version(exe)}";
-
-            // Get the .sll section, if it exists
-            if (exe.ContainsSection(".sll", exact: true))
-                return $"SecuROM SLL Protected (for SecuROM v8.x)";
-
-            // Search after the last section
-            string? v4Version = GetV4Version(exe);
-            if (v4Version != null)
-                return $"SecuROM {v4Version}";
-
-            // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
-            var sections = exe.SectionTable ?? [];
-            for (int i = 4; i < sections.Length; i++)
+            catch (Exception ex)
             {
-                var nthSection = sections[i];
-                if (nthSection == null)
-                    continue;
+                if (includeDebug) Console.Error.WriteLine(ex);
+                return false;
+            }
+        }
 
-                string nthSectionName = Encoding.ASCII.GetString(nthSection.Name ?? []).TrimEnd('\0');
-                if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
+        /// <summary>
+        /// Extract data from the overlay
+        /// </summary>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        public bool ExtractFromOverlay(string outputDirectory, bool includeDebug)
+        {
+            try
+            {
+                // Cache the overlay data for easier reading
+                var overlayData = OverlayData;
+                if (overlayData.Length == 0)
+                    return false;
+
+                // Set the output variables
+                int overlayOffset = 0;
+                string extension = string.Empty;
+
+                // Only process the overlay if it is recognized
+                for (; overlayOffset < 0x400 && overlayOffset < overlayData.Length - 0x10; overlayOffset++)
                 {
-                    var nthSectionData = exe.GetFirstSectionData(nthSectionName);
-                    if (nthSectionData == null)
+                    int temp = overlayOffset;
+                    byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x10);
+
+                    if (overlaySample.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
+                    {
+                        extension = "7z";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C]))
+                    {
+                        // 7-zip SFX script -- ";!@Install" to ";!@InstallEnd@!"
+                        overlayOffset = overlayData.FirstPosition([0x3B, 0x21, 0x40, 0x49, 0x6E, 0x73, 0x74, 0x61, 0x6C, 0x6C, 0x45, 0x6E, 0x64, 0x40, 0x21]);
+                        if (overlayOffset == -1)
+                            return false;
+
+                        overlayOffset += 15;
+                        extension = "7z";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0x42, 0x5A, 0x68]))
+                    {
+                        extension = "bz2";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0x1F, 0x8B]))
+                    {
+                        extension = "gz";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith(Models.MicrosoftCabinet.Constants.SignatureBytes))
+                    {
+                        extension = "cab";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith(Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                    {
+                        extension = "zip";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith(Models.PKZIP.Constants.EndOfCentralDirectoryRecordSignatureBytes))
+                    {
+                        extension = "zip";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith(Models.PKZIP.Constants.EndOfCentralDirectoryRecord64SignatureBytes))
+                    {
+                        extension = "zip";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith(Models.PKZIP.Constants.DataDescriptorSignatureBytes))
+                    {
+                        extension = "zip";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
+                    {
+                        extension = "rar";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
+                    {
+                        extension = "rar";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0x55, 0x48, 0x41, 0x06]))
+                    {
+                        extension = "uha";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
+                    {
+                        extension = "xz";
+                        break;
+                    }
+                    else if (overlaySample.StartsWith(Models.MSDOS.Constants.SignatureBytes))
+                    {
+                        extension = "bin"; // exe/dll
+                        break;
+                    }
+                }
+
+                // If the extension is unset
+                if (extension.Length == 0)
+                    return false;
+
+                // Create the temp filename
+                string tempFile = $"embedded_overlay.{extension}";
+                if (Filename != null)
+                    tempFile = $"{Path.GetFileName(Filename)}-{tempFile}";
+
+                tempFile = Path.Combine(outputDirectory, tempFile);
+                var directoryName = Path.GetDirectoryName(tempFile);
+                if (directoryName != null && !Directory.Exists(directoryName))
+                    Directory.CreateDirectory(directoryName);
+
+                // Write the resource data to a temp file
+                using var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                tempStream?.Write(overlayData, overlayOffset, overlayData.Length - overlayOffset);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (includeDebug) Console.Error.WriteLine(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Extract data from the resources
+        /// </summary>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        public bool ExtractFromResources(string outputDirectory, bool includeDebug)
+        {
+            try
+            {
+                // Cache the resource data for easier reading
+                var resourceData = ResourceData;
+                if (resourceData.Count == 0)
+                    return false;
+
+                // Get the resources that have an archive signature
+                int i = 0;
+                foreach (var kvp in resourceData)
+                {
+                    // Get the key and value
+                    string resourceKey = kvp.Key;
+                    var value = kvp.Value;
+
+                    if (value == null || value is not byte[] ba || ba.Length == 0)
                         continue;
 
-                    var matchers = new List<ContentMatchSet>
+                    // Set the output variables
+                    int resourceOffset = 0;
+                    string extension = string.Empty;
+
+                    // Only process the resource if it a recognized signature
+                    for (; resourceOffset < 0x400 && resourceOffset < ba.Length - 0x10; resourceOffset++)
                     {
-                        // (char)0xCA + (char)0xDD + (char)0xDD + (char)0xAC + (char)0x03
-                        new(new byte?[] { 0xCA, 0xDD, 0xDD, 0xAC, 0x03 }, GetV5Version, "SecuROM"),
-                    };
+                        int temp = resourceOffset;
+                        byte[] resourceSample = ba.ReadBytes(ref temp, 0x10);
 
-                    var match = MatchUtil.GetFirstMatch(file, nthSectionData, matchers, includeDebug);
-                    if (!string.IsNullOrEmpty(match))
-                        return match;
+                        if (resourceSample.StartsWith([0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]))
+                        {
+                            extension = "7z";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x42, 0x4D]))
+                        {
+                            extension = "bmp";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x42, 0x5A, 0x68]))
+                        {
+                            extension = "bz2";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x47, 0x49, 0x46, 0x38]))
+                        {
+                            extension = "gif";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x1F, 0x8B]))
+                        {
+                            extension = "gz";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0xFF, 0xD8, 0xFF, 0xE0]))
+                        {
+                            extension = "jpg";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x3C, 0x68, 0x74, 0x6D, 0x6C]))
+                        {
+                            extension = "html";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith(Models.MicrosoftCabinet.Constants.SignatureBytes))
+                        {
+                            extension = "cab";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith(Models.PKZIP.Constants.LocalFileHeaderSignatureBytes))
+                        {
+                            extension = "zip";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith(Models.PKZIP.Constants.EndOfCentralDirectoryRecordSignatureBytes))
+                        {
+                            extension = "zip";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith(Models.PKZIP.Constants.EndOfCentralDirectoryRecord64SignatureBytes))
+                        {
+                            extension = "zip";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith(Models.PKZIP.Constants.DataDescriptorSignatureBytes))
+                        {
+                            extension = "zip";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x89, 0x50, 0x4E, 0x47]))
+                        {
+                            extension = "png";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x00]))
+                        {
+                            extension = "rar";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x52, 0x61, 0x72, 0x21, 0x1A, 0x07, 0x01, 0x00]))
+                        {
+                            extension = "rar";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0x55, 0x48, 0x41, 0x06]))
+                        {
+                            extension = "uha";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith([0xFD, 0x37, 0x7A, 0x58, 0x5A, 0x00]))
+                        {
+                            extension = "xz";
+                            break;
+                        }
+                        else if (resourceSample.StartsWith(Models.MSDOS.Constants.SignatureBytes))
+                        {
+                            extension = "bin"; // exe/dll
+                            break;
+                        }
+                    }
+
+                    // If the extension is unset
+                    if (extension.Length == 0)
+                        continue;
+
+                    try
+                    {
+                        // Create the temp filename
+                        string tempFile = $"embedded_resource_{i++} ({resourceKey}).{extension}";
+                        if (Filename != null)
+                            tempFile = $"{Path.GetFileName(Filename)}-{tempFile}";
+
+                        tempFile = Path.Combine(outputDirectory, tempFile);
+                        var directoryName = Path.GetDirectoryName(tempFile);
+                        if (directoryName != null && !Directory.Exists(directoryName))
+                            Directory.CreateDirectory(directoryName);
+
+                        // Write the resource data to a temp file
+                        using var tempStream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+                        tempStream?.Write(ba, resourceOffset, ba.Length - resourceOffset);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (includeDebug) Console.Error.WriteLine(ex);
+                    }
                 }
+
+                return true;
             }
-
-            // Get the .rdata section strings, if they exist
-            var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            catch (Exception ex)
             {
-                // Both have the identifier found within `.rdata` but the version is within `.data`
-                if (strs.Exists(s => s.Contains("/secuexp")))
-                    return $"SecuROM {GetV8WhiteLabelVersion(exe)} (White Label)";
-                else if (strs.Exists(s => s.Contains("SecuExp.exe")))
-                    return $"SecuROM {GetV8WhiteLabelVersion(exe)} (White Label)";
+                if (includeDebug) Console.Error.WriteLine(ex);
+                return false;
             }
-
-            // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            if (exe.ContainsSection(".cmd_d", true) || exe.ContainsSection(".cms_t", true))
-                return $"SecuROM 1-3";
-
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public List<string> CheckDirectoryPath(string path, List<string>? files)
-        {
-            var matchers = new List<PathMatchSet>
-            {
-                // TODO: Verify if these are OR or AND
-                new(new FilePathMatch("CMS16.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS_95.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS_NT.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS32_95.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS32_NT.DLL"), "SecuROM"),
-
-                // TODO: Verify if these are OR or AND
-                new(new FilePathMatch("SINTF32.DLL"), "SecuROM New"),
-                new(new FilePathMatch("SINTF16.DLL"), "SecuROM New"),
-                new(new FilePathMatch("SINTFNT.DLL"), "SecuROM New"),
-
-                // TODO: Find more samples of this for different versions
-                new(new List<PathMatch>
-                {
-                    new FilePathMatch("securom_v7_01.bak"),
-                    new FilePathMatch("securom_v7_01.dat"),
-                    new FilePathMatch("securom_v7_01.tmp"),
-                }, "SecuROM 7.01"),
-            };
-
-            return MatchUtil.GetAllMatches(files, matchers, any: true);
-        }
-
-        /// <inheritdoc/>
-        public string? CheckFilePath(string path)
-        {
-            var matchers = new List<PathMatchSet>
-            {
-                new(new FilePathMatch("CMS16.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS_95.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS_NT.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS32_95.DLL"), "SecuROM"),
-                new(new FilePathMatch("CMS32_NT.DLL"), "SecuROM"),
-
-                new(new FilePathMatch("SINTF32.DLL"), "SecuROM New"),
-                new(new FilePathMatch("SINTF16.DLL"), "SecuROM New"),
-                new(new FilePathMatch("SINTFNT.DLL"), "SecuROM New"),
-
-                new(new FilePathMatch("securom_v7_01.bak"), "SecuROM 7.01"),
-                new(new FilePathMatch("securom_v7_01.dat"), "SecuROM 7.01"),
-                new(new FilePathMatch("securom_v7_01.tmp"), "SecuROM 7.01"),
-            };
-
-            return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
         /// <summary>
-        /// Try to get the SecuROM v4 version from the overlay, if possible
+        /// Extract data from a Wise installer
         /// </summary>
-        /// <param name="exe">Executable to retrieve the overlay from</param>
-        /// <returns>The version on success, null otherwise</returns>
-        private static string? GetV4Version(PortableExecutable exe)
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        public bool ExtractWise(string outputDirectory, bool includeDebug)
         {
-            // Cache the overlay data for easier access
-            var overlayData = exe.OverlayData;
-            if (overlayData == null || overlayData.Length < 20)
-                return null;
-
-            // Search for the "AddD" string in the overlay
-            bool found = false;
-            int index = 0;
-            for (; index < 0x100; index++)
+            // Get the source data for reading
+            Stream source = _dataSource;
+            if (Filename != null)
             {
-                int temp = index;
-                byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x04);
-                if (overlaySample.EqualsExactly([0x41, 0x64, 0x64, 0x44]))
-                {
-                    found = true;
-                    break;
-                }
+                // Try to open a multipart file
+                if (WiseOverlayHeader.OpenFile(Filename, includeDebug, out var temp) && temp != null)
+                    source = temp;
             }
 
-            // If the string wasn't found in the first 0x100 bytes
-            if (!found)
-                return null;
+            // Try to find the overlay header
+            long offset = FindWiseOverlayHeader();
+            if (offset > 0 && offset < Length)
+                return ExtractWiseOverlay(outputDirectory, includeDebug, source, offset);
 
-            // Read the version starting 4 bytes after the signature
-            index += 8;
-            char major = (char)overlayData[index];
-            index += 2;
+            // Try to find the section header
+            var section = FindWiseSection();
+            if (section != null)
+                return ExtractWiseSection(outputDirectory, includeDebug, source, section);
 
-            string minor = Encoding.ASCII.GetString(overlayData, index, 2);
-            index += 3;
-
-            string patch = Encoding.ASCII.GetString(overlayData, index, 2);
-            index += 3;
-
-            string revision = Encoding.ASCII.GetString(overlayData, index, 4);
-
-            if (!char.IsNumber(major))
-                return "(very old, v3 or less)";
-
-            return $"{major}.{minor}.{patch}.{revision}";
-        }
-
-        private static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
-        {
-            // If we have no content
-            if (fileContent == null)
-                return null;
-
-            int index = positions[0] + 8; // Begin reading after "ÊÝÝ¬"
-            byte major = (byte)(fileContent[index] & 0x0F);
-            index += 2;
-
-            byte[] minor = new byte[2];
-            minor[0] = (byte)(fileContent[index] ^ 36);
-            index++;
-            minor[1] = (byte)(fileContent[index] ^ 28);
-            index += 2;
-
-            byte[] patch = new byte[2];
-            patch[0] = (byte)(fileContent[index] ^ 42);
-            index++;
-            patch[1] = (byte)(fileContent[index] ^ 8);
-            index += 2;
-
-            byte[] revision = new byte[4];
-            revision[0] = (byte)(fileContent[index] ^ 16);
-            index++;
-            revision[1] = (byte)(fileContent[index] ^ 116);
-            index++;
-            revision[2] = (byte)(fileContent[index] ^ 34);
-            index++;
-            revision[3] = (byte)(fileContent[index] ^ 22);
-
-            if (major == 0 || major > 9)
-                return string.Empty;
-
-            return $"{major}.{minor[0]}{minor[1]}.{patch[0]}{patch[1]}.{revision[0]}{revision[1]}{revision[2]}{revision[3]}";
-        }
-
-        // These live in the MS-DOS stub, for some reason
-        private static string GetV7Version(PortableExecutable exe)
-        {
-            // If SecuROM is stripped, the MS-DOS stub might be shorter.
-            // We then know that SecuROM -was- there, but we don't know what exact version.
-            if (exe.StubExecutableData == null)
-                return "7 remnants";
-
-            //SecuROM 7 new and 8 -- 64 bytes for DOS stub, 236 bytes in total
-            int index = 172;
-            if (exe.StubExecutableData.Length >= 176 && exe.StubExecutableData[index + 3] == 0x5C)
-            {
-                int major = exe.StubExecutableData[index + 0] ^ 0xEA;
-                int minor = exe.StubExecutableData[index + 1] ^ 0x2C;
-                int patch = exe.StubExecutableData[index + 2] ^ 0x08;
-
-                return $"{major}.{minor:00}.{patch:0000}";
-            }
-
-            // SecuROM 7 old -- 64 bytes for DOS stub, 122 bytes in total
-            index = 58;
-            if (exe.StubExecutableData.Length >= 62)
-            {
-                int minor = exe.StubExecutableData[index + 0] ^ 0x10;
-                int patch = exe.StubExecutableData[index + 1] ^ 0x10;
-
-                //return "7.01-7.10"
-                return $"7.{minor:00}.{patch:0000}";
-            }
-
-            // If SecuROM is stripped, the MS-DOS stub might be shorter.
-            // We then know that SecuROM -was- there, but we don't know what exact version.
-            return "7 remnants";
-        }
-
-        private static string GetV8WhiteLabelVersion(PortableExecutable exe)
-        {
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
-            if (dataSectionRaw == null)
-                return "8";
-
-            // Search .data for the version indicator
-            var matcher = new ContentMatch(
-            [
-                0x29, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null, null,
-                0x82, 0xD8, 0x0C, 0xAC
-            ]);
-
-            int position = matcher.Match(dataSectionRaw);
-
-            // If we can't find the string, we default to generic
-            if (position < 0)
-                return "8";
-
-            int major = dataSectionRaw[position + 0xAC + 0] ^ 0xCA;
-            int minor = dataSectionRaw[position + 0xAC + 1] ^ 0x39;
-            int patch = dataSectionRaw[position + 0xAC + 2] ^ 0x51;
-
-            return $"{major}.{minor:00}.{patch:0000}";
-        }
-
-        /// <summary>
-        /// Helper method to check if a given PortableExecutable is a SecuROM PA module.
-        /// </summary>
-        private static string? CheckProductActivation(PortableExecutable exe)
-        {
-            var name = exe.FileDescription;
-            if (name.OptionalContains("SecuROM PA"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            name = exe.InternalName;
-
-            // Checks if ProductName isn't drEAm to organize custom module checks at the end.
-            if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase) ^ exe.ProductName.OptionalEquals("drEAm"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-            else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-            else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            name = exe.OriginalFilename;
-            if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            name = exe.ProductName;
-            if (name.OptionalContains("SecuROM Activate & Play"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
-
-            // Custom Module Checks
-
-            if (exe.ProductName.OptionalEquals("drEAm"))
-                return $"SecuROM Product Activation v{exe.GetInternalVersion()} - EA Game Authorization Management";
-
-            // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
-            // variants. PiD refers to this as "SecuROM Modified PA Module".
-            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
-            // both, Softstar and Aurogon respectively(?), seem to have some connection, and use similar-looking
-            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be. 
-            // Regardless, even if these are given their own named variant later, this check should remain in order to
-            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
-            // detection abilities.
-            // TODO: Decide whether to get internal version or not in the future.
-            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
-            if (name.OptionalEquals("drm_pagui_doit"))
-                return $"SecuROM Product Activation - Modified";
-
-            return null;
+            // Everything else could not extract
+            return false;
         }
         
         /// <summary>
-        /// Helper method to run checks on a SecuROM Matroschka Package
+        /// Extract data from a SecuROM Matroschka Package
         /// </summary>
-        private static string? CheckMatroschkaPackage(PortableExecutable exe, bool includeDebug)
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        public bool ExtractMatroschka(string outputDirectory, bool includeDebug)
         {
-            var matroschka = exe.MatroschkaPackage;
-            var fileData = exe.MatroschkaPackageFileData; // Not currently used, but will eventually be
+            // Check if executable contains Matroschka package or not
+            if (MatroschkaPackage == null)
+                return false;
 
-            // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty. 
-            if (matroschka.KeyHexString == null || matroschka.KeyHexString == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0")
+            // Attempt to extract section
+            return MatroschkaPackage.ExtractHeaderDefinedFiles(outputDirectory, includeDebug, MatroschkaPackageFileData);
+        }
+
+        /// <summary>
+        /// Decompress CExe data compressed with LZ
+        /// </summary>
+        /// <param name="resource">Resource data to inflate</param>
+        /// <returns>Inflated data on success, null otherwise</returns>
+        private static byte[]? DecompressCExeLZ(byte[] resource)
+        {
+            try
             {
-                return "SecuROM Matroschka Package";
+                var decompressor = IO.Compression.SZDD.Decompressor.CreateSZDD(resource);
+                using var dataStream = new MemoryStream();
+                decompressor.CopyTo(dataStream);
+                return dataStream.ToArray();
             }
-            // TODO: all the null checks for safety
-            var entry = matroschka.Entries[1];
+            catch
+            {
+                // Reset the data
+                return null;
+            }
+        }
 
-#if NET5_0_OR_GREATER
-            string MD5string = Convert.ToHexString(entry.MD5).ToUpper(); // TODO: is ToUpper right?
+        /// <summary>
+        /// Decompress CExe data compressed with zlib
+        /// </summary>
+        /// <param name="resource">Resource data to inflate</param>
+        /// <returns>Inflated data on success, null otherwise</returns>
+        private static byte[]? DecompressCExeZlib(byte[] resource)
+        {
+            try
+            {
+                // Inflate the data into the buffer
+                var zstream = new ZLib.z_stream_s();
+                byte[] data = new byte[resource.Length * 4];
+                unsafe
+                {
+                    fixed (byte* payloadPtr = resource)
+                    fixed (byte* dataPtr = data)
+                    {
+                        zstream.next_in = payloadPtr;
+                        zstream.avail_in = (uint)resource.Length;
+                        zstream.total_in = (uint)resource.Length;
+                        zstream.next_out = dataPtr;
+                        zstream.avail_out = (uint)data.Length;
+                        zstream.total_out = 0;
+
+                        ZLib.inflateInit_(zstream, ZLib.zlibVersion(), resource.Length);
+                        int zret = ZLib.inflate(zstream, 1);
+                        ZLib.inflateEnd(zstream);
+                    }
+                }
+
+                // Trim the buffer to the proper size
+                uint read = zstream.total_out;
+#if NETFRAMEWORK
+                var temp = new byte[read];
+                Array.Copy(data, temp, read);
+                data = temp;
 #else
-            string MD5string = BitConverter.ToString(entry.MD5).Replace("-","").ToUpper(); // TODO: endianness?
+                data = new ReadOnlySpan<byte>(data, 0, (int)read).ToArray();
 #endif
-            
-            // Check if encrypted executable is known via hash
-            string gameName;
-            if (MatroschkaHashDictionary.TryGetValue(MD5string, out gameName))
-            {
-                // Returning "SecuROM Matroschka Package" technically redundant since implied.
-                // Since non-debug is more common, return first
-                if (!includeDebug)
-                    return "SecuROM Release Control"; 
-                
-                // TODO: I'd like to have this debug output be the normal output, but I assume I'm not allowed to do that
-                return $"SecuROM Release Control -  {gameName}";
+                return data;
             }
-            
-            // If not known, check if encrypted executable is likely an alt signing of a known executable
-            // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
-            byte[]? readPathBytes = entry.Path;
-            if (readPathBytes == null)
-                readPathBytes = [];
-
-            string? pathName;
-            if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out pathName) && pathName == Encoding.ASCII.GetString(readPathBytes))
-                return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size}, please report to us on Github!";
-
-            string? readPathName = Encoding.ASCII.GetString(readPathBytes);
-            return $"SecuROM Release Control - Unknown executable {exe.Filename},{readPathName},{MD5string},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
+            catch
+            {
+                // Reset the data
+                return null;
+            }
         }
-        
-        // Matches hash of the Release Control-encrypted executable to known hashes
-        public static readonly Dictionary<string, string> MatroschkaHashDictionary = new Dictionary<string, string>()
-        { // Allegedly, some version of Runaway: A Twist of Fate has RC
-            {"C6DFF6B08EE126893840E107FD4EC9F6", "Alice - Madness Returns (USA)+(Europe)"},
-            {"D7703D32B72185358D58448B235BD55E", "Arcania - Gothic 4 - Not in redump yet"},
-            {"FAF6DD75DDB335101CB77A714793DC28", "Batman - Arkham City - Game of the Year Edition (UK)"},
-            {"77999579EE4378BDFAC9438CC9CDB44E", "Batman - Arkham City (USA)+(Europe)"},
-            {"73114CF3DEEDD0FA2BF52ACB70B048BC", "Battlefield - Bad Company 2 (GFWM)"},
-            {"56C23D930F885BA5BF026FEABFC31856", "Battlefield 3 (USA)+(Europe, Asia)"},
-            {"631C0ACE596722488E3393BD1AFCE731", "Battlefield 3 (Russia)"},
-            {"6E481CDEBDB30B8889340CEC3300C931", "Battlefield 3 (UK)"},
-            {"C5AB3931A3CBB0141CC5A4638C391F4F", "BioShock 2 (Argentina)+(Europe, Australia)+(Europe)+(Europe) (Alt)+(Netherlands)+(USA) - Multiplayer executable"},
-            {"73DB35419A651CB69E78A641BBC88A4C", "BioShock 2 (Argentina)+(Europe, Australia)+(Europe)+(Europe) (Alt)+(Netherlands)+(USA) - Singleplayer executable"},
-            {"E5D63D369023A1D1074E7B13952FA0F2", "BioShock 2 (Russia) - Multiplayer executable"},
-            {"C39F3BCB74EA8E1215D39AC308F64229", "BioShock 2 (Russia) - Singleplayer executable"},
-            {"3C340B2D4DA25039C136FEE1DC2DDE17", "Borderlands (USA)+(Europe) (En,Fr,De,Es,It)"},
-            {"D35122E0E3F7B35C98BEFD706C260F83", "Crysis Warhead (Europe)+(Russia)+(USA)+(USA) (Alt)"},
-            {"D9254D3353AB229806A806FCFCEABDBD", "Crysis Warhead (Japan)"},
-            {"D69798C9198A6DB6A265833B350AC544", "Crysis Warhead (Turkey)"},
-            {"9F574D56F1A4D7847C6A258DC2AF61A5", "Crysis Wars (Europe)+(Japan)+(Russia)+(Turkey)+(USA)+(USA) (Rerelease)"},
-            {"C200ABC342A56829A5356AA0BEA5F2DF", "Dead Space 2 (Europe)+(Russia)+(USA)"},
-            {"81B3415AF21C8691A1CD55A422BA64D5", "Disney TRON - Evolution (Europe) (En,Fr,De,Es,It,Nl)"},
-            {"DF9609EDE95A1F89F7A39A08778CC3B8", "Disney Tron - Evolution (Europe) (Pl,Cs)"},
-            {"B8698C7C05D7F9E049DC038B9868FCF7", "Disney TRON - Evolution (Russia) (En,Ru)"},
-            {"0D5800F94643633CD3F025CFFD968DF2", "Dragon Age II (Europe)+(USA) - PC executable"},
-            {"3F1AFA4783F9001AACF0379A2A432A13", "Dragon Age II (Europe)+(USA) - Mac executable"},
-            {"530A3EB454570EEE5519ABE6BAE0187C", "Far Cry 2 (Europe)+(USA) (En,Fr,De,Es,It)"},
-            {"4B3B130A70F3711BFA8AF06195FE4250", "FIFA 12 (Europe)"},
-            {"F43F777696B0FAD3A331298C48104B31", "FIFA 13 (Europe)"},
-            {"1DF0E096068839C12E4B353AC50E41FA", "Grand Theft Auto - Episodes from Liberty City (Russia)"},
-            {"F3ADC6D08BEC42FB988F2F62B5C731FA", "Grand Theft Auto - Episodes from Liberty City (USA)"},
-            {"5B90D42A650A8F08095984AEE3D961B9", "Grand Theft Auto IV (Europe, Asia)+(Europe)+(Latin America)+(USA) (Rev 1)"},
-            {"4510F0BDD58D30D072952E225E294F9B", "Grand Theft Auto IV (USA)"},
-            {"2AC9616A7FE46D142F653D798EAA07FD", "Harry Potter and the Deathly Hallows Part 2 (GFWM)"},
-            {"AE144755FB12062780E4E4CCD29B5296", "Kingdoms of Amalur - Reckoning (Germany)"},
-            {"6E4AB6416D91F85954150BC50D02688E", "Kingdoms of Amalur - Reckoning (USA) (En,Fr,Es,It,Nl)"},
-            {"935103B1600F1C743AF892A0DD761913", "Mass Effect 2 (GFWM)"},
-            {"EEB2AE163AEEF6BE54C5A9BDD38C600E", "Mass Effect 3 (Europe, Australia)+(USA)"},
-            {"2D08B73217B722A4F9E01523F07E118E", "Mass Effect 3 (UK)"},
-            {"4EA3CE0670DECD0A74FA312714C22025", "Need for Speed - The Run (Europe)"},
-            {"88AB0D4A4EE7867F740AD063400FCDB5", "Need for Speed - The Run (Russia)"},
-            {"EAD8E224D0F44706BA92BD9B27FEBA7D", "Need for Speed - The Run (USA)"},
-            {"316FF217BD129F9EEBD05A321A8FBE60", "Syndicate (USA)+(Europe) (En,Fr,De,Es,It,Ru)"},
-        };
-        
-        // If hash isn't currently known, check size and pathname of the encrypted executable to determine if alt or entirely missing
-        public static readonly Dictionary<uint, string> MatroschkaSizeFilenameDictionary = new Dictionary<uint, string>()
+
+        /// <summary>
+        /// Extract using Wise overlay
+        /// </summary>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <param name="source">Potentially multi-part stream to read</param>
+        /// <param name="offset">Offset to the start of the overlay header</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        private bool ExtractWiseOverlay(string outputDirectory, bool includeDebug, Stream source, long offset)
         {
-            {4646091, "hp8.aec"},
-            {5124592, "output\\LaunchGTAIV.aec"},
-            {5445032, "output\\Crysis.aec"},
-            {5531004, "output\\FarCry2.aec"},
-            {6716108, "LaunchEFLC.aec"},
-            {6728396, "./Bioshock2Launcher.aec"},
-            {6732492, "./BioShock2Launcher.aec"},
-            {7150283, "GridGameLauncher.aec"},
-            {7154379, "GridGameLauncher.aec"},
-            {8705763, "temp0.aec"},
-            {12137051, "dragonage2.aec"},
-            {12896904, "output\\crysis.aec"},
-            {12917384, "output\\crysis.aec"},
-            {12925576, "output\\crysis.aec"},
-            {16415836, "output\\MassEffect2.aec"},
-            {17199339, "AliceMadnessReturns.aec"},
-            {22357747, "MassEffect3.aec"},
-            {23069931, "fifa.aec"},
-            {25823091, "Arcania.aec"},
-            {27564780, "output\\BFBC2Game.aec"},
-            {30470419, "temp0.aec"},
-            {32920811, "temp0.aec"},
-            {35317996, "output\\ShippingPC-WillowGame-SecuROM.aec"},
-            {35610875, "temp0.aec"},
-            {37988075, "temp0.aec"},
-            {43612419, "BatmanAC.aec"},
-            {45211355, "BatmanAC.aec"},
-            {48093043, "deadspace_f.aec"},
-        };
+            // Seek to the overlay and parse
+            source.Seek(offset, SeekOrigin.Begin);
+            var header = WiseOverlayHeader.Create(source);
+            if (header == null)
+            {
+                if (includeDebug) Console.Error.WriteLine("Could not parse the overlay header");
+                return false;
+            }
+
+            // Extract the header-defined files
+            bool extracted = header.ExtractHeaderDefinedFiles(outputDirectory, includeDebug);
+            if (!extracted)
+            {
+                if (includeDebug) Console.Error.WriteLine("Could not extract header-defined files");
+                return false;
+            }
+
+            // Open the script file from the output directory
+            var scriptStream = File.OpenRead(Path.Combine(outputDirectory, "WiseScript.bin"));
+            var script = WiseScript.Create(scriptStream);
+            if (script == null)
+            {
+                if (includeDebug) Console.Error.WriteLine("Could not parse WiseScript.bin");
+                return false;
+            }
+
+            // Get the source directory
+            string? sourceDirectory = null;
+            if (Filename != null)
+                sourceDirectory = Path.GetDirectoryName(Path.GetFullPath(Filename));
+
+            // Process the state machine
+            return script.ProcessStateMachine(header, sourceDirectory, outputDirectory, includeDebug);
+        }
+
+        /// <summary>
+        /// Extract using Wise section
+        /// </summary>
+        /// <param name="outputDirectory">Output directory to write to</param>
+        /// <param name="includeDebug">True to include debug data, false otherwise</param>
+        /// <param name="source">Potentially multi-part stream to read</param>
+        /// <param name="section">Wise section information</param>
+        /// <returns>True if extraction succeeded, false otherwise</returns>
+        private bool ExtractWiseSection(string outputDirectory, bool includeDebug, Stream source, Models.PortableExecutable.SectionHeader section)
+        {
+            // Get the offset
+            long offset = section.VirtualAddress.ConvertVirtualAddress(SectionTable);
+            if (offset < 0 || offset >= source.Length)
+                return false;
+
+            // Read the section into a local array
+            int sectionLength = (int)section.VirtualSize;
+            byte[]? sectionData;
+            lock (source)
+            {
+                sectionData = source.ReadFrom(offset, sectionLength, retainPosition: true);
+            }
+
+            // Parse the section header
+            var header = WiseSectionHeader.Create(sectionData, 0);
+            if (header == null)
+            {
+                if (includeDebug) Console.Error.WriteLine("Could not parse the section header");
+                return false;
+            }
+
+            // Attempt to extract section
+            return header.Extract(outputDirectory, includeDebug);
+        }
     }
 }
