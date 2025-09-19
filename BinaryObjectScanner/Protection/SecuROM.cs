@@ -394,7 +394,7 @@ namespace BinaryObjectScanner.Protection
                 readPathBytes = [];
 
             string? pathName;
-            if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out pathName) && pathName == Encoding.ASCII.GetString(readPathBytes))
+            if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out pathName) && pathName == Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0'))
                 return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size}, please report to us on Github!";
 
             var readPathName = Encoding.ASCII.GetString(readPathBytes);
