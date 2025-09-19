@@ -352,8 +352,6 @@ namespace BinaryObjectScanner.Protection
             if (matroschka == null)
                 return null;
             
-            var fileData = exe.MatroschkaPackageFileData; // Not currently used, but will eventually be
-
             // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty. 
             if (matroschka.KeyHexString == null || matroschka.KeyHexString == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0")
                 return "SecuROM Matroschka Package";
@@ -373,6 +371,8 @@ namespace BinaryObjectScanner.Protection
             
             // Check if encrypted executable is known via hash
             string gameName;
+            var fileData = matroschka.ReadFile(entry, includeDebug); // Not used yet, but will be in the future
+
             if (MatroschkaHashDictionary.TryGetValue(md5String, out gameName))
             {
                 // Returning "SecuROM Matroschka Package" technically redundant since implied.
