@@ -368,15 +368,12 @@ namespace BinaryObjectScanner.Protection
             if (entry.MD5 == null)
                 return "SecuROM Matroschka Package - No MD5? Please report"; 
 
-#if NET5_0_OR_GREATER
-            var MD5string = Convert.ToHexString(entry.MD5).ToUpper(); // TODO: is ToUpper right?
-#else
-            var MD5string = BitConverter.ToString(entry.MD5).Replace("-","").ToUpper(); // TODO: endianness?
-#endif
+            string md5String = BitConverter.ToString(entry.MD5!);
+            md5String = md5String.ToUpperInvariant().Replace("-", string.Empty);
             
             // Check if encrypted executable is known via hash
             string gameName;
-            if (MatroschkaHashDictionary.TryGetValue(MD5string, out gameName))
+            if (MatroschkaHashDictionary.TryGetValue(md5String, out gameName))
             {
                 // Returning "SecuROM Matroschka Package" technically redundant since implied.
                 // Since non-debug is more common, return first
@@ -398,7 +395,7 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size}, please report to us on Github!";
 
             var readPathName = Encoding.ASCII.GetString(readPathBytes);
-            return $"SecuROM Release Control - Unknown executable {exe.Filename},{readPathName},{MD5string},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
+            return $"SecuROM Release Control - Unknown executable {exe.Filename},{readPathName},{md5String},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
         }
         
         // Matches hash of the Release Control-encrypted executable to known hashes
