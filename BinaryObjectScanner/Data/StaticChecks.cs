@@ -129,25 +129,26 @@ namespace BinaryObjectScanner.Data
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-        private static List<T>? InitCheckClasses<T>(Assembly assembly)
+        private static List<T> InitCheckClasses<T>(Assembly assembly)
         {
-            List<T> classTypes = [];
-
             // If not all types can be loaded, use the ones that could be
-            Type?[] assemblyTypes = [];
+            Type?[] assemblyTypes;
             try
             {
                 assemblyTypes = assembly.GetTypes();
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                assemblyTypes = [.. rtle!.Types!];
+                assemblyTypes = rtle.Types ?? [];
             }
 
             // Get information from the type param
-            string interfaceName = typeof(T)!.FullName!;
+            string? interfaceName = typeof(T).FullName;
+            if (interfaceName == null)
+                return [];
 
             // Loop through all types 
+            List<T> classTypes = [];
             foreach (Type? type in assemblyTypes)
             {
                 // Skip invalid types
@@ -159,16 +160,8 @@ namespace BinaryObjectScanner.Data
                     continue;
 
                 // If the type isn't a class or doesn't implement the interface
-                bool interfaceFound = false;
-                foreach (var ii in type.GetInterfaces())
-                {
-                    if (ii.FullName != interfaceName)
-                        continue;
-
-                    interfaceFound = true;
-                    break;
-                }
-                if (!interfaceFound)
+                var interfaces = Array.ConvertAll(type.GetInterfaces(), i => i.FullName);
+                if (!Array.Exists(interfaces, i => i == interfaceName))
                     continue;
 
                 // Try to create a concrete instance of the type
