@@ -456,7 +456,7 @@ namespace BinaryObjectScanner.Protection
             var fileData = package.ReadFileData(entry, includeDebug); // Not used yet, but will be in the future
 
             // Check if encrypted executable is known via hash
-            if (MatroschkaHashDictionary.ContainsKey(md5String))
+            if (MatroschkaHashDictionary.TryGetValue(md5String, out var gameName))
             {
                 // Returning "SecuROM Matroschka Package" technically redundant since implied.
                 // Since non-debug is more common, return first
@@ -464,7 +464,7 @@ namespace BinaryObjectScanner.Protection
                     return "SecuROM Release Control"; 
                 
                 // TODO: I'd like to have this debug output be the normal output, but I assume I'm not allowed to do that
-                return $"SecuROM Release Control -  {MatroschkaHashDictionary[md5String]}";
+                return $"SecuROM Release Control -  {gameName}";
             }
             
             // If not known, check if encrypted executable is likely an alt signing of a known executable
@@ -474,7 +474,7 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
             
             var readPathName = Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0');
-            if (MatroschkaSizeFilenameDictionary.ContainsKey(entry.Size) && MatroschkaSizeFilenameDictionary[entry.Size] == readPathName)
+            if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out var pathName) && pathName == readPathName)
                 return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size}, please report to us on Github!";
 
             return $"SecuROM Release Control - Unknown executable {readPathName},{md5String},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
