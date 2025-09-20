@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 
 namespace BinaryObjectScanner.FileType
@@ -14,9 +15,7 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
-                byte[] magic = new byte[16];
-                int read = stream.Read(magic, 0, 16);
-
+                byte[] magic = stream.ReadBytes(16);
                 if (magic.StartsWith(new byte?[] { 0x4C, 0x44, 0x53, 0x43, 0x52, 0x59, 0x50, 0x54 }))
                     return "Link Data Security encrypted file";
             }

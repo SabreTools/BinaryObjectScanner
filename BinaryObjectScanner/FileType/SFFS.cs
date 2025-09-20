@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 
 namespace BinaryObjectScanner.FileType
@@ -16,9 +17,7 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
-                byte[] magic = new byte[16];
-                int read = stream.Read(magic, 0, 16);
-
+                byte[] magic = stream.ReadBytes(16);
                 if (magic.StartsWith(new byte?[] { 0x53, 0x46, 0x46, 0x53 }))
                     return "StarForce Filesystem Container";
             }
