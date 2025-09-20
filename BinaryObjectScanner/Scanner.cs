@@ -267,10 +267,13 @@ namespace BinaryObjectScanner
         {
             // Quick sanity check before continuing
             if (!stream.CanRead)
+            {
+                if (_includeDebug) Console.WriteLine($"{fileName} does not have a readable stream, skipping...");
                 return [];
+            }
 
             // Initialize the protections found
-            var protections = new ProtectionDictionary();
+                var protections = new ProtectionDictionary();
 
             // Get the extension for certain checks
             string extension = Path.GetExtension(fileName).ToLower().TrimStart('.');
