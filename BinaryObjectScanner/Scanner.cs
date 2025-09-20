@@ -347,10 +347,12 @@ namespace BinaryObjectScanner
                         }
 
                         // Prepare the returned protections
-                        subProtections?.StripFromKeys(tempPath);
-                        subProtections?.PrependToKeys(fileName);
                         if (subProtections != null)
+                        {
+                            subProtections.StripFromKeys(tempPath);
+                            subProtections.PrependToKeys(fileName);
                             protections.Append(subProtections);
+                        }
                     }
                     catch (Exception ex)
                     {
