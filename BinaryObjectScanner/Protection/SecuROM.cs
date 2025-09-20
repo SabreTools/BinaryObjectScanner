@@ -16,8 +16,8 @@ namespace BinaryObjectScanner.Protection
         /// <summary>
         /// Matches hash of the Release Control-encrypted executable to known hashes
         /// </summary>
-        // Allegedly, some version of Runaway: A Twist of Fate has RC
-        private static readonly Dictionary<string, string> MatroschkaHashDictionary = new Dictionary<string, string>()
+        /// <remarks>Allegedly, some version of Runaway: A Twist of Fate has RC</remarks>
+        private static readonly Dictionary<string, string> MatroschkaHashDictionary = new()
         {
             {"C6DFF6B08EE126893840E107FD4EC9F6", "Alice - Madness Returns (USA)+(Europe)"},
             {"D7703D32B72185358D58448B235BD55E", "Arcania - Gothic 4 - Not in redump yet"},
@@ -62,9 +62,10 @@ namespace BinaryObjectScanner.Protection
         };
         
         /// <summary>
-        /// If hash isn't currently known, check size and pathname of the encrypted executable to determine if alt or entirely missing
+        /// If hash isn't currently known, check size and pathname of the encrypted executable
+        /// to determine if alt or entirely missing
         /// </summary>
-        private static readonly Dictionary<uint, string> MatroschkaSizeFilenameDictionary = new Dictionary<uint, string>()
+        private static readonly Dictionary<uint, string> MatroschkaSizeFilenameDictionary = new()
         {
             {4646091, "hp8.aec"},
             {5124592, "output\\LaunchGTAIV.aec"},
@@ -105,7 +106,6 @@ namespace BinaryObjectScanner.Protection
                 return paModule;
 
             // Check if executable contains a SecuROM Matroschka Package
-
             var package = exe.MatroschkaPackage;
             if (package != null)
             {
@@ -230,7 +230,6 @@ namespace BinaryObjectScanner.Protection
         /// <summary>
         /// Try to get the SecuROM v4 version from the overlay, if possible
         /// </summary>
-        /// <param name="exe">Executable to retrieve the overlay from</param>
         /// <returns>The version on success, null otherwise</returns>
         private static string? GetV4Version(PortableExecutable exe)
         {
@@ -276,6 +275,10 @@ namespace BinaryObjectScanner.Protection
             return $"{major}.{minor}.{patch}.{revision}";
         }
 
+        /// <summary>
+        /// Try to get the SecuROM v5 version from section data, if possible
+        /// </summary>
+        /// <returns>The version on success, null otherwise</returns>
         private static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
@@ -313,7 +316,10 @@ namespace BinaryObjectScanner.Protection
             return $"{major}.{minor[0]}{minor[1]}.{patch[0]}{patch[1]}.{revision[0]}{revision[1]}{revision[2]}{revision[3]}";
         }
 
-        // These live in the MS-DOS stub, for some reason
+        /// <summary>
+        /// Try to get the SecuROM v7 version from MS-DOS stub data, if possible
+        /// </summary>
+        /// <returns>The version on success, null otherwise</returns>
         private static string GetV7Version(PortableExecutable exe)
         {
             // If SecuROM is stripped, the MS-DOS stub might be shorter.
@@ -348,6 +354,10 @@ namespace BinaryObjectScanner.Protection
             return "7 remnants";
         }
 
+        /// <summary>
+        /// Try to get the SecuROM v8 (White Label) version from the .data section, if possible
+        /// </summary>
+        /// <returns>The version on success, null otherwise</returns>
         private static string GetV8WhiteLabelVersion(PortableExecutable exe)
         {
             // Get the .data/DATA section, if it exists
@@ -377,6 +387,47 @@ namespace BinaryObjectScanner.Protection
             int patch = dataSectionRaw[position + 0xAC + 2] ^ 0x51;
 
             return $"{major}.{minor:00}.{patch:0000}";
+        }
+
+        /// <summary>
+        /// Helper method to run checks on a SecuROM Matroschka Package
+        /// </summary>
+        private static string? CheckMatroschkaPackage(SecuROMMatroschkaPackage package, bool includeDebug)
+        {
+            // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty. 
+            if (package.KeyHexString == null || package.KeyHexString.Trim('\0').Length == 0)
+                return "SecuROM Matroschka Package";
+
+            if (package.Entries == null || package.Entries.Length == 0)
+                return "SecuROM Matroschka Package - No Entries? - Please report to us on GitHub"; 
+                
+            // The second entry in a Release Control matroschka package is always the encrypted executable
+            var entry = package.Entries[1]; 
+            
+            if (entry.MD5 == null || entry.MD5.Length == 0)
+                return "SecuROM Matroschka Package - No MD5? - Please report to us on GitHub"; 
+
+            string md5String = BitConverter.ToString(entry.MD5!);
+            md5String = md5String.ToUpperInvariant().Replace("-", string.Empty);
+            
+            // TODO: Not used yet, but will be in the future
+            var fileData = package.ReadFileData(entry, includeDebug);
+            
+            // Check if encrypted executable is known via hash
+            if (MatroschkaHashDictionary.TryGetValue(md5String, out var gameName))
+                return $"SecuROM Release Control -  {gameName}";
+            
+            // If not known, check if encrypted executable is likely an alt signing of a known executable
+            // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
+            var readPathBytes = entry.Path;
+            if (readPathBytes == null || readPathBytes.Length == 0)
+                return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size} - Please report to us on GitHub!";
+            
+            var readPathName = Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0');
+            if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out var pathName) && pathName == readPathName)
+                return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size} - Please report to us on GitHub";
+
+            return $"SecuROM Release Control - Unknown executable {readPathName},{md5String},{entry.Size} - Please report to us on GitHub";
         }
 
         /// <summary>
@@ -425,50 +476,6 @@ namespace BinaryObjectScanner.Protection
                 return $"SecuROM Product Activation - Modified";
 
             return null;
-        }
-        
-        /// <summary>
-        /// Helper method to run checks on a SecuROM Matroschka Package
-        /// </summary>
-        private static string? CheckMatroschkaPackage(SecuROMMatroschkaPackage package, bool includeDebug)
-        {
-            // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty. 
-            if (package.KeyHexString == null || package.KeyHexString.Trim('\0').Length == 0)
-                return "SecuROM Matroschka Package";
-
-            if (package.Entries == null || package.Entries.Length == 0)
-                return "SecuROM Matroschka Package - No Entries? Please report"; 
-                
-            // The second entry in a Release Control matroschka package is always the encrypted executable
-            var entry = package.Entries[1]; 
-            
-            if (entry.MD5 == null || entry.MD5.Length == 0)
-                return "SecuROM Matroschka Package - No MD5? Please report"; 
-
-            string md5String = BitConverter.ToString(entry.MD5!);
-            md5String = md5String.ToUpperInvariant().Replace("-", string.Empty);
-            
-            // Not used yet, but will be in the future
-            var fileData = package.ReadFileData(entry, includeDebug);
-            
-            // Check if encrypted executable is known via hash
-            if (MatroschkaHashDictionary.TryGetValue(md5String, out var gameName))
-            {
-                // Returning "SecuROM Matroschka Package" technically redundant since implied.
-                return $"SecuROM Release Control -  {gameName}";
-            }
-            
-            // If not known, check if encrypted executable is likely an alt signing of a known executable
-            // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
-            var readPathBytes = entry.Path;
-            if (readPathBytes == null || readPathBytes.Length == 0)
-                return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size}, please report to us on Github!";
-            
-            var readPathName = Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0');
-            if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out var pathName) && pathName == readPathName)
-                return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size}, please report to us on Github!";
-
-            return $"SecuROM Release Control - Unknown executable {readPathName},{md5String},{entry.Size}, please report to us on Github!";
         }
     }
 }
