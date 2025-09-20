@@ -328,12 +328,21 @@ namespace BinaryObjectScanner
                         // Extract and get the output path
                         string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
                         Directory.CreateDirectory(tempPath);
-                        bool extracted = extractable.Extract(tempPath, _includeDebug);
+                        _ = extractable.Extract(tempPath, _includeDebug);
 
-                        // Collect and format all found protections
-                        ProtectionDictionary? subProtections = null;
-                        if (extracted)
-                            subProtections = GetProtectionsImpl(tempPath, depth + 1);
+                        // Check if any files extracted
+                        if (IOExtensions.SafeGetFiles(tempPath).Length > 0)
+                        {
+                            // Scan the output path
+                            var subProtections = GetProtectionsImpl(tempPath, depth + 1);
+
+                            // Prepare the returned values
+                            subProtections.StripFromKeys(tempPath);
+                            subProtections.PrependToKeys(fileName);
+
+                            // Append the values
+                            protections.Append(subProtections);
+                        }
 
                         // If temp directory cleanup fails
                         try
@@ -344,14 +353,6 @@ namespace BinaryObjectScanner
                         catch (Exception ex)
                         {
                             if (_includeDebug) Console.Error.WriteLine(ex);
-                        }
-
-                        // Prepare the returned protections
-                        if (subProtections != null)
-                        {
-                            subProtections.StripFromKeys(tempPath);
-                            subProtections.PrependToKeys(fileName);
-                            protections.Append(subProtections);
                         }
                     }
                     catch (Exception ex)
