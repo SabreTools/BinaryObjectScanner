@@ -147,6 +147,10 @@ namespace BinaryObjectScanner.Data
                 assemblyTypes = rtle.Types ?? [];
             }
 
+            // If no assembly types are found
+            if (assemblyTypes.Length == 0)
+                return [];
+
             // Loop through all types 
             List<T> classTypes = [];
             foreach (Type? type in assemblyTypes)
