@@ -11,8 +11,9 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // <see href="https://www.virustotal.com/gui/file/43b5791a7d87830025efae0db8f1cc5a02b6001f4703b0189adf1412cdbe22ac/details"/>
             string? name = exe.AssemblyDescription;
+
+            // <see href="https://www.virustotal.com/gui/file/43b5791a7d87830025efae0db8f1cc5a02b6001f4703b0189adf1412cdbe22ac/details"/>
             if (name.OptionalContains("Smart Install Maker"))
                 return "Smart Install Maker";
 

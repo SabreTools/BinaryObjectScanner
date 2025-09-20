@@ -11,6 +11,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             string? name = exe.FileDescription;
+
             if (name.OptionalEquals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.OptionalEquals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase))
             {
@@ -18,6 +19,7 @@ namespace BinaryObjectScanner.Packer
             }
 
             name = exe.ProductName;
+
             if (name.OptionalEquals("Intel(R) Installation Framework", StringComparison.OrdinalIgnoreCase)
                 || name.OptionalEquals("Intel Installation Framework", StringComparison.OrdinalIgnoreCase))
             {

@@ -11,8 +11,9 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // <see href="https://www.virustotal.com/gui/file/0e0a93cba8163cef9c979cbb49a6f15604956b9441aba6fb9e9f0c6897cc73ed/details"/>
             string? name = exe.FileDescription;
+
+            // <see href="https://www.virustotal.com/gui/file/0e0a93cba8163cef9c979cbb49a6f15604956b9441aba6fb9e9f0c6897cc73ed/details"/>
             if (name.OptionalContains("GP-Install"))
                 return "GP-Install";
 

@@ -12,17 +12,20 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Known to detect versions 7.0.5.1 - 9.1.0.0
             string? name = exe.LegalCopyright;
+
+            // Known to detect versions 7.0.5.1 - 9.1.0.0
             if (name.OptionalStartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(exe)}";
 
             name = exe.ProductName;
+
             if (name.OptionalStartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(exe)}";
 
-            // Known to detect version 5.0.1 - 6.0.1.3
             name = exe.FileDescription;
+
+            // Known to detect version 5.0.1 - 6.0.1.3
             if (name.OptionalStartsWith("Setup Factory", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(exe)}";
 

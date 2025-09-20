@@ -11,13 +11,15 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // <see href="https://www.virustotal.com/gui/file/867726b7afc1b2343651497bbbe35618f781bb82491a2a768922117c44a897d3/details"/>
             string? name = exe.FileDescription;
+
+            // <see href="https://www.virustotal.com/gui/file/867726b7afc1b2343651497bbbe35618f781bb82491a2a768922117c44a897d3/details"/>
             if (name.OptionalContains("GkWare Self extractor"))
                 return "GkWare SFX";
 
-            // <see href="https://www.virustotal.com/gui/file/867726b7afc1b2343651497bbbe35618f781bb82491a2a768922117c44a897d3/details"/>
             name = exe.ProductName;
+
+            // <see href="https://www.virustotal.com/gui/file/867726b7afc1b2343651497bbbe35618f781bb82491a2a768922117c44a897d3/details"/>
             if (name.OptionalContains("GkWare Self extractor"))
                 return "GkWare SFX";
 

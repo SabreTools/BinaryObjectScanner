@@ -10,6 +10,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             string? name = exe.AssemblyDescription;
+
             if (name.OptionalStartsWith("Nullsoft Install System"))
                 return $"NSIS {name!.Substring("Nullsoft Install System".Length).Trim()}";
 

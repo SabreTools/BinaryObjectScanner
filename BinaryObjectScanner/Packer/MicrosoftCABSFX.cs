@@ -11,10 +11,12 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             string? name = exe.InternalName;
+
             if (name.OptionalEquals("Wextract", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(exe)}";
 
             name = exe.OriginalFilename;
+            
             if (name.OptionalEquals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(exe)}";
 

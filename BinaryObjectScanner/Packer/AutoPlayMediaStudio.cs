@@ -12,8 +12,9 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Known to detect versions 5.0.0.3 - 8.1.0.0
             string? name = exe.ProductName;
+
+            // Known to detect versions 5.0.0.3 - 8.1.0.0
             if (name.OptionalStartsWith("AutoPlay Media Studio", StringComparison.OrdinalIgnoreCase))
                 return $"AutoPlay Media Studio {GetVersion(exe)}";
 

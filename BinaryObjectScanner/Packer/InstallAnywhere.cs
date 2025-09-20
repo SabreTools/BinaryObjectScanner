@@ -12,10 +12,12 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             string? name = exe.FileDescription;
+
             if (name.OptionalStartsWith("InstallAnywhere Self Extractor", StringComparison.OrdinalIgnoreCase))
                 return $"InstallAnywhere {GetVersion(exe)}";
 
             name = exe.ProductName;
+
             if (name.OptionalStartsWith("InstallAnywhere", StringComparison.OrdinalIgnoreCase))
                 return $"InstallAnywhere {GetVersion(exe)}";
 
