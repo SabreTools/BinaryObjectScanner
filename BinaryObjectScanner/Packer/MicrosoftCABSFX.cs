@@ -4,7 +4,6 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class MicrosoftCABSFX : IExecutableCheck<PortableExecutable>
     {

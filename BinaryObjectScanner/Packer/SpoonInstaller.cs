@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Packer
             // <see href="https://www.virustotal.com/gui/file/40e222d35fe8bdd94360462e2f2b870ec7e2c184873e2a481109408db790bfe8/details"/>
             // This was found in a "Create Install 2003"-made installer
             name = exe.AssemblyName;
-            if (name == "Illustrate.Spoon.Installer")
+            if (name.OptionalEquals("Illustrate.Spoon.Installer"))
                 return "Spoon Installer";
 
             return null;

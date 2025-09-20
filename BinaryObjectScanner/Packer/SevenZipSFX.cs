@@ -9,25 +9,29 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the assembly description, if possible
-            if (exe.AssemblyDescription.OptionalStartsWith("7-Zip Self-extracting Archive"))
+            string? name = exe.AssemblyDescription;
+            if (name.OptionalStartsWith("7-Zip Self-extracting Archive"))
                 return $"7-Zip SFX {exe.AssemblyDescription!.Substring("7-Zip Self-extracting Archive ".Length)}";
 
             // Get the file description, if it exists
-            if (exe.FileDescription.OptionalEquals("7z SFX"))
+            name = exe.FileDescription;
+            if (name.OptionalEquals("7z SFX"))
                 return "7-Zip SFX";
-            if (exe.FileDescription.OptionalEquals("7z Self-Extract Setup"))
+            if (name.OptionalEquals("7z Self-Extract Setup"))
                 return "7-Zip SFX";
 
             // Get the original filename, if it exists
-            if (exe.OriginalFilename.OptionalEquals("7z.sfx.exe"))
+            name = exe.OriginalFilename;
+            if (name.OptionalEquals("7z.sfx.exe"))
                 return "7-Zip SFX";
-            else if (exe.OriginalFilename.OptionalEquals("7zS.sfx"))
+            else if (name.OptionalEquals("7zS.sfx"))
                 return "7-Zip SFX";
 
             // Get the internal name, if it exists
-            if (exe.InternalName.OptionalEquals("7z.sfx"))
+            name = exe.InternalName;
+            if (name.OptionalEquals("7z.sfx"))
                 return "7-Zip SFX";
-            else if (exe.InternalName.OptionalEquals("7zS.sfx"))
+            else if (name.OptionalEquals("7zS.sfx"))
                 return "7-Zip SFX";
 
             // If any dialog boxes match

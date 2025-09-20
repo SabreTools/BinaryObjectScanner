@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Packer
             // This check may be overly limiting, as it excludes the sample provided to DiE (https://github.com/horsicq/Detect-It-Easy/issues/102).
             // TODO: Find further samples and invesitgate if the "peC" section is only present on specific versions.
             bool importTableMatch = Array.Exists(exe.ImportTable?.ImportDirectoryTable ?? [],
-                idte => idte?.Name == "KeRnEl32.dLl");
+                idte => idte.Name == "KeRnEl32.dLl");
 
             if (exe.ContainsSection("peC", exact: true) && importTableMatch)
                 return "HyperTech CrackProof";

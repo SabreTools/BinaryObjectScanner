@@ -10,9 +10,12 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Get the .shrink0 and .shrink2 sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            if (exe.ContainsSection(".shrink0", true) || exe.ContainsSection(".shrink2", true))
-                return "Shrinker";
+            bool shrink0 = exe.ContainsSection(".shrink0", exact: true);
+            bool shrink2 = exe.ContainsSection(".shrink2", exact: true);
+
+            // TODO: Confirm if both need to be present 
+            if (shrink0 || shrink2)
+                return "Shrinker"; // TODO: Figure out how to get version
 
             return null;
         }
