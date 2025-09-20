@@ -287,15 +287,17 @@ namespace BinaryObjectScanner
                 }
                 catch (Exception ex)
                 {
-                    if (_includeDebug) Console.WriteLine(ex);
-
+                    if (_includeDebug) Console.Error.WriteLine(ex);
                     return [];
                 }
 
                 // Get the file type either from magic number or extension
                 WrapperType fileType = WrapperFactory.GetFileType(magic, extension);
                 if (fileType == WrapperType.UNKNOWN)
+                {
+                    if (_includeDebug) Console.WriteLine($"{fileName} not a scannable file type, skipping...");
                     return [];
+                }
 
                 // Get the wrapper, if possible
                 var wrapper = WrapperFactory.CreateWrapper(fileType, stream);
@@ -338,7 +340,7 @@ namespace BinaryObjectScanner
                         }
                         catch (Exception ex)
                         {
-                            if (_includeDebug) Console.WriteLine(ex);
+                            if (_includeDebug) Console.Error.WriteLine(ex);
                         }
 
                         // Prepare the returned protections
@@ -349,7 +351,7 @@ namespace BinaryObjectScanner
                     }
                     catch (Exception ex)
                     {
-                        if (_includeDebug) Console.WriteLine(ex);
+                        if (_includeDebug) Console.Error.WriteLine(ex);
                     }
                 }
 
