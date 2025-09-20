@@ -79,7 +79,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="scanner">Scanner for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        protected IDictionary<U, string> RunExecutableChecks<U>(string file, T exe, List<U> checks, bool includeDebug)
+        protected IDictionary<U, string> RunExecutableChecks<U>(string file, T exe, U[] checks, bool includeDebug)
             where U : IExecutableCheck<T>
         {
             // Create the output dictionary

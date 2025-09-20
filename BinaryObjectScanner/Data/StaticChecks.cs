@@ -13,72 +13,72 @@ namespace BinaryObjectScanner.Data
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        public static List<IContentCheck> ContentCheckClasses
+        public static IContentCheck[] ContentCheckClasses
         {
             get
             {
                 contentCheckClasses ??= InitCheckClasses<IContentCheck>();
-                return contentCheckClasses ?? [];
+                return contentCheckClasses;
             }
         }
 
         /// <summary>
         /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
-        public static List<IExecutableCheck<LinearExecutable>> LinearExecutableCheckClasses
+        public static IExecutableCheck<LinearExecutable>[] LinearExecutableCheckClasses
         {
             get
             {
                 linearExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<LinearExecutable>>();
-                return linearExecutableCheckClasses ?? [];
+                return linearExecutableCheckClasses;
             }
         }
 
         /// <summary>
         /// Cache for all IExecutableCheck<MSDOS> types
         /// </summary>
-        public static List<IExecutableCheck<MSDOS>> MSDOSExecutableCheckClasses
+        public static IExecutableCheck<MSDOS>[] MSDOSExecutableCheckClasses
         {
             get
             {
                 msdosExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<MSDOS>>();
-                return msdosExecutableCheckClasses ?? [];
+                return msdosExecutableCheckClasses;
             }
         }
 
         /// <summary>
         /// Cache for all IExecutableCheck<NewExecutable> types
         /// </summary>
-        public static List<IExecutableCheck<NewExecutable>> NewExecutableCheckClasses
+        public static IExecutableCheck<NewExecutable>[] NewExecutableCheckClasses
         {
             get
             {
                 newExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<NewExecutable>>();
-                return newExecutableCheckClasses ?? [];
+                return newExecutableCheckClasses;
             }
         }
 
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
-        public static List<IPathCheck> PathCheckClasses
+        public static IPathCheck[] PathCheckClasses
         {
             get
             {
                 pathCheckClasses ??= InitCheckClasses<IPathCheck>();
-                return pathCheckClasses ?? [];
+                return pathCheckClasses;
             }
         }
 
         /// <summary>
         /// Cache for all IExecutableCheck<PortableExecutable> types
         /// </summary>
-        public static List<IExecutableCheck<PortableExecutable>> PortableExecutableCheckClasses
+        public static IExecutableCheck<PortableExecutable>[] PortableExecutableCheckClasses
         {
             get
             {
                 portableExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<PortableExecutable>>();
-                return portableExecutableCheckClasses ?? [];
+                return portableExecutableCheckClasses;
             }
         }
 
@@ -89,32 +89,32 @@ namespace BinaryObjectScanner.Data
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        private static List<IContentCheck>? contentCheckClasses;
+        private static IContentCheck[]? contentCheckClasses;
 
         /// <summary>
         /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
-        private static List<IExecutableCheck<LinearExecutable>>? linearExecutableCheckClasses;
+        private static IExecutableCheck<LinearExecutable>[]? linearExecutableCheckClasses;
 
         /// <summary>
         /// Cache for all IExecutableCheck<MSDOS> types
         /// </summary>
-        private static List<IExecutableCheck<MSDOS>>? msdosExecutableCheckClasses;
+        private static IExecutableCheck<MSDOS>[]? msdosExecutableCheckClasses;
 
         /// <summary>
         /// Cache for all IExecutableCheck<NewExecutable> types
         /// </summary>
-        private static List<IExecutableCheck<NewExecutable>>? newExecutableCheckClasses;
+        private static IExecutableCheck<NewExecutable>[]? newExecutableCheckClasses;
 
         /// <summary>
         /// Cache for all IPathCheck types
         /// </summary>
-        private static List<IPathCheck>? pathCheckClasses;
+        private static IPathCheck[]? pathCheckClasses;
 
         /// <summary>
         /// Cache for all IExecutableCheck<PortableExecutable> types
         /// </summary>
-        private static List<IExecutableCheck<PortableExecutable>>? portableExecutableCheckClasses;
+        private static IExecutableCheck<PortableExecutable>[]? portableExecutableCheckClasses;
 
         #endregion
 
@@ -123,13 +123,13 @@ namespace BinaryObjectScanner.Data
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-        private static List<T>? InitCheckClasses<T>()
-            => InitCheckClasses<T>(Assembly.GetExecutingAssembly()) ?? [];
+        private static T[] InitCheckClasses<T>()
+            => InitCheckClasses<T>(Assembly.GetExecutingAssembly());
 
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-        private static List<T> InitCheckClasses<T>(Assembly assembly)
+        private static T[] InitCheckClasses<T>(Assembly assembly)
         {
             // Get information from the type param
             string? interfaceName = typeof(T).FullName;
@@ -174,7 +174,7 @@ namespace BinaryObjectScanner.Data
                     classTypes.Add(instance);
             }
 
-            return classTypes;
+            return [.. classTypes];
         }
 
         #endregion
