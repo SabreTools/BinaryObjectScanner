@@ -111,7 +111,10 @@ namespace BinaryObjectScanner
         {
             // If we have no paths, we can't scan
             if (paths == null || paths.Count == 0)
+            {
+                if (_includeDebug) Console.WriteLine("No paths found to scan, skipping...");
                 return [];
+            }
 
             // Set a starting starting time for debug output
             DateTime startTime = DateTime.UtcNow;
@@ -209,10 +212,10 @@ namespace BinaryObjectScanner
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 1, fullProtection ?? string.Empty));
                 }
 
-                // Throw on an invalid path
+                // Invalid path
                 else
                 {
-                    Console.WriteLine($"{path} is not a directory or file, skipping...");
+                    if (_includeDebug) Console.Error.WriteLine($"{path} is not a directory or file, skipping...");
                     //throw new FileNotFoundException($"{path} is not a directory or file, skipping...");
                 }
             }
@@ -237,7 +240,10 @@ namespace BinaryObjectScanner
         {
             // Quick sanity check before continuing
             if (!File.Exists(file))
+            {
+                if (_includeDebug) Console.WriteLine($"{file} does not exist, skipping...");
                 return [];
+            }
 
             // Open the file and begin scanning
             try
