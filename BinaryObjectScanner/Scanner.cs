@@ -304,6 +304,11 @@ namespace BinaryObjectScanner
 
                 // Get the wrapper, if possible
                 var wrapper = WrapperFactory.CreateWrapper(fileType, stream);
+                if (wrapper == null)
+                {
+                    if (_includeDebug) Console.WriteLine($"{fileName} not a scannable file type, skipping...");
+                    return [];
+                }
 
                 #region Non-Archive File Types
 
