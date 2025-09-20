@@ -371,7 +371,7 @@ namespace BinaryObjectScanner.Protection
             
             // Check if encrypted executable is known via hash
             string gameName;
-            var fileData = matroschka.ReadFile(entry, includeDebug); // Not used yet, but will be in the future
+            var fileData = matroschka.ReadFileData(entry, includeDebug); // Not used yet, but will be in the future
 
             if (MatroschkaHashDictionary.TryGetValue(md5String, out gameName))
             {
