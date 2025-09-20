@@ -118,6 +118,8 @@ namespace BinaryObjectScanner.Data
 
         #endregion
 
+        #region Helpers
+
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
@@ -176,6 +178,8 @@ namespace BinaryObjectScanner.Data
             }
 
             return classTypes;
-        }    
+        }
+
+        #endregion
     }
 }
