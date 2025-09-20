@@ -123,8 +123,8 @@ namespace BinaryObjectScanner.Data
         /// <summary>
         /// Initialize all implementations of a type
         /// </summary>
-        private static List<T>? InitCheckClasses<T>() =>
-            InitCheckClasses<T>(Assembly.GetExecutingAssembly()) ?? [];
+        private static List<T>? InitCheckClasses<T>()
+            => InitCheckClasses<T>(Assembly.GetExecutingAssembly()) ?? [];
 
         /// <summary>
         /// Initialize all implementations of a type
