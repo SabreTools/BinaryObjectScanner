@@ -139,7 +139,7 @@ namespace BinaryObjectScanner.Data
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                assemblyTypes = [.. rtle!.Types];
+                assemblyTypes = [.. rtle!.Types!];
             }
 
             // Get information from the type param
