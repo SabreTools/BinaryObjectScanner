@@ -120,7 +120,7 @@ namespace BinaryObjectScanner
             DateTime startTime = DateTime.UtcNow;
 
             // Checkpoint
-            _fileProgress?.Report(new ProtectionProgress(null, 0, null));
+            _fileProgress?.Report(new ProtectionProgress(null, depth, 0, null));
 
             // Temp variables for reporting
             string tempFilePath = Path.GetTempPath();
