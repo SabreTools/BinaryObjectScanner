@@ -105,11 +105,6 @@ namespace BinaryObjectScanner.Protection
             var paModule = CheckProductActivation(exe);
             if (paModule != null)
                 return paModule;
-            
-            // Check if executable is another kind of SecuROM module
-            var otherModule = CheckModule(exe);
-            if (otherModule != null)
-                return otherModule;
 
             // Check if executable contains a SecuROM Matroschka Package
             var package = exe.MatroschkaPackage;
@@ -119,6 +114,23 @@ namespace BinaryObjectScanner.Protection
                 if (packageType != null)
                     return packageType;  
             }
+            
+            // Alf.dll
+            var name = exe.ProductName;
+            if (name.OptionalEquals("DFA Unlock Dll"))
+                return $"SecuROM DFA Unlock v{exe.GetInternalVersion()}";
+            
+            if (name.OptionalEquals("Release Control Unlock Dll"))
+                return $"SecuROM Release Control Unlock v{exe.GetInternalVersion()}";
+            
+            // Dfa.dll and ca.dll. The former seems to become the latter later on.
+            name = exe.FileDescription;
+            if (name.OptionalEquals("SecuROM Data File Activation Library"))
+                return $"SecuROM Data File Activation v{exe.GetInternalVersion()}";
+            
+            // Copyright is only checked because "Content Activation Library" seems broad on its own.
+            if (name.OptionalEquals("Content Activation Library") && exe.LegalCopyright.OptionalContains("Sony DADC Austria AG"))
+                return $"SecuROM Content Activation v{exe.GetInternalVersion()}";
             
             if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
@@ -487,31 +499,6 @@ namespace BinaryObjectScanner.Protection
                 
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()} - Modified";
             }
-
-            return null;
-        }
-        
-        /// <summary>
-        /// Helper method to check if a given PortableExecutable is another kind of SecuROM module.
-        /// </summary>
-        private static string? CheckModule(PortableExecutable exe)
-        {
-            // Alf.dll
-            var name = exe.ProductName;
-            if (name.OptionalEquals("DFA Unlock Dll"))
-                return $"SecuROM DFA Unlock v{exe.GetInternalVersion()}";
-            
-            if (name.OptionalEquals("Release Control Unlock Dll"))
-                return $"SecuROM Release Control Unlock v{exe.GetInternalVersion()}";
-            
-            // Dfa.dll and ca.dll. The former seems to become the latter later on.
-            name = exe.FileDescription;
-            if (name.OptionalEquals("SecuROM Data File Activation Library"))
-                return $"SecuROM Data File Activation v{exe.GetInternalVersion()}";
-            
-            // Copyright is only checked because "Content Activation Library" seems broad on its own.
-            if (name.OptionalEquals("Content Activation Library") && exe.LegalCopyright.OptionalContains("Sony DADC Austria AG"))
-                return $"SecuROM Content Activation v{exe.GetInternalVersion()}";
 
             return null;
         }
