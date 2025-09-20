@@ -282,7 +282,7 @@ namespace BinaryObjectScanner
             try
             {
                 // Get the first 16 bytes for matching
-                byte[] magic = new byte[16];
+                byte[] magic;
                 try
                 {
                     magic = stream.ReadBytes(16);
