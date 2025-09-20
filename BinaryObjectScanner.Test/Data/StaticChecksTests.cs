@@ -9,7 +9,7 @@ namespace BinaryObjectScanner.Test.Data
         public void ContentCheckClasses_Populated()
         {
             var actual = StaticChecks.ContentCheckClasses;
-            Assert.NotEmpty(actual);
+            Assert.Equal(6, actual.Count);
         }
 
         [Fact]
@@ -30,21 +30,21 @@ namespace BinaryObjectScanner.Test.Data
         public void NewExecutableCheckClasses_Populated()
         {
             var actual = StaticChecks.NewExecutableCheckClasses;
-            Assert.NotEmpty(actual);
+            Assert.Equal(7, actual.Count);
         }
 
         [Fact]
         public void PathCheckClasses_Populated()
         {
             var actual = StaticChecks.PathCheckClasses;
-            Assert.NotEmpty(actual);
+            Assert.Equal(68, actual.Count);
         }
 
         [Fact]
         public void PortableExecutableCheckClasses_Populated()
         {
             var actual = StaticChecks.PortableExecutableCheckClasses;
-            Assert.NotEmpty(actual);
+            Assert.Equal(105, actual.Count);
         }
     }
 }
