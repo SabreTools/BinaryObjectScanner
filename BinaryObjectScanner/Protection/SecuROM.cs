@@ -11,6 +11,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
+    // TODO: Think of a way to detect dfe
     public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <summary>
@@ -100,7 +101,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Check if executable is a Securom PA Module
+            // Check if executable is a SecuROM PA module
             var paModule = CheckProductActivation(exe);
             if (paModule != null)
                 return paModule;
@@ -113,6 +114,23 @@ namespace BinaryObjectScanner.Protection
                 if (packageType != null)
                     return packageType;  
             }
+            
+            // Alf.dll
+            var name = exe.ProductName;
+            if (name.OptionalEquals("DFA Unlock Dll"))
+                return $"SecuROM DFA Unlock v{exe.GetInternalVersion()}";
+            
+            if (name.OptionalEquals("Release Control Unlock Dll"))
+                return $"SecuROM Release Control Unlock v{exe.GetInternalVersion()}";
+            
+            // Dfa.dll and ca.dll. The former seems to become the latter later on.
+            name = exe.FileDescription;
+            if (name.OptionalEquals("SecuROM Data File Activation Library"))
+                return $"SecuROM Data File Activation v{exe.GetInternalVersion()}";
+            
+            // Copyright is only checked because "Content Activation Library" seems broad on its own.
+            if (name.OptionalEquals("Content Activation Library") && exe.LegalCopyright.OptionalContains("Sony DADC Austria AG"))
+                return $"SecuROM Content Activation v{exe.GetInternalVersion()}";
             
             if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
@@ -470,10 +488,17 @@ namespace BinaryObjectScanner.Protection
             // Regardless, even if these are given their own named variant later, this check should remain in order to
             // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
             // detection abilities.
-            // TODO: Decide whether to get internal version or not in the future.
+            
             name = exe.ExportTable?.ExportNameTable?.Strings?[0];
             if (name.OptionalEquals("drm_pagui_doit"))
-                return $"SecuROM Product Activation - Modified";
+            {
+                // Not all of them are guaranteed to have an internal version
+                var version = exe.GetInternalVersion();
+                if (string.IsNullOrEmpty(version))
+                    return $"SecuROM Product Activation - Modified";
+                
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()} - Modified";
+            }
 
             return null;
         }
