@@ -107,13 +107,13 @@ namespace BinaryObjectScanner.Protection
             // Check if executable contains a SecuROM Matroschka Package
 
             var package = exe.MatroschkaPackage;
-            if (package == null)
-                return null;
+            if (package != null)
+            {
+                var packageType = CheckMatroschkaPackage(package, includeDebug);
+                if (packageType != null)
+                    return packageType;  
+            }
             
-            var packageType = CheckMatroschkaPackage(package, includeDebug);
-            if (packageType != null)
-                return packageType;
-
             if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
 
@@ -448,8 +448,9 @@ namespace BinaryObjectScanner.Protection
             string md5String = BitConverter.ToString(entry.MD5!);
             md5String = md5String.ToUpperInvariant().Replace("-", string.Empty);
             
-            var fileData = package.ReadFileData(entry, includeDebug); // Not used yet, but will be in the future
-
+            // Not used yet, but will be in the future
+            var fileData = package.ReadFileData(entry, includeDebug);
+            
             // Check if encrypted executable is known via hash
             if (MatroschkaHashDictionary.TryGetValue(md5String, out var gameName))
             {
