@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class PortableExecutableTests
     {
         private static readonly SabreTools.Serialization.Wrappers.PortableExecutable wrapper
-            = new(new SabreTools.Models.PortableExecutable.Executable(), new MemoryStream());
+            = new(new SabreTools.Models.PortableExecutable.Executable(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()

@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Test.Packer
         {
             string file = "filename";
             SabreTools.Models.NewExecutable.Executable model = new();
-            Stream source = new MemoryStream();
+            Stream source = new MemoryStream(new byte[1024]);
             SabreTools.Serialization.Wrappers.NewExecutable exe = new(model, source);
 
             var checker = new InnoSetup();
@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Test.Packer
         {
             string file = "filename";
             SabreTools.Models.PortableExecutable.Executable model = new();
-            Stream source = new MemoryStream();
+            Stream source = new MemoryStream(new byte[1024]);
             SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
 
             var checker = new InnoSetup();

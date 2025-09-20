@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Test.GameEngine
         {
             string file = "filename";
             SabreTools.Models.PortableExecutable.Executable model = new();
-            Stream source = new MemoryStream();
+            Stream source = new MemoryStream(new byte[1024]);
             SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
 
             var checker = new RenderWare();

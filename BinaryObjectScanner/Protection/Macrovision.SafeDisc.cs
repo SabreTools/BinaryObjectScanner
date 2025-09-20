@@ -559,6 +559,9 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 9617 and 49552.
                 "CC73C219BFC2D729515D25CA1B93D53672153175" => "1.35.000",
 
+                // Found in Redump entry 73321, but as remnants
+                "6BA7DF40D86817956E0B80D541D4BDCEE32E7140" => "1.35.000",
+
                 // Found in Redump entries 2595 and 30121.
                 "5825FF56B50114CD5D82BD4667D7097B29973197" => "1.40.004",
 
@@ -767,6 +770,9 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 9617 and 49552.
                 "1F1460FD66DD518159CCCDC99C12252EA0B2EEC4" => "1.35.000",
 
+                // Found in Redump entry 73321, but as remnants
+                "F2083EF4AD31E8A33A15461AC7B1497695C5C63A" => "1.35.000",
+
                 // Found in Redump entries 2595 and 30121.
                 "B1CF007BA36BA1B207DE334635F7BCEC146F8E35" => "1.40.004",
 
@@ -908,6 +914,9 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entries 9617 and 49552.
                 "2A86168FE8EFDFC31ABCC7C5D55A1A693F2483CD" => "1.35.000",
+
+                // Found in Redump entry 73321, but as remnants
+                "016C0B329F4A872CABC0200290CF0FC9EB0F2746" => "1.35.000",
 
                 // Found in Redump entries 2595 and 30121.
                 "8E41DB1C60BBAC631B06AD4F94ADB4214A0E65DC" => "1.40.004",
