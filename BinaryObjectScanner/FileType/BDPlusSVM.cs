@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.FileType
     public class BDPlusSVM : DetectableBase<SabreTools.Serialization.Wrappers.BDPlusSVM>
     {
         /// <inheritdoc/>
-        public BDPlusSVM(SabreTools.Serialization.Wrappers.BDPlusSVM? wrapper) : base(wrapper) { }
+        public BDPlusSVM(SabreTools.Serialization.Wrappers.BDPlusSVM wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

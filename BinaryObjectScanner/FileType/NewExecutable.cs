@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.FileType
     public class NewExecutable : Executable<SabreTools.Serialization.Wrappers.NewExecutable>
     {
         /// <inheritdoc/>
-        public NewExecutable(SabreTools.Serialization.Wrappers.NewExecutable? wrapper) : base(wrapper) { }
+        public NewExecutable(SabreTools.Serialization.Wrappers.NewExecutable wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

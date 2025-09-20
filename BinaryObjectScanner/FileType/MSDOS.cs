@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.FileType
     public class MSDOS : Executable<SabreTools.Serialization.Wrappers.MSDOS>
     {
         /// <inheritdoc/>
-        public MSDOS(SabreTools.Serialization.Wrappers.MSDOS? wrapper) : base(wrapper) { }
+        public MSDOS(SabreTools.Serialization.Wrappers.MSDOS wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

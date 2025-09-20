@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.FileType
         where T : WrapperBase
     {
         /// <inheritdoc/>
-        public Executable(T? wrapper) : base(wrapper) { }
+        public Executable(T wrapper) : base(wrapper) { }
 
         #region Check Runners
 

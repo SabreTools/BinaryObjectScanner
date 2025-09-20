@@ -9,7 +9,7 @@ namespace BinaryObjectScanner.FileType
     public class PLJ : DetectableBase<PlayJAudioFile>
     {
         /// <inheritdoc/>
-        public PLJ(PlayJAudioFile? wrapper) : base(wrapper) { }
+        public PLJ(PlayJAudioFile wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

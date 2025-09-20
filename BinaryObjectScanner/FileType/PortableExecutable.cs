@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.FileType
     public class PortableExecutable : Executable<SabreTools.Serialization.Wrappers.PortableExecutable>
     {
         /// <inheritdoc/>
-        public PortableExecutable(SabreTools.Serialization.Wrappers.PortableExecutable? wrapper) : base(wrapper) { }
+        public PortableExecutable(SabreTools.Serialization.Wrappers.PortableExecutable wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

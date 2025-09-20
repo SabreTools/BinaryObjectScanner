@@ -20,11 +20,8 @@ namespace BinaryObjectScanner.FileType
 
         #region Constructors
 
-        public DetectableBase(T? wrapper)
+        public DetectableBase(T wrapper)
         {
-            if (wrapper == null)
-                throw new ArgumentNullException(nameof(wrapper));
-
             _wrapper = wrapper;
         }
 

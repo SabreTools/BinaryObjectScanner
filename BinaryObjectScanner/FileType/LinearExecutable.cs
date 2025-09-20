@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.FileType
     public class LinearExecutable : Executable<SabreTools.Serialization.Wrappers.LinearExecutable>
     {
         /// <inheritdoc/>
-        public LinearExecutable(SabreTools.Serialization.Wrappers.LinearExecutable? wrapper) : base(wrapper) { }
+        public LinearExecutable(SabreTools.Serialization.Wrappers.LinearExecutable wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
