@@ -131,6 +131,11 @@ namespace BinaryObjectScanner.Data
         /// </summary>
         private static List<T> InitCheckClasses<T>(Assembly assembly)
         {
+            // Get information from the type param
+            string? interfaceName = typeof(T).FullName;
+            if (interfaceName == null)
+                return [];
+
             // If not all types can be loaded, use the ones that could be
             Type?[] assemblyTypes;
             try
@@ -141,11 +146,6 @@ namespace BinaryObjectScanner.Data
             {
                 assemblyTypes = rtle.Types ?? [];
             }
-
-            // Get information from the type param
-            string? interfaceName = typeof(T).FullName;
-            if (interfaceName == null)
-                return [];
 
             // Loop through all types 
             List<T> classTypes = [];
