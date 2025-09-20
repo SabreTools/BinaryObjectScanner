@@ -455,11 +455,6 @@ namespace BinaryObjectScanner.Protection
             if (MatroschkaHashDictionary.TryGetValue(md5String, out var gameName))
             {
                 // Returning "SecuROM Matroschka Package" technically redundant since implied.
-                // Since non-debug is more common, return first
-                if (!includeDebug)
-                    return "SecuROM Release Control"; 
-                
-                // TODO: I'd like to have this debug output be the normal output, but I assume I'm not allowed to do that
                 return $"SecuROM Release Control -  {gameName}";
             }
             
