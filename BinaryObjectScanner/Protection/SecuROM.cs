@@ -11,6 +11,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
+    // TODO: Think of a way to detect dfe
     public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <summary>
@@ -100,10 +101,15 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Check if executable is a Securom PA Module
+            // Check if executable is a SecuROM PA module
             var paModule = CheckProductActivation(exe);
             if (paModule != null)
                 return paModule;
+            
+            // Check if executable is another kind of SecuROM module
+            var otherModule = CheckModule(exe);
+            if (otherModule != null)
+                return otherModule;
 
             // Check if executable contains a SecuROM Matroschka Package
             var package = exe.MatroschkaPackage;
@@ -438,6 +444,74 @@ namespace BinaryObjectScanner.Protection
             var name = exe.FileDescription;
             if (name.OptionalContains("SecuROM PA"))
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            name = exe.InternalName;
+
+            // Checks if ProductName isn't drEAm to organize custom module checks at the end.
+            if (name.OptionalEquals("paul.dll", StringComparison.OrdinalIgnoreCase) ^ exe.ProductName.OptionalEquals("drEAm"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+            else if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+            else if (name.OptionalEquals("paul_dll_preview_and_review.dll"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            name = exe.OriginalFilename;
+            if (name.OptionalEquals("paul_dll_activate_and_play.dll"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            name = exe.ProductName;
+            if (name.OptionalContains("SecuROM Activate & Play"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
+
+            // Custom Module Checks
+
+            if (exe.ProductName.OptionalEquals("drEAm"))
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()} - EA Game Authorization Management";
+
+            // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
+            // variants. PiD refers to this as "SecuROM Modified PA Module".
+            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
+            // both, Softstar and Aurogon respectively(?), seem to have some connection, and use similar-looking
+            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be. 
+            // Regardless, even if these are given their own named variant later, this check should remain in order to
+            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
+            // detection abilities.
+            
+            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
+            if (name.OptionalEquals("drm_pagui_doit"))
+            {
+                // Not all of them are guaranteed to have an internal version
+                var version = exe.GetInternalVersion();
+                if (string.IsNullOrEmpty(version))
+                    return $"SecuROM Product Activation - Modified";
+                
+                return $"SecuROM Product Activation v{exe.GetInternalVersion()} - Modified";
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// Helper method to check if a given PortableExecutable is another kind of SecuROM module.
+        /// </summary>
+        private static string? CheckModule(PortableExecutable exe)
+        {
+            // Alf.dll
+            var name = exe.ProductName;
+            if (name.OptionalEquals("DFA Unlock Dll"))
+                return $"SecuROM DFA Unlock v{exe.GetInternalVersion()}";
+            
+            if (name.OptionalEquals("Release Control Unlock Dll"))
+                return $"SecuROM Release Control Unlock v{exe.GetInternalVersion()}";
+            
+            // Dfa.dll and ca.dll. The former seems to become the latter later on.
+            name = exe.FileDescription;
+            if (name.OptionalEquals("SecuROM Data File Activation Library"))
+                return $"SecuROM Data File Activation v{exe.GetInternalVersion()}";
+            
+            // Copyright is only checked because "Content Activation Library" seems broad on its own.
+            if (name.OptionalEquals("Content Activation Library") && exe.LegalCopyright.OptionalContains("Sony DADC Austria AG"))
+                return $"SecuROM Content Activation v{exe.GetInternalVersion()}";
 
             name = exe.InternalName;
 
