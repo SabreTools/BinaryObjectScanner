@@ -29,14 +29,6 @@
         /// </summary>
         public string? Protection { get; }
 
-        public ProtectionProgress(string? filename, float percentage, string? protection)
-        {
-            Filename = filename;
-            Depth = 0;
-            Percentage = percentage;
-            Protection = protection;
-        }
-
         public ProtectionProgress(string? filename, int depth, float percentage, string? protection)
         {
             Filename = filename;
