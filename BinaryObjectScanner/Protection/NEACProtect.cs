@@ -28,7 +28,9 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .neac0 and .neac1 sections, if they exist.
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
-            if (exe.ContainsSection(".neac0", exact: true) || exe.ContainsSection(".neac1", exact: true))
+            if (exe.ContainsSection(".neac0", exact: true))
+                return "NEAC Protect";
+            if (exe.ContainsSection(".neac1", exact: true))
                 return "NEAC Protect";
 
             string? name = exe.ProductName;

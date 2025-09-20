@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // <see href="https://www.virustotal.com/gui/file/601573f263115035921f621598f7a81ace998bf325e081165aa698b981822013/details"/>
-            if (exe.ContainsSection(".pklstb"))
+            if (exe.ContainsSection(".pklstb", exact: true))
                 return "PKLITE32"; // TODO: Figure out how to determine version
 
             return null;

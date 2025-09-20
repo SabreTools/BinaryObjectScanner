@@ -187,7 +187,9 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
-            if (exe.ContainsSection(".cmd_d", true) || exe.ContainsSection(".cms_t", true))
+            if (exe.ContainsSection(".cmd_d", true))
+                return $"SecuROM 1-3";
+            if (exe.ContainsSection(".cms_t", true))
                 return $"SecuROM 1-3";
 
             return null;
