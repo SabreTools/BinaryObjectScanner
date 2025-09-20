@@ -302,11 +302,9 @@ namespace BinaryObjectScanner
 
                 #region Non-Archive File Types
 
-                // Create a detectable for the given file type
+                // Try to scan file contents
                 var detectable = CreateDetectable(fileType, wrapper);
-
-                // If we're scanning file contents
-                if (detectable != null && _scanContents)
+                if (_scanContents && detectable != null)
                 {
                     var subProtection = detectable.Detect(stream, fileName, _includeDebug);
                     protections.Append(fileName, subProtection);
@@ -317,7 +315,7 @@ namespace BinaryObjectScanner
                 #region Archive File Types
 
                 // If we're scanning archives
-                if (wrapper is IExtractable extractable && _scanArchives)
+                if (_scanArchives && wrapper is IExtractable extractable)
                 {
                     // If the extractable file itself fails
                     try
