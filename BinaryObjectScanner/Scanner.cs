@@ -251,7 +251,6 @@ namespace BinaryObjectScanner
 
                 var protections = new ProtectionDictionary();
                 protections.Append(file, _includeDebug ? ex.ToString() : "[Exception opening file, please try again]");
-                protections.ClearEmptyKeys();
                 return protections;
             }
         }
