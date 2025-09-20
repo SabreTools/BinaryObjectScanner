@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class AACSMediaKeyBlockTests
     {
         private static readonly SabreTools.Serialization.Wrappers.AACSMediaKeyBlock wrapper
-            = new(new SabreTools.Models.AACS.MediaKeyBlock(), new MemoryStream());
+            = new(new SabreTools.Models.AACS.MediaKeyBlock(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()

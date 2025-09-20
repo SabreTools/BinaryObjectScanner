@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class LinearExecutableTests
     {
         private static readonly SabreTools.Serialization.Wrappers.LinearExecutable wrapper
-            = new(new SabreTools.Models.LinearExecutable.Executable(), new MemoryStream());
+            = new(new SabreTools.Models.LinearExecutable.Executable(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()
