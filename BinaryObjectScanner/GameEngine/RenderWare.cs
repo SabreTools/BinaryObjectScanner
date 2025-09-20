@@ -20,13 +20,14 @@ namespace BinaryObjectScanner.GameEngine
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Found in Redump entries 20138, 55823, and 102493.
-            bool rwcsegSection = exe.ContainsSection("_rwcseg", exact: true);
-            // Found in Redump entry 20138.
-            bool rwdsegSection = exe.ContainsSection("_rwdseg", exact: true);
-
             // TODO: Check if this indicates a specific version, or if these sections are present in multiple.
-            if (rwcsegSection || rwdsegSection)
+
+            // Found in Redump entries 20138, 55823, and 102493.
+            if (exe.ContainsSection("_rwcseg", exact: true))
+                return "RenderWare";
+
+            // Found in Redump entry 20138.
+            if (exe.ContainsSection("_rwdseg", exact: true))
                 return "RenderWare";
 
             return null;
