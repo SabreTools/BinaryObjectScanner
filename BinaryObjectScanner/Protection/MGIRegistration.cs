@@ -9,7 +9,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.ProductName;
+            string? name = exe.ProductName;
 
             // Found in "Register.dll" in IA item "MGIPhotoSuite4.0AndPhotoVista2.02001".
             if (name.OptionalEquals("MGI Registration Utility", StringComparison.Ordinal))

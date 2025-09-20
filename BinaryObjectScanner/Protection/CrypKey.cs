@@ -38,8 +38,9 @@ namespace BinaryObjectScanner.Protection
             // Get the CrypKey version from the VersionInfo, if it exists
             string version = exe.GetVersionInfoString("CrypKey Version") ?? string.Empty;
 
+            string? name = exe.CompanyName;
+
             // Found in 'cki32k.dll'
-            var name = exe.CompanyName;
             if (name.OptionalStartsWith("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 
@@ -53,8 +54,9 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalStartsWith("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 
-            // Found in 'cki32k.dll'
             name = exe.LegalCopyright;
+
+            // Found in 'cki32k.dll'
             if (name.OptionalContains("CrypKey"))
                 return $"CrypKey {version}".TrimEnd();
 

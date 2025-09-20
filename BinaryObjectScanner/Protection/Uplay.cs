@@ -14,7 +14,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalContains("Ubisoft Connect Installer"))
                 return "Uplay / Ubisoft Connect";
             else if (name.OptionalContains("Ubisoft Connect Service"))
@@ -29,9 +30,10 @@ namespace BinaryObjectScanner.Protection
                 return "Uplay / Ubisoft Connect";
             else if (name.OptionalContains("Uplay launcher"))
                 return "Uplay / Ubisoft Connect";
+          
+            name = exe.ProductName;
 
             // There's also a variant that looks like "Uplay <version> installer"
-            name = exe.ProductName;
             if (name.OptionalContains("Ubisoft Connect"))
                 return "Uplay / Ubisoft Connect";
             else if (name.OptionalContains("Uplay"))

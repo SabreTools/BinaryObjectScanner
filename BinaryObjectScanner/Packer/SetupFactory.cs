@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Known to detect versions 7.0.5.1 - 9.1.0.0
-            var name = exe.LegalCopyright;
+            string? name = exe.LegalCopyright;
             if (name.OptionalStartsWith("Setup Engine", StringComparison.OrdinalIgnoreCase))
                 return $"Setup Factory {GetVersion(exe)}";
 

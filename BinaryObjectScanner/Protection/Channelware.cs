@@ -25,8 +25,9 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.ProductName;
+
             // Found in "AbeWincw.dll" in Redump entry 116358 and in "TOYSGMcw.dll" in the "TOYSTORY" installation folder from Redump entry 12354.
-            var name = exe.ProductName;
             if (name.OptionalEquals("ChannelWare Utilities"))
                 return "Channelware";
 
@@ -43,11 +44,13 @@ namespace BinaryObjectScanner.Protection
                 return "Channelware";
 
             name = exe.FileDescription;
+
             // Found in "cwuninst.exe" in the "Channelware" folder installed from Redump entry 12354.
             if (name.OptionalEquals("Channelware Launcher Uninstall"))
                 return "Channelware";
 
             name = exe.LegalTrademarks;
+
             // Found in "CWAuto.dll" and "Upgrader.exe" in the "TOYSTORY" installation folder from Redump entry 12354.
             if (name.OptionalEquals("Channelware"))
                 return "Channelware";

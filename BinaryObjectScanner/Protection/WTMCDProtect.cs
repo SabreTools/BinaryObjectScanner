@@ -12,15 +12,18 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalContains("Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 
             name = exe.LegalTrademarks;
+
             if (name.OptionalContains("WTM Copy Protection"))
                 return "WTM Protection Viewer";
 
             name = exe.ProductName;
+            
             if (name.OptionalContains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 

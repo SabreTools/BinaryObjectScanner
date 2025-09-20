@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Investigate if there are any viable checks for the game EXE itself.
 
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
 
             // Found in "GameGuard.des" in Redump entry 90526 and 99598, and "Soulworker" (Steam Depot 1377581, Manifest 5092481117079359342).
             if (name.OptionalContains("nProtect GameGuard Launcher"))

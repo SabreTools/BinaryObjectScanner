@@ -18,19 +18,20 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Get the .data section strings, if they exist
-            var strs = exe.GetFirstSectionStrings(".data");
+            string? name = exe.FileDescription;
+
+            // Found in "RngInterstitial.dll" in the RealArcade installation directory in IA item "Nova_RealArcadeCD_USA".
+            if (name.OptionalContains("RngInterstitial"))
+                return "RealArcade";
+
+            // Get the .data/DATA section strings, if they exist
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 // Found in "rebound.exe" in the installation directory for "Rebound" in IA item "Nova_RealArcadeCD_USA".
                 if (strs.Exists(s => s.Contains("RngInterstitialDLL")))
                     return "RealArcade";
             }
-
-            // Found in "RngInterstitial.dll" in the RealArcade installation directory in IA item "Nova_RealArcadeCD_USA".
-            var name = exe.FileDescription;
-            if (name.OptionalContains("RngInterstitial"))
-                return "RealArcade";
 
             return null;
         }

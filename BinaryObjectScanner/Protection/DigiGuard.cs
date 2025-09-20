@@ -28,20 +28,23 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-            var name = exe.FileDescription;
-            if (name.OptionalEquals("DigiGuard3 Client"))
-                return $"DigiGuard3";
+            string? name = exe.FileDescription;
 
             // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
+            if (name.OptionalEquals("DigiGuard3 Client"))
+                return "DigiGuard3";
+
             name = exe.LegalTrademarks;
+
+            // Found in "Start.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
             if (name.OptionalEquals("DigiGuard"))
-                return $"DigiGuard";
+                return "DigiGuard";
+
+            name = exe.ProductName;
 
             // Found in "PJS3.exe" in IA item "Nova_DellBigWIGDVD_USA"/Redump entry 108588.
-            name = exe.ProductName;
             if (name.OptionalEquals("Greenleaf Wrapper3"))
-                return $"DigiGuard";
+                return "DigiGuard";
 
             return null;
         }

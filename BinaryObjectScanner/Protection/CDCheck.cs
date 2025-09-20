@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.Comments;
+            string? name = exe.Comments;
             if (name.OptionalContains("CDCheck utlity for Microsoft Game Studios"))
                 return "Microsoft Game Studios CD Check";
 

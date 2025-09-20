@@ -21,17 +21,20 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Contains("EA Anticheat"))
                 return "EA Anti Cheat";
 
             name = exe.ProductName;
+
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Contains("EA Anticheat"))
                 return "EA Anti Cheat";
 
             name = exe.InternalName;
+
             // Found in "EAAntiCheat.GameServiceLauncher.exe" and "EAAntiCheat.Installer.exe" in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
             if (!string.IsNullOrEmpty(name) && name!.Equals("skyfall"))
                 return "EA Anti Cheat";

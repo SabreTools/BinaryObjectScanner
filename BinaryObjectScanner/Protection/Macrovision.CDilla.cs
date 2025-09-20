@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? CDillaCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
 
             // Found in in "cdilla52.dll" from C-Dilla LMS version 3.24.010.
             if (name.OptionalEquals("32-bit C-Dilla DLL", StringComparison.OrdinalIgnoreCase))

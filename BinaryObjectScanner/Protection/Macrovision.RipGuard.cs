@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using SabreTools.Hashing;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
@@ -21,31 +20,24 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? RipGuardCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.FileDescription;
+
             // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
-            var name = exe.FileDescription;
             if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))
                 return "RipGuard";
 
-            // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             name = exe.ProductName;
+
+            // Found in "RGASDEV.SYS" in the Black Lagoon Season 1 DVD Steelbook box set (Geneon ID 12970).
             if (name.OptionalEquals("rgasdev", StringComparison.OrdinalIgnoreCase))
                 return "RipGuard";
 
-            if (!string.IsNullOrEmpty(file) && File.Exists(file))
+            // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
+            if (exe.Length == 49_152)
             {
-                try
-                {
-                    var fi = new FileInfo(file);
-
-                    // So far, every seemingly-randomly named EXE on RipGuard discs have a consistent hash.
-                    if (fi.Length == 49_152)
-                    {
-                        var sha1 = HashTool.GetFileHash(file, HashType.SHA1);
-                        if (string.Equals(sha1, "6A7B8545800E0AB252773A8CD0A2185CA2497938", StringComparison.OrdinalIgnoreCase))
-                            return "RipGuard";
-                    }
-                }
-                catch { }
+                var sha1 = HashTool.GetFileHash(file, HashType.SHA1);
+                if (string.Equals(sha1, "6A7B8545800E0AB252773A8CD0A2185CA2497938", StringComparison.OrdinalIgnoreCase))
+                    return "RipGuard";
             }
 
             return null;

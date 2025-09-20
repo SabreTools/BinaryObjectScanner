@@ -9,8 +9,9 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.InternalName;
+
             // TODO: Is this too broad in general?
-            var name = exe.InternalName;
             if (name.OptionalStartsWith("EReg", StringComparison.OrdinalIgnoreCase))
                 return $"Executable-Based Online Registration {exe.GetInternalVersion()}";
 

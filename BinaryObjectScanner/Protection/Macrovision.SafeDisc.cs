@@ -81,7 +81,8 @@ namespace BinaryObjectScanner.Protection
                     return "Macrovision SecDrv Update Installer";
             }
 
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             // Present in "Diag.exe" files from SafeDisc 4.50.000+.
             if (name.OptionalEquals("SafeDisc SRV Tool APP", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc SRV Tool APP {GetSafeDiscDiagExecutableVersion(exe)}";
@@ -90,8 +91,9 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Macrovision SecDrv Update", StringComparison.OrdinalIgnoreCase))
                 return "Macrovision SecDrv Update Installer";
 
-            // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             name = exe.ProductName;
+
+            // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             if (name.OptionalEquals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc 1.00.025-1.01.044";
 
@@ -109,9 +111,10 @@ namespace BinaryObjectScanner.Protection
             else if (name.OptionalEquals("SafeDisc AuthServ APP", StringComparison.OrdinalIgnoreCase))
                 return $"SafeDisc AuthServ APP {GetSafeDiscAuthServVersion(exe)}";
 
+            name = exe.FileDescription;
+
             // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
-            name = exe.FileDescription;
             if (name.OptionalEquals("SafeDisc", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc";
 

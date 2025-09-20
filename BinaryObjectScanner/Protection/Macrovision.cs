@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.Protection
             var resultsList = new List<string>();
 
             // Check for generic indications of Macrovision protections first.
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
 
             // Present in "secdrv.sys" files found in SafeDisc 2.80.010+.
             if (name.OptionalEquals("Macrovision SECURITY Driver", StringComparison.OrdinalIgnoreCase))

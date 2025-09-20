@@ -181,7 +181,7 @@ namespace BinaryObjectScanner.Protection
             // Found in "bib.dll" in IA item "https://archive.org/details/cover_202501"
             // This contains the version section that the Content Check looked for. There are likely other sections
             // that may contain it. Update when more are found.
-            var strs = exe.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 var match = strs.Find(s => s.Contains(" ver. ") && (s.Contains("CD-Cops, ") || s.Contains("DVD-Cops, ")));

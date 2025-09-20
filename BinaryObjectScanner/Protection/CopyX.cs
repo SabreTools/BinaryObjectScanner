@@ -62,10 +62,6 @@ namespace BinaryObjectScanner.Protection
             // Checks for Professional
             // PEX checks intentionally only detect Professional
 
-            var sections = exe.SectionTable;
-            if (sections == null)
-                return null;
-
             if (exe.OverlayStrings != null)
             {
                 // Checks if main executable contains reference to optgraph.dll. 

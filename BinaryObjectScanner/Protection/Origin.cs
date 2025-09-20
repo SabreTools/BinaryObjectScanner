@@ -12,11 +12,13 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalEquals("Origin", StringComparison.OrdinalIgnoreCase))
                 return "Origin";
 
             name = exe.ProductName;
+
             if (name.OptionalEquals("Origin", StringComparison.OrdinalIgnoreCase))
                 return "Origin";
 

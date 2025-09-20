@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.AssemblyDescription;
+            string? name = exe.AssemblyDescription;
             if (name.OptionalContains("WinRAR archiver"))
                 return "WinRAR SFX";
 

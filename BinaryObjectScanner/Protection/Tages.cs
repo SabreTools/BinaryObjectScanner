@@ -24,13 +24,15 @@ namespace BinaryObjectScanner.Protection
             // - TagesClient.exe
             // - TagesClient.dat (Does not always exist)
 
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalStartsWith("TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(exe)}";
             else if (name.OptionalStartsWith("Tagès activation client", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Activation Client {GetVersion(exe)}";
 
             name = exe.ProductName;
+            
             if (name.OptionalStartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(exe)}";
             else if (name.OptionalStartsWith("T@GES", StringComparison.OrdinalIgnoreCase))

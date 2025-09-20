@@ -42,28 +42,33 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.FileDescription;
+
             // Found in "LineRider2.exe" in Redump entry 6236
-            var name = exe.FileDescription;
             if (name.OptionalEquals("ByteShield Client"))
                 return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
-            // Found in "LineRider2.exe" in Redump entry 6236
             name = exe.InternalName;
+
+            // Found in "LineRider2.exe" in Redump entry 6236
             if (name.OptionalEquals("ByteShield"))
                 return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
-            // Found in "LineRider2.exe" in Redump entry 6236
             name = exe.OriginalFilename;
+
+            // Found in "LineRider2.exe" in Redump entry 6236
             if (name.OptionalEquals("ByteShield.EXE"))
                 return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
-            // Found in "LineRider2.exe" in Redump entry 6236
             name = exe.ProductName;
+
+            // Found in "LineRider2.exe" in Redump entry 6236
             if (name.OptionalEquals("ByteShield Client"))
                 return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
-            // Found in "ByteShield.dll" in Redump entry 6236
             name = exe.ExportTable?.ExportDirectoryTable?.Name;
+
+            // Found in "ByteShield.dll" in Redump entry 6236
             if (name.OptionalEquals("ByteShield Client"))
                 return "ByteShield Component Module";
 

@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Investigate if there are any viable checks for the game EXE itself.
             // "Styx" is found as the File Description and Product Name in "KalypsoLauncher.dll", but checks aren't included due to the risk of false positives.
 
-            var name = exe.InternalName;
+            string? name = exe.InternalName;
 
             // Found in "KalypsoLauncher.dll" in Redump entry 95617.
             if (name.OptionalContains("KalypsoLauncher.dll"))

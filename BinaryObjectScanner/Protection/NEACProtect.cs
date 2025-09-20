@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.Protection
             if (exe.ContainsSection(".neac0", exact: true) || exe.ContainsSection(".neac1", exact: true))
                 return "NEAC Protect";
 
-            var name = exe.ProductName;
+            string? name = exe.ProductName;
 
             // Found in "NeacSafe64.sys" and "NeacSafe.sys".
             // TODO: Fix Product Name not being properly grabbed from the file.

@@ -9,7 +9,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalContains("EReg MFC Application"))
                 return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
             else if (name.OptionalContains("Registration code installer program"))
@@ -18,6 +19,7 @@ namespace BinaryObjectScanner.Protection
                 return $"EA DRM Protection {exe.GetInternalVersion()}";
 
             name = exe.InternalName;
+            
             if (name.OptionalEquals("CDCode", StringComparison.Ordinal))
                 return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
 

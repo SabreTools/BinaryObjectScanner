@@ -36,8 +36,9 @@ namespace BinaryObjectScanner.Protection
         {
             // All current checks for Denuvo Anti-Cheat come from Doom Eternal Update 1 (Steam Depot 782332, Manifest 7064393210727378308).
 
+            string? name = exe.FileDescription;
+
             // Found in "denuvo-anti-cheat.sys".
-            var name = exe.FileDescription;
             if (name.OptionalEquals("Denuvo Anti-Cheat Driver", StringComparison.OrdinalIgnoreCase))
                 return $"Denuvo Anti-Cheat";
 
@@ -62,8 +63,7 @@ namespace BinaryObjectScanner.Protection
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/_denuvoComplete.2.sg
 
             // Denuvo Protector
-            if (exe.OptionalHeader?.Magic == OHMN.PE32Plus
-                && exe.EntryPointData != null)
+            if (exe.OptionalHeader?.Magic == OHMN.PE32Plus && exe.EntryPointData != null)
             {
                 byte?[] denuvoProtector =
                 [
@@ -84,7 +84,7 @@ namespace BinaryObjectScanner.Protection
                     new byte[] {
                         0x44, 0x65, 0x6E, 0x75, 0x76, 0x6F, 0x20, 0x54,
                         0x69, 0x6D, 0x69, 0x6E, 0x67,
-            }, "Denuvo")
+                }, "Denuvo")
             };
             var timingMatch = MatchUtil.GetFirstMatch(file, exe.EntryPointData, timingMatchers, includeDebug);
 

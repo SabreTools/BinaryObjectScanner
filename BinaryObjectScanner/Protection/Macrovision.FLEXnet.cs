@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc cref="Interfaces.IExecutableCheck{T}.CheckExecutable(string, T, bool)"/>
         internal static string? FLEXnetCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.ProductName;
+            string? name = exe.ProductName;
 
             // Found in "IsSvcInstDanceEJay7.dll" in IA item "computer200709dvd" (Dance eJay 7).
             if (name.OptionalEquals("FLEXnet Activation Toolkit", StringComparison.OrdinalIgnoreCase))

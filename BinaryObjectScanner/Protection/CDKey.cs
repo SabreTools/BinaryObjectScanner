@@ -9,7 +9,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.InternalName;
+            string? name = exe.InternalName;
+
             if (name.OptionalEquals("CDKey", StringComparison.OrdinalIgnoreCase))
                 return "CD-Key / Serial";
 

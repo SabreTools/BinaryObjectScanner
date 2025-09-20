@@ -21,14 +21,16 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.FileDescription;
+
             // Should be present on all LabelGate CD2 discs (Redump entry 95010 and product ID SVWC-7185).
-            var name = exe.FileDescription;
             if (name.OptionalStartsWith("MAGIQLIP2 Installer", StringComparison.OrdinalIgnoreCase))
-                return $"LabelGate CD2 Media Player";
+                return "LabelGate CD2 Media Player";
 
             name = exe.ProductName;
+
             if (name.OptionalStartsWith("MQSTART", StringComparison.OrdinalIgnoreCase))
-                return $"LabelGate CD2 Media Player";
+                return "LabelGate CD2 Media Player";
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");

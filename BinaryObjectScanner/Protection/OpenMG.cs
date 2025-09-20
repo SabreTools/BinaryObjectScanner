@@ -19,41 +19,43 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.LegalTrademarks;
+
             // Found in many different OpenMG related files ("Touch" by Amerie).
-            var name = exe.LegalTrademarks;
             if (name.OptionalStartsWith("OpenMG", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
+
+            name = exe.FileDescription;
 
             // Found in "OMGDBP.OCX" ("Touch" by Amerie).
-            name = exe.FileDescription;
             if (name.OptionalStartsWith("LGDiscComp Module", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             // Found in "OMGDWRAP.DLL" ("Touch" by Amerie).
             if (name.OptionalStartsWith("LGDSimplePlayer Module", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             // Found in "OMGLGD.DLL" ("Touch" by Amerie).
             if (name.OptionalStartsWith("omglgd Module", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             // Found in "OMGUTILS.DLL" ("Touch" by Amerie).
             if (name.OptionalStartsWith("OpenMG Utility", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             // Found in "SALWRAP.DLL" ("Touch" by Amerie).
             if (name.OptionalStartsWith("Secure Application Loader Wrapper", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             // Found in "SDKHM.DLL" ("Touch" by Amerie).
             // Not every copy of this file has this File Description (Redump entry 95010).
             if (name.OptionalStartsWith("SDKHM (KEEP)", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             // Found in "SDKHM.EXE" ("Touch" by Amerie).
             // Not every copy of this file has this File Description (Redump entry 95010).
             if (name.OptionalStartsWith("SDKHM (KEPT)", StringComparison.OrdinalIgnoreCase))
-                return $"OpenMG";
+                return "OpenMG";
 
             return null;
         }

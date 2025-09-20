@@ -24,9 +24,10 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.ProductName;
+
             // Found in "Code-Lock.ocx" in Code-Lock version 2.35.
             // Also worth noting is the File Description for this file, which is "A future for you, a challenge for the rest.".
-            var name = exe.ProductName;
             if (name.OptionalStartsWith("Code-Lock", StringComparison.OrdinalIgnoreCase))
                 return $"ChosenBytes Code-Lock {exe.ProductVersion}";
 

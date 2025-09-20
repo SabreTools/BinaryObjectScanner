@@ -23,31 +23,36 @@ namespace BinaryObjectScanner.Protection
             // TODO: Add version number finding
             // TODO: Come to an agreement as to what the version should be
 
+            string? name = exe.CompanyName;
+
             // Found in Redump entry 114428
             // Found in Alpha Protocol -- TODO: Get Redump ID(s)
-            var name = exe.CompanyName;
             if (name.OptionalStartsWith("Uniloc USA"))
                 return "Uniloc SoftAnchor";
 
-            // Found in Alpha Protocol -- TODO: Get Redump ID(s)
             name = exe.InternalName;
+
+            // Found in Alpha Protocol -- TODO: Get Redump ID(s)
             if (name.OptionalStartsWith("saAudit"))
                 return "Uniloc SoftAnchor";
 
-            // Found in Redump entry 114428
             name = exe.LegalCopyright;
+
+            // Found in Redump entry 114428
             if (name.OptionalContains("Uniloc"))
                 return "Uniloc SoftAnchor";
 
-            // Found via https://www.pcgamingwiki.com/wiki/Football_Manager_2010
             name = exe.OriginalFilename;
+
+            // Found via https://www.pcgamingwiki.com/wiki/Football_Manager_2010
             if (name.OptionalEquals("saAudit.dll"))
                 return "Uniloc SoftAnchor";
             if (name.OptionalEquals("saui.dll"))
                 return "Uniloc SoftAnchor";
 
-            // Found via https://www.pcgamingwiki.com/wiki/Football_Manager_2010
             name = exe.ProductName;
+
+            // Found via https://www.pcgamingwiki.com/wiki/Football_Manager_2010
             if (name.OptionalStartsWith("saAudit"))
                 return "Uniloc SoftAnchor";
 

@@ -116,7 +116,7 @@ namespace BinaryObjectScanner.Protection
             }
             
             // Alf.dll
-            var name = exe.ProductName;
+            string? name = exe.ProductName;
             if (name.OptionalEquals("DFA Unlock Dll"))
                 return $"SecuROM DFA Unlock v{exe.GetInternalVersion()}";
             
@@ -453,7 +453,7 @@ namespace BinaryObjectScanner.Protection
         /// </summary>
         private static string? CheckProductActivation(PortableExecutable exe)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
             if (name.OptionalContains("SecuROM PA"))
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()}";
 

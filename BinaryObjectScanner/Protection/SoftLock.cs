@@ -16,13 +16,15 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.InternalName;
+
             // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
-            var name = exe.InternalName;
             if (name.OptionalEquals("Softlock Protected Application"))
                 return "SoftLock";
 
-            // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
             name = exe.Comments;
+
+            // Found in "IALib.DLL" in IA item "TAFSEERVER4SETUP"
             if (name.OptionalEquals("Softlock Protected Application"))
                 return "SoftLock";
 
@@ -56,8 +58,8 @@ namespace BinaryObjectScanner.Protection
             // and dialog boxes. See if any of those are unique to SoftLock.
 
             // Found in "TafseerVer4.exe" in IA item "TAFSEERVER4SETUP"
-            var strings = exe.GetFirstSectionStrings(".section") ?? [];
-            if (strings.Exists(s => s.Contains("SOFTLOCKPROTECTION")))
+            var strs = exe.GetFirstSectionStrings(".section") ?? [];
+            if (strs.Exists(s => s.Contains("SOFTLOCKPROTECTION")))
                 return "SoftLock";
 
             // Investigate if the ".section" section is an indicator of SoftLock

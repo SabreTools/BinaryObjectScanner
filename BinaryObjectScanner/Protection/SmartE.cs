@@ -11,9 +11,11 @@ namespace BinaryObjectScanner.Protection
     {
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.InternalName;
+            
            // Only works on stub generated from running the program yourself
-           if (exe.InternalName.OptionalEquals("SmarteSECURE"))
-               return "SmartE";
+            if (name.OptionalEquals("SmarteSECURE"))
+                return "SmartE";
            
            var sections = exe.SectionTable ?? [];
 

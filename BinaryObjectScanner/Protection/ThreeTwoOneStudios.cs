@@ -10,9 +10,9 @@ namespace BinaryObjectScanner.Protection
         {
             // Check the dialog box resources
             if (exe.FindDialogByTitle("321Studios Activation").Count > 0)
-                return $"321Studios Online Activation";
+                return "321Studios Online Activation";
             else if (exe.FindDialogByTitle("321Studios Phone Activation").Count > 0)
-                return $"321Studios Online Activation";
+                return "321Studios Online Activation";
 
             return null;
         }

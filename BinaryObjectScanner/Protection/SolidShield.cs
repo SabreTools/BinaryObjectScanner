@@ -17,7 +17,8 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Investigate ".pseudo" section found in "tvdm.dll" in Redump entry 68166.
 
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalStartsWith("DVM Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield {exe.GetInternalVersion()}";
 
@@ -36,9 +37,9 @@ namespace BinaryObjectScanner.Protection
                 return $"SolidShield {GetInternalVersion(exe)}";
 
             name = exe.ProductName;
+
             if (name.OptionalStartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {exe.GetInternalVersion()}";
-
             else if (name.OptionalStartsWith("Solidshield Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {exe.GetInternalVersion()}";
 

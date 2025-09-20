@@ -19,9 +19,7 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            #region File Description
-
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
 
             // There are some File Description checks that are currently too generic to use.
             // "Host Library" - Found in "protect.dll" in Redump entry 81756.
@@ -30,7 +28,7 @@ namespace BinaryObjectScanner.Protection
 
             // Found in "sfdrvrem.exe" in Redump entry 102677.
             if (name.OptionalContains("FrontLine Drivers Removal Tool"))
-                return $"StarForce FrontLine Driver Removal Tool";
+                return "StarForce FrontLine Driver Removal Tool";
 
             // Found in "protect.exe" in Redump entry 94805.
             if (name.OptionalContains("FrontLine Protection GUI Application"))
@@ -46,27 +44,21 @@ namespace BinaryObjectScanner.Protection
 
             // TODO: Find a sample of this check.
             if (name.OptionalContains("Protected Module"))
-                return $"StarForce 5";
-
-            #endregion
-
-            #region Legal Copyright
+                return "StarForce 5";
 
             name = exe.LegalCopyright;
+
             if (name.OptionalStartsWith("(c) Protection Technology")) // (c) Protection Technology (StarForce)?
                 return $"StarForce {exe.GetInternalVersion()}";
             else if (name.OptionalContains("Protection Technology")) // Protection Technology (StarForce)?
                 return $"StarForce {exe.GetInternalVersion()}";
 
-            #endregion
-
-            #region Trade Name
+            name = exe.TradeName;
 
             // FrontLine ProActive (digital activation), samples: 
             // https://dbox.tools/titles/pc/46450FA4/ 
             // https://dbox.tools/titles/pc/4F430FA0/ 
             // https://dbox.tools/titles/pc/53450FA1/
-            name = exe.TradeName;
             if (name.OptionalContains("FL ProActive"))
                 return "FrontLine ProActive";
 
@@ -74,10 +66,6 @@ namespace BinaryObjectScanner.Protection
             // Found in "pcnsl.exe" in Redump entry 119679
             if (name.OptionalContains("SF Crypto"))
                 return "StarForce Crypto";
-
-            #endregion
-
-            #region Internal Name
 
             // TODO: Decide if internal name checks are safe to use.
             name = exe.InternalName;
@@ -97,8 +85,6 @@ namespace BinaryObjectScanner.Protection
             //
             // else if (name.OptionalEquals("protect.exe", StringComparison.Ordinal))
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(exe)}";
-
-            #endregion
 
             // Check the export name table
             if (exe.ExportTable?.ExportNameTable?.Strings != null)

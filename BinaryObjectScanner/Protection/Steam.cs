@@ -11,7 +11,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalContains("Steam Autorun Setup"))
                 return "Steam";
             else if (name.OptionalContains("Steam Client API"))
@@ -22,6 +23,7 @@ namespace BinaryObjectScanner.Protection
                 return "Steam";
 
             name = exe.ProductName;
+
             if (name.OptionalContains("Steam Autorun Setup"))
                 return "Steam";
             else if (name.OptionalContains("Steam Client API"))

@@ -40,8 +40,9 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.FileDescription;
+
             // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
-            var name = exe.FileDescription;
             if (name.OptionalStartsWith("IOSLinkNT", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
@@ -49,13 +50,15 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalStartsWith("TTR Technologies DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return $"DiscGuard {GetVersion(exe)}";
 
-            // Found in "T29.dll" (Redump entry 31914).
             name = exe.ProductName;
+
+            // Found in "T29.dll" (Redump entry 31914).
             if (name.OptionalStartsWith("DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 
-            // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             name = exe.ProductName;
+
+            // Found in "IOSLinksys.dll" (Redump entries 31914, 46743, 46961, 79284, and 79374).
             if (name.OptionalStartsWith("TTR Technologies Ltd. DiscGuard (tm)", StringComparison.OrdinalIgnoreCase))
                 return "DiscGuard";
 

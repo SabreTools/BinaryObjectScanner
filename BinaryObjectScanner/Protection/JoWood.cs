@@ -50,13 +50,11 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the HC09     section, if it exists
-            bool hc09Section = exe.ContainsSection("HC09    ", exact: true);
-            if (hc09Section)
+            if (exe.ContainsSection("HC09    ", exact: true))
                 return "JoWood X-Prot v2"; // TODO: Can we get more granular with the version?
 
             // Get the XPROT    section, if it exists
-            var xprotSection = exe.ContainsSection("XPROT   ", exact: true);
-            if (xprotSection)
+            if (exe.ContainsSection("XPROT   ", exact: true))
                 return "JoWood X-Prot v1.4+"; // TODO: Can we get more granular with the version?
 
             return null;

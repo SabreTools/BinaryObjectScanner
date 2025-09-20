@@ -18,8 +18,9 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.FileDescription;
+
             // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
-            var name = exe.FileDescription;
             if (name.OptionalStartsWith("Windows Media Data Session Licensing Engine", StringComparison.OrdinalIgnoreCase))
                 return "Windows Media Data Session DRM";
 

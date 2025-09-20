@@ -15,15 +15,18 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
+
             if (name.OptionalContains("ImpulseReactor Dynamic Link Library"))
                 return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
 
             name = exe.ProductName;
+
             if (name.OptionalContains("ImpulseReactor Dynamic Link Library"))
                 return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
 
             name = exe.OriginalFilename;
+            
             if (name.OptionalContains("ReactorActivate.exe"))
                 return $"Stardock Product Activation {exe.GetInternalVersion()}";
 
@@ -45,7 +48,7 @@ namespace BinaryObjectScanner.Protection
             if (containsCheck && containsCheck2)
                 return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
             else if (containsCheck && !containsCheck2)
-                return $"Impulse Reactor";
+                return "Impulse Reactor";
 
             return null;
         }

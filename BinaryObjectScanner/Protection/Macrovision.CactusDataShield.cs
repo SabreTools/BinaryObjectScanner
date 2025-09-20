@@ -47,10 +47,11 @@ namespace BinaryObjectScanner.Protection
             if (exe.FindGenericResource("CactusPJ").Count > 0)
                 return "PlayJ Music Player (Cactus Data Shield 200)";
 
+            string? name = exe.ProductName;
+
             // Found in various files in "Les Paul & Friends" (Barcode 4 98806 834170).
-            var name = exe.ProductName;
             if (name.OptionalEquals("CDS300", StringComparison.OrdinalIgnoreCase))
-                return $"Cactus Data Shield 300";
+                return "Cactus Data Shield 300";
 
             return null;
         }

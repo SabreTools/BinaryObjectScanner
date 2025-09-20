@@ -34,9 +34,10 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            string? name = exe.FileDescription;
+
             // TODO: Fix the following checks, as this information is visible via Windows Explorer but isn't currently being seen by BOS.
             // Found in "HCPSMng.exe".
-            var name = exe.FileDescription;
             if (name.OptionalStartsWith("HCPS Manager", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
@@ -44,8 +45,9 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalStartsWith("HCPS Loader", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
-            // Found in both "HCPSMng.exe" and in the file typically named "Start_Here.exe".
             name = exe.ProductName;
+
+            // Found in both "HCPSMng.exe" and in the file typically named "Start_Here.exe".
             if (name.OptionalStartsWith("HCPS", StringComparison.OrdinalIgnoreCase))
                 return $"Hexalock AutoLock 4.5";
 
@@ -57,7 +59,7 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Exists(s => s.Contains("mfint.dll")))
                     return "Hexalock Autolock";
             }
-            
+
             // Get the code/CODE section strings, if they exist
             strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
             if (strs != null)
@@ -66,7 +68,7 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Exists(s => s.Contains("mfint.dll")))
                     return "Hexalock Autolock";
             }
-            
+
             // Get the UPX1 section strings, if they exist
             strs = exe.GetFirstSectionStrings("UPX1");
             if (strs != null)
@@ -75,7 +77,7 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Exists(s => s.Contains("mfint.dll")))
                     return "Hexalock Autolock";
             }
-            
+
             return null;
         }
 

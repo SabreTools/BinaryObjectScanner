@@ -18,15 +18,17 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
-            var name = exe.FileDescription;
-            if (name.OptionalStartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase))
-                return $"MediaCloQ";
+            string? name = exe.FileDescription;
 
             // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
+            if (name.OptionalStartsWith("scvfy MFC Application", StringComparison.OrdinalIgnoreCase))
+                return "MediaCloQ";
+
             name = exe.ProductName;
+
+            // Found in scvfy.exe on "Charley Pride - A Tribute to Jim Reeves" (barcode "7 816190222-2 4").
             if (name.OptionalStartsWith("scvfy Application", StringComparison.OrdinalIgnoreCase))
-                return $"MediaCloQ";
+                return "MediaCloQ";
 
             return null;
         }

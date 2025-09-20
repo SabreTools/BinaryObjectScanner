@@ -131,7 +131,7 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Figure out why resources for "RNBOVTMP.DLL", "SENTTEMP.DLL", "SNTI386.DLL", and "SX32W.DL_"/"SX32W.DLL" aren't getting read properly, causing checks for these files to not work.
 
-            var name = exe.FileDescription;
+            string? name = exe.FileDescription;
 
             // Found in "RNBOVTMP.DLL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]".
             if (name.OptionalEquals("Rainbow Technologies Virtual Device Driver", StringComparison.OrdinalIgnoreCase))
