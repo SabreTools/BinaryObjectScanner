@@ -462,13 +462,13 @@ namespace BinaryObjectScanner.Protection
             // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
             var readPathBytes = entry.Path;
             if (readPathBytes == null || readPathBytes.Length == 0)
-                return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
+                return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size}, please report to us on Github!";
             
             var readPathName = Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0');
             if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out var pathName) && pathName == readPathName)
                 return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size}, please report to us on Github!";
 
-            return $"SecuROM Release Control - Unknown executable {readPathName},{md5String},{entry.Size}, PLEASE REPORT ON GITHUB IMMEDIATELY!!!";
+            return $"SecuROM Release Control - Unknown executable {readPathName},{md5String},{entry.Size}, please report to us on Github!";
         }
     }
 }
