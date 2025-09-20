@@ -68,6 +68,19 @@ namespace BinaryObjectScanner
 #endif
         }
 
+        /// <inheritdoc cref="string.EndsWith(string)"/>
+        public static bool OptionalEndsWith(this string? self, string value)
+            => OptionalEndsWith(self, value, StringComparison.Ordinal);
+
+        /// <inheritdoc cref="string.EndsWith(string, StringComparison)"/>
+        public static bool OptionalEndsWith(this string? self, string value, StringComparison comparisonType)
+        {
+            if (self == null)
+                return false;
+
+            return self.EndsWith(value, comparisonType);
+        }
+
         /// <inheritdoc cref="string.Equals(string)"/>
         public static bool OptionalEquals(this string? self, string value)
             => OptionalEquals(self, value, StringComparison.Ordinal);

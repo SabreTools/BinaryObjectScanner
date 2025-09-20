@@ -28,17 +28,14 @@ namespace BinaryObjectScanner.Protection
                 return "Armadillo";
 
             // Loop through all "extension" sections -- usually .data1 or .text1
-            if (exe.SectionNames != null)
+            foreach (var sectionName in Array.FindAll(exe.SectionNames, s => s.OptionalEndsWith("1")))
             {
-                foreach (var sectionName in Array.FindAll(exe.SectionNames ?? [], s => s != null && s.EndsWith("1")))
+                // Get the section strings, if they exist
+                var strs = exe.GetFirstSectionStrings(sectionName);
+                if (strs != null)
                 {
-                    // Get the section strings, if they exist
-                    var strs = exe.GetFirstSectionStrings(sectionName);
-                    if (strs != null)
-                    {
-                        if (strs.Exists(s => s.Contains("ARMDEBUG")))
-                            return "Armadillo";
-                    }
+                    if (strs.Exists(s => s.Contains("ARMDEBUG")))
+                        return "Armadillo";
                 }
             }
 
