@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Protection
             // https://dbox.tools/titles/pc/53450FA1/
             name = exe.TradeName;
             if (name.OptionalContains("FL ProActive"))
-                return $"FrontLine ProActive {exe.GetInternalVersion()}";
+                return $"StarForce FrontLine ProActive {exe.GetInternalVersion()}";
 
             // StarForce Crypto (SF Crypto)
             // Found in "pcnsl.exe" in Redump entry 119679
