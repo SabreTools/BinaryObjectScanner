@@ -110,9 +110,9 @@ namespace BinaryObjectScanner.Protection
             if (package == null)
                 return null;
             
-            var matroschka = CheckMatroschkaPackage(package, includeDebug);
-            if (matroschka != null)
-                return matroschka;
+            var packageType = CheckMatroschkaPackage(package, includeDebug);
+            if (packageType != null)
+                return packageType;
 
             if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
