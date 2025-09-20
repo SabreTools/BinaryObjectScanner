@@ -11,10 +11,8 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
-    
     public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
     {
-                
         /// <summary>
         /// Matches hash of the Release Control-encrypted executable to known hashes
         /// </summary>
@@ -108,16 +106,13 @@ namespace BinaryObjectScanner.Protection
 
             // Check if executable contains a SecuROM Matroschka Package
 
-            if (exe.MatroschkaPackage != null)
-            {
-                var package = exe.MatroschkaPackage;
-                if (package == null)
-                    return null;
-                
-                var matroschka = CheckMatroschkaPackage(package, includeDebug);
-                if (matroschka != null)
-                    return matroschka;
-            }
+            var package = exe.MatroschkaPackage;
+            if (package == null)
+                return null;
+            
+            var matroschka = CheckMatroschkaPackage(package, includeDebug);
+            if (matroschka != null)
+                return matroschka;
 
             if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
