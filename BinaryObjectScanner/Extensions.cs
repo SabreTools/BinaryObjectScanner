@@ -4,6 +4,7 @@ using System.IO;
 
 namespace BinaryObjectScanner
 {
+    // TODO: Clean this up once IO is updated
     internal static class Extensions
     {
         /// <summary>
