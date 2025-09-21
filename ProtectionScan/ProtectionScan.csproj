@@ -39,4 +39,8 @@
         <ProjectReference Include="..\BinaryObjectScanner\BinaryObjectScanner.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="SabreTools.Serialization" Version="1.9.4" />
+    </ItemGroup>
+
 </Project>
