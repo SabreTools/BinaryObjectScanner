@@ -21,7 +21,9 @@ For the most recent stable build, download the latest release here: [Releases Pa
 
 For the latest WIP build here: [Rolling Release](https://github.com/SabreTools/BinaryObjectScanner/releases/tag/rolling)
 
-**NOTE**: If you used the executable information printing functionality in previous releases, that has been extracted as a separate program and included in the [SabreTools.Serialization repository](https://github.com/SabreTools/SabreTools.Serialization). It was formerly included there as a reference program but has since been renamed to **InfoPrint**. This was done to ensure that the latest information printing would be available instead of waiting for it to bubble up to BinaryObjectScanner.
+**NOTE**: If you used the extraction functionality in previous releases, that has been separated into a standalone program called **[ExtractionTool](https://github.com/SabreTools/SabreTools.Serialization)**.
+
+**NOTE**: If you used the information printing functionality in previous releases, that has been separated into a standalone program called **[InfoPrint](https://github.com/SabreTools/SabreTools.Serialization)**.
 
 ## Compatibility Notes
 
@@ -29,7 +31,7 @@ Binary Object Scanner strives to have both full compatibility for scanning acros
 
 - **7-zip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **bzip2 archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
-- **MoPaQ** - Extraction is only supported in Windows x86 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
+- **MoPaQ** - Extraction is only supported in Windows x86 and x64 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
 - **PKZIP and derived files (ZIP, etc.)** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **RAR archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **xz archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
@@ -194,45 +196,44 @@ Below is a list of game engines detected by BinaryObjectScanner. The two columns
 
 Below is a list of container formats that are supported in some way:
 
-| Format Name | Information Printing | Detection | Extraction | Notes |
-| --- | --- | --- | --- | --- |
-| 7-zip archive | No | Yes | Yes | Via `SharpCompress` |
-| AACS Media Key Block | Yes | Yes | N/A | BluRay and HD-DVD variants detected |
-| BD+ SVM | Yes | Yes | N/A | |
-| BFPK custom archive format | Yes | Yes | Yes | |
-| bzip2 archive | No | Yes | Yes | Via `SharpCompress` |
-| Compound File Binary (CFB) | Yes* | Yes | Yes | Only CFB common pieces printable |
-| gzip archive | No | Yes | Yes | |
-| Half-Life Game Cache File (GCF) | Yes | Yes | Yes | |
-| Half-Life Level (BSP) | Yes | Yes | Yes | |
-| Half-Life Package File (PAK) | Yes | Yes | Yes | |
-| Half-Life Texture Package File (WAD3) | Yes | Yes | Yes | |
-| Half-Life 2 Level (VBSP) | Yes | Yes | Yes | |
-| INI configuration file | No | No | No | Used in other detections currently |
-| InstallShield Archive V3 (Z) | No | Yes | Yes | |
-| InstallShield CAB | Yes | Yes | Yes | |
-| Linear Executable | No | No | No | Skeleton only |
-| Link Data Security encrypted file | No | Yes | No | |
-| Microsoft cabinet file | Yes | Yes | Yes* | Does not support LZX or Quantum compression |
-| Microsoft LZ-compressed files | No | Yes | Yes | |
-| MoPaQ game data archive (MPQ) | No | Yes | Yes* | Via `StormLibSharp`, Windows x86 only, .NET Framework 4.5.2 and above |
-| MS-DOS Executable | Yes | Yes | No | Incomplete |
-| New Exectuable | Yes | Yes | No | Incomplete |
-| Nintendo 3DS cart image | Yes | Yes | No | |
-| Nintendo CIA archive | Yes | Yes | No | |
-| Nintendo DS/DSi cart image | Yes | Yes | No | |
-| NovaLogic Game Archive Format (PFF) | Yes | Yes | Yes | |
-| PKZIP and derived files (ZIP, etc.) | No | Yes | Yes | Via `SharpCompress` |
-| PlayJ audio file (PLJ) | Yes* | Yes | No | Undocumented file format, many fields printed |
-| Portable Executable | Yes | Yes | No* | Some packed executables are supported |
-| Quantum archive (Q) | Yes | No | No | |
-| RAR archive (RAR) | No | Yes | Yes | Via `SharpCompress` |
-| SGA game archive | Yes | Yes | Yes | |
-| StarForce Filesystem file (SFFS) | No | Yes | No | Skeleton only |
-| Tape archive (TAR) | No | Yes | Yes | |
-| Valve Package File (VPK) | Yes | Yes | Yes | |
-| XBox Package File (XZP) | Yes | Yes | Yes | |
-| xz archive (XZ) | No | Yes | Yes | Via `SharpCompress` |
+| Format Name | Reported | Extracted | Notes |
+| --- | --- | --- | --- |
+| 7-zip archive | No | Yes | Via `SharpCompress` |
+| AACS Media Key Block | Yes | N/A | BluRay and HD-DVD variants detected |
+| BD+ SVM | Yes | N/A | |
+| BFPK custom archive format | No | Yes | |
+| bzip2 archive | No | Yes | Via `SharpCompress` |
+| Compound File Binary (CFB) | No | Yes | |
+| gzip archive | No | Yes | |
+| Half-Life Game Cache File (GCF) | No | Yes | |
+| Half-Life Level (BSP) | No | Yes | |
+| Half-Life Package File (PAK) | No | Yes | |
+| Half-Life Texture Package File (WAD3) | No | Yes | |
+| Half-Life 2 Level (VBSP) | No | Yes | |
+| INI configuration file | No | N/A | Used in other detections currently |
+| InstallShield Archive V3 (Z) | No | Yes | |
+| InstallShield CAB | No | Yes | |
+| Linear Executable | No* | No | No existing checks |
+| Link Data Security encrypted file | Yes | No | |
+| Microsoft cabinet file | No | Yes* | Does not support LZX or Quantum compression |
+| Microsoft LZ-compressed files | No | Yes | |
+| MoPaQ game data archive (MPQ) | No | Yes* | Via `StormLibSharp` |
+| MS-DOS Executable | No* | No | No existing checks |
+| New Exectuable | Yes | Yes | Subset of extractions implemented |
+| NovaLogic Game Archive Format (PFF) | No | Yes | |
+| PKZIP and derived files (ZIP, etc.) | No | Yes | Via `SharpCompress` |
+| PlayJ audio file (PLJ) | Yes | No | Undocumented file format |
+| Portable Executable | Yes | Yes | Subset of extractions implemented |
+| Quantum archive (Q) | No | No | Extraction disabled due to compatibility issues |
+| RAR archive (RAR) | No | Yes | Via `SharpCompress` |
+| RealArcade Installer (.rgs) | Yes | No | |
+| RealArcade Mezzanine (.mez) | Yes | No | |
+| SGA game archive | No | Yes | |
+| StarForce Filesystem file (SFFS) | Yes | No | |
+| Tape archive (TAR) | No | Yes | |
+| Valve Package File (VPK) | No | Yes | |
+| XBox Package File (XZP) | No | Yes | |
+| xz archive (XZ) | No | Yes | Via `SharpCompress` |
 
 ## Contributions
 
@@ -240,4 +241,4 @@ Contributions to the project are welcome. Please follow the current coding style
 
 ## Special Thanks
 
-I want to give a special thanks to [TheRogueArchivist](https://github.com/TheRogueArchivist) who has gone above and beyond helping both fix existing checks as well as add new ones.
+I want to give a special thanks to [TheRogueArchivist](https://github.com/TheRogueArchivist) and [HeroponRikiBestest](https://github.com/HeroponRikiBestest) who have gone above and beyond helping both fix existing checks as well as add new ones.
