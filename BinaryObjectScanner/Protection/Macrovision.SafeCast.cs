@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
 using SabreTools.Matching.Paths;

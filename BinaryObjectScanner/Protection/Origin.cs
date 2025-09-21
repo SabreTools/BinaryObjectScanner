@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;

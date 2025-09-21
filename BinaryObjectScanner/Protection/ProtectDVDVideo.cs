@@ -19,8 +19,7 @@ namespace BinaryObjectScanner.Protection
                 var ifofiles = files.FindAll(s => s.EndsWith(".ifo"));
                 for (int i = 0; i < ifofiles.Count; i++)
                 {
-                    var ifofile = new FileInfo(ifofiles[i]);
-                    if (ifofile.Length == 0)
+                    if (ifofiles[i].FileSize() == 0)
                     {
                         protections.Add("Protect DVD-Video (Unconfirmed - Please report to us on Github)");
                         break;

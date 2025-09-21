@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Content;
 using SabreTools.Matching.Paths;

@@ -1,4 +1,5 @@
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer

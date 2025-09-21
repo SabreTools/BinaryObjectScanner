@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Hashing;
+using SabreTools.IO.Extensions;
 using SabreTools.Matching;
 using SabreTools.Matching.Paths;
 using SabreTools.Serialization.Wrappers;
@@ -800,8 +801,7 @@ namespace BinaryObjectScanner.Protection
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            var fi = new FileInfo(firstMatchedString);
-            return fi.Length switch
+            return firstMatchedString.FileSize() switch
             {
                 // File size of "dplayerx.dll" and others is a commonly used indicator of SafeDisc version, though it has been found to not be completely consistent.
                 // Checks for versions 1.2X have been commented out, due to these versions already being detected via more accurate checks.
