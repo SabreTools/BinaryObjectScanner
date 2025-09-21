@@ -148,6 +148,8 @@ namespace BinaryObjectScanner.Protection
             if (v4Version != null)
                 return $"SecuROM {v4Version}";
 
+            // TODO: Investigate if this can be found by aligning to section containing entry point
+
             // Get the sections 5+, if they exist (example names: .fmqyrx, .vcltz, .iywiak)
             var sections = exe.SectionTable ?? [];
             for (int i = 4; i < sections.Length; i++)

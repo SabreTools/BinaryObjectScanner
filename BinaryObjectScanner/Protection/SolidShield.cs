@@ -75,6 +75,8 @@ namespace BinaryObjectScanner.Protection
             if (exe.FindResourceByNamedType("BIN, IDR_SGT").Count > 0)
                 return "SolidShield EXE Wrapper v1";
 
+            // TODO: Investigate if this can be found by aligning to section containing entry point
+
             // Search the last two available sections
             var sections = exe.SectionTable ?? [];
             for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)

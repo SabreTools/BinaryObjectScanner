@@ -16,6 +16,8 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            // TODO: Investigate if this can be found by aligning to section containing entry point
+
             // Get the 4th and 5th sections, if they exist (example names: ACE4/ACE5) (Found in Redump entries 94792, 94793)
             var sections = exe.SectionTable ?? [];
             for (int i = 3; i < sections.Length; i++)
@@ -50,6 +52,8 @@ namespace BinaryObjectScanner.Protection
                     return match;
             }
 
+            // TODO: Investigate if this can be found by aligning to section containing entry point
+
             // Get the second to last section
             if (sections.Length > 1)
             {
@@ -62,6 +66,8 @@ namespace BinaryObjectScanner.Protection
                         return $"VOB ProtectCD {GetOldVersion(str)}";
                 }
             }
+
+            // TODO: Investigate if this can be found by aligning to section containing entry point
 
             // Get the last section (example names: ACE5, akxpxgcv, and piofinqb)
             if (sections.Length > 0)
