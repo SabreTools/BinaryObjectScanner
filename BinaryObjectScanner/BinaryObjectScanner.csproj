@@ -26,6 +26,20 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
+    <!-- Support All Frameworks -->
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net4`))">
+        <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`netcoreapp`)) OR $(TargetFramework.StartsWith(`net5`))">
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net6`)) OR $(TargetFramework.StartsWith(`net7`)) OR $(TargetFramework.StartsWith(`net8`)) OR $(TargetFramework.StartsWith(`net9`))">
+        <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`osx-arm`))">
+        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+    </PropertyGroup>
+
     <!-- Set a build flag for Windows specifically -->
     <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
         <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
