@@ -20,7 +20,7 @@ namespace BinaryObjectScanner.Protection
                 return $"EA DRM Protection {exe.GetInternalVersion()}";
 
             name = exe.InternalName;
-            
+
             if (name.OptionalEquals("CDCode", StringComparison.Ordinal))
                 return $"EA CdKey Registration Module {exe.GetInternalVersion()}";
 

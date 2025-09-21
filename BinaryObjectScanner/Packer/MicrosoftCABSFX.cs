@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Packer
                 return $"Microsoft CAB SFX {GetVersion(exe)}";
 
             name = exe.OriginalFilename;
-            
+
             if (name.OptionalEquals("WEXTRACT.EXE", StringComparison.OrdinalIgnoreCase))
                 return $"Microsoft CAB SFX {GetVersion(exe)}";
 

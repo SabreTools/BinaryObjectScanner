@@ -52,7 +52,7 @@ namespace BinaryObjectScanner.Protection
             // "EasyAntiCheat Service" -> "EasyAntiCheat.exe", which is found installed in "Program Files (x86)\EasyAntiCheat" and "EasyAntiCheat_Setup.exe" ("Intruder", Update 2287, Steam).
 
             name = exe.ProductName;
-            
+
             // Found in multiple files, including "VideoHorrorSociety.exe" ("Video Horror Society", Patch 1.0.70309, Steam) and "start_protected_game.exe" ("VRChat", Version 2022.2.2p2, Oculus).
             if (!string.IsNullOrEmpty(name) && name!.Contains("Easy Anti-Cheat Bootstrapper (EOS)"))
                 return "Easy Anti-Cheat (EOS Version)";

@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Protection
                 // These checks are less reliable, as they are still found in a version of the game that appears to have patched out Roxxe (the version present in IA item "original-war").
                 if (strs.Exists(s => s.Contains("PRRT01")))
                     return "Roxxe (Possibly remnants)";
-                
+
                 if (strs.Exists(s => s.Contains("CommonPRRT")))
                     return "Roxxe (Possibly remnants)";
 

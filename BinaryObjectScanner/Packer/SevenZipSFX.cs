@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Packer
                 return "7-Zip SFX";
 
             name = exe.InternalName;
-            
+
             if (name.OptionalEquals("7z.sfx"))
                 return "7-Zip SFX";
             else if (name.OptionalEquals("7zS.sfx"))

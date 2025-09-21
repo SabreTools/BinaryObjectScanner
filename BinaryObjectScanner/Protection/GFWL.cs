@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             string? name = exe.FileDescription;
-            
+
             if (name.OptionalStartsWith("Games for Windows - LIVE Zero Day Piracy Protection", StringComparison.OrdinalIgnoreCase))
                 return $"Games for Windows LIVE - Zero Day Piracy Protection Module {exe.GetInternalVersion()}";
             else if (name.OptionalStartsWith("Games for Windows", StringComparison.OrdinalIgnoreCase))

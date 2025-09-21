@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Protection
                 return "WTM Protection Viewer";
 
             name = exe.ProductName;
-            
+
             if (name.OptionalContains("WTM Copy Protection Viewer"))
                 return "WTM Protection Viewer";
 

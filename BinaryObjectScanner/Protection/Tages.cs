@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
                 return $"TAGES Activation Client {GetVersion(exe)}";
 
             name = exe.ProductName;
-            
+
             if (name.OptionalStartsWith("Application TagesSetup", StringComparison.OrdinalIgnoreCase))
                 return $"TAGES Driver Setup {GetVersion(exe)}";
             else if (name.OptionalStartsWith("T@GES", StringComparison.OrdinalIgnoreCase))

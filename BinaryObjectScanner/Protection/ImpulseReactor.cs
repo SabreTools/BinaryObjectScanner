@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
                 return $"Impulse Reactor Core Module {exe.GetInternalVersion()}";
 
             name = exe.OriginalFilename;
-            
+
             if (name.OptionalContains("ReactorActivate.exe"))
                 return $"Stardock Product Activation {exe.GetInternalVersion()}";
 

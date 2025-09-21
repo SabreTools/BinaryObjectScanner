@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
                 return $"MediaMax CD-3";
 
             name = exe.ProductName;
-            
+
             if (name.OptionalStartsWith("LicGen Module", StringComparison.OrdinalIgnoreCase))
                 return $"MediaMax CD-3";
 

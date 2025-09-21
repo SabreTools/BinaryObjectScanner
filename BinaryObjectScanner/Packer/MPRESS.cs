@@ -12,11 +12,11 @@ namespace BinaryObjectScanner.Packer
         {
             // TODO: Confirm if both need to be present 
             // TODO: Figure out how to get version
-            
+
             if (exe.ContainsSection(".MPRESS1"))
-                return "MPRESS"; 
+                return "MPRESS";
             if (exe.ContainsSection(".MPRESS2"))
-                return "MPRESS"; 
+                return "MPRESS";
 
             return null;
         }

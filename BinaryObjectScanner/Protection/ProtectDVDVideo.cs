@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
                     }
                 }
             }
-            
+
             return protections;
         }
 

@@ -609,7 +609,7 @@ namespace BinaryObjectScanner.Protection
 
                     // Found in Redump entries 9617 and 49552. 
                     or "1.35.000"
-                    
+
                     // Found in Redump entries 2595 and 30121.
                     or "1.40.004"
 
@@ -739,7 +739,7 @@ namespace BinaryObjectScanner.Protection
                     // RealNetworks presumably acquired SafeDisc when they purchased Trymedia from Macrovision (https://realnetworks.com/press/releases/2008/realnetworks-acquire-trymedia-macrovision).
                     // Due to this being the only known sample, it may be that they did a trial run of a new version of SafeDisc, before deciding against continuing its development.
                     or "4.91.000"
-                    
+
                     => "SafeDisc",
 
                 // SafeDisc (Unconfirmed)
