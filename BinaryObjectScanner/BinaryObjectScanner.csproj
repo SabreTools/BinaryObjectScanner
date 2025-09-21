@@ -26,6 +26,14 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
+    <!-- Set a build flag for Windows specifically -->
+    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
+        <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
+        <DefineConstants>$(DefineConstants);WINX64</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <InternalsVisibleTo Include="BinaryObjectScanner.Test" />
     </ItemGroup>
