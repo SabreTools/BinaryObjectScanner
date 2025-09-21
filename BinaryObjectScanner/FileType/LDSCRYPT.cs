@@ -15,7 +15,9 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
-                byte[] magic = stream.ReadBytes(16);
+                int bytesToRead = (int)Math.Min(16, stream.Length);
+                byte[] magic = stream.ReadBytes(bytesToRead);
+
                 if (magic.StartsWith(new byte?[] { 0x4C, 0x44, 0x53, 0x43, 0x52, 0x59, 0x50, 0x54 }))
                     return "Link Data Security encrypted file";
             }

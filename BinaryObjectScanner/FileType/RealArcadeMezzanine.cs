@@ -17,7 +17,8 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
-                byte[] magic = stream.ReadBytes(16);
+                int bytesToRead = (int)Math.Min(16, stream.Length);
+                byte[] magic = stream.ReadBytes(bytesToRead);
 
                 // XZip2.0
                 // Found in the ".mez" files in IA item "Nova_RealArcadeCD_USA".

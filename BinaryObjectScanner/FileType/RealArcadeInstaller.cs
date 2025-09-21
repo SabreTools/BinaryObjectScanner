@@ -17,7 +17,8 @@ namespace BinaryObjectScanner.FileType
         {
             try
             {
-                byte[] magic = stream.ReadBytes(16);
+                int bytesToRead = (int)Math.Min(16, stream.Length);
+                byte[] magic = stream.ReadBytes(bytesToRead);
 
                 // RASGI2.0
                 // Found in the ".rgs" files in IA item "Nova_RealArcadeCD_USA".

@@ -290,7 +290,8 @@ namespace BinaryObjectScanner
                 byte[] magic;
                 try
                 {
-                    magic = stream.ReadBytes(16);
+                    int bytesToRead = (int)Math.Min(16, stream.Length);
+                    magic = stream.ReadBytes(bytesToRead);
                     stream.Seek(0, SeekOrigin.Begin);
                 }
                 catch (Exception ex)
