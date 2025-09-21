@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Protection
             {"EAD8E224D0F44706BA92BD9B27FEBA7D", "Need for Speed - The Run (USA)"},
             {"316FF217BD129F9EEBD05A321A8FBE60", "Syndicate (USA)+(Europe) (En,Fr,De,Es,It,Ru)"},
         };
-        
+
         /// <summary>
         /// If hash isn't currently known, check size and pathname of the encrypted executable
         /// to determine if alt or entirely missing
@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.Protection
             {45211355, "BatmanAC.aec"},
             {48093043, "deadspace_f.aec"},
         };
-        
+
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
@@ -112,26 +112,26 @@ namespace BinaryObjectScanner.Protection
             {
                 var packageType = CheckMatroschkaPackage(package, includeDebug);
                 if (packageType != null)
-                    return packageType;  
+                    return packageType;
             }
-            
+
             // Alf.dll
             string? name = exe.ProductName;
             if (name.OptionalEquals("DFA Unlock Dll"))
                 return $"SecuROM DFA Unlock v{exe.GetInternalVersion()}";
-            
+
             if (name.OptionalEquals("Release Control Unlock Dll"))
                 return $"SecuROM Release Control Unlock v{exe.GetInternalVersion()}";
-            
+
             // Dfa.dll and ca.dll. The former seems to become the latter later on.
             name = exe.FileDescription;
             if (name.OptionalEquals("SecuROM Data File Activation Library"))
                 return $"SecuROM Data File Activation v{exe.GetInternalVersion()}";
-            
+
             // Copyright is only checked because "Content Activation Library" seems broad on its own.
             if (name.OptionalEquals("Content Activation Library") && exe.LegalCopyright.OptionalContains("Sony DADC Austria AG"))
                 return $"SecuROM Content Activation v{exe.GetInternalVersion()}";
-            
+
             if (exe.ContainsSection(".dsstext", exact: true))
                 return $"SecuROM 8.03.03+";
 
@@ -421,30 +421,30 @@ namespace BinaryObjectScanner.Protection
                 return "SecuROM Matroschka Package";
 
             if (package.Entries == null || package.Entries.Length == 0)
-                return "SecuROM Matroschka Package - No Entries? - Please report to us on GitHub"; 
-                
+                return "SecuROM Matroschka Package - No Entries? - Please report to us on GitHub";
+
             // The second entry in a Release Control matroschka package is always the encrypted executable
-            var entry = package.Entries[1]; 
-            
+            var entry = package.Entries[1];
+
             if (entry.MD5 == null || entry.MD5.Length == 0)
-                return "SecuROM Matroschka Package - No MD5? - Please report to us on GitHub"; 
+                return "SecuROM Matroschka Package - No MD5? - Please report to us on GitHub";
 
             string md5String = BitConverter.ToString(entry.MD5!);
             md5String = md5String.ToUpperInvariant().Replace("-", string.Empty);
-            
+
             // TODO: Not used yet, but will be in the future
             var fileData = package.ReadFileData(entry, includeDebug);
-            
+
             // Check if encrypted executable is known via hash
             if (MatroschkaHashDictionary.TryGetValue(md5String, out var gameName))
                 return $"SecuROM Release Control -  {gameName}";
-            
+
             // If not known, check if encrypted executable is likely an alt signing of a known executable
             // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
             var readPathBytes = entry.Path;
             if (readPathBytes == null || readPathBytes.Length == 0)
                 return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size} - Please report to us on GitHub!";
-            
+
             var readPathName = Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0');
             if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out var pathName) && pathName == readPathName)
                 return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size} - Please report to us on GitHub";
@@ -492,7 +492,7 @@ namespace BinaryObjectScanner.Protection
             // Regardless, even if these are given their own named variant later, this check should remain in order to
             // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
             // detection abilities.
-            
+
             name = exe.ExportTable?.ExportNameTable?.Strings?[0];
             if (name.OptionalEquals("drm_pagui_doit"))
             {
@@ -500,7 +500,7 @@ namespace BinaryObjectScanner.Protection
                 var version = exe.GetInternalVersion();
                 if (string.IsNullOrEmpty(version))
                     return $"SecuROM Product Activation - Modified";
-                
+
                 return $"SecuROM Product Activation v{exe.GetInternalVersion()} - Modified";
             }
 
