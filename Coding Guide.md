@@ -358,7 +358,6 @@ This section contains information on project and class organization principles t
 | Project | Description |
 | --- | --- |
 | `BinaryObjectScanner` | One file per class. See below for details on subdirectories. |
-| `BinaryObjectScanner/_EXTERNAL` | One directory per external project. |
 | `BinaryObjectScanner/FileType` | One file per file type. |
 | `BinaryObjectScanner/GameEngine` | At least one file per game engine. Partial classes allowed. |
 | `BinaryObjectScanner/Interfaces` | One file per interface. |
