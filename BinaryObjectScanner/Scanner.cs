@@ -297,9 +297,6 @@ namespace BinaryObjectScanner
                 return [];
             }
 
-            // Initialize the protections found
-            var protections = new ProtectionDictionary();
-
             // Get the extension for certain checks
             string extension = Path.GetExtension(fileName).ToLower().TrimStart('.');
 
@@ -327,6 +324,9 @@ namespace BinaryObjectScanner
 
             // Get the wrapper, if possible
             var wrapper = WrapperFactory.CreateWrapper(fileType, stream);
+
+            // Initialize the protections found
+            var protections = new ProtectionDictionary();
 
             #region Non-Archive File Types
 
