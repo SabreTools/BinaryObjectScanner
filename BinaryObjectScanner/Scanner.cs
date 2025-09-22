@@ -251,6 +251,26 @@ namespace BinaryObjectScanner
                 using FileStream fs = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 return GetInternalProtections(fs.Name, fs, depth);
             }
+            catch (DirectoryNotFoundException ex)
+            {
+                if (_includeDebug) Console.WriteLine(ex);
+
+                return [];
+            }
+            catch (FileNotFoundException ex)
+            {
+                if (_includeDebug) Console.WriteLine(ex);
+
+                return [];
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                if (_includeDebug) Console.WriteLine(ex);
+
+                var protections = new ProtectionDictionary();
+                protections.Append(file, _includeDebug ? ex.ToString() : "[Access issue when opening file, please check permissions and try again]");
+                return protections;
+            }
             catch (Exception ex)
             {
                 if (_includeDebug) Console.WriteLine(ex);
@@ -283,97 +303,96 @@ namespace BinaryObjectScanner
             // Get the extension for certain checks
             string extension = Path.GetExtension(fileName).ToLower().TrimStart('.');
 
-            // Open the file and begin scanning
+            // Get the first 16 bytes for matching
+            byte[] magic;
             try
             {
-                // Get the first 16 bytes for matching
-                byte[] magic;
+                int bytesToRead = (int)Math.Min(16, stream.Length);
+                magic = stream.ReadBytes(bytesToRead);
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+            catch (Exception ex)
+            {
+                if (_includeDebug) Console.Error.WriteLine(ex);
+                return [];
+            }
+
+            // Get the file type either from magic number or extension
+            WrapperType fileType = WrapperFactory.GetFileType(magic, extension);
+            if (fileType == WrapperType.UNKNOWN)
+            {
+                if (_includeDebug) Console.WriteLine($"{fileName} not a scannable file type, skipping...");
+                return [];
+            }
+
+            // Get the wrapper, if possible
+            var wrapper = WrapperFactory.CreateWrapper(fileType, stream);
+
+            #region Non-Archive File Types
+
+            // Try to scan file contents
+            var detectable = CreateDetectable(fileType, wrapper);
+            if (_scanContents && detectable != null)
+            {
                 try
-                {
-                    int bytesToRead = (int)Math.Min(16, stream.Length);
-                    magic = stream.ReadBytes(bytesToRead);
-                    stream.Seek(0, SeekOrigin.Begin);
-                }
-                catch (Exception ex)
-                {
-                    if (_includeDebug) Console.Error.WriteLine(ex);
-                    return [];
-                }
-
-                // Get the file type either from magic number or extension
-                WrapperType fileType = WrapperFactory.GetFileType(magic, extension);
-                if (fileType == WrapperType.UNKNOWN)
-                {
-                    if (_includeDebug) Console.WriteLine($"{fileName} not a scannable file type, skipping...");
-                    return [];
-                }
-
-                // Get the wrapper, if possible
-                var wrapper = WrapperFactory.CreateWrapper(fileType, stream);
-
-                #region Non-Archive File Types
-
-                // Try to scan file contents
-                var detectable = CreateDetectable(fileType, wrapper);
-                if (_scanContents && detectable != null)
                 {
                     var subProtection = detectable.Detect(stream, fileName, _includeDebug);
                     protections.Append(fileName, subProtection);
                 }
-
-                #endregion
-
-                #region Archive File Types
-
-                // If we're scanning archives
-                if (_scanArchives && wrapper is IExtractable extractable)
+                catch (Exception ex)
                 {
-                    // If the extractable file itself fails
+                    if (_includeDebug) Console.WriteLine(ex);
+                    protections.Append(fileName, _includeDebug ? ex.ToString() : "[Exception opening file, please try again]");
+                }
+            }
+
+            #endregion
+
+            #region Archive File Types
+
+            // If we're scanning archives
+            if (_scanArchives && wrapper is IExtractable extractable)
+            {
+                // If the extractable file itself fails
+                try
+                {
+                    // Extract and get the output path
+                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempPath);
+                    _ = extractable.Extract(tempPath, _includeDebug);
+
+                    // Check if any files extracted
+                    if (IOExtensions.SafeGetFiles(tempPath).Length > 0)
+                    {
+                        // Scan the output path
+                        var subProtections = GetProtectionsImpl(tempPath, depth + 1);
+
+                        // Prepare the returned values
+                        subProtections.StripFromKeys(tempPath);
+                        subProtections.PrependToKeys(fileName);
+
+                        // Append the values
+                        protections.Append(subProtections);
+                    }
+
+                    // If temp directory cleanup fails
                     try
                     {
-                        // Extract and get the output path
-                        string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                        Directory.CreateDirectory(tempPath);
-                        _ = extractable.Extract(tempPath, _includeDebug);
-
-                        // Check if any files extracted
-                        if (IOExtensions.SafeGetFiles(tempPath).Length > 0)
-                        {
-                            // Scan the output path
-                            var subProtections = GetProtectionsImpl(tempPath, depth + 1);
-
-                            // Prepare the returned values
-                            subProtections.StripFromKeys(tempPath);
-                            subProtections.PrependToKeys(fileName);
-
-                            // Append the values
-                            protections.Append(subProtections);
-                        }
-
-                        // If temp directory cleanup fails
-                        try
-                        {
-                            if (Directory.Exists(tempPath))
-                                Directory.Delete(tempPath, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (_includeDebug) Console.Error.WriteLine(ex);
-                        }
+                        if (Directory.Exists(tempPath))
+                            Directory.Delete(tempPath, true);
                     }
                     catch (Exception ex)
                     {
                         if (_includeDebug) Console.Error.WriteLine(ex);
                     }
                 }
+                catch (Exception ex)
+                {
+                    if (_includeDebug) Console.Error.WriteLine(ex);
+                }
+            }
 
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                if (_includeDebug) Console.WriteLine(ex);
-                protections.Append(fileName, _includeDebug ? ex.ToString() : "[Exception opening file, please try again]");
-            }
+            #endregion
 
             // Clear out any empty keys
             protections.ClearEmptyKeys();
