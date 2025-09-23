@@ -6,7 +6,6 @@
 using System;
 using System.Threading;
 using System.Diagnostics;
-using BinaryObjectScanner;
 
 namespace ProtectionScan
 {
