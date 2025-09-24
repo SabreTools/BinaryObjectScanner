@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -48,9 +48,9 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the export name table
-            if (exe.ExportTable?.ExportNameTable?.Strings != null)
+            if (exe.ExportNameTable?.Strings != null)
             {
-                if (Array.Exists(exe.ExportTable.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
+                if (Array.Exists(exe.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
                     return "MediaMax CD-3";
             }
 

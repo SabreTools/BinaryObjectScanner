@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SabreTools.Serialization" Version="1.9.5" />
+        <PackageReference Include="SabreTools.Serialization" Version="1.9.6" />
     </ItemGroup>
 
 </Project>

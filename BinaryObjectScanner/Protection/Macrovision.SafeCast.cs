@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Content;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -75,9 +74,9 @@ namespace BinaryObjectScanner.Protection
             // TODO: Invesitgate if the "AdobeLM.dll" file (along with mentions of "AdobeLM" in executables) uniquely identifies SafeCast, or if it can be used with different DRM. (Found in IA item ccd0605)
 
             // Get the import directory table, if it exists
-            if (exe.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.ImportTable.ImportDirectoryTable,
+                if (Array.Exists(exe.ImportDirectoryTable,
                     idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "SafeCast";

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -67,7 +67,7 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("ByteShield Client"))
                 return $"ByteShield Activation Client {exe.GetInternalVersion()}";
 
-            name = exe.ExportTable?.ExportDirectoryTable?.Name;
+            name = exe.ExportDirectoryTable?.Name;
 
             // Found in "ByteShield.dll" in Redump entry 6236
             if (name.OptionalEquals("ByteShield Client"))

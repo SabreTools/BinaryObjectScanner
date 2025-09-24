@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Content;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
-using OHMN = SabreTools.Models.PortableExecutable.OptionalHeaderMagicNumber;
+using OHMN = SabreTools.Models.COFF.OptionalHeaderMagicNumber;
 
 namespace BinaryObjectScanner.Protection
 {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -65,10 +65,10 @@ namespace BinaryObjectScanner.Protection
             // Check the executable tables
             position = exe.StubExecutableData?.FirstPosition(check) ?? -1;
             bool containsCheck = position > -1;
-            bool containsCheck2 = Array.Exists(exe.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
-                && Array.Exists(exe.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
-                && Array.Exists(exe.ImportTable?.HintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
-                && Array.Exists(exe.ImportTable?.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
+            bool containsCheck2 = Array.Exists(exe.ImportHintNameTable ?? [], hnte => hnte?.Name == "GetModuleHandleA")
+                && Array.Exists(exe.ImportHintNameTable ?? [], hnte => hnte?.Name == "GetProcAddress")
+                && Array.Exists(exe.ImportHintNameTable ?? [], hnte => hnte?.Name == "LoadLibraryA")
+                && Array.Exists(exe.ImportDirectoryTable ?? [], idte => idte?.Name == "KERNEL32.dll");
 
             int position2 = -1;
 

@@ -4,6 +4,7 @@ using System.IO;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
+using SabreTools.Serialization;
 using SabreTools.Serialization.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
@@ -477,20 +478,20 @@ namespace BinaryObjectScanner
             {
                 case AACSMediaKeyBlock obj: return new FileType.AACSMediaKeyBlock(obj);
                 case BDPlusSVM obj: return new FileType.BDPlusSVM(obj);
+                case LDSCRYPT obj: return new FileType.LDSCRYPT(obj);
                 case LinearExecutable obj: return new FileType.LinearExecutable(obj);
                 case MSDOS obj: return new FileType.MSDOS(obj);
                 case NewExecutable obj: return new FileType.NewExecutable(obj);
                 case PlayJAudioFile obj: return new FileType.PLJ(obj);
                 case PortableExecutable obj: return new FileType.PortableExecutable(obj);
+                case RealArcadeInstaller obj: return new FileType.RealArcadeInstaller(obj);
+                case RealArcadeMezzanine obj: return new FileType.RealArcadeMezzanine(obj);
+                case SFFS obj: return new FileType.SFFS(obj);
             }
 
             // Fall back on the file type for types not implemented in Serialization
             return fileType switch
             {
-                WrapperType.LDSCRYPT => new FileType.LDSCRYPT(),
-                WrapperType.RealArcadeInstaller => new FileType.RealArcadeInstaller(),
-                WrapperType.RealArcadeMezzanine => new FileType.RealArcadeMezzanine(),
-                WrapperType.SFFS => new FileType.SFFS(),
                 WrapperType.Textfile => new FileType.Textfile(),
                 _ => null,
             };

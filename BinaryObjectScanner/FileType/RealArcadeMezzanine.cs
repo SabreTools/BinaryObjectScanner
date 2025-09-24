@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using SabreTools.IO.Extensions;
-using SabreTools.Matching;
+﻿using System.IO;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -10,27 +7,13 @@ namespace BinaryObjectScanner.FileType
     /// 
     /// TODO: Add further parsing, game ID should be possible to parse.
     /// </summary>
-    public class RealArcadeMezzanine : DetectableBase
+    public class RealArcadeMezzanine : DetectableBase<SabreTools.Serialization.Wrappers.RealArcadeMezzanine>
     {
         /// <inheritdoc/>
+        public RealArcadeMezzanine(SabreTools.Serialization.Wrappers.RealArcadeMezzanine wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
-        {
-            try
-            {
-                int bytesToRead = (int)Math.Min(16, stream.Length);
-                byte[] magic = stream.ReadBytes(bytesToRead);
-
-                // XZip2.0
-                // Found in the ".mez" files in IA item "Nova_RealArcadeCD_USA".
-                if (magic.StartsWith(new byte?[] { 0x58, 0x5A, 0x69, 0x70, 0x32, 0x2E, 0x30 }))
-                    return "RealArcade Mezzanine";
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-            }
-
-            return null;
-        }
+            => "RealArcade Mezzanine";
     }
 }

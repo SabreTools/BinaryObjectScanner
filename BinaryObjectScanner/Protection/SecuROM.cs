@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Content;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -441,11 +440,11 @@ namespace BinaryObjectScanner.Protection
 
             // If not known, check if encrypted executable is likely an alt signing of a known executable
             // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
-            var readPathBytes = entry.Path;
-            if (readPathBytes == null || readPathBytes.Length == 0)
+            var readPath = entry.Path;
+            if (readPath == null || readPath.Length == 0)
                 return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size} - Please report to us on GitHub!";
 
-            var readPathName = Encoding.ASCII.GetString(readPathBytes).TrimEnd('\0');
+            var readPathName = readPath.TrimEnd('\0');
             if (MatroschkaSizeFilenameDictionary.TryGetValue(entry.Size, out var pathName) && pathName == readPathName)
                 return $"SecuROM Release Control - Unknown possible alt executable of size {entry.Size} - Please report to us on GitHub";
 
@@ -493,7 +492,7 @@ namespace BinaryObjectScanner.Protection
             // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
             // detection abilities.
 
-            name = exe.ExportTable?.ExportNameTable?.Strings?[0];
+            name = exe.ExportNameTable?.Strings?[0];
             if (name.OptionalEquals("drm_pagui_doit"))
             {
                 // Not all of them are guaranteed to have an internal version

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -20,11 +20,11 @@ namespace BinaryObjectScanner.Protection
             // Most every tested sample of "engine32.dll" has a product name of "engine32", and the file description typically follows the naming pattern of "[Game Name] DLL-helper".
 
             // Detects Engine32 within the game executables that contain it.
-            if (exe.ImportTable?.ImportDirectoryTable != null && exe.ImportTable?.HintNameTable != null)
+            if (exe.ImportDirectoryTable != null && exe.ImportHintNameTable != null)
             {
-                bool importDirectoryTableMatch = Array.Exists(exe.ImportTable.ImportDirectoryTable,
+                bool importDirectoryTableMatch = Array.Exists(exe.ImportDirectoryTable,
                     idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
-                bool hintNameTableMatch = Array.Exists(exe.ImportTable.HintNameTable,
+                bool hintNameTableMatch = Array.Exists(exe.ImportHintNameTable,
                     ihne => ihne?.Name == "InitEngine");
 
                 // The Hint/Name Table Entry "DeinitEngine" is present in every tested sample, aside from TOCA Race Driver 2 (Redump entries 104593-104596).
@@ -33,10 +33,10 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Detects Engine32 within the file "engine32.dll".
-            if (exe.ExportTable?.ExportNameTable?.Strings != null)
+            if (exe.ExportNameTable?.Strings != null)
             {
-                bool exportNameTableMatch1 = Array.Exists(exe.ExportTable.ExportNameTable.Strings, s => s == "engine32.dll");
-                bool exportNameTableMatch2 = Array.Exists(exe.ExportTable.ExportNameTable.Strings, s => s == "DeinitEngine");
+                bool exportNameTableMatch1 = Array.Exists(exe.ExportNameTable.Strings, s => s == "engine32.dll");
+                bool exportNameTableMatch2 = Array.Exists(exe.ExportNameTable.Strings, s => s == "DeinitEngine");
 
                 if (exportNameTableMatch1 && exportNameTableMatch2)
                     return "Engine32";

@@ -6,11 +6,14 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class LDSCRYPTTests
     {
+        private static readonly SabreTools.Serialization.Wrappers.LDSCRYPT wrapper
+            = new(new SabreTools.Models.LDSCRYPT.EncryptedFile(), new MemoryStream(new byte[1024]));
+
         [Fact]
         public void DetectFile_EmptyString_Null()
         {
             string file = string.Empty;
-            var detectable = new LDSCRYPT();
+            var detectable = new LDSCRYPT(wrapper);
 
             string? actual = detectable.Detect(file, includeDebug: false);
             Assert.Null(actual);
@@ -21,10 +24,10 @@ namespace BinaryObjectScanner.Test.FileType
         {
             Stream? stream = new MemoryStream();
             string file = string.Empty;
-            var detectable = new LDSCRYPT();
+            var detectable = new LDSCRYPT(wrapper);
 
             string? actual = detectable.Detect(stream, file, includeDebug: false);
-            Assert.Null(actual);
+            Assert.Equal("LDSCRYPT", actual);
         }
     }
 }

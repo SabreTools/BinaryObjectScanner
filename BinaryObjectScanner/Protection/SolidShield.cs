@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Content;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -93,15 +92,15 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the import directory table, if it exists
-            if (exe.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
+                if (Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
                     return "SolidShield EXE Wrapper v1";
 
-                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
+                if (Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name == "activation.x86.dll"))
                     return "SolidShield EXE Wrapper v2";
 
-                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
+                if (Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name == "activation.x64.dll"))
                     return "SolidShield EXE Wrapper v2";
             }
 

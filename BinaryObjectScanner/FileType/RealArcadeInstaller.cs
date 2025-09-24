@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using SabreTools.IO.Extensions;
-using SabreTools.Matching;
+﻿using System.IO;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -10,27 +7,13 @@ namespace BinaryObjectScanner.FileType
     /// 
     /// TODO: Add further parsing, game ID and name should be possible to parse.
     /// </summary>
-    public class RealArcadeInstaller : DetectableBase
+    public class RealArcadeInstaller : DetectableBase<SabreTools.Serialization.Wrappers.RealArcadeInstaller>
     {
         /// <inheritdoc/>
+        public RealArcadeInstaller(SabreTools.Serialization.Wrappers.RealArcadeInstaller wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
-        {
-            try
-            {
-                int bytesToRead = (int)Math.Min(16, stream.Length);
-                byte[] magic = stream.ReadBytes(bytesToRead);
-
-                // RASGI2.0
-                // Found in the ".rgs" files in IA item "Nova_RealArcadeCD_USA".
-                if (magic.StartsWith(new byte?[] { 0x52, 0x41, 0x53, 0x47, 0x49, 0x32, 0x2E, 0x30 }))
-                    return "RealArcade Installer";
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-            }
-
-            return null;
-        }
+            => "RealArcade Installer";
     }
 }

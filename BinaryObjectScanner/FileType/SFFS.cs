@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using SabreTools.IO.Extensions;
-using SabreTools.Matching;
+﻿using System.IO;
 
 namespace BinaryObjectScanner.FileType
 {
@@ -10,25 +7,13 @@ namespace BinaryObjectScanner.FileType
     /// </summary>
     /// <see href="https://forum.xentax.com/viewtopic.php?f=21&t=2084"/>
     /// TODO: Implement extraction
-    public class SFFS : DetectableBase
+    public class SFFS : DetectableBase<SabreTools.Serialization.Wrappers.SFFS>
     {
         /// <inheritdoc/>
+        public SFFS(SabreTools.Serialization.Wrappers.SFFS wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
-        {
-            try
-            {
-                int bytesToRead = (int)Math.Min(16, stream.Length);
-                byte[] magic = stream.ReadBytes(bytesToRead);
-
-                if (magic.StartsWith(new byte?[] { 0x53, 0x46, 0x46, 0x53 }))
-                    return "StarForce Filesystem Container";
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-            }
-
-            return null;
-        }
+            => "StarForce Filesystem Container";
     }
 }

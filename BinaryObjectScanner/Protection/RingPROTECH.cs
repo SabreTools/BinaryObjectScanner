@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Matching;
-using SabreTools.Matching.Content;
-using SabreTools.Matching.Paths;
+using SabreTools.IO;
+using SabreTools.IO.Matching;
 
 namespace BinaryObjectScanner.Protection
 {

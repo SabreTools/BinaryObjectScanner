@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -29,19 +29,19 @@ namespace BinaryObjectScanner.Protection
             // TODO: Investigate the numerous ".guard" sections present in "Randevu.exe" in Redump entry 97142.
 
             // Get the export directory table
-            if (exe.ExportTable?.ExportDirectoryTable != null)
+            if (exe.ExportDirectoryTable != null)
             {
                 // Found in "cdguard.dll" in Redump entry 97142 and IA item "pahgeby-he3hakomkou".
-                bool match = exe.ExportTable.ExportDirectoryTable.Name.OptionalEquals("cdguard.dll", StringComparison.OrdinalIgnoreCase);
+                bool match = exe.ExportDirectoryTable.Name.OptionalEquals("cdguard.dll", StringComparison.OrdinalIgnoreCase);
                 if (match)
                     return "CD-Guard Copy Protection System";
             }
 
             // Get the import directory table
-            if (exe.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable != null)
             {
                 // Found in "Randevu.exe" in Redump entry 97142.
-                bool match = Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name != null && idte.Name.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase));
+                bool match = Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name != null && idte.Name.Equals("cdguard.dll", StringComparison.OrdinalIgnoreCase));
                 if (match)
                     return "CD-Guard Copy Protection System";
             }

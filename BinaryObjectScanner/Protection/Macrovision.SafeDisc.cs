@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Hashing;
+using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -52,16 +52,16 @@ namespace BinaryObjectScanner.Protection
         internal static string? SafeDiscCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in Redump entry 57986.
-            if (exe.ImportTable?.HintNameTable != null)
+            if (exe.ImportHintNameTable != null)
             {
-                if (Array.Exists(exe.ImportTable.HintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
+                if (Array.Exists(exe.ImportHintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
                     return "SafeDisc Lite";
             }
 
             // Found in Redump entry 57986.
-            if (exe.ImportTable?.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable != null)
             {
-                if (Array.Exists(exe.ImportTable.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
+                if (Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
                     return "SafeDisc Lite";
             }
 

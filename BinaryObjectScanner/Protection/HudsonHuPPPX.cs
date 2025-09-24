@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Matching;
-using SabreTools.Matching.Paths;
+using SabreTools.IO;
+using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -20,17 +20,13 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            var exportTable = exe.ExportTable;
-            if (exportTable != null)
-            {
-                // Found in Bomberman Vol 2 (Japan)
-                if (exportTable.ExportDirectoryTable?.Name == "HVCDISSR.DLL")
-                    return "Hudson huPPPX";
+            // Found in Bomberman Vol 2 (Japan)
+            if (exe.ExportDirectoryTable?.Name == "HVCDISSR.DLL")
+                return "Hudson huPPPX";
 
-                // Found in Bomberman Vol 2 (Japan)
-                if (Array.Exists(exportTable.ExportNameTable?.Strings ?? [], s => s.StartsWith("HVRCD_IS_")))
-                    return "Hudson huPPPX";
-            }
+            // Found in Bomberman Vol 2 (Japan)
+            if (Array.Exists(exe.ExportNameTable?.Strings ?? [], s => s.StartsWith("HVRCD_IS_")))
+                return "Hudson huPPPX";
 
             return null;
         }

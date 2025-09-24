@@ -1,32 +1,17 @@
-﻿using System;
-using System.IO;
-using SabreTools.IO.Extensions;
-using SabreTools.Matching;
+﻿using System.IO;
 
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// Link Data Security encrypted file
     /// </summary>
-    public class LDSCRYPT : DetectableBase
+    public class LDSCRYPT : DetectableBase<SabreTools.Serialization.Wrappers.LDSCRYPT>
     {
         /// <inheritdoc/>
+        public LDSCRYPT(SabreTools.Serialization.Wrappers.LDSCRYPT wrapper) : base(wrapper) { }
+
+        /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)
-        {
-            try
-            {
-                int bytesToRead = (int)Math.Min(16, stream.Length);
-                byte[] magic = stream.ReadBytes(bytesToRead);
-
-                if (magic.StartsWith(new byte?[] { 0x4C, 0x44, 0x53, 0x43, 0x52, 0x59, 0x50, 0x54 }))
-                    return "Link Data Security encrypted file";
-            }
-            catch (Exception ex)
-            {
-                if (includeDebug) Console.Error.WriteLine(ex);
-            }
-
-            return null;
-        }
+            => "LDSCRYPT";
     }
 }

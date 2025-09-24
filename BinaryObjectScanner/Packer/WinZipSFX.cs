@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Check the export directory table, if it exists
-            if (exe.ExportTable?.ExportDirectoryTable != null)
+            if (exe.ExportDirectoryTable != null)
             {
                 var version = GetPEExportDirectoryVersion(exe);
                 if (!string.IsNullOrEmpty(version))
@@ -621,8 +621,8 @@ namespace BinaryObjectScanner.Packer
         /// TODO: Research to see if the versions are embedded elsewhere in these files
         private static string? GetPEExportDirectoryVersion(PortableExecutable exe)
         {
-            string sfxFileName = exe.ExportTable?.ExportDirectoryTable?.Name ?? string.Empty;
-            uint sfxTimeDateStamp = exe.ExportTable?.ExportDirectoryTable?.TimeDateStamp ?? uint.MaxValue;
+            string sfxFileName = exe.ExportDirectoryTable?.Name ?? string.Empty;
+            uint sfxTimeDateStamp = exe.ExportDirectoryTable?.TimeDateStamp ?? uint.MaxValue;
             string assemblyVersion = exe.AssemblyVersion ?? "Unknown Version";
 
             // Standard
