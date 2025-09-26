@@ -11,6 +11,12 @@ namespace BinaryObjectScanner.Packer
     // executables, then every single file appears embedded in the first's overlay.
     // While this technically extracts the data, it does so improperly. It may require
     // using the size of image and headers for overlay-extracted data.
+    //
+    // Further research shows that there is a signature at the end of the overlay:
+    // "41 44 56 49 4E 53 54 53 46 58 00 00" (ADVINSTSFX\0\0)
+    // Above it is something resembling the central directory of a PKZIP file,
+    // including clear entries that represent each file. This structure needs to
+    // be documented in Models.
     public class AdvancedInstaller : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
