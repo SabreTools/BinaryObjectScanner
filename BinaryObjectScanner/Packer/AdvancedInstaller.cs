@@ -17,6 +17,16 @@ namespace BinaryObjectScanner.Packer
     // Above it is something resembling the central directory of a PKZIP file,
     // including clear entries that represent each file. This structure needs to
     // be documented in Models.
+    //
+    // Right before the signature is what looks to be a hex string, potentially
+    // a key or identifier. Directly preceeding that is a 32-bit value that seems
+    // to correspond to the offset of the first data item.
+    // 
+    // Each entry appears to be 40 bytes long, starting near a 0x0C. The name of the
+    // file is one of the last things in the list. Names appear to be UTF-16 encoded.
+    // There is a 32-bit value before the string that seems to represent the length
+    // of the name. More investigation is needed to find where the file length and
+    // file offset are stored.
     public class AdvancedInstaller : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
