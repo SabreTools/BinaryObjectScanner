@@ -5,7 +5,10 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction, seems to primarily use MSZip compression.
+    /// <summary>
+    /// An MS-CAB based installer that stores the files in
+    /// the resources table.
+    /// </summary>
     public class IntelInstallationFramework : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
