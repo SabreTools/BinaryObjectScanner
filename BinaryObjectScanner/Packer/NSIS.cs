@@ -25,6 +25,14 @@ namespace BinaryObjectScanner.Packer
                     return "NSIS";
             }
 
+            // Get the overlay strings, if they exist
+            strs = exe.OverlayStrings;
+            if (strs != null)
+            {
+                if (strs.Exists(s => s.Contains("NullsoftInst")))
+                    return "NSIS";
+            }
+
             return null;
         }
     }
