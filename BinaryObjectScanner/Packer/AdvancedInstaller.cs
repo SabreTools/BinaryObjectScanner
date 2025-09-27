@@ -3,7 +3,6 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {
-    // TODO: Add extraction based on SFX research
     // TODO: Verify that all versions are detected
     public class AdvancedInstaller : IExecutableCheck<PortableExecutable>
     {
