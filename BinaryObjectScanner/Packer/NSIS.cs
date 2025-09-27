@@ -10,6 +10,8 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            // Investigate the ".ndata" section
+
             string? name = exe.AssemblyDescription;
 
             if (name.OptionalStartsWith("Nullsoft Install System"))
