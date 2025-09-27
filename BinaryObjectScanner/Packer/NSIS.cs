@@ -5,12 +5,14 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Packer
 {
     // TODO: Add extraction
+    // <see href="https://github.com/mcmilk/7-Zip/tree/master/CPP/7zip/Archive/Nsis"/>
     public class NSIS : IExecutableCheck<PortableExecutable>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Investigate the ".ndata" section
+            // NSIS is state-machine based, similar to Wise scripts
 
             string? name = exe.AssemblyDescription;
 
