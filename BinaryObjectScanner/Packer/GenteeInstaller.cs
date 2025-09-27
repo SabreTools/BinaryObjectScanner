@@ -11,6 +11,8 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
+            // Investigate the "Shared" section in "Arkan3D.exe"
+
             string? name = exe.AssemblyName;
 
             // <see href="https://www.virustotal.com/gui/file/40e222d35fe8bdd94360462e2f2b870ec7e2c184873e2a481109408db790bfe8/details"/>
