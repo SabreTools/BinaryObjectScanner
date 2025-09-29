@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.PKZIP;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -277,23 +278,18 @@ namespace BinaryObjectScanner.Protection
             if (!found)
                 return null;
 
-            // Read the version starting 4 bytes after the signature
-            index += 8;
-            char major = (char)overlayData[index];
-            index += 2;
+            // Deserialize the AddD header
+            var reader = new SabreTools.Serialization.Readers.SecuROMAddD();
+            var addD = reader.Deserialize(overlayData, index);
+            if (addD == null)
+                return null;
 
-            string minor = Encoding.ASCII.GetString(overlayData, index, 2);
-            index += 3;
-
-            string patch = Encoding.ASCII.GetString(overlayData, index, 2);
-            index += 3;
-
-            string revision = Encoding.ASCII.GetString(overlayData, index, 4);
-
-            if (!char.IsNumber(major))
+            // Format the version
+            string version = $"{addD.Version}.{addD.Build}";
+            if (!char.IsNumber(version[0]))
                 return "(very old, v3 or less)";
 
-            return $"{major}.{minor}.{patch}.{revision}";
+            return version;
         }
 
         /// <summary>
