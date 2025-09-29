@@ -262,7 +262,7 @@ namespace BinaryObjectScanner.Protection
             // Search for the "AddD" string in the overlay
             bool found = false;
             int index = 0;
-            for (; index < 0x100 && index + 4 < overlayData.Length; index++)
+            for (; index < 0x20 && index + 4 < overlayData.Length; index++)
             {
                 int temp = index;
                 byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x04);
@@ -273,7 +273,7 @@ namespace BinaryObjectScanner.Protection
                 }
             }
 
-            // If the string wasn't found in the first 0x100 bytes
+            // If the string wasn't found in the first 0x20 bytes
             if (!found)
                 return null;
 
