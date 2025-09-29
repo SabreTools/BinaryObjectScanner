@@ -266,7 +266,7 @@ namespace BinaryObjectScanner.Protection
             {
                 int temp = index;
                 byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x04);
-                if (overlaySample.EqualsExactly([0x41, 0x64, 0x64, 0x44]))
+                if (overlaySample.EqualsExactly(SabreTools.Data.Models.SecuROM.Constants.AddDMagicBytes))
                 {
                     found = true;
                     break;
