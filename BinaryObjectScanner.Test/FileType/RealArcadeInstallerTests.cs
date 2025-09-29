@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class RealArcadeInstallerTests
     {
         private static readonly SabreTools.Serialization.Wrappers.RealArcadeInstaller wrapper
-            = new(new SabreTools.Models.RealArcade.RgsFile(), new MemoryStream(new byte[1024]));
+            = new(new SabreTools.Data.Models.RealArcade.RgsFile(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()

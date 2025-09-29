@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Test.GameEngine
         public void CheckPortableExecutableTest()
         {
             string file = "filename";
-            SabreTools.Models.PortableExecutable.Executable model = new();
+            SabreTools.Data.Models.PortableExecutable.Executable model = new();
             Stream source = new MemoryStream(new byte[1024]);
             SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
 

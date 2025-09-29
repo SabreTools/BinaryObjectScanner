@@ -71,10 +71,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0086
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -92,7 +92,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -107,10 +107,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0086
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -128,7 +128,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -143,10 +143,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0080
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -164,7 +164,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -179,9 +179,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00CD
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -199,7 +199,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -218,10 +218,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0086
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -239,7 +239,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -254,9 +254,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00BE
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -274,7 +274,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -289,10 +289,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0080
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -310,7 +310,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -325,9 +325,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00BE
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -345,7 +345,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -364,10 +364,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0086
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x3A00
@@ -385,7 +385,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -400,9 +400,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00BE
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x3A00
@@ -420,7 +420,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -435,10 +435,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0080
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x3A00
@@ -456,7 +456,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -471,9 +471,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00BE
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x3A00
@@ -491,7 +491,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -510,10 +510,10 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x0086
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.ProtectedModeOnly
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x4000
@@ -531,7 +531,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -546,9 +546,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00BE
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x2000
                 && exe.Header?.InitialStackAlloc == 0x3C00
@@ -566,7 +566,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000
@@ -581,9 +581,9 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.EntryTableOffset == 0x00C6
                 && exe.Header?.EntryTableSize == 0x0002
                 && exe.Header?.CrcChecksum == 0x00000000
-                && exe.Header?.FlagWord == (SabreTools.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
-                    | SabreTools.Models.NewExecutable.HeaderFlag.FullScreen
-                    | SabreTools.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
+                && exe.Header?.FlagWord == (SabreTools.Data.Models.NewExecutable.HeaderFlag.MULTIPLEDATA
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.FullScreen
+                    | SabreTools.Data.Models.NewExecutable.HeaderFlag.WindowsPMCompatible)
                 && exe.Header?.AutomaticDataSegmentNumber == 0x0003
                 && exe.Header?.InitialHeapAlloc == 0x43DC
                 && exe.Header?.InitialStackAlloc == 0x2708
@@ -601,7 +601,7 @@ namespace BinaryObjectScanner.Packer
                 && exe.Header?.MovableEntriesCount == 0x0000
                 && exe.Header?.SegmentAlignmentShiftCount == 0x0001
                 && exe.Header?.ResourceEntriesCount == 0x0000
-                && exe.Header?.TargetOperatingSystem == SabreTools.Models.NewExecutable.OperatingSystem.WINDOWS
+                && exe.Header?.TargetOperatingSystem == SabreTools.Data.Models.NewExecutable.OperatingSystem.WINDOWS
                 && exe.Header?.AdditionalFlags == 0x00
                 && exe.Header?.ReturnThunkOffset == 0x0000
                 && exe.Header?.ReturnThunkOffset == 0x0000

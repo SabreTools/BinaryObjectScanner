@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class LDSCRYPTTests
     {
         private static readonly SabreTools.Serialization.Wrappers.LDSCRYPT wrapper
-            = new(new SabreTools.Models.LDSCRYPT.EncryptedFile(), new MemoryStream(new byte[1024]));
+            = new(new SabreTools.Data.Models.LDSCRYPT.EncryptedFile(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()

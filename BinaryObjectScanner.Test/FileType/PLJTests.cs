@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class PLJTests
     {
         private static readonly SabreTools.Serialization.Wrappers.PlayJAudioFile wrapper
-            = new(new SabreTools.Models.PlayJ.AudioFile(), new MemoryStream(new byte[1024]));
+            = new(new SabreTools.Data.Models.PlayJ.AudioFile(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()

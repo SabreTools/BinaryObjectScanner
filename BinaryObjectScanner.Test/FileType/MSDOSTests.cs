@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class MSDOSTests
     {
         private static readonly SabreTools.Serialization.Wrappers.MSDOS wrapper
-            = new(new SabreTools.Models.MSDOS.Executable(), new MemoryStream(new byte[1024]));
+            = new(new SabreTools.Data.Models.MSDOS.Executable(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()

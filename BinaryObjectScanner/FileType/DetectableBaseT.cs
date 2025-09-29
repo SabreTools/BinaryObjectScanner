@@ -1,5 +1,5 @@
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Serialization.Interfaces;
+using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.FileType
 {

@@ -5,7 +5,7 @@ using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
-using OHMN = SabreTools.Models.COFF.OptionalHeaderMagicNumber;
+using OHMN = SabreTools.Data.Models.COFF.OptionalHeaderMagicNumber;
 
 namespace BinaryObjectScanner.Protection
 {

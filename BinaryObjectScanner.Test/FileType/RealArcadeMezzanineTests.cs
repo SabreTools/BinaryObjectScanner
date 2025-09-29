@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Test.FileType
     public class RealArcadeMezzanineTests
     {
         private static readonly SabreTools.Serialization.Wrappers.RealArcadeMezzanine wrapper
-            = new(new SabreTools.Models.RealArcade.Mezzanine(), new MemoryStream(new byte[1024]));
+            = new(new SabreTools.Data.Models.RealArcade.Mezzanine(), new MemoryStream(new byte[1024]));
 
         [Fact]
         public void DetectFile_EmptyString_Null()
