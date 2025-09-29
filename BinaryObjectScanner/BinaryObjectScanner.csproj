@@ -40,14 +40,6 @@
         <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
     </PropertyGroup>
 
-    <!-- Set a build flag for Windows specifically -->
-    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x86'">
-        <DefineConstants>$(DefineConstants);WINX86</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(RuntimeIdentifier)'=='win-x64'">
-        <DefineConstants>$(DefineConstants);WINX64</DefineConstants>
-    </PropertyGroup>
-
     <ItemGroup>
         <InternalsVisibleTo Include="BinaryObjectScanner.Test" />
     </ItemGroup>
