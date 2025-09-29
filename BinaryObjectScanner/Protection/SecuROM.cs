@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Data.Models.PKZIP;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
+using static SabreTools.Data.Models.SecuROM.Constants;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -267,7 +267,7 @@ namespace BinaryObjectScanner.Protection
             {
                 int temp = index;
                 byte[] overlaySample = overlayData.ReadBytes(ref temp, 0x04);
-                if (overlaySample.EqualsExactly(SabreTools.Data.Models.SecuROM.Constants.AddDMagicBytes))
+                if (overlaySample.EqualsExactly(AddDMagicBytes))
                 {
                     found = true;
                     break;
@@ -284,8 +284,12 @@ namespace BinaryObjectScanner.Protection
             if (addD == null)
                 return null;
 
+            // All samples have had 3 entries -- Revisit if needed
+            if (addD.EntryCount != 3)
+                return null;
+
             // Format the version
-            string version = $"{addD.Version}.{addD.Build}";
+                string version = $"{addD.Version}.{addD.Build}";
             if (!char.IsNumber(version[0]))
                 return "(very old, v3 or less)";
 
