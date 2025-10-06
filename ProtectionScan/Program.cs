@@ -2,11 +2,24 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner;
+using SabreTools.CommandLine;
+using SabreTools.CommandLine.Inputs;
 
 namespace ProtectionScan
 {
     class Program
     {
+        #region Constants
+
+        private const string _debugName = "debug";
+        private const string _helpName = "help";
+        private const string _noArchivesName = "no-archives";
+        private const string _noContentsName = "no-contents";
+        private const string _noPathsName = "no-paths";
+        private const string _noSubdirsName = "no-subdirs";
+
+        #endregion
+
         static void Main(string[] args)
         {
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
@@ -18,30 +31,75 @@ namespace ProtectionScan
             var fileProgress = new Progress<ProtectionProgress>();
             fileProgress.ProgressChanged += Changed;
 
-            // Get the options from the arguments
-            var options = Options.ParseOptions(args);
+            // Create the command set
+            var commandSet = CreateCommands();
 
-            // If we have an invalid state
-            if (options == null)
+            // If we have no args, show the help and quit
+            if (args == null || args.Length == 0)
             {
-                Options.DisplayHelp();
+                commandSet.OutputAllHelp();
+                return;
+            }
+
+            // Loop through and process the options
+            int firstFileIndex = 0;
+            for (; firstFileIndex < args.Length; firstFileIndex++)
+            {
+                string arg = args[firstFileIndex];
+
+                var input = commandSet.GetTopLevel(arg);
+                if (input == null)
+                    break;
+
+                input.ProcessInput(args, ref firstFileIndex);
+            }
+
+            // If help was specified
+            if (commandSet.GetBoolean(_helpName))
+            {
+                commandSet.OutputAllHelp();
                 return;
             }
 
             // Create scanner for all paths
             var scanner = new Scanner(
-                options.ScanArchives,
-                options.ScanContents,
-                options.ScanPaths,
-                options.ScanSubdirectories,
-                options.Debug,
+                !commandSet.GetBoolean(_noArchivesName),
+                !commandSet.GetBoolean(_noContentsName),
+                !commandSet.GetBoolean(_noPathsName),
+                !commandSet.GetBoolean(_noSubdirsName),
+                !commandSet.GetBoolean(_debugName),
                 fileProgress);
 
             // Loop through the input paths
-            foreach (string inputPath in options.InputPaths)
+            for (int i = firstFileIndex; i < args.Length; i++)
             {
-                GetAndWriteProtections(scanner, inputPath);
+                string arg = args[i];
+                GetAndWriteProtections(scanner, arg);
             }
+        }
+
+        /// <summary>
+        /// Create the command set for the program
+        /// </summary>
+        private static CommandSet CreateCommands()
+        {
+            List<string> header = [
+                "Protection Scanner",
+                string.Empty,
+                "ProtectionScan <options> file|directory ...",
+                string.Empty,
+            ];
+
+            var commandSet = new CommandSet(header);
+
+            commandSet.Add(new FlagInput(_helpName, ["-?", "-h", "--help"], "Display this help text"));
+            commandSet.Add(new FlagInput(_debugName, ["-d", "--debug"], "Enable debug mode"));
+            commandSet.Add(new FlagInput(_noContentsName, ["-nc", "--no-contents"], "Disable scanning for content checks"));
+            commandSet.Add(new FlagInput(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives"));
+            commandSet.Add(new FlagInput(_noPathsName, ["-np", "--no-paths"], "Disable scanning for path checks"));
+            commandSet.Add(new FlagInput(_noSubdirsName, ["-ns", "--no-subdirs"], "Disable scanning subdirectories"));
+
+            return commandSet;
         }
 
         /// <summary>
