@@ -65,7 +65,7 @@ namespace ProtectionScan.Features
                 !GetBoolean(_noContentsName),
                 !GetBoolean(_noPathsName),
                 !GetBoolean(_noSubdirsName),
-                !GetBoolean(_debugName),
+                GetBoolean(_debugName),
                 fileProgress);
 
             // Loop through the input paths
