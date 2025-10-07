@@ -19,8 +19,13 @@ namespace BinaryObjectScanner.Packer
             if (name.OptionalStartsWith("Nullsoft Install System"))
                 return $"NSIS {name!.Substring("Nullsoft Install System".Length).Trim()}";
 
+            name = exe.AssemblyName;
+
+            if (name.OptionalStartsWith("Nullsoft.NSIS"))
+                return "NSIS";
+
             // Get the .data/DATA section strings, if they exist
-            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
+                var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("NullsoftInst")))
