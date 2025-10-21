@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO;
+using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
@@ -92,6 +93,18 @@ namespace BinaryObjectScanner.Protection
             // Get the .vob.pcd section, if it exists
             if (exe.ContainsSection(".vob.pcd", exact: true))
                 return "VOB ProtectCD";
+
+            string? name = exe.FileDescription;
+
+            // Found in a0016.exe
+            if (name.OptionalEquals("ProtectCD/DVD Core"))
+                return "VOB ProtectCD/DVD";
+
+            name = exe.AssemblyDescription;
+
+            // Found in a0016.exe
+            if (name.OptionalEquals("SoftShield ProtectCD Localization Helper DLL"))
+                return "VOB ProtectCD/DVD";
 
             return null;
         }
