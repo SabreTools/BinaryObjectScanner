@@ -191,7 +191,10 @@ namespace BinaryObjectScanner.Protection
             var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
             byte[] finalStringBytes = new byte[reserved653Bytes.Length - firstNonZero];
             Array.Copy(reserved653Bytes, firstNonZero, finalStringBytes, 0, finalStringBytes.Length);
-            string finalString = Encoding.ASCII.GetString(finalStringBytes); //TODO: handle if this data isn't a string
+            string? finalString = finalStringBytes.ReadNullTerminatedAnsiString(ref offset); 
+            if (finalString == null)
+                return null;
+            
             if (finalString.StartsWith("MLSLaserlock"))
                 return "LaserLock";
 
