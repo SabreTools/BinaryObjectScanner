@@ -189,9 +189,7 @@ namespace BinaryObjectScanner.Protection
                 return "None";
             
             var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
-            byte[] finalStringBytes = new byte[reserved653Bytes.Length - firstNonZero];
-            Array.Copy(reserved653Bytes, firstNonZero, finalStringBytes, 0, finalStringBytes.Length);
-            string? finalString = finalStringBytes.ReadNullTerminatedAnsiString(ref offset); 
+            string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero); 
             if (finalString == null)
                 return null;
             
