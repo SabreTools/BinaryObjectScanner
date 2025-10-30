@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
@@ -9,13 +9,13 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// Executable or library
+    /// .iso file
     /// </summary>
-    public abstract class Executable<T> : DetectableBase<T>
+    public abstract class ISO<T> : DetectableBase<T>
         where T : WrapperBase
     {
         /// <inheritdoc/>
-        public Executable(T wrapper) : base(wrapper) { }
+        public ISO(T wrapper) : base(wrapper) { }
 
         #region Check Runners
 
@@ -71,15 +71,15 @@ namespace BinaryObjectScanner.FileType
         }
 
         /// <summary>
-        /// Handle a single file based on all executable check implementations
+        /// Handle a single file based on all ISO check implementations
         /// </summary>
-        /// <param name="file">Name of the source file of the executable, for tracking</param>
-        /// <param name="exe">Executable to scan</param>
+        /// <param name="file">Name of the source file of the ISO, for tracking</param>
+        /// <param name="iso">ISO to scan</param>
         /// <param name="checks">Set of checks to use</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        protected IDictionary<U, string> RunExecutableChecks<U>(string file, T exe, U[] checks, bool includeDebug)
-            where U : IExecutableCheck<T>
+        protected IDictionary<U, string> RunISOChecks<U>(string file, T iso, U[] checks, bool includeDebug)
+            where U : IISOCheck<T>
         {
             // Create the output dictionary
             var protections = new CheckDictionary<U>();
@@ -88,7 +88,7 @@ namespace BinaryObjectScanner.FileType
             checks.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckExecutable(file, exe, includeDebug);
+                var protection = checkClass.CheckISO(file, iso, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 
