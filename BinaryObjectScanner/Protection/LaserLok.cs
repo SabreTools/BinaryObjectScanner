@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -10,7 +11,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class LaserLok : IExecutableCheck<PortableExecutable>, IPathCheck
+    public class LaserLok : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -148,6 +149,56 @@ namespace BinaryObjectScanner.Protection
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
+        }
+        
+        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+        {
+            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            int offset = 0;
+            
+            // Goes into any check that checks the application use data
+            #region AppUseCheck
+            var applicationUse = pvd.ApplicationUse;
+            var noteworthyApplicationUse = true;
+            if (Array.TrueForAll(applicationUse, b => b == 0x00))
+                noteworthyApplicationUse = false;
+            string? potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
+            if (potentialAppUseString != null)
+            {
+                if (potentialAppUseString.StartsWith("ImgBurn"))
+                    noteworthyApplicationUse = false;
+                else if (potentialAppUseString.StartsWith("ULTRAISO"))
+                    noteworthyApplicationUse = false;
+                // More things will have to go here as more disc authoring softwares are found that do this.
+            }
+            #endregion
+            
+            // Goes into any check that checks the reserved 653 bytes
+            #region Reserved653BytesCheck
+            var reserved653Bytes = pvd.Reserved653Bytes;
+            var noteworthyReserved653Bytes = true;
+            if (Array.TrueForAll(reserved653Bytes, b => b == 0x00))
+                noteworthyReserved653Bytes = false;
+            // Unsure if more will be needed
+            #endregion
+
+            if (noteworthyApplicationUse)
+                return "None"; //TODO: this might be too unsafe until more App Use strings are known
+
+            if (!noteworthyReserved653Bytes)
+                return "None";
+            
+            var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
+            byte[] finalStringBytes = new byte[reserved653Bytes.Length - firstNonZero];
+            Array.Copy(reserved653Bytes, firstNonZero, finalStringBytes, 0, finalStringBytes.Length);
+            string finalString = Encoding.ASCII.GetString(finalStringBytes); //TODO: handle if this data isn't a string
+            if (finalString.StartsWith("MLSLaserlock"))
+                return "LaserLock";
+
+            if (finalString.StartsWith("LaserlockECL"))
+                return "LaserLock Marathon";
+            
+            return "None";
         }
 
         private static string GetBuild(byte[]? sectionContent, bool versionTwo)

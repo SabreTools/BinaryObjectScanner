@@ -18,13 +18,6 @@ namespace BinaryObjectScanner.FileType
             // Create the output dictionary
             var protections = new ProtectionDictionary();
 
-            // Only use generic content checks if we're in debug mode
-            if (includeDebug)
-            {
-                var contentProtections = RunContentChecks(file, stream, includeDebug);
-                protections.Append(file, contentProtections.Values);
-            }
-
             // Standard checks
             var subProtections
                 = RunISOChecks(file, _wrapper, StaticChecks.ISO9660CheckClasses, includeDebug);
