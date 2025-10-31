@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -9,7 +10,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class TAGES : IExecutableCheck<PortableExecutable>, IPathCheck
+    public class TAGES : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -210,6 +211,40 @@ namespace BinaryObjectScanner.Protection
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
+        }
+        
+        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+        {
+            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+
+            if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
+                return null;
+            
+            if (FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+            
+            var applicationUse = pvd.ApplicationUse;
+
+            // Non-early tages either has all 512 bytes of the AU data full of data, or the last 128.
+            if (FileType.ISO9660.IsPureData(applicationUse))
+                return "TAGES";
+
+            int offset = 0;
+            var first384Bytes = applicationUse.ReadBytes(ref offset, 384);
+            var last128Bytes = applicationUse.ReadBytes(ref offset, 128);
+            if (Array.TrueForAll(first384Bytes, b => b == 0x00) && FileType.ISO9660.IsPureData(last128Bytes))
+                return "TAGES";
+            
+            // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
+            // Redump ID 35932, 21321, 8776, 
+            offset = 0;
+            var initialValue = applicationUse.ReadInt32LittleEndian(ref offset);
+            var last508Bytes = applicationUse.ReadBytes(ref offset, 508);
+            if (Array.TrueForAll(last508Bytes, b => b == 0x00) && initialValue != 0)
+                return "TAGES (Early)";
+            
+            // The original releases of Moto Racer 3 (31578, 34669) are so early they have seemingly nothing identifiable.
+            return null;
         }
 
         private static string GetVersion(PortableExecutable exe)

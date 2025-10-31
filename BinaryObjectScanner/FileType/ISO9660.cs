@@ -39,6 +39,27 @@ namespace BinaryObjectScanner.FileType
 
             return string.Join(";", [.. protectionList]);
         }
+
+        // Checks whether the sequence of bytes is pure data (as in, not empty, not text, just high-entropy data)
+        public static bool IsPureData(byte[] bytes)
+        {
+            // Check if there are three 0x00s in a row. Two seems like pushing it
+            byte[] containedZeroes = {0x00, 0x00, 0x00};
+            for (int i = 0, index = 0; i < bytes.Length; ++i)
+                
+                if (bytes[i] == containedZeroes[index]) {
+                    if (++index >= containedZeroes.Length) {
+                        return false; 
+                    }
+                }
+
+            // Checks if there are strings in the data
+            // TODO: is this too dangerous?
+            if (bytes.ReadStringsFrom(charLimit: 3) != null)
+                return false;
+            
+            return true;
+        }
         
         // Checks whether the Application Use data is "noteworthy" enough to be worth checking for protection.
         public static bool NoteworthyApplicationUse(PrimaryVolumeDescriptor pvd)
