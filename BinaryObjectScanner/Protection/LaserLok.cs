@@ -167,12 +167,15 @@ namespace BinaryObjectScanner.Protection
             if (finalString == null)
                 return null;
             
+            // Redump ID 113120
             if (finalString.StartsWith("MLSLaserlock"))
                 return "LaserLock";
 
+            // Redump ID 38308, 113341
             if (finalString.StartsWith("LaserlockECL"))
                 return "LaserLock Marathon";
             
+            // Some discs such as 128068, and also more normal ones, don't seem to have any identifying data.
             return "None";
         }
 
