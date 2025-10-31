@@ -11,11 +11,11 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// .iso file
     /// </summary>
-    public abstract class ISO<T> : DetectableBase<T>
+    public abstract class DiskImage<T> : DetectableBase<T>
         where T : WrapperBase
     {
         /// <inheritdoc/>
-        public ISO(T wrapper) : base(wrapper) { }
+        public DiskImage(T wrapper) : base(wrapper) { }
 
         #region Check Runners
         

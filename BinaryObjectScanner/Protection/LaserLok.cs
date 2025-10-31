@@ -154,40 +154,14 @@ namespace BinaryObjectScanner.Protection
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
-            int offset = 0;
             
-            // Goes into any check that checks the application use data
-            #region AppUseCheck
-            var applicationUse = pvd.ApplicationUse;
-            var noteworthyApplicationUse = true;
-            if (Array.TrueForAll(applicationUse, b => b == 0x00))
-                noteworthyApplicationUse = false;
-            string? potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
-            if (potentialAppUseString != null)
-            {
-                if (potentialAppUseString.StartsWith("ImgBurn"))
-                    noteworthyApplicationUse = false;
-                else if (potentialAppUseString.StartsWith("ULTRAISO"))
-                    noteworthyApplicationUse = false;
-                // More things will have to go here as more disc authoring softwares are found that do this.
-            }
-            #endregion
-            
-            // Goes into any check that checks the reserved 653 bytes
-            #region Reserved653BytesCheck
-            var reserved653Bytes = pvd.Reserved653Bytes;
-            var noteworthyReserved653Bytes = true;
-            if (Array.TrueForAll(reserved653Bytes, b => b == 0x00))
-                noteworthyReserved653Bytes = false;
-            // Unsure if more will be needed
-            #endregion
-
-            if (noteworthyApplicationUse)
+            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
                 return "None"; //TODO: this might be too unsafe until more App Use strings are known
-
-            if (!noteworthyReserved653Bytes)
+            
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return "None";
             
+            var reserved653Bytes = pvd.Reserved653Bytes;
             var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
             string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero); 
             if (finalString == null)
