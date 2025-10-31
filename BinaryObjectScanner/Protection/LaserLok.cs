@@ -153,6 +153,8 @@ namespace BinaryObjectScanner.Protection
         
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
+            #region Initial Checks
+            
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
             
             if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
@@ -160,6 +162,8 @@ namespace BinaryObjectScanner.Protection
             
             if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return "Znone";
+            
+            #endregion
             
             var reserved653Bytes = pvd.Reserved653Bytes;
             var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);

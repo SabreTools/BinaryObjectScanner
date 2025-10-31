@@ -39,6 +39,8 @@ namespace BinaryObjectScanner.Protection
         
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
+            #region Initial Checks
+            
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
             
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
@@ -47,7 +49,11 @@ namespace BinaryObjectScanner.Protection
             if (FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return "None";
 
+            #endregion
+            
             int offset = 0;
+            
+            #region Read Application Use
             
             var applicationUse = pvd.ApplicationUse;
             var constantValueOne = applicationUse.ReadUInt32LittleEndian(ref offset);
@@ -61,6 +67,10 @@ namespace BinaryObjectScanner.Protection
             var earlyCopyLokBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
             var pairBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
             var endingZeroBytes = applicationUse.ReadBytes(ref offset, 483);
+            
+            #endregion
+            
+            #region Main Checks
             
             // Early return if the rest of the AU data isn't 0x00
             if (!Array.TrueForAll(endingZeroBytes, b => b == 0x00))
@@ -101,6 +111,8 @@ namespace BinaryObjectScanner.Protection
             // Redump ID 31557, 44210, 49087, 72183, 31675
             if (pairBytesOne == 0xF3ED && pairBytesTwo == 0x00000000)
                 return "CopyLok / CodeLok (Solo errors, ~775)";
+            
+            #endregion
             
             return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!"; 
         }

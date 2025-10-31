@@ -215,17 +215,23 @@ namespace BinaryObjectScanner.Protection
         
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
+            #region Initial Checks
+            
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
 
+            // There needs to be noteworthy application use data
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
                 return null;
             
+            // There should not be noteworthy data in the reserved 653 bytes
             if (FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return null;
             
+            #endregion
+            
             var applicationUse = pvd.ApplicationUse;
 
-            // Non-early tages either has all 512 bytes of the AU data full of data, or the last 128.
+            // Non-early tages either has all 512 bytes of the AU data full of data, or only the last 128.
             if (FileType.ISO9660.IsPureData(applicationUse))
                 return "TAGES";
 
@@ -236,7 +242,7 @@ namespace BinaryObjectScanner.Protection
                 return "TAGES";
             
             // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
-            // Redump ID 35932, 21321, 8776, 
+            // Redump ID  8776, 21321, 35932 
             offset = 0;
             var initialValue = applicationUse.ReadInt32LittleEndian(ref offset);
             var last508Bytes = applicationUse.ReadBytes(ref offset, 508);

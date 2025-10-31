@@ -246,6 +246,8 @@ namespace BinaryObjectScanner.Protection
         
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
+            #region Initial Checks
+            
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
 
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
@@ -257,9 +259,13 @@ namespace BinaryObjectScanner.Protection
             if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return null;
             
-            var reserved653Bytes = pvd.Reserved653Bytes;
+            #endregion
+            
             var applicationUse = pvd.ApplicationUse;
-
+            var reserved653Bytes = pvd.Reserved653Bytes;
+            
+            #region Read Application Use
+            
             int offset = 0;
             var appUsefirst256Bytes = applicationUse.ReadBytes(ref offset, 256);
             var appUsemiddle128Bytes = applicationUse.ReadBytes(ref offset, 128);
@@ -267,23 +273,43 @@ namespace BinaryObjectScanner.Protection
             var appUseFirstUint =  applicationUse.ReadUInt16LittleEndian(ref offset);
             var appUseFollowingFirstUint = applicationUse.ReadBytes(ref offset, 20);
             var appUseSecondUint =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            var finalAppUseData = applicationUse.ReadBytes(ref offset, 38);
+            
+            #endregion
+            
+            offset = 0;
+            
+            #region Read Reserved 653 Bytes
+            
+            // Somewhat arbitrary, but going further than 11 seems to exclude some discs.
+            var reservedFirst10Bytes = reserved653Bytes.ReadBytes(ref offset, 10);
+            offset = 96; // TODO: Does it ever go further than this?
+            var reservedFinal557Bytes = reserved653Bytes.ReadBytes(ref offset, 557);
+            
+            #endregion
             
             // TODO: once ST is fixed, finish this up. read to the end of the AU, then read however many bytes from the 
             // TODO: start of the reserved, confirm everything, check if reserved ends with enough 0x00 bytes too.
             
-            /*if (Array.TrueForAll(first384Bytes, b => b == 0x00) && FileType.ISO9660.IsPureData(last128Bytes))
-                return "TAGES";*/
+            // The first 256 bytes of application use, and the last 557 bytes of reserved data, should all be 0x00.
+            // It's possible reserved might need to be shortened a bit, but a need for that has not been observed yet.
+            if (!Array.TrueForAll(appUsefirst256Bytes, b => b == 0x00) || !Array.TrueForAll(reservedFinal557Bytes, b => b == 0x00))
+                return null;
             
-            // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
-            // Redump ID 35932, 21321, 8776, 
-            offset = 0;
-            var initialValue = applicationUse.ReadInt32LittleEndian(ref offset);
-            var last508Bytes = applicationUse.ReadBytes(ref offset, 508);
-            if (Array.TrueForAll(last508Bytes, b => b == 0x00) && initialValue != 0)
-                return "TAGES (Early)";
+            // All of these sections should be pure data
+            if (!FileType.ISO9660.IsPureData(appUsemiddle128Bytes) 
+                || !FileType.ISO9660.IsPureData(appUseFollowingFirstUint)
+                || !FileType.ISO9660.IsPureData(finalAppUseData)
+                || !FileType.ISO9660.IsPureData(reservedFirst10Bytes))
+                return null;
+
+            // appUseFirstUint has only ever been observed as 0xBB, but no need to be this strict yet. Can be checked
+            // if it's found that it's needed to, and always viable. appUseSecondUint varies more, but is still always
+            // under 0xFF so far.
+            if (appUseFirstUint > 0xFF || appUseSecondUint > 0xFF)
+                return null;
             
-            // The original releases of Moto Racer 3 (31578, 34669) are so early they have seemingly nothing identifiable.
-            return null;
+            return "SafeDisc";
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, List{string})"/>
