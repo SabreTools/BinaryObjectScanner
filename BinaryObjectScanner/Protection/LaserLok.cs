@@ -176,6 +176,7 @@ namespace BinaryObjectScanner.Protection
                 return "LaserLock Marathon";
             
             // Some discs such as 128068, and also more normal ones, don't seem to have any identifying data.
+            // TODO: list some normal ones
             return "Znone";
         }
 
