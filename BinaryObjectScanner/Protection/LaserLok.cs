@@ -156,10 +156,10 @@ namespace BinaryObjectScanner.Protection
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
             
             if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
-                return "None"; //TODO: this might be too unsafe until more App Use strings are known
+                return "Znone"; //TODO: this might be too unsafe until more App Use strings are known
             
             if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
-                return "None";
+                return "Znone";
             
             var reserved653Bytes = pvd.Reserved653Bytes;
             var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
@@ -176,7 +176,7 @@ namespace BinaryObjectScanner.Protection
                 return "LaserLock Marathon";
             
             // Some discs such as 128068, and also more normal ones, don't seem to have any identifying data.
-            return "None";
+            return "Znone";
         }
 
         private static string GetBuild(byte[]? sectionContent, bool versionTwo)
