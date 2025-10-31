@@ -73,6 +73,7 @@ namespace BinaryObjectScanner.Protection
             // Check for early variant copylok
             if (earlyCopyLokBytesOne == 0x00)
             {
+                // Redump ID 35908, 56433, 44526
                 if (0 == pairBytesOne && 0 == oneValueBytes && 0 == earlyCopyLokBytesTwo && 0 == pairBytesTwo)
                     return "CopyLok / CodeLok (Early, ~1850 errors)";
                 
@@ -83,19 +84,21 @@ namespace BinaryObjectScanner.Protection
             if (constantValueTwo != 0x4ED3 || zeroByte != 0x00 || earlyCopyLokBytesOne != 0x0C76 || oneValueBytes != 0x00000001)
                 return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!"; 
                 
-            // Always 0xD1AD, except in Redump ID 71985 where it's 0x6999
+            // Always 0xD1AD, except in Redump ID 71985 (the only sample) where it's 0x6999
             // Update number be more accurate if more samples are acquired.
             if (smallSizeBytes < 0xADD1)
                 return "CopyLok / CodeLok (Less errors, ~255)";
 
             if (pairBytesOne == 0x9425)
             {
+                // Redump ID 37860, 37881, 38239, 100685, 108375
                 if (pairBytesTwo != 0x00000000)
                     return "CopyLok / CodeLok (Pair errors, ~1500)";
                 
                 return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!"; 
             }
             
+            // Redump ID 31557, 44210, 49087, 72183, 31675
             if (pairBytesOne == 0xF3ED && pairBytesTwo == 0x00000000)
                 return "CopyLok / CodeLok (Solo errors, ~775)";
             
