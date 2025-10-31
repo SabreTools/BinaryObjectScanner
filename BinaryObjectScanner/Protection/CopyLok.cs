@@ -44,10 +44,10 @@ namespace BinaryObjectScanner.Protection
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
             
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
-                return "None";
+                return null;
             
             if (FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
-                return "None";
+                return null;
 
             #endregion
             

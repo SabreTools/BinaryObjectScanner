@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using BinaryObjectScanner.Data;
 using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO.Extensions;
@@ -45,17 +46,20 @@ namespace BinaryObjectScanner.FileType
         {
             // Check if there are three 0x00s in a row. Two seems like pushing it
             byte[] containedZeroes = {0x00, 0x00, 0x00};
-            for (int i = 0, index = 0; i < bytes.Length; ++i)
-                
-                if (bytes[i] == containedZeroes[index]) {
-                    if (++index >= containedZeroes.Length) {
+            int index = 0;
+            for (int i = 0; i < bytes.Length; ++i) {
+                if (bytes[i] == containedZeroes[index])
+                {
+                    if (++index >= containedZeroes.Length)
                         return false; 
-                    }
                 }
-
+                else
+                    index = 0;
+            }
+            
             // Checks if there are strings in the data
-            // TODO: is this too dangerous?
-            if (bytes.ReadStringsFrom(charLimit: 3) != null)
+            // TODO: is this too dangerous, or too faulty?
+            if (bytes.ReadStringsWithEncoding(charLimit: 7, Encoding.ASCII).Count > 0)
                 return false;
             
             return true;

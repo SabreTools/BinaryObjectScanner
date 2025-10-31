@@ -288,9 +288,6 @@ namespace BinaryObjectScanner.Protection
             
             #endregion
             
-            // TODO: once ST is fixed, finish this up. read to the end of the AU, then read however many bytes from the 
-            // TODO: start of the reserved, confirm everything, check if reserved ends with enough 0x00 bytes too.
-            
             // The first 256 bytes of application use, and the last 521 bytes of reserved data, should all be 0x00.
             // It's possible reserved might need to be shortened a bit, but a need for that has not been observed yet.
             if (!Array.TrueForAll(appUsefirst256Bytes, b => b == 0x00) || !Array.TrueForAll(reservedFinal521Bytes, b => b == 0x00))
