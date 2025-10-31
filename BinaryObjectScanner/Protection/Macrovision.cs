@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -16,7 +17,7 @@ namespace BinaryObjectScanner.Protection
     /// Macrovision Corporation CD-ROM Unauthorized Copying Study: https://web.archive.org/web/20011005161810/http://www.macrovision.com/solutions/software/cdrom/images/Games_CD-ROM_Study.PDF
     /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
-    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
+    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
@@ -240,6 +241,48 @@ namespace BinaryObjectScanner.Protection
             if (resultsList != null && resultsList.Count > 0)
                 return string.Join(";", [.. resultsList]);
 
+            return null;
+        }
+        
+        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+        {
+            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+
+            if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
+                return null;
+            
+            // Early SafeDisc actually doesn't cross into reserved bytes. Regardless, SafeDisc CD is easy enough to
+            // identify for obvious other reasons, so there's not much point in potentially running into false positives.
+            
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+            
+            var reserved653Bytes = pvd.Reserved653Bytes;
+            var applicationUse = pvd.ApplicationUse;
+
+            int offset = 0;
+            var appUsefirst256Bytes = applicationUse.ReadBytes(ref offset, 256);
+            var appUsemiddle128Bytes = applicationUse.ReadBytes(ref offset, 128);
+            offset += 64; // Some extra values get added here over time. Check is good enough, easier to skip this.
+            var appUseFirstUint =  applicationUse.ReadUInt16LittleEndian(ref offset);
+            var appUseFollowingFirstUint = applicationUse.ReadBytes(ref offset, 20);
+            var appUseSecondUint =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            
+            // TODO: once ST is fixed, finish this up. read to the end of the AU, then read however many bytes from the 
+            // TODO: start of the reserved, confirm everything, check if reserved ends with enough 0x00 bytes too.
+            
+            /*if (Array.TrueForAll(first384Bytes, b => b == 0x00) && FileType.ISO9660.IsPureData(last128Bytes))
+                return "TAGES";*/
+            
+            // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
+            // Redump ID 35932, 21321, 8776, 
+            offset = 0;
+            var initialValue = applicationUse.ReadInt32LittleEndian(ref offset);
+            var last508Bytes = applicationUse.ReadBytes(ref offset, 508);
+            if (Array.TrueForAll(last508Bytes, b => b == 0x00) && initialValue != 0)
+                return "TAGES (Early)";
+            
+            // The original releases of Moto Racer 3 (31578, 34669) are so early they have seemingly nothing identifiable.
             return null;
         }
 
