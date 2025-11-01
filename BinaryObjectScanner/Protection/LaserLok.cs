@@ -158,10 +158,10 @@ namespace BinaryObjectScanner.Protection
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
             
             if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
-                return "Znone"; //TODO: this might be too unsafe until more App Use strings are known
+                return null; //TODO: this might be too unsafe until more App Use strings are known
             
             if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
-                return "Znone";
+                return null;
             
             #endregion
             
@@ -181,7 +181,7 @@ namespace BinaryObjectScanner.Protection
             
             // Some discs such as 128068, and also more normal ones, don't seem to have any identifying data.
             // TODO: list some normal ones
-            return "Znone";
+            return null;
         }
 
         private static string GetBuild(byte[]? sectionContent, bool versionTwo)

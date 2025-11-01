@@ -89,9 +89,13 @@ namespace BinaryObjectScanner.FileType
                     noteworthyApplicationUse = false;
                 else if (potentialAppUseString.StartsWith("ULTRAISO"))
                     noteworthyApplicationUse = false;
+                else if (potentialAppUseString.StartsWith("Rimage"))
+                    noteworthyApplicationUse = false;
                 else if (Array.TrueForAll(Encoding.ASCII.GetBytes(potentialAppUseString), b => b == 0x20))
                     noteworthyApplicationUse = false;
                 // More things will have to go here as more disc authoring softwares are found that do this.
+                // Redump ID 24478 has a bunch of 0x20 with norb in the middle, some discs have 0x20 that ends in a "/"
+                // character. If these are found to be causing issues they can be added.
             }
             
             offset = 141;
