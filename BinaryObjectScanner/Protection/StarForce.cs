@@ -169,17 +169,7 @@ namespace BinaryObjectScanner.Protection
             
             int offset = 0;
             
-            // StarForce Keyless check #1: the key is stored in the Data Preparer identifier. Length varies, minimum
-            // length unknown, but it shouldn't be less than 8 at the very least. It's usually 15-24. It's only 
-            // made up of numbers, capital letters, and dashes.
-            var dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
-            if (dataPreparerIdentiferString == null || dataPreparerIdentiferString.Length < 8)
-                return null;
-            
-            if (!Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
-                return null;
-            
-            // Starforce Keyless check #2: the reserved 653 bytes start with a 32-bit LE number that's slightly less
+            // Starforce Keyless check #1: the reserved 653 bytes start with a 32-bit LE number that's slightly less
             // than the length of the volume size space. The difference varies, it's usually around 10. Check 500 to be
             // safe. The rest of the data is all 0x00.
             if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
@@ -196,8 +186,21 @@ namespace BinaryObjectScanner.Protection
             
             if (initialValue > pvd.VolumeSpaceSize || initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
                 return null;
+            
+            // StarForce Keyless check #2: the key is stored in the Data Preparer identifier. Length varies, minimum
+            // length unknown, but it shouldn't be less than 8 at the very least. It's usually 15-24. It's only 
+            // made up of numbers, capital letters, and dashes.
+            
+            // It turns out that at least a few (i.e. Redump ID 60266) non-keyless StarForce discs still have this
+            // value here? This check may need to be disabled, but it should hopefully be ok
+            var dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
+            if (dataPreparerIdentiferString == null || dataPreparerIdentiferString.Length < 8)
+                return "StarForce";
+            
+            if (!Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
+                return "StarForce";
 
-            // It's unfortunately not known to be possible to detect non-keyless StarForce discs.
+            // It's unfortunately not known to be possible to detect most non-keyless StarForce discs.
             
             // It may be worth returning the key, as it tells you what set of DPM your disc corresponds to, and it would
             // also help show why a disc might be an alt of another disc (there are at least a decent amount of StarForce
