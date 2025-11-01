@@ -191,12 +191,16 @@ namespace BinaryObjectScanner.Protection
             // length unknown, but it shouldn't be less than 8 at the very least. It's usually 15-24. It's only 
             // made up of numbers, capital letters, and dashes.
             
-            // It turns out that at least a few (i.e. Redump ID 60266) non-keyless StarForce discs still have this
-            // value here? This check may need to be disabled, but it should hopefully be ok
+            // It turns out that at least a few (i.e. Redump ID 60266, 72531, 87181, 91734, 106732, 105356, 74578, 78200)
+            // non-keyless StarForce discs still have this value here? This check may need to be disabled, but it
+            // seems OK in practice so far.
             var dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
             if (dataPreparerIdentiferString == null || dataPreparerIdentiferString.Length < 8)
                 return "StarForce";
             
+            // 34206 reaches this because it's not keyless, and has "WinISO software" as the DPI string. However, since
+            // it has lowercase letters and spaces, it's caught here. It is genuinely starforce, so it's not a false
+            // positive.
             if (!Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
                 return "StarForce";
 
