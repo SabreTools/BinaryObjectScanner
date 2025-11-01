@@ -76,7 +76,6 @@ namespace BinaryObjectScanner.FileType
         /// <param name="file">Name of the source file of the executable, for tracking</param>
         /// <param name="exe">Executable to scan</param>
         /// <param name="checks">Set of checks to use</param>
-        /// <param name="scanner">Scanner for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
         protected IDictionary<U, string> RunExecutableChecks<U>(string file, T exe, U[] checks, bool includeDebug)

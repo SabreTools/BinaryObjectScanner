@@ -1,5 +1,7 @@
 using System;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
+using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -20,7 +22,7 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// COPYLOK trademark: https://www.trademarkelite.com/europe/trademark/trademark-detail/000618512/COPYLOK.
     /// </summary>
-    public class CopyLok : IExecutableCheck<PortableExecutable>
+    public class CopyLok : IExecutableCheck<PortableExecutable>, IISOCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -33,6 +35,86 @@ namespace BinaryObjectScanner.Protection
                 return "CopyLok / CodeLok";
 
             return null;
+        }
+        
+        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+        {
+            #region Initial Checks
+            
+            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            
+            if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
+                return null;
+            
+            if (FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+
+            #endregion
+            
+            int offset = 0;
+            
+            #region Read Application Use
+            
+            var applicationUse = pvd.ApplicationUse;
+            var constantValueOne = applicationUse.ReadUInt32LittleEndian(ref offset);
+            var smallSizeBytes = applicationUse.ReadUInt16LittleEndian(ref offset);
+            var constantValueTwo = applicationUse.ReadUInt16LittleEndian(ref offset);
+            var finalSectionOneBytes = applicationUse.ReadUInt32LittleEndian(ref offset);
+            var zeroByte = applicationUse.ReadByte(ref offset);
+            var earlyCopyLokBytesOne = applicationUse.ReadUInt16LittleEndian(ref offset);
+            var pairBytesOne = applicationUse.ReadUInt16LittleEndian(ref offset);
+            var oneValueBytes =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            var earlyCopyLokBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
+            var pairBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
+            var endingZeroBytes = applicationUse.ReadBytes(ref offset, 483);
+            
+            #endregion
+            
+            #region Main Checks
+            
+            // Early return if the rest of the AU data isn't 0x00
+            if (!Array.TrueForAll(endingZeroBytes, b => b == 0x00))
+                return null;
+            
+            // Check first currently-observed constant value
+            if (constantValueOne != 0x4ED38AE1)
+                return null;
+            
+            // Check for early variant copylok
+            if (earlyCopyLokBytesOne == 0x00)
+            {
+                // Redump ID 35908, 56433, 44526
+                if (0 == pairBytesOne && 0 == oneValueBytes && 0 == earlyCopyLokBytesTwo && 0 == pairBytesTwo)
+                    return "CopyLok / CodeLok (Early, ~1850 errors)";
+                
+                return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!";
+            }
+            
+            // Check remaining currently-observed constant values
+            if (constantValueTwo != 0x4ED3 || zeroByte != 0x00 || earlyCopyLokBytesOne != 0x0C76 || oneValueBytes != 0x00000001)
+                return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!"; 
+                
+            // Always 0xD1AD, except in Redump ID 71985 (the only sample) where it's 0x6999
+            // Update number be more accurate if more samples are acquired.
+            if (smallSizeBytes < 0xADD1)
+                return "CopyLok / CodeLok (Less errors, ~255)";
+
+            if (pairBytesOne == 0x9425)
+            {
+                // Redump ID 37860, 37881, 38239, 100685, 108375
+                if (pairBytesTwo != 0x00000000)
+                    return "CopyLok / CodeLok (Pair errors, ~1500)";
+                
+                return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!"; 
+            }
+            
+            // Redump ID 31557, 44210, 49087, 72183, 31675
+            if (pairBytesOne == 0xF3ED && pairBytesTwo == 0x00000000)
+                return "CopyLok / CodeLok (Solo errors, ~775)";
+            
+            #endregion
+            
+            return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!"; 
         }
     }
 }

@@ -478,6 +478,7 @@ namespace BinaryObjectScanner
             {
                 case AACSMediaKeyBlock obj: return new FileType.AACSMediaKeyBlock(obj);
                 case BDPlusSVM obj: return new FileType.BDPlusSVM(obj);
+                case ISO9660 obj: return new FileType.ISO9660(obj);
                 case LDSCRYPT obj: return new FileType.LDSCRYPT(obj);
                 case LinearExecutable obj: return new FileType.LinearExecutable(obj);
                 case MSDOS obj: return new FileType.MSDOS(obj);
