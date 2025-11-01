@@ -236,17 +236,17 @@ namespace BinaryObjectScanner.Protection
                 return "TAGES";
 
             int offset = 0;
-            var first384Bytes = applicationUse.ReadBytes(ref offset, 384);
-            var last128Bytes = applicationUse.ReadBytes(ref offset, 128);
-            if (Array.TrueForAll(first384Bytes, b => b == 0x00) && FileType.ISO9660.IsPureData(last128Bytes))
+            var optionalZeroBytes = applicationUse.ReadBytes(ref offset, 384);
+            var tagesBytes = applicationUse.ReadBytes(ref offset, 128);
+            if (Array.TrueForAll(optionalZeroBytes, b => b == 0x00) && FileType.ISO9660.IsPureData(tagesBytes))
                 return "TAGES";
             
             // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
             // Redump ID  8776, 21321, 35932 
             offset = 0;
-            var initialValue = applicationUse.ReadInt32LittleEndian(ref offset);
-            var last508Bytes = applicationUse.ReadBytes(ref offset, 508);
-            if (Array.TrueForAll(last508Bytes, b => b == 0x00) && initialValue != 0)
+            var earlyTagesBytes = applicationUse.ReadInt32LittleEndian(ref offset);
+            var zeroBytes = applicationUse.ReadBytes(ref offset, 508);
+            if (Array.TrueForAll(zeroBytes, b => b == 0x00) && earlyTagesBytes != 0)
                 return "TAGES (Early)";
             
             // The original releases of Moto Racer 3 (31578, 34669) are so early they have seemingly nothing identifiable.

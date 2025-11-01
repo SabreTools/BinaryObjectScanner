@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -12,7 +13,7 @@ namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
     // TODO: Think of a way to detect dfe
-    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck
+    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
     {
         /// <summary>
         /// Matches hash of the Release Control-encrypted executable to known hashes
@@ -251,6 +252,107 @@ namespace BinaryObjectScanner.Protection
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
+        }
+        
+        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+        {
+            #region Initial Checks
+            
+            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            
+            // Application Use is too inconsistent to include or exclude
+            
+            // There needs to be noteworthy data in the reserved 653 bytes
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+            
+            #endregion
+            
+            var applicationUse = pvd.ApplicationUse;
+            var reserved653Bytes = pvd.Reserved653Bytes;
+
+            #region Read Application Use
+
+            var offset = 0;
+
+            // Either there's nothing of note, or it's empty other than a 4-byte value at the start.
+            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
+            {
+                var appUseUint = applicationUse.ReadUInt32LittleEndian(ref offset);
+                var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 508);
+                
+                if (appUseUint == 0 || !Array.TrueForAll(appUseZeroBytes, b => b == 0x00))
+                    return null;
+            }
+            
+            #endregion
+            
+            offset = 0;
+            
+            #region Read Reserved 653 Bytes
+            
+            var reservedZeroBytesOne = reserved653Bytes.ReadBytes(ref offset, 489);
+            var reservedHundredValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reserveDataBytesOne = reserved653Bytes.ReadBytes(ref offset, 80);
+            var reservedZeroBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
+            var reservedUintOne = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reservedUintTwoLow = reserved653Bytes.ReadUInt32LittleEndian(ref offset); // Low value
+            var reservedZeroBytesThree = reserved653Bytes.ReadBytes(ref offset, 4);
+            var reservedUintThree = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reservedZeroBytesFour = reserved653Bytes.ReadBytes(ref offset, 12);
+            var reservedUintFour = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reservedOneValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reservedZeroBytesFive = reserved653Bytes.ReadBytes(ref offset, 4);
+            var reservedDataBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
+            var reservedLowByteValueOne = reserved653Bytes.ReadByteValue(ref offset);
+            var reservedLowByteValueTwo = reserved653Bytes.ReadByteValue(ref offset);
+            var reservedLowByteValueThree = reserved653Bytes.ReadByteValue(ref offset);
+            var reservedLowByteValueFour = reserved653Bytes.ReadByteValue(ref offset);
+            var reservedDataBytesThree = reserved653Bytes.ReadBytes(ref offset, 12);
+            
+            #endregion
+
+            // True for all discs
+            if (!Array.TrueForAll(reservedZeroBytesOne, b => b == 0x00) 
+                || !Array.TrueForAll(reservedZeroBytesTwo, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesThree, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesFour, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesFive, b => b == 0x00))
+                return null;
+
+            // If this uint32 is 100, the next 80 bytes should be data. Otherwise, both should only ever be zero.
+            
+            switch(reservedHundredValue) 
+            {
+                case 0:
+                    if (!Array.TrueForAll(reserveDataBytesOne, b => b == 0x00))
+                        return null;
+                    break;
+                case 100:
+                    if (!FileType.ISO9660.IsPureData(reserveDataBytesOne))
+                        return null;
+                    break;
+                default:
+                    return null;
+            }
+            
+            //If you go back to early 4.0 CDs, only the above can be guaranteed to pass. CDs can already be identified via normal
+            //dumping, though, and  (as well as most later CDs) should always pass these remaining checks.
+            if (reservedUintOne < 0xFFFF || reservedUintTwoLow > 0xFFFF || reservedUintThree < 0xFFFF || reservedUintFour < 0xFFFF)
+                return null;
+
+            if (reservedOneValue != 1)
+                return null;
+
+            if (reservedLowByteValueOne > 0x20 || reservedLowByteValueTwo > 0x20 || reservedLowByteValueThree > 0x20 ||
+                reservedLowByteValueFour > 0x20)
+                return null;
+            
+            if (!FileType.ISO9660.IsPureData(reservedDataBytesTwo) ||
+                !FileType.ISO9660.IsPureData(reservedDataBytesThree))
+                return null;
+            
+            return "SecuROM";
         }
 
         /// <summary>

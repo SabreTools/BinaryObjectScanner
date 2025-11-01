@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using BinaryObjectScanner.Data;
 using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO.Extensions;
@@ -59,12 +60,20 @@ namespace BinaryObjectScanner.FileType
             
             // Checks if there are strings in the data
             // TODO: is this too dangerous, or too faulty?
-            if (bytes.ReadStringsWithEncoding(charLimit: 7, Encoding.ASCII).Count > 0)
-                return false;
+            // Currently-found worst cases:
+            // "Y:1BY:1BC" in Redump ID 23339
+            var strings = bytes.ReadStringsWithEncoding(charLimit: 7, Encoding.ASCII);
+            Regex rgx = new Regex("[^a-zA-Z0-9 -'!?,.]");
+            foreach (string str in strings)
+            {
+                if (rgx.Replace(str, "").Length > 7)
+                    return false;
+            }
             
             return true;
         }
         
+        // TODO: can these 2 "noteworthy" functions be cached?
         // Checks whether the Application Use data is "noteworthy" enough to be worth checking for protection.
         public static bool NoteworthyApplicationUse(PrimaryVolumeDescriptor pvd)
         {
@@ -80,8 +89,16 @@ namespace BinaryObjectScanner.FileType
                     noteworthyApplicationUse = false;
                 else if (potentialAppUseString.StartsWith("ULTRAISO"))
                     noteworthyApplicationUse = false;
+                else if (Array.TrueForAll(Encoding.ASCII.GetBytes(potentialAppUseString), b => b == 0x20))
+                    noteworthyApplicationUse = false;
                 // More things will have to go here as more disc authoring softwares are found that do this.
             }
+            
+            offset = 141;
+            potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
+            if (potentialAppUseString == "CD-XA001") 
+                    noteworthyApplicationUse = false;
+            
             return noteworthyApplicationUse;
         }
         

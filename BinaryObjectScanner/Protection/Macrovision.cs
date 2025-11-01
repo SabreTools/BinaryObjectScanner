@@ -267,13 +267,13 @@ namespace BinaryObjectScanner.Protection
             #region Read Application Use
             
             int offset = 0;
-            var appUsefirst256Bytes = applicationUse.ReadBytes(ref offset, 256);
-            var appUsemiddle128Bytes = applicationUse.ReadBytes(ref offset, 128);
+            var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 256);
+            var appUseDataBytesOne = applicationUse.ReadBytes(ref offset, 128);
             offset += 64; // Some extra values get added here over time. Check is good enough, easier to skip this.
-            var appUseFirstUint =  applicationUse.ReadUInt16LittleEndian(ref offset);
-            var appUseFollowingFirstUint = applicationUse.ReadBytes(ref offset, 20);
-            var appUseSecondUint =  applicationUse.ReadUInt32LittleEndian(ref offset);
-            var finalAppUseData = applicationUse.ReadBytes(ref offset, 38);
+            var appUseUintOne =  applicationUse.ReadUInt16LittleEndian(ref offset);
+            var appUseDataBytesTwo = applicationUse.ReadBytes(ref offset, 20);
+            var appUseUintTwo =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            var appUseDataBytesThree = applicationUse.ReadBytes(ref offset, 38);
             
             #endregion
             
@@ -282,28 +282,28 @@ namespace BinaryObjectScanner.Protection
             #region Read Reserved 653 Bytes
             
             // Somewhat arbitrary, but going further than 11 seems to exclude some discs.
-            var reservedFirst10Bytes = reserved653Bytes.ReadBytes(ref offset, 10);
+            var reservedDataBytes = reserved653Bytes.ReadBytes(ref offset, 10);
             offset = 132; // TODO: Does it ever go further than this?
-            var reservedFinal521Bytes = reserved653Bytes.ReadBytes(ref offset, 521);
+            var reservedZeroBytes = reserved653Bytes.ReadBytes(ref offset, 521);
             
             #endregion
             
             // The first 256 bytes of application use, and the last 521 bytes of reserved data, should all be 0x00.
             // It's possible reserved might need to be shortened a bit, but a need for that has not been observed yet.
-            if (!Array.TrueForAll(appUsefirst256Bytes, b => b == 0x00) || !Array.TrueForAll(reservedFinal521Bytes, b => b == 0x00))
+            if (!Array.TrueForAll(appUseZeroBytes, b => b == 0x00) || !Array.TrueForAll(reservedZeroBytes, b => b == 0x00))
                 return null;
             
             // All of these sections should be pure data
-            if (!FileType.ISO9660.IsPureData(appUsemiddle128Bytes) 
-                || !FileType.ISO9660.IsPureData(appUseFollowingFirstUint)
-                || !FileType.ISO9660.IsPureData(finalAppUseData)
-                || !FileType.ISO9660.IsPureData(reservedFirst10Bytes))
+            if (!FileType.ISO9660.IsPureData(appUseDataBytesOne) 
+                || !FileType.ISO9660.IsPureData(appUseDataBytesTwo)
+                || !FileType.ISO9660.IsPureData(appUseDataBytesThree)
+                || !FileType.ISO9660.IsPureData(reservedDataBytes))
                 return null;
 
             // appUseFirstUint has only ever been observed as 0xBB, but no need to be this strict yet. Can be checked
             // if it's found that it's needed to, and always viable. appUseSecondUint varies more, but is still always
             // under 0xFF so far.
-            if (appUseFirstUint > 0xFF || appUseSecondUint > 0xFF)
+            if (appUseUintOne > 0xFF || appUseUintTwo > 0xFF)
                 return null;
             
             return "SafeDisc";
