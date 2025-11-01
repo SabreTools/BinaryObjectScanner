@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -8,7 +10,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class StarForce : IExecutableCheck<PortableExecutable>, IPathCheck
+    public class StarForce : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
     {
         // TODO: Bring up to par with PiD.
         // Known issues: 
@@ -159,6 +161,49 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Determine if there are any file name checks that aren't too generic to use on their own.
             return null;
+        }
+        
+        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+        {
+            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            
+            int offset = 0;
+            
+            // StarForce Keyless check #1: the key is stored in the Data Preparer identifier. Length varies, minimum
+            // length unknown, but it shouldn't be less than 8 at the very least. It's usually 15-24. It's only 
+            // made up of numbers, capital letters, and dashes.
+            var dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
+            if (dataPreparerIdentiferString == null || dataPreparerIdentiferString.Length < 8)
+                return null;
+            
+            if (!Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
+                return null;
+            
+            // Starforce Keyless check #2: the reserved 653 bytes start with a 32-bit LE number that's slightly less
+            // than the length of the volume size space. The difference varies, it's usually around 10. Check 500 to be
+            // safe. The rest of the data is all 0x00.
+            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
+                return null;
+            
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+            
+            offset = 0;
+            
+            var reserved653Bytes = pvd.Reserved653Bytes;
+            var initialValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var zeroBytes = reserved653Bytes.ReadBytes(ref offset, 508);
+            
+            if (initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
+                return null;
+
+            // It's unfortunately not known to be possible to detect non-keyless StarForce discs.
+            
+            // It may be worth returning the key, as it tells you what set of DPM your disc corresponds to, and it would
+            // also help show why a disc might be an alt of another disc (there are at least a decent amount of StarForce
+            // Keyless alts that would amtch otherwise). Unclear if this is desired by the users of BOS or those affected
+            // by it.
+            return $"StarForce Keyless - {dataPreparerIdentiferString}";
         }
     }
 }
