@@ -194,7 +194,7 @@ namespace BinaryObjectScanner.Protection
             var initialValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
             var zeroBytes = reserved653Bytes.ReadBytes(ref offset, 508);
             
-            if (initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
+            if (initialValue > pvd.VolumeSpaceSize || initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
                 return null;
 
             // It's unfortunately not known to be possible to detect non-keyless StarForce discs.
