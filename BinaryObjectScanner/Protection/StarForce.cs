@@ -167,8 +167,6 @@ namespace BinaryObjectScanner.Protection
         {
             var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
             
-            int offset = 0;
-            
             // Starforce Keyless check #1: the reserved 653 bytes start with a 32-bit LE number that's slightly less
             // than the length of the volume size space. The difference varies, it's usually around 10. Check 500 to be
             // safe. The rest of the data is all 0x00.
@@ -178,7 +176,7 @@ namespace BinaryObjectScanner.Protection
             if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return null;
             
-            offset = 0;
+            int offset = 0;
             
             var reserved653Bytes = pvd.Reserved653Bytes;
             var initialValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
@@ -186,6 +184,8 @@ namespace BinaryObjectScanner.Protection
             
             if (initialValue > pvd.VolumeSpaceSize || initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
                 return null;
+
+            offset = 0;
             
             // StarForce Keyless check #2: the key is stored in the Data Preparer identifier. Length varies, minimum
             // length unknown, but it shouldn't be less than 8 at the very least. It's usually 15-24. It's only 
