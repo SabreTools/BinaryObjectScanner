@@ -83,7 +83,7 @@ namespace BinaryObjectScanner.FileType
             if (Array.TrueForAll(applicationUse, b => b == 0x00))
                 noteworthyApplicationUse = false;
             string? potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
-            if (potentialAppUseString != null) // Some image authoring programs add a starting string to AU data
+            if (potentialAppUseString != null && potentialAppUseString.Length > 0) // Some image authoring programs add a starting string to AU data
             {
                 if (potentialAppUseString.StartsWith("ImgBurn"))
                     noteworthyApplicationUse = false;

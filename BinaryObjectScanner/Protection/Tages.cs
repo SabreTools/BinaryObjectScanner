@@ -219,7 +219,6 @@ namespace BinaryObjectScanner.Protection
             
             if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
-            
 
             // There needs to be noteworthy application use data.
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
