@@ -94,7 +94,9 @@ namespace BinaryObjectScanner.Protection
             // Checks can be made even easier once UDF support exists, as most (although not all, some early discs like
             // redump ID 124111 have no UDF partition) discs have "Settec" slathered over every field UDF lets them.
 
-            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+            
             
             // Alpharom disc check #1: disc has varying (but observed to at least always be larger than 14) length 
             // string made up of numbers and capital letters.

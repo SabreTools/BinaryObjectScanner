@@ -217,7 +217,9 @@ namespace BinaryObjectScanner.Protection
         {
             #region Initial Checks
             
-            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+            
 
             // There needs to be noteworthy application use data.
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))

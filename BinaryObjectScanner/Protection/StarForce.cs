@@ -165,7 +165,9 @@ namespace BinaryObjectScanner.Protection
         
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
-            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+            
             
             // Starforce Keyless check #1: the reserved 653 bytes start with a 32-bit LE number that's slightly less
             // than the length of the volume size space. The difference varies, it's usually around 10. Check 500 to be
@@ -180,37 +182,62 @@ namespace BinaryObjectScanner.Protection
             
             var reserved653Bytes = pvd.Reserved653Bytes;
             var initialValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            var zeroBytes = reserved653Bytes.ReadBytes(ref offset, 508);
+            var zeroBytes = reserved653Bytes.ReadBytes(ref offset, 649);
             
+            // It's unfortunately not known to be possible to detect many non-keyless StarForce discs, so some will slip
+            // through here.
             if (initialValue > pvd.VolumeSpaceSize || initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
                 return null;
 
             offset = 0;
             
-            // StarForce Keyless check #2: the key is stored in the Data Preparer identifier. Length varies, minimum
-            // length unknown, but it shouldn't be less than 8 at the very least. It's usually 15-24. It's only 
-            // made up of numbers, capital letters, and dashes.
+            // StarForce Keyless check #2: the key is stored in the Data Preparer identifier.
             
-            // It turns out that at least a few (i.e. Redump ID 60266, 72531, 87181, 91734, 106732, 105356, 74578, 78200)
+            // It turns out that some (i.e. Redump ID 60266, 72531, 87181, 91734, 106732, 105356, 74578, 78200)
             // non-keyless StarForce discs still have this value here? This check may need to be disabled, but it
-            // seems OK in practice so far.
+            // seems to avoid any false positives in practice so far.
             var dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
-            if (dataPreparerIdentiferString == null || dataPreparerIdentiferString.Length < 8)
+            if (dataPreparerIdentiferString == null || dataPreparerIdentiferString.Length == 0)
                 return "StarForce";
+            
+            // It is returning the key, as it tells you what set of DPM your disc corresponds to, and it would also
+            // help show why a disc might be an alt of another disc (there are at least a decent amount of StarForce
+            // Keyless alts that would amtch otherwise). Unclear if this is desired by the users of BOS or those
+            // affected by it.
+            
+            // Thus far, the StarForce Keyless key is always made up of a number of characters, all either capital letters or
+            // numbers, sometimes with dashes in between. Thus far, 4 formats have been observed:
+            // XXXXXXXXXXXXXXXXXXXXXXXXX (25 characters)
+            // XXXXX-XXXXX-XXXXX-XXXXX-XXXXX (25 characters, plus 4 dashes seperating 5 groups of 5)
+            // XXXXXXXXXXXXXXXXXXXXXXXXXXXX (28 characters)
+            // XXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX (28 characters, with 4 dashes)
+            if (Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{25}$")
+                || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$")
+                || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{28}$")
+                || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{4}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}$")) 
+                return $"StarForce Keyless - {dataPreparerIdentiferString}";
+            
+            // Redump ID 60270 is a unique case, there could possibly be more.
+            if (UnusualStarforceKeylessKeys.ContainsKey(dataPreparerIdentiferString))
+                return $"StarForce Keyless - {dataPreparerIdentiferString}";
+            
+            // In case any variants were missed.
+            if (Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
+                return $"StarForce Keyless - {dataPreparerIdentiferString} - Unknown variant, please report to us on GitHub!";
             
             // 34206 reaches this because it's not keyless, and has "WinISO software" as the DPI string. However, since
-            // it has lowercase letters and spaces, it's caught here. It is genuinely starforce, so it's not a false
+            // it has lowercase letters and spaces, it's caught here. It is genuinely StarForce, so it's not a false
             // positive.
-            if (!Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
-                return "StarForce";
-
-            // It's unfortunately not known to be possible to detect most non-keyless StarForce discs.
-            
-            // It may be worth returning the key, as it tells you what set of DPM your disc corresponds to, and it would
-            // also help show why a disc might be an alt of another disc (there are at least a decent amount of StarForce
-            // Keyless alts that would amtch otherwise). Unclear if this is desired by the users of BOS or those affected
-            // by it.
-            return $"StarForce Keyless - {dataPreparerIdentiferString}";
+            return $"StarForce";
         }
+        
+        /// <summary>
+        /// If a StarForce Keyless hash is known to not fit the format, but is in some way a one-off.
+        /// Key is the SF Keyless Key, value is redump ID
+        /// </summary>
+        private static readonly Dictionary<string, uint> UnusualStarforceKeylessKeys = new()
+        {
+            {"FYFYILOVEYOU", 60270}, 
+        };
     }
 }

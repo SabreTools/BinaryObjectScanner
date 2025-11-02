@@ -257,8 +257,9 @@ namespace BinaryObjectScanner.Protection
         public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
         {
             #region Initial Checks
-            
-            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+
+            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
             
             // Application Use is too inconsistent to include or exclude
             
@@ -319,6 +320,35 @@ namespace BinaryObjectScanner.Protection
                 || !Array.TrueForAll(reservedZeroBytesFour, b => b == 0x00)
                 || !Array.TrueForAll(reservedZeroBytesFive, b => b == 0x00))
                 return null;
+            
+            #region Early SecuROM Checks
+
+            // This duplicates a lot of code. This region is like this because it's still possible to detect early vers,
+            // but it should be easy to remove this section if it turns out this leads to conflicts or false positives.
+            if (Array.TrueForAll(reserveDataBytesOne, b => b == 0x00)
+                && Array.TrueForAll(reservedDataBytesTwo, b => b == 0x00)
+                && reservedHundredValue == 0 && reservedOneValue == 0
+                && reservedUintOne == 0 && reservedUintTwoLow == 0 && reservedUintThree == 0 && reservedUintFour == 0
+                && reservedLowByteValueOne == 0 && reservedLowByteValueTwo == 0 && reservedLowByteValueThree == 0)
+            {
+                offset = 0;
+                
+                if (FileType.ISO9660.IsPureData(reservedDataBytesThree))
+                    if ( reservedLowByteValueFour == 0)
+                        return "SecuROM 3.x-4.6x";
+                    else if (reservedLowByteValueFour < 0x20)
+                        return "SecuROM 4.7x-4.8x";
+                    else
+                        return null;
+                
+                var earlyFirstFourBytes = reservedDataBytesThree.ReadBytes(ref offset, 4);
+                var earlyLastEightBytes = reservedDataBytesThree.ReadBytes(ref offset, 8);
+                
+                if (Array.TrueForAll(earlyFirstFourBytes, b => b == 0x00) && FileType.ISO9660.IsPureData(earlyLastEightBytes))
+                    return "SecuROM 2.x-3.x";
+            }
+            
+            #endregion
 
             // If this uint32 is 100, the next 80 bytes should be data. Otherwise, both should only ever be zero.
             
@@ -352,7 +382,7 @@ namespace BinaryObjectScanner.Protection
                 !FileType.ISO9660.IsPureData(reservedDataBytesThree))
                 return null;
             
-            return "SecuROM";
+            return "SecuROM 4.8x+";
         }
 
         /// <summary>

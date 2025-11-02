@@ -141,11 +141,14 @@ namespace BinaryObjectScanner.Protection
             // can be checked. Not bothering since this doesn't work for ProtectCD/DVD 6.x discs, which use otherwise
             // the same check anyways.
             
-            var pvd = (PrimaryVolumeDescriptor)iso.VolumeDescriptorSet[0];
+            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+            
             int offset = 0;
             var copyrightString = pvd.CopyrightFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
             if (copyrightString == null || copyrightString.Length < 19)
                 return null;
+            
             copyrightString = copyrightString.Substring(0, 19); // Redump ID 15896 has a trailing space
             
             // Stores some kind of serial in the copyright string, format 0000-XXXX-XXXX-XXXX where it can be numbers or
@@ -153,6 +156,7 @@ namespace BinaryObjectScanner.Protection
 
             if (!Regex.IsMatch(copyrightString, "[0]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"))
                 return null;
+            
             offset = 0;
             
             // Starting with sometime around 7.5, ProtectDiSC includes a version number string here. Examples include
@@ -162,6 +166,7 @@ namespace BinaryObjectScanner.Protection
             var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
             if (abstractIdentifierString == null || abstractIdentifierString.Trim().Length == 0)
                 return "ProtectDiSC 6-Early 7.x";
+            
             return "ProtectDiSC Mid-7.x+";
         }
 
