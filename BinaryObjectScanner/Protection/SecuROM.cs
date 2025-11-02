@@ -378,6 +378,7 @@ namespace BinaryObjectScanner.Protection
                 reservedLowByteValueFour > 0x20)
                 return null;
             
+            // TODO: RID 127715 fails this because the first 8 bytes of reservedDataBytesTwo happen to be "afsCafsC"
             if (!FileType.ISO9660.IsPureData(reservedDataBytesTwo) ||
                 !FileType.ISO9660.IsPureData(reservedDataBytesThree))
                 return null;
