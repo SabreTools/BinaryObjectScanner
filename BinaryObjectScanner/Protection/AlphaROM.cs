@@ -95,6 +95,9 @@ namespace BinaryObjectScanner.Protection
             // Checks can be made even easier once UDF support exists, as most (although not all, some early discs like
             // redump ID 124111 have no UDF partition) discs have "Settec" slathered over every field UDF lets them.
 
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            
             if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             

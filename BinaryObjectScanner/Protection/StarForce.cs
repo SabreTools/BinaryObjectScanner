@@ -166,9 +166,11 @@ namespace BinaryObjectScanner.Protection
          /// <inheritdoc/>
         public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
-            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet.Length == 0)
                 return null;
             
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
             
             // Starforce Keyless check #1: the reserved 653 bytes start with a 32-bit LE number that's slightly less
             // than the length of the volume size space. The difference varies, it's usually around 10. Check 500 to be

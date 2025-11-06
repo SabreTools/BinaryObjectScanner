@@ -142,6 +142,9 @@ namespace BinaryObjectScanner.Protection
             // can be checked. Not bothering since this doesn't work for ProtectCD/DVD 6.x discs, which use otherwise
             // the same check anyways.
             
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            
             if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             

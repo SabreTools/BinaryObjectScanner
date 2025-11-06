@@ -156,6 +156,9 @@ namespace BinaryObjectScanner.Protection
         {
             #region Initial Checks
             
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            
             if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
