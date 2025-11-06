@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.FileType
 
             // Standard checks
             var subProtections
-                = RunISOChecks(file, _wrapper, StaticChecks.ISO9660CheckClasses, includeDebug);
+                = RunISOChecks(file, StaticChecks.ISO9660CheckClasses, includeDebug);
             protections.Append(file, subProtections.Values);
 
             // If there are no protections
