@@ -324,7 +324,7 @@ namespace BinaryObjectScanner.Protection
             #region Early SecuROM Checks
 
             // This duplicates a lot of code. This region is like this because it's still possible to detect early vers,
-            // but it should be easy to remove this section if it turns out this leads to conflicts or false positives.
+            // but it should be easy to remove this section if it turns out this leads to conflicts or false positives
             if (Array.TrueForAll(reserveDataBytesOne, b => b == 0x00)
                 && Array.TrueForAll(reservedDataBytesTwo, b => b == 0x00)
                 && reservedHundredValue == 0 && reservedOneValue == 0
