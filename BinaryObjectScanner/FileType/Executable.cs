@@ -74,12 +74,10 @@ namespace BinaryObjectScanner.FileType
         /// Handle a single file based on all executable check implementations
         /// </summary>
         /// <param name="file">Name of the source file of the executable, for tracking</param>
-        /// <param name="exe">Executable to scan</param>
         /// <param name="checks">Set of checks to use</param>
-        /// <param name="scanner">Scanner for handling recursive protections</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        protected IDictionary<U, string> RunExecutableChecks<U>(string file, T exe, U[] checks, bool includeDebug)
+        protected IDictionary<U, string> RunExecutableChecks<U>(string file, U[] checks, bool includeDebug)
             where U : IExecutableCheck<T>
         {
             // Create the output dictionary
@@ -89,7 +87,7 @@ namespace BinaryObjectScanner.FileType
             checks.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckExecutable(file, exe, includeDebug);
+                var protection = checkClass.CheckExecutable(file, _wrapper, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 

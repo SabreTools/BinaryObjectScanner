@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.FileType
 
             // Standard checks
             var subProtections
-                = RunExecutableChecks(file, _wrapper, StaticChecks.LinearExecutableCheckClasses, includeDebug);
+                = RunExecutableChecks(file, StaticChecks.LinearExecutableCheckClasses, includeDebug);
             protections.Append(file, subProtections.Values);
 
             // If there are no protections
