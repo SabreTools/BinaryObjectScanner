@@ -10,7 +10,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class TAGES : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
+    public class TAGES : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -212,12 +212,12 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             #region Initial Checks
             
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
 
             // There needs to be noteworthy application use data.
@@ -245,7 +245,7 @@ namespace BinaryObjectScanner.Protection
             // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
             // Redump ID  8776, 21321, 35932 
             offset = 0;
-            var earlyTagesBytes = applicationUse.ReadInt32LittleEndian(ref offset);
+            uint earlyTagesBytes = applicationUse.ReadUInt32LittleEndian(ref offset);
             var zeroBytes = applicationUse.ReadBytes(ref offset, 508);
             if (Array.TrueForAll(zeroBytes, b => b == 0x00) && earlyTagesBytes != 0)
                 return "TAGES (Early)";

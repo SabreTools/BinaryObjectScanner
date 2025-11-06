@@ -9,7 +9,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>
-    /// .iso file
+    /// Disk image file
     /// </summary>
     public abstract class DiskImage<T> : DetectableBase<T>
         where T : WrapperBase
@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.FileType
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
         protected IDictionary<U, string> RunISOChecks<U>(string file, U[] checks, bool includeDebug)
-            where U : IISOCheck<T>
+            where U : IDiskImageCheck<T>
         {
             // Create the output dictionary
             var protections = new CheckDictionary<U>();
@@ -36,7 +36,7 @@ namespace BinaryObjectScanner.FileType
             checks.IterateWithAction(checkClass =>
             {
                 // Get the protection for the class, if possible
-                var protection = checkClass.CheckISO(file, _wrapper, includeDebug);
+                var protection = checkClass.CheckDiskImage(file, _wrapper, includeDebug);
                 if (string.IsNullOrEmpty(protection))
                     return;
 

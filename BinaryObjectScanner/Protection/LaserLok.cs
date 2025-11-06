@@ -11,7 +11,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class LaserLok : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
+    public class LaserLok : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -150,12 +150,12 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             #region Initial Checks
             
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
             
@@ -168,7 +168,7 @@ namespace BinaryObjectScanner.Protection
             #endregion
             
             var reserved653Bytes = pvd.Reserved653Bytes;
-            var firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
+            int firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
             string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero); 
             if (finalString == null)
                 return null;

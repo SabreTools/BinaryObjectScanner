@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
     // TODO: Think of a way to detect dfe
-    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
+    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         /// <summary>
         /// Matches hash of the Release Control-encrypted executable to known hashes
@@ -253,12 +253,12 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             #region Initial Checks
 
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
             // Application Use is too inconsistent to include or exclude
@@ -279,7 +279,7 @@ namespace BinaryObjectScanner.Protection
             // Either there's nothing of note, or it's empty other than a 4-byte value at the start.
             if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
             {
-                var appUseUint = applicationUse.ReadUInt32LittleEndian(ref offset);
+                uint appUseUint = applicationUse.ReadUInt32LittleEndian(ref offset);
                 var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 508);
                 
                 if (appUseUint == 0 || !Array.TrueForAll(appUseZeroBytes, b => b == 0x00))
@@ -293,22 +293,22 @@ namespace BinaryObjectScanner.Protection
             #region Read Reserved 653 Bytes
             
             var reservedZeroBytesOne = reserved653Bytes.ReadBytes(ref offset, 489);
-            var reservedHundredValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedHundredValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
             var reserveDataBytesOne = reserved653Bytes.ReadBytes(ref offset, 80);
             var reservedZeroBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
-            var reservedUintOne = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            var reservedUintTwoLow = reserved653Bytes.ReadUInt32LittleEndian(ref offset); // Low value
+            uint reservedUintOne = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedUintTwoLow = reserved653Bytes.ReadUInt32LittleEndian(ref offset); // Low value
             var reservedZeroBytesThree = reserved653Bytes.ReadBytes(ref offset, 4);
-            var reservedUintThree = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedUintThree = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
             var reservedZeroBytesFour = reserved653Bytes.ReadBytes(ref offset, 12);
-            var reservedUintFour = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            var reservedOneValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedUintFour = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedOneValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
             var reservedZeroBytesFive = reserved653Bytes.ReadBytes(ref offset, 4);
             var reservedDataBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
-            var reservedLowByteValueOne = reserved653Bytes.ReadByteValue(ref offset);
-            var reservedLowByteValueTwo = reserved653Bytes.ReadByteValue(ref offset);
-            var reservedLowByteValueThree = reserved653Bytes.ReadByteValue(ref offset);
-            var reservedLowByteValueFour = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueOne = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueTwo = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueThree = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueFour = reserved653Bytes.ReadByteValue(ref offset);
             var reservedDataBytesThree = reserved653Bytes.ReadBytes(ref offset, 12);
             
             #endregion

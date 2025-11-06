@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Protection
 {
     // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6
     // ProtectDISC 9/10 checks for the presence of CSS on the disc to run, but don't encrypt any sectors or check for keys. Confirmed in Redump entries 78367 and 110095.
-    public class ProtectDISC : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
+    public class ProtectDISC : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -134,14 +134,14 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             // If false positives occur on ProtectDiSC for some reason, there's a bit in the reserved bytes that
             // can be checked. Not bothering since this doesn't work for ProtectCD/DVD 6.x discs, which use otherwise
             // the same check anyways.
             
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
             int offset = 0;

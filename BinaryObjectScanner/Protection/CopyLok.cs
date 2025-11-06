@@ -22,7 +22,7 @@ namespace BinaryObjectScanner.Protection
     /// 
     /// COPYLOK trademark: https://www.trademarkelite.com/europe/trademark/trademark-detail/000618512/COPYLOK.
     /// </summary>
-    public class CopyLok : IExecutableCheck<PortableExecutable>, IISOCheck<ISO9660>
+    public class CopyLok : IExecutableCheck<PortableExecutable>, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -36,12 +36,12 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             #region Initial Checks
             
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
             
@@ -58,16 +58,16 @@ namespace BinaryObjectScanner.Protection
             #region Read Application Use
             
             var applicationUse = pvd.ApplicationUse;
-            var constantValueOne = applicationUse.ReadUInt32LittleEndian(ref offset);
-            var smallSizeBytes = applicationUse.ReadUInt16LittleEndian(ref offset);
-            var constantValueTwo = applicationUse.ReadUInt16LittleEndian(ref offset);
-            var finalSectionOneBytes = applicationUse.ReadUInt32LittleEndian(ref offset);
-            var zeroByte = applicationUse.ReadByte(ref offset);
-            var earlyCopyLokBytesOne = applicationUse.ReadUInt16LittleEndian(ref offset);
-            var pairBytesOne = applicationUse.ReadUInt16LittleEndian(ref offset);
-            var oneValueBytes =  applicationUse.ReadUInt32LittleEndian(ref offset);
-            var earlyCopyLokBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
-            var pairBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
+            uint constantValueOne = applicationUse.ReadUInt32LittleEndian(ref offset);
+            ushort smallSizeBytes = applicationUse.ReadUInt16LittleEndian(ref offset);
+            ushort constantValueTwo = applicationUse.ReadUInt16LittleEndian(ref offset);
+            uint finalSectionOneBytes = applicationUse.ReadUInt32LittleEndian(ref offset);
+            byte zeroByte = applicationUse.ReadByte(ref offset);
+            ushort earlyCopyLokBytesOne = applicationUse.ReadUInt16LittleEndian(ref offset);
+            ushort pairBytesOne = applicationUse.ReadUInt16LittleEndian(ref offset);
+            uint oneValueBytes =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            uint earlyCopyLokBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
+            uint pairBytesTwo = applicationUse.ReadUInt32LittleEndian(ref offset);
             var endingZeroBytes = applicationUse.ReadBytes(ref offset, 483);
             
             #endregion
@@ -86,7 +86,7 @@ namespace BinaryObjectScanner.Protection
             if (earlyCopyLokBytesOne == 0x00)
             {
                 // Redump ID 35908, 56433, 44526
-                if (0 == pairBytesOne && 0 == oneValueBytes && 0 == earlyCopyLokBytesTwo && 0 == pairBytesTwo)
+                if (pairBytesOne == 0 && oneValueBytes == 0 && earlyCopyLokBytesTwo == 0 && pairBytesTwo == 0)
                     return "CopyLok / CodeLok (Early, ~1850 errors)";
                 
                 return "CopyLok / CodeLok - Unknown variant, please report to us on GitHub!";

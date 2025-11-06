@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
     //      - SETTEC0000SETTEC1111
     //      - SOFTWARE\SETTEC
     // TODO: Are there version numbers?
-    public class AlphaROM : IExecutableCheck<PortableExecutable>, IISOCheck<ISO9660>
+    public class AlphaROM : IExecutableCheck<PortableExecutable>, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -88,15 +88,14 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             // Checks can be made even easier once UDF support exists, as most (although not all, some early discs like
             // redump ID 124111 have no UDF partition) discs have "Settec" slathered over every field UDF lets them.
 
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
-            
             
             // Alpharom disc check #1: disc has varying (but observed to at least always be larger than 14) length 
             // string made up of numbers and capital letters.
@@ -116,7 +115,7 @@ namespace BinaryObjectScanner.Protection
             // UTF, Shift-JIS, and EUC-JP all fail to display anything but garbage.
             
             var publisherIdentifier = pvd.PublisherIdentifier;
-            var firstSpace = Array.FindIndex(publisherIdentifier, b => b == 0x20);
+            int firstSpace = Array.FindIndex(publisherIdentifier, b => b == 0x20);
             if (firstSpace <= 10 || firstSpace >= 120)
                 return null;
             

@@ -42,20 +42,25 @@ namespace BinaryObjectScanner.FileType
             return string.Join(";", [.. protectionList]);
         }
 
-        // Checks whether the sequence of bytes is pure data (as in, not empty, not text, just high-entropy data)
+        /// <summary>
+        /// Checks whether the sequence of bytes is pure data (as in, not empty, not text, just high-entropy data)
+        /// </summary>
         public static bool IsPureData(byte[] bytes)
         {
             // Check if there are three 0x00s in a row. Two seems like pushing it
             byte[] containedZeroes = {0x00, 0x00, 0x00};
             int index = 0;
-            for (int i = 0; i < bytes.Length; ++i) {
+            for (int i = 0; i < bytes.Length; ++i) 
+            {
                 if (bytes[i] == containedZeroes[index])
                 {
                     if (++index >= containedZeroes.Length)
                         return false; 
                 }
                 else
-                    index = 0;
+                {
+                    index = 0;   
+                }
             }
             
             // Checks if there are strings in the data
@@ -63,7 +68,7 @@ namespace BinaryObjectScanner.FileType
             // Currently-found worst cases:
             // "Y:1BY:1BC" in Redump ID 23339
             var strings = bytes.ReadStringsWithEncoding(charLimit: 7, Encoding.ASCII);
-            Regex rgx = new Regex("[^a-zA-Z0-9 -'!?,.]");
+            Regex rgx = new Regex("[^a-zA-Z0-9 -'!,.]");
             foreach (string str in strings)
             {
                 if (rgx.Replace(str, "").Length > 7)
@@ -77,22 +82,22 @@ namespace BinaryObjectScanner.FileType
         // Checks whether the Application Use data is "noteworthy" enough to be worth checking for protection.
         public static bool NoteworthyApplicationUse(PrimaryVolumeDescriptor pvd)
         {
-            int offset = 0;
             var applicationUse = pvd.ApplicationUse;
-            var noteworthyApplicationUse = true;
             if (Array.TrueForAll(applicationUse, b => b == 0x00))
-                noteworthyApplicationUse = false;
+                return false;
+            
+            int offset = 0;
             string? potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
             if (potentialAppUseString != null && potentialAppUseString.Length > 0) // Some image authoring programs add a starting string to AU data
             {
                 if (potentialAppUseString.StartsWith("ImgBurn"))
-                    noteworthyApplicationUse = false;
+                    return false;
                 else if (potentialAppUseString.StartsWith("ULTRAISO"))
-                    noteworthyApplicationUse = false;
+                    return false;
                 else if (potentialAppUseString.StartsWith("Rimage"))
-                    noteworthyApplicationUse = false;
+                    return false;
                 else if (Array.TrueForAll(Encoding.ASCII.GetBytes(potentialAppUseString), b => b == 0x20))
-                    noteworthyApplicationUse = false;
+                    return false;
                 // TODO: Unhandled "norb" mastering that puts stuff everywhere, inconsistently. See RID 103641
                 // More things will have to go here as more disc authoring softwares are found that do this.
                 // Redump ID 24478 has a bunch of 0x20 with norb in the middle, some discs have 0x20 that ends in a "/"
@@ -102,9 +107,9 @@ namespace BinaryObjectScanner.FileType
             offset = 141;
             potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
             if (potentialAppUseString == "CD-XA001") 
-                    noteworthyApplicationUse = false;
+                    return false;
             
-            return noteworthyApplicationUse;
+            return true;
         }
         
         // Checks whether the Reserved 653 Bytes are "noteworthy" enough to be worth checking for protection.

@@ -10,7 +10,7 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class StarForce : IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
+    public class StarForce : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         // TODO: Bring up to par with PiD.
         // Known issues: 
@@ -162,10 +162,10 @@ namespace BinaryObjectScanner.Protection
             // TODO: Determine if there are any file name checks that aren't too generic to use on their own.
             return null;
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
             
@@ -181,7 +181,7 @@ namespace BinaryObjectScanner.Protection
             int offset = 0;
             
             var reserved653Bytes = pvd.Reserved653Bytes;
-            var initialValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint initialValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
             var zeroBytes = reserved653Bytes.ReadBytes(ref offset, 649);
             
             // It's unfortunately not known to be possible to detect many non-keyless StarForce discs, so some will slip

@@ -17,7 +17,7 @@ namespace BinaryObjectScanner.Protection
     /// Macrovision Corporation CD-ROM Unauthorized Copying Study: https://web.archive.org/web/20011005161810/http://www.macrovision.com/solutions/software/cdrom/images/Games_CD-ROM_Study.PDF
     /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
-    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck, IISOCheck<ISO9660>
+    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
@@ -243,12 +243,12 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
-        
-        public string? CheckISO(string file, ISO9660 iso, bool includeDebug)
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
             #region Initial Checks
             
-            if (iso.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
             
 
@@ -272,9 +272,9 @@ namespace BinaryObjectScanner.Protection
             var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 256);
             var appUseDataBytesOne = applicationUse.ReadBytes(ref offset, 128);
             offset += 64; // Some extra values get added here over time. Check is good enough, easier to skip this.
-            var appUseUintOne =  applicationUse.ReadUInt16LittleEndian(ref offset);
+            ushort appUseUshort =  applicationUse.ReadUInt16LittleEndian(ref offset);
             var appUseDataBytesTwo = applicationUse.ReadBytes(ref offset, 20);
-            var appUseUintTwo =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            uint appUseUint =  applicationUse.ReadUInt32LittleEndian(ref offset);
             var appUseDataBytesThree = applicationUse.ReadBytes(ref offset, 38);
             
             #endregion
@@ -305,7 +305,7 @@ namespace BinaryObjectScanner.Protection
             // appUseFirstUint has only ever been observed as 0xBB, but no need to be this strict yet. Can be checked
             // if it's found that it's needed to, and always viable. appUseSecondUint varies more, but is still always
             // under 0xFF so far.
-            if (appUseUintOne > 0xFF || appUseUintTwo > 0xFF)
+            if (appUseUshort > 0xFF || appUseUint > 0xFF)
                 return null;
             
             return "SafeDisc";
