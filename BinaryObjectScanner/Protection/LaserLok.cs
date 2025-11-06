@@ -150,6 +150,7 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
+
          /// <inheritdoc/>
         public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
@@ -169,6 +170,9 @@ namespace BinaryObjectScanner.Protection
             
             var reserved653Bytes = pvd.Reserved653Bytes;
             int firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
+            if (firstNonZero < 0)
+                return null;
+            
             string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero); 
             if (finalString == null)
                 return null;

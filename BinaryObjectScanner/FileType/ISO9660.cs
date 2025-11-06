@@ -79,7 +79,9 @@ namespace BinaryObjectScanner.FileType
         }
         
         // TODO: can these 2 "noteworthy" functions be cached?
-        // Checks whether the Application Use data is "noteworthy" enough to be worth checking for protection.
+        /// <summary>
+        /// Checks whether the Application Use data is "noteworthy" enough to be worth checking for protection.
+        /// </summary>
         public static bool NoteworthyApplicationUse(PrimaryVolumeDescriptor pvd)
         {
             var applicationUse = pvd.ApplicationUse;
@@ -112,7 +114,9 @@ namespace BinaryObjectScanner.FileType
             return true;
         }
         
-        // Checks whether the Reserved 653 Bytes are "noteworthy" enough to be worth checking for protection.
+        /// <summary>
+        /// Checks whether the Reserved 653 Bytes are "noteworthy" enough to be worth checking for protection.
+        /// </summary>
         public static bool NoteworthyReserved653Bytes(PrimaryVolumeDescriptor pvd)
         {
             var reserved653Bytes = pvd.Reserved653Bytes;

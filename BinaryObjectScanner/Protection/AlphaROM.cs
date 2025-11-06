@@ -88,6 +88,7 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
+
          /// <inheritdoc/>
         public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
@@ -107,8 +108,6 @@ namespace BinaryObjectScanner.Protection
 
             if (!Regex.IsMatch(applicationIdentifierString, "^[A-Z0-9]*$"))
                 return null;
-            
-            offset = 0;
             
             // Alpharom disc check #2: disc has publisher identifier filled with varying amount of data (26-50 bytes
             // have been observed) followed by spaces. There's a decent chance this is just a Japanese text string, but

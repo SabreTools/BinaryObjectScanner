@@ -134,6 +134,7 @@ namespace BinaryObjectScanner.Protection
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
+
          /// <inheritdoc/>
         public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {

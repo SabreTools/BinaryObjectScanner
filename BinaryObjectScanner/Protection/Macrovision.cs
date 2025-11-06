@@ -243,6 +243,7 @@ namespace BinaryObjectScanner.Protection
 
             return null;
         }
+
          /// <inheritdoc/>
         public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {

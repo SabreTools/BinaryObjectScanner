@@ -162,6 +162,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Determine if there are any file name checks that aren't too generic to use on their own.
             return null;
         }
+
          /// <inheritdoc/>
         public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
         {
