@@ -22,7 +22,7 @@ Binary Object Scanner strives to have both full compatibility for scanning acros
 
 - **7-zip archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **bzip2 archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
-- **MoPaQ** - Extraction is only supported in Windows x86 and x64 builds running .NET Framework 4.5.2 and higher due to native DLL requirements
+- **MoPaQ** - Extraction is only supported in Windows x86 and x64 builds due to native DLL requirements
 - **PKZIP and derived files (ZIP, etc.)** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **RAR archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
 - **xz archive** - Extraction is only supported on .NET Framework 4.6.2 and higher due to `SharpCompress` support limitations
