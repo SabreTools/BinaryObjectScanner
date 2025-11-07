@@ -26,6 +26,9 @@ namespace ProtectionScan.Features
         private const string _debugName = "debug";
         internal readonly FlagInput DebugInput = new(_debugName, ["-d", "--debug"], "Enable debug mode");
 
+        private const string _fileOnlyName = "file-only";
+        internal readonly FlagInput FileOnlyInput = new(_fileOnlyName, ["-f", "--file"], "Print to file only");
+
         private const string _noArchivesName = "no-archives";
         internal readonly FlagInput NoArchivesInput = new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
 
@@ -40,12 +43,18 @@ namespace ProtectionScan.Features
 
         #endregion
 
+        /// <summary>
+        /// Output information to file only, skip printing to console
+        /// </summary>
+        public bool FileOnly { get; private set; }
+
         public MainFeature()
             : base(DisplayName, _flags, _description)
         {
             RequiresInputs = true;
 
             Add(DebugInput);
+            Add(FileOnlyInput);
             Add(NoContentsInput);
             Add(NoArchivesInput);
             Add(NoPathsInput);
@@ -58,6 +67,9 @@ namespace ProtectionScan.Features
             // Create progress indicator
             var fileProgress = new Progress<ProtectionProgress>();
             fileProgress.ProgressChanged += Changed;
+
+            // Get the options from the arguments
+            FileOnly = GetBoolean(_fileOnlyName);
 
             // Create scanner for all paths
             var scanner = new Scanner(
@@ -100,7 +112,7 @@ namespace ProtectionScan.Features
         /// </summary>
         /// <param name="scanner">Scanner object to use</param>
         /// <param name="path">File or directory path</param>
-        private static void GetAndWriteProtections(Scanner scanner, string path)
+        private void GetAndWriteProtections(Scanner scanner, string path)
         {
             // Normalize by getting the full path
             path = Path.GetFullPath(path);
@@ -137,7 +149,7 @@ namespace ProtectionScan.Features
         /// </summary>
         /// <param name="path">File or directory path</param>
         /// <param name="protections">Dictionary of protections found, if any</param>
-        private static void WriteProtectionResultFile(string path, Dictionary<string, List<string>> protections)
+        private void WriteProtectionResultFile(string path, Dictionary<string, List<string>> protections)
         {
             if (protections == null)
             {
@@ -154,6 +166,7 @@ namespace ProtectionScan.Features
             catch
             {
                 Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
+                FileOnly = false;
             }
 
             // Sort the keys for consistent output
@@ -174,8 +187,13 @@ namespace ProtectionScan.Features
 
                 // Format and output the line
                 string line = $"{key}: {string.Join(", ", fileProtections)}";
-                Console.WriteLine(line);
+
+                // Only print to console if enabled
+                if (!FileOnly)
+                    Console.WriteLine(line);
+
                 sw?.WriteLine(line);
+                sw?.Flush();
             }
 
             // Dispose of the writer
