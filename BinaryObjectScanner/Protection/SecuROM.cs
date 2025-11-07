@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
     // TODO: Think of a way to detect dfe
-    public class SecuROM : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
+    public class SecuROM : IDiskImageCheck<ISO9660>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
         /// <summary>
         /// Matches hash of the Release Control-encrypted executable to known hashes
@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Protection
             {"C6DFF6B08EE126893840E107FD4EC9F6", "Alice - Madness Returns (USA)+(Europe)"},
             {"D7703D32B72185358D58448B235BD55E", "Arcania - Gothic 4 (Australia)"}, // International version (English, French, Italian, German, Spanish)
             // Arcania - Gothic 4 - Polish(/Hungarian?) - known to most likely exist. Likely matches support site exe.
-            {"83CD6225899C08422F860095962287A5", "Arcania - Gothic 4 - Russian (not in redump yet)"}, 
+            {"83CD6225899C08422F860095962287A5", "Arcania - Gothic 4 - Russian (not in redump yet)"},
             // Arcania - Gothic 4 - Chinese - known to most likely exist. Likely matches support site exe.
             {"FAF6DD75DDB335101CB77A714793DC28", "Batman - Arkham City - Game of the Year Edition (UK)"},
             {"77999579EE4378BDFAC9438CC9CDB44E", "Batman - Arkham City (USA)+(Europe)"},
@@ -102,6 +102,141 @@ namespace BinaryObjectScanner.Protection
             {45211355, "BatmanAC.aec"},
             {48093043, "deadspace_f.aec"},
         };
+
+        /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
+        {
+
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+
+            // Application Use is too inconsistent to include or exclude
+
+            // There needs to be noteworthy data in the reserved 653 bytes
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+
+            var applicationUse = pvd.ApplicationUse;
+            var reserved653Bytes = pvd.Reserved653Bytes;
+
+            #region Read Application Use
+
+            var offset = 0;
+
+            // Either there's nothing of note, or it's empty other than a 4-byte value at the start.
+            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
+            {
+                uint appUseUint = applicationUse.ReadUInt32LittleEndian(ref offset);
+                var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 508);
+
+                if (appUseUint == 0 || !Array.TrueForAll(appUseZeroBytes, b => b == 0x00))
+                    return null;
+            }
+
+            #endregion
+
+            #region Read Reserved 653 Bytes
+
+            offset = 0;
+
+            var reservedZeroBytesOne = reserved653Bytes.ReadBytes(ref offset, 489);
+            uint reservedHundredValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reserveDataBytesOne = reserved653Bytes.ReadBytes(ref offset, 80);
+            var reservedZeroBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
+            uint reservedUintOne = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedUintTwoLow = reserved653Bytes.ReadUInt32LittleEndian(ref offset); // Low value
+            var reservedZeroBytesThree = reserved653Bytes.ReadBytes(ref offset, 4);
+            uint reservedUintThree = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reservedZeroBytesFour = reserved653Bytes.ReadBytes(ref offset, 12);
+            uint reservedUintFour = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            uint reservedOneValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
+            var reservedZeroBytesFive = reserved653Bytes.ReadBytes(ref offset, 4);
+            var reservedDataBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
+            byte reservedLowByteValueOne = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueTwo = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueThree = reserved653Bytes.ReadByteValue(ref offset);
+            byte reservedLowByteValueFour = reserved653Bytes.ReadByteValue(ref offset);
+            var reservedDataBytesThree = reserved653Bytes.ReadBytes(ref offset, 12);
+
+            #endregion
+
+            // True for all discs
+            if (!Array.TrueForAll(reservedZeroBytesOne, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesTwo, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesThree, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesFour, b => b == 0x00)
+                || !Array.TrueForAll(reservedZeroBytesFive, b => b == 0x00))
+            {
+                return null;
+            }
+
+            #region Early SecuROM Checks
+
+            // This duplicates a lot of code. This region is like this because it's still possible to detect early vers,
+            // but it should be easy to remove this section if it turns out this leads to conflicts or false positives
+            if (Array.TrueForAll(reserveDataBytesOne, b => b == 0x00)
+                && Array.TrueForAll(reservedDataBytesTwo, b => b == 0x00)
+                && reservedHundredValue == 0 && reservedOneValue == 0
+                && reservedUintOne == 0 && reservedUintTwoLow == 0 && reservedUintThree == 0 && reservedUintFour == 0
+                && reservedLowByteValueOne == 0 && reservedLowByteValueTwo == 0 && reservedLowByteValueThree == 0)
+            {
+                if (FileType.ISO9660.IsPureData(reservedDataBytesThree))
+                {
+                    if (reservedLowByteValueFour == 0)
+                        return "SecuROM 3.x-4.6x";
+                    else if (reservedLowByteValueFour < 0x20)
+                        return "SecuROM 4.7x-4.8x";
+                    else
+                        return null;
+                }
+
+                offset = 0;
+                var earlyFirstFourBytes = reservedDataBytesThree.ReadBytes(ref offset, 4);
+                var earlyLastEightBytes = reservedDataBytesThree.ReadBytes(ref offset, 8);
+
+                if (Array.TrueForAll(earlyFirstFourBytes, b => b == 0x00) && FileType.ISO9660.IsPureData(earlyLastEightBytes))
+                    return "SecuROM 2.x-3.x";
+            }
+
+            #endregion
+
+            // If this uint32 is 100, the next 80 bytes should be data. Otherwise, both should only ever be zero.
+
+            switch (reservedHundredValue)
+            {
+                case 0:
+                    if (!Array.TrueForAll(reserveDataBytesOne, b => b == 0x00))
+                        return null;
+                    break;
+                case 100:
+                    if (!FileType.ISO9660.IsPureData(reserveDataBytesOne))
+                        return null;
+                    break;
+                default:
+                    return null;
+            }
+
+            //If you go back to early 4.0 CDs, only the above can be guaranteed to pass. CDs can already be identified via normal
+            //dumping, though, and  (as well as most later CDs) should always pass these remaining checks.
+            if (reservedUintOne < 0xFFFF || reservedUintTwoLow > 0xFFFF || reservedUintThree < 0xFFFF || reservedUintFour < 0xFFFF)
+                return null;
+
+            if (reservedOneValue != 1)
+                return null;
+
+            if (reservedLowByteValueOne > 0x20 || reservedLowByteValueTwo > 0x20 || reservedLowByteValueThree > 0x20 ||
+                reservedLowByteValueFour > 0x20)
+                return null;
+
+            // TODO: RID 127715 fails this because the first 8 bytes of reservedDataBytesTwo happen to be "afsCafsC"
+            if (!FileType.ISO9660.IsPureData(reservedDataBytesTwo)
+                || !FileType.ISO9660.IsPureData(reservedDataBytesThree))
+                return null;
+
+            return "SecuROM 4.8x+";
+        }
 
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
@@ -254,142 +389,6 @@ namespace BinaryObjectScanner.Protection
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
         }
 
-         /// <inheritdoc/>
-        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
-        {
-            #region Initial Checks
-
-            if (diskImage.VolumeDescriptorSet.Length == 0)
-                return null;
-            
-            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
-                return null;
-            
-            // Application Use is too inconsistent to include or exclude
-            
-            // There needs to be noteworthy data in the reserved 653 bytes
-            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
-                return null;
-            
-            #endregion
-            
-            var applicationUse = pvd.ApplicationUse;
-            var reserved653Bytes = pvd.Reserved653Bytes;
-
-            #region Read Application Use
-
-            var offset = 0;
-
-            // Either there's nothing of note, or it's empty other than a 4-byte value at the start.
-            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
-            {
-                uint appUseUint = applicationUse.ReadUInt32LittleEndian(ref offset);
-                var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 508);
-                
-                if (appUseUint == 0 || !Array.TrueForAll(appUseZeroBytes, b => b == 0x00))
-                    return null;
-            }
-            
-            #endregion
-            
-            offset = 0;
-            
-            #region Read Reserved 653 Bytes
-            
-            var reservedZeroBytesOne = reserved653Bytes.ReadBytes(ref offset, 489);
-            uint reservedHundredValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            var reserveDataBytesOne = reserved653Bytes.ReadBytes(ref offset, 80);
-            var reservedZeroBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
-            uint reservedUintOne = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            uint reservedUintTwoLow = reserved653Bytes.ReadUInt32LittleEndian(ref offset); // Low value
-            var reservedZeroBytesThree = reserved653Bytes.ReadBytes(ref offset, 4);
-            uint reservedUintThree = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            var reservedZeroBytesFour = reserved653Bytes.ReadBytes(ref offset, 12);
-            uint reservedUintFour = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            uint reservedOneValue = reserved653Bytes.ReadUInt32LittleEndian(ref offset);
-            var reservedZeroBytesFive = reserved653Bytes.ReadBytes(ref offset, 4);
-            var reservedDataBytesTwo = reserved653Bytes.ReadBytes(ref offset, 12);
-            byte reservedLowByteValueOne = reserved653Bytes.ReadByteValue(ref offset);
-            byte reservedLowByteValueTwo = reserved653Bytes.ReadByteValue(ref offset);
-            byte reservedLowByteValueThree = reserved653Bytes.ReadByteValue(ref offset);
-            byte reservedLowByteValueFour = reserved653Bytes.ReadByteValue(ref offset);
-            var reservedDataBytesThree = reserved653Bytes.ReadBytes(ref offset, 12);
-            
-            #endregion
-
-            // True for all discs
-            if (!Array.TrueForAll(reservedZeroBytesOne, b => b == 0x00) 
-                || !Array.TrueForAll(reservedZeroBytesTwo, b => b == 0x00)
-                || !Array.TrueForAll(reservedZeroBytesThree, b => b == 0x00)
-                || !Array.TrueForAll(reservedZeroBytesFour, b => b == 0x00)
-                || !Array.TrueForAll(reservedZeroBytesFive, b => b == 0x00))
-                return null;
-            
-            #region Early SecuROM Checks
-
-            // This duplicates a lot of code. This region is like this because it's still possible to detect early vers,
-            // but it should be easy to remove this section if it turns out this leads to conflicts or false positives
-            if (Array.TrueForAll(reserveDataBytesOne, b => b == 0x00)
-                && Array.TrueForAll(reservedDataBytesTwo, b => b == 0x00)
-                && reservedHundredValue == 0 && reservedOneValue == 0
-                && reservedUintOne == 0 && reservedUintTwoLow == 0 && reservedUintThree == 0 && reservedUintFour == 0
-                && reservedLowByteValueOne == 0 && reservedLowByteValueTwo == 0 && reservedLowByteValueThree == 0)
-            {
-                offset = 0;
-                
-                if (FileType.ISO9660.IsPureData(reservedDataBytesThree))
-                    if ( reservedLowByteValueFour == 0)
-                        return "SecuROM 3.x-4.6x";
-                    else if (reservedLowByteValueFour < 0x20)
-                        return "SecuROM 4.7x-4.8x";
-                    else
-                        return null;
-                
-                var earlyFirstFourBytes = reservedDataBytesThree.ReadBytes(ref offset, 4);
-                var earlyLastEightBytes = reservedDataBytesThree.ReadBytes(ref offset, 8);
-                
-                if (Array.TrueForAll(earlyFirstFourBytes, b => b == 0x00) && FileType.ISO9660.IsPureData(earlyLastEightBytes))
-                    return "SecuROM 2.x-3.x";
-            }
-            
-            #endregion
-
-            // If this uint32 is 100, the next 80 bytes should be data. Otherwise, both should only ever be zero.
-            
-            switch(reservedHundredValue) 
-            {
-                case 0:
-                    if (!Array.TrueForAll(reserveDataBytesOne, b => b == 0x00))
-                        return null;
-                    break;
-                case 100:
-                    if (!FileType.ISO9660.IsPureData(reserveDataBytesOne))
-                        return null;
-                    break;
-                default:
-                    return null;
-            }
-            
-            //If you go back to early 4.0 CDs, only the above can be guaranteed to pass. CDs can already be identified via normal
-            //dumping, though, and  (as well as most later CDs) should always pass these remaining checks.
-            if (reservedUintOne < 0xFFFF || reservedUintTwoLow > 0xFFFF || reservedUintThree < 0xFFFF || reservedUintFour < 0xFFFF)
-                return null;
-
-            if (reservedOneValue != 1)
-                return null;
-
-            if (reservedLowByteValueOne > 0x20 || reservedLowByteValueTwo > 0x20 || reservedLowByteValueThree > 0x20 ||
-                reservedLowByteValueFour > 0x20)
-                return null;
-            
-            // TODO: RID 127715 fails this because the first 8 bytes of reservedDataBytesTwo happen to be "afsCafsC"
-            if (!FileType.ISO9660.IsPureData(reservedDataBytesTwo) ||
-                !FileType.ISO9660.IsPureData(reservedDataBytesThree))
-                return null;
-            
-            return "SecuROM 4.8x+";
-        }
-
         /// <summary>
         /// Try to get the SecuROM v4 version from the overlay, if possible
         /// </summary>
@@ -430,7 +429,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // Format the version
-                string version = $"{addD.Version}.{addD.Build}";
+            string version = $"{addD.Version}.{addD.Build}";
             if (!char.IsNumber(version[0]))
                 return "(very old, v3 or less)";
 
@@ -556,7 +555,7 @@ namespace BinaryObjectScanner.Protection
         /// </summary>
         private static string? CheckMatroschkaPackage(SecuROMMatroschkaPackage package, bool includeDebug)
         {
-            // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty. 
+            // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty.
             if (package.KeyHexString == null || package.KeyHexString.Trim('\0').Length == 0)
                 return "SecuROM Matroschka Package";
 
@@ -626,11 +625,11 @@ namespace BinaryObjectScanner.Protection
 
             // Fallback for PA if none of the above occur, in the case of companies that used their own modified PA
             // variants. PiD refers to this as "SecuROM Modified PA Module".
-            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of 
+            // Found in Redump entries 111997 (paul.dll) and 56373+56374 (AurParticleSystem.dll). The developers of
             // both, Softstar and Aurogon respectively(?), seem to have some connection, and use similar-looking
-            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be. 
+            // modified PA. It probably has its own name like EA's GAM, but I don't currently know what that would be.
             // Regardless, even if these are given their own named variant later, this check should remain in order to
-            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's 
+            // catch other modified PA variants (this would have also caught EA GAM, for example) and to match PiD's
             // detection abilities.
 
             name = exe.ExportNameTable?.Strings?[0];

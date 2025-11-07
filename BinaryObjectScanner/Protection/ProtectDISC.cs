@@ -13,8 +13,46 @@ namespace BinaryObjectScanner.Protection
 {
     // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6
     // ProtectDISC 9/10 checks for the presence of CSS on the disc to run, but don't encrypt any sectors or check for keys. Confirmed in Redump entries 78367 and 110095.
-    public class ProtectDISC : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
+    public class ProtectDISC : IDiskImageCheck<ISO9660>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
+        /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
+        {
+            // If false positives occur on ProtectDiSC for some reason, there's a bit in the reserved bytes that
+            // can be checked. Not bothering since this doesn't work for ProtectCD/DVD 6.x discs, which use otherwise
+            // the same check anyways.
+
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+
+            int offset = 0;
+            var copyrightString = pvd.CopyrightFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
+            if (copyrightString == null || copyrightString.Length < 19)
+                return null;
+
+            copyrightString = copyrightString.Substring(0, 19); // Redump ID 15896 has a trailing space
+
+            // Stores some kind of serial in the copyright string, format 0000-XXXX-XXXX-XXXX where it can be numbers or
+            // capital letters.
+
+            if (!Regex.IsMatch(copyrightString, "[0]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"))
+                return null;
+
+            offset = 0;
+
+            // Starting with sometime around 7.5, ProtectDiSC includes a version number string here. Examples include
+            // 7.5.0.61324 and 9.0.1119. ProtectDiSC versioning is very confusing, so this is not the "actual" version
+            // number and should not be printed.
+            // Previous versions just have spaces here, so it doesn't need to be validated beyond that.
+            var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
+            if (abstractIdentifierString == null || abstractIdentifierString.Trim().Length == 0)
+                return "ProtectDiSC 6-Early 7.x";
+
+            return "ProtectDiSC Mid-7.x+";
+        }
+
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
@@ -133,45 +171,6 @@ namespace BinaryObjectScanner.Protection
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
-        }
-
-         /// <inheritdoc/>
-        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
-        {
-            // If false positives occur on ProtectDiSC for some reason, there's a bit in the reserved bytes that
-            // can be checked. Not bothering since this doesn't work for ProtectCD/DVD 6.x discs, which use otherwise
-            // the same check anyways.
-            
-            if (diskImage.VolumeDescriptorSet.Length == 0)
-                return null;
-            
-            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
-                return null;
-            
-            int offset = 0;
-            var copyrightString = pvd.CopyrightFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
-            if (copyrightString == null || copyrightString.Length < 19)
-                return null;
-            
-            copyrightString = copyrightString.Substring(0, 19); // Redump ID 15896 has a trailing space
-            
-            // Stores some kind of serial in the copyright string, format 0000-XXXX-XXXX-XXXX where it can be numbers or
-            // capital letters.
-
-            if (!Regex.IsMatch(copyrightString, "[0]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"))
-                return null;
-            
-            offset = 0;
-            
-            // Starting with sometime around 7.5, ProtectDiSC includes a version number string here. Examples include
-            // 7.5.0.61324 and 9.0.1119. ProtectDiSC versioning is very confusing, so this is not the "actual" version 
-            // number and should not be printed.
-            // Previous versions just have spaces here, so it doesn't need to be validated beyond that.
-            var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
-            if (abstractIdentifierString == null || abstractIdentifierString.Trim().Length == 0)
-                return "ProtectDiSC 6-Early 7.x";
-            
-            return "ProtectDiSC Mid-7.x+";
         }
 
         private static string GetOldVersion(string matchedString)

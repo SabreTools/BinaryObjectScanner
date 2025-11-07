@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.IO.Extensions;
@@ -20,13 +18,13 @@ namespace BinaryObjectScanner.FileType
         #region Check Runners
 
         /// <summary>
-        /// Handle a single file based on all ISO check implementations
+        /// Handle a single file based on all disk image check implementations
         /// </summary>
-        /// <param name="file">Name of the source file of the ISO, for tracking</param>
+        /// <param name="file">Name of the source file of the disk image, for tracking</param>
         /// <param name="checks">Set of checks to use</param>
         /// <param name="includeDebug">True to include debug data, false otherwise</param>
         /// <returns>Set of protections in file, empty on error</returns>
-        protected IDictionary<U, string> RunISOChecks<U>(string file, U[] checks, bool includeDebug)
+        protected IDictionary<U, string> RunDiskImageChecks<U>(string file, U[] checks, bool includeDebug)
             where U : IDiskImageCheck<T>
         {
             // Create the output dictionary

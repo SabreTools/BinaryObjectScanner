@@ -11,8 +11,44 @@ using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {
-    public class LaserLok : IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
+    public class LaserLok : IDiskImageCheck<ISO9660>, IExecutableCheck<PortableExecutable>, IPathCheck
     {
+        /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
+        {
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+
+            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
+                return null; //TODO: this might be too unsafe until more App Use strings are known
+
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+
+            var reserved653Bytes = pvd.Reserved653Bytes;
+            int firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
+            if (firstNonZero < 0)
+                return null;
+
+            string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero);
+            if (finalString == null)
+                return null;
+
+            // Redump ID 113120
+            if (finalString.StartsWith("MLSLaserlock"))
+                return "LaserLock";
+
+            // Redump ID 38308, 113341
+            if (finalString.StartsWith("LaserlockECL"))
+                return "LaserLock Marathon";
+
+            // Some discs such as 128068, and also more normal ones, don't seem to have any identifying data.
+            // TODO: list some normal ones
+            return null;
+        }
+
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
@@ -149,48 +185,6 @@ namespace BinaryObjectScanner.Protection
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
-        }
-
-         /// <inheritdoc/>
-        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
-        {
-            #region Initial Checks
-            
-            if (diskImage.VolumeDescriptorSet.Length == 0)
-                return null;
-            
-            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
-                return null;
-            
-            
-            if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
-                return null; //TODO: this might be too unsafe until more App Use strings are known
-            
-            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
-                return null;
-            
-            #endregion
-            
-            var reserved653Bytes = pvd.Reserved653Bytes;
-            int firstNonZero = Array.FindIndex(reserved653Bytes, b => b != 0);
-            if (firstNonZero < 0)
-                return null;
-            
-            string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero); 
-            if (finalString == null)
-                return null;
-            
-            // Redump ID 113120
-            if (finalString.StartsWith("MLSLaserlock"))
-                return "LaserLock";
-
-            // Redump ID 38308, 113341
-            if (finalString.StartsWith("LaserlockECL"))
-                return "LaserLock Marathon";
-            
-            // Some discs such as 128068, and also more normal ones, don't seem to have any identifying data.
-            // TODO: list some normal ones
-            return null;
         }
 
         private static string GetBuild(byte[]? sectionContent, bool versionTwo)

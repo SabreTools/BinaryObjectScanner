@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Data
         }
 
         /// <summary>
-        /// Cache for all IISOCheck<ISO> types
+        /// Cache for all IDiskImageCheck<ISO9660> types
         /// </summary>
         public static IDiskImageCheck<ISO9660>[] ISO9660CheckClasses
         {
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Data
                 return iso9660CheckClasses;
             }
         }
-        
+
         /// <summary>
         /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
@@ -103,12 +103,11 @@ namespace BinaryObjectScanner.Data
         /// </summary>
         private static IContentCheck[]? contentCheckClasses;
 
-        
         /// <summary>
         /// Cache for all IISOCheck<ISO9660> types
         /// </summary>
         private static IDiskImageCheck<ISO9660>[]? iso9660CheckClasses;
-        
+
         /// <summary>
         /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
@@ -169,7 +168,7 @@ namespace BinaryObjectScanner.Data
             if (assemblyTypes.Length == 0)
                 return [];
 
-            // Loop through all types 
+            // Loop through all types
             List<T> classTypes = [];
             foreach (Type? type in assemblyTypes)
             {
