@@ -48,9 +48,9 @@ namespace BinaryObjectScanner.Protection
             // Previous versions just have spaces here, so it doesn't need to be validated beyond that.
             var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
             if (abstractIdentifierString == null || abstractIdentifierString.Trim().Length == 0)
-                return "ProtectDiSC 6-Early 7.x";
+                return "ProtectDiSC 6-7.x";
 
-            return "ProtectDiSC Mid-7.x+";
+            return "ProtectDiSC 7.x+";
         }
 
         /// <inheritdoc/>
