@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -16,7 +17,7 @@ namespace BinaryObjectScanner.Protection
     /// Macrovision Corporation CD-ROM Unauthorized Copying Study: https://web.archive.org/web/20011005161810/http://www.macrovision.com/solutions/software/cdrom/images/Games_CD-ROM_Study.PDF
     /// List of trademarks associated with Marovision: https://tmsearch.uspto.gov/bin/showfield?f=toc&state=4804%3Au8wykd.5.1&p_search=searchss&p_L=50&BackReference=&p_plural=yes&p_s_PARA1=&p_tagrepl%7E%3A=PARA1%24LD&expr=PARA1+AND+PARA2&p_s_PARA2=macrovision&p_tagrepl%7E%3A=PARA2%24ALL&p_op_ALL=AND&a_default=search&a_search=Submit+Query&a_search=Submit+Query
     /// </summary>
-    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
+    public partial class Macrovision : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck, IDiskImageCheck<ISO9660>
     {
         /// <inheritdoc/>
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
@@ -241,6 +242,77 @@ namespace BinaryObjectScanner.Protection
                 return string.Join(";", [.. resultsList]);
 
             return null;
+        }
+
+         /// <inheritdoc/>
+        public string? CheckDiskImage(string file, ISO9660 diskImage, bool includeDebug)
+        {
+            #region Initial Checks
+            
+            if (diskImage.VolumeDescriptorSet.Length == 0)
+                return null;
+            
+            if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
+                return null;
+            
+
+            if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
+                return null;
+            
+            // Early SafeDisc actually doesn't cross into reserved bytes. Regardless, SafeDisc CD is easy enough to
+            // identify for obvious other reasons, so there's not much point in potentially running into false positives.
+            
+            if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
+                return null;
+            
+            #endregion
+            
+            var applicationUse = pvd.ApplicationUse;
+            var reserved653Bytes = pvd.Reserved653Bytes;
+            
+            #region Read Application Use
+            
+            int offset = 0;
+            var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 256);
+            var appUseDataBytesOne = applicationUse.ReadBytes(ref offset, 128);
+            offset += 64; // Some extra values get added here over time. Check is good enough, easier to skip this.
+            ushort appUseUshort =  applicationUse.ReadUInt16LittleEndian(ref offset);
+            var appUseDataBytesTwo = applicationUse.ReadBytes(ref offset, 20);
+            uint appUseUint =  applicationUse.ReadUInt32LittleEndian(ref offset);
+            var appUseDataBytesThree = applicationUse.ReadBytes(ref offset, 38);
+            
+            #endregion
+            
+            offset = 0;
+            
+            #region Read Reserved 653 Bytes
+            
+            // Somewhat arbitrary, but going further than 11 seems to exclude some discs.
+            var reservedDataBytes = reserved653Bytes.ReadBytes(ref offset, 10);
+            offset = 132; // TODO: Does it ever go further than this?
+            var reservedZeroBytes = reserved653Bytes.ReadBytes(ref offset, 521);
+            
+            #endregion
+            
+            // The first 256 bytes of application use, and the last 521 bytes of reserved data, should all be 0x00.
+            // It's possible reserved might need to be shortened a bit, but a need for that has not been observed yet.
+            if (!Array.TrueForAll(appUseZeroBytes, b => b == 0x00) || !Array.TrueForAll(reservedZeroBytes, b => b == 0x00))
+                return null;
+            
+            // All of these sections should be pure data
+            if (!FileType.ISO9660.IsPureData(appUseDataBytesOne) 
+                || !FileType.ISO9660.IsPureData(appUseDataBytesTwo)
+                || !FileType.ISO9660.IsPureData(appUseDataBytesThree)
+                || !FileType.ISO9660.IsPureData(reservedDataBytes))
+                return null;
+
+            // appUseFirstUint has only ever been observed as 0xBB, but no need to be this strict yet. Can be checked
+            // if it's found that it's needed to, and always viable. appUseSecondUint varies more, but is still always
+            // under 0xFF so far.
+            if (appUseUshort > 0xFF || appUseUint > 0xFF)
+                return null;
+            
+            return "SafeDisc";
         }
 
         /// <inheritdoc cref="IPathCheck.CheckDirectoryPath(string, List{string})"/>

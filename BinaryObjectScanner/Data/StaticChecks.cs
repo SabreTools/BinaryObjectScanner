@@ -23,6 +23,18 @@ namespace BinaryObjectScanner.Data
         }
 
         /// <summary>
+        /// Cache for all IISOCheck<ISO> types
+        /// </summary>
+        public static IDiskImageCheck<ISO9660>[] ISO9660CheckClasses
+        {
+            get
+            {
+                iso9660CheckClasses ??= InitCheckClasses<IDiskImageCheck<ISO9660>>();
+                return iso9660CheckClasses;
+            }
+        }
+        
+        /// <summary>
         /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
         public static IExecutableCheck<LinearExecutable>[] LinearExecutableCheckClasses
@@ -91,6 +103,12 @@ namespace BinaryObjectScanner.Data
         /// </summary>
         private static IContentCheck[]? contentCheckClasses;
 
+        
+        /// <summary>
+        /// Cache for all IISOCheck<ISO9660> types
+        /// </summary>
+        private static IDiskImageCheck<ISO9660>[]? iso9660CheckClasses;
+        
         /// <summary>
         /// Cache for all IExecutableCheck<LinearExecutable> types
         /// </summary>
