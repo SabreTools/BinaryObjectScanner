@@ -4,7 +4,7 @@ namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// RealArcade Mezzanine files, which contain metadata. Known to use the ".mez" file extension.
-    /// 
+    ///
     /// TODO: Add further parsing, game ID should be possible to parse.
     /// </summary>
     public class RealArcadeMezzanine : DetectableBase<SabreTools.Serialization.Wrappers.RealArcadeMezzanine>

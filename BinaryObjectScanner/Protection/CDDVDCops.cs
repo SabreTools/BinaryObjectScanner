@@ -19,9 +19,9 @@ namespace BinaryObjectScanner.Protection
     ///      Embedded PKZIP archive that may contain the CD-Cops files
     /// `CDCOPS.DLL` (1.46) / `CDCOPS.DLL` (1.48)
     ///      `WINCOPS.INI`
-    ///      
+    ///
     /// TODO: Investigate if "DVD-Cops" is a separate product, or simply what CD-Cops is referred to when used on a DVD.
-    /// 
+    ///
     /// Known versions of CD-Cops:
     /// * 1.08 (Unconfirmed) (Redump entry 84517).
     /// * 1,13[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20040307124358/http://www.caprino.no:80/download/fgpgold_upd4.exe).
@@ -36,10 +36,10 @@ namespace BinaryObjectScanner.Protection
     /// * 1.73 (Confirmed) ("WETFLIPPER.EXE" in IA item "LULA_Erotic_Pinball_-_Windows95_Eng).
     /// * 1,81[sic] (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168 patched with https://web.archive.org/web/20030308040529/http://www.caprino.no:80/download/fgpgold_upd1.exe).
     /// * 2.03 (Confirmed) ("HyperBowl.exe" in IA item "hyperbowl_20190626").
-    /// 
+    ///
     /// Known versions of DVD-Cops:
     /// * 1.69 (Confirmed) ("FGP.exe" in IA item "flaklypa-grand-prix-dvd"/Redump entry 108169).
-    ///      
+    ///
     /// Known samples of CD-Cops include:
     /// * IA item "der-brockhaus-multimedial-2002-premium".
     /// * IA item "der-brockhaus-multimedial-2003-premium".
@@ -51,15 +51,15 @@ namespace BinaryObjectScanner.Protection
     /// * Patches for "flaklypa-grand-prix-gullutgave-2cd"/Redump entries 108167-108168, found at https://web.archive.org/web/*/http://www.caprino.no/download/* (FGPGOLD_UPD files).
     /// * IA item "hyperbowl_20190626"/"hyperbowl-arcade-edition".
     /// * Redump entries 51403(?), 84517, and 85077.
-    /// 
+    ///
     /// Known samples of DVD-Cops include:
     /// * IA item "flaklypa-grand-prix-dvd"/Redump entry 108169.
-    /// 
-    /// Known samples of WEB-Cops include: 
+    ///
+    /// Known samples of WEB-Cops include:
     /// * https://web.archive.org/web/20120616074941/http://icm.games.tucows.com/files2/HyperDemo-109a.exe
-    /// 
+    ///
     /// A sample of CD-Cops that makes use of encrypted PDFs (LDSCRYPT) can be found in IA item "Faculty_Edition_People_Problems_and_Power_by_Joseph_Unekis_Textbytes".
-    /// 
+    ///
     /// List of applications that have CD/DVD/WEB-Cops relating to a Windows update: https://www.betaarchive.com/wiki/index.php/Microsoft_KB_Archive/924867
     /// </summary>
     // TODO: Investigate reference to "CD32COPS.DLL" in "WETFLIPP.QZ_" in IA item "Triada_Russian_DVD_Complete_Collection_of_Erotic_Games".
@@ -85,18 +85,18 @@ namespace BinaryObjectScanner.Protection
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "CD-Cops"),
-                // CD-Cops, ver. 
-                
+                // CD-Cops, ver.
+
                 // Found in "h3blade.exe" in Redump entry 85077.
                 new(new byte?[]
                 {
                     0x43, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73, 0x2C,
                     0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "CD-Cops"),
-                // CD-Cops,  ver. 
+                // CD-Cops,  ver.
 
                 // Found in IA entries "der-brockhaus-multimedial-2002-premium" and "der-brockhaus-multimedial-2003-premium"
-                // TODO: 2002 returns DVD-Cops 2.01, 2003 returns DVD-Cops 1,60. CD-Cops version numbers seem to "reset" 
+                // TODO: 2002 returns DVD-Cops 2.01, 2003 returns DVD-Cops 1,60. CD-Cops version numbers seem to "reset"
                 // after some point in time in existing redump entries- perhaps the command instead of the period may have
                 // some significance?
                 new(new byte?[]
@@ -104,14 +104,14 @@ namespace BinaryObjectScanner.Protection
                     0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
                     0x2C, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "DVD-Cops"),
-                // DVD-Cops, ver. 
-                
+                // DVD-Cops, ver.
+
                 new(new byte?[]
                 {
                     0x44, 0x56, 0x44, 0x2D, 0x43, 0x6F, 0x70, 0x73,
                     0x2C, 0x20, 0x20, 0x76, 0x65, 0x72, 0x2E, 0x20
                 }, GetVersion, "DVD-Cops"),
-                // DVD-Cops,  ver. 
+                // DVD-Cops,  ver.
             };
 
             var match = MatchUtil.GetFirstMatch(file, data, neMatchSets, includeDebug);
@@ -210,13 +210,13 @@ namespace BinaryObjectScanner.Protection
 
                 new(new PathMatch(".GZ_", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
                 new(new PathMatch(".Qz", matchCase: true, useEndsWith: true), "CD-Cops (Unconfirmed - Please report to us on Github)"),
-                
+
                 // Found in Redump entries 84517, 108167, 119435, 119436, and 119437. This is the official
                 // name from their website https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/cdcops
                 // I can't find this specific filename documented anywhere, but, all of these
                 // games do not require a key to be input
                 new(new FilePathMatch("cdcode.key"), "CD-Cops Codefree"),
-                
+
                 // DVD-Cops Codefree does exist https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/dvdvers
                 // but we currently have no samples. Presumably this is what the file would be called?
                 new(new FilePathMatch("dvdcode.key"), "DVD-Cops Codefree (Unconfirmed - Please report to us on Github)"),
@@ -245,7 +245,7 @@ namespace BinaryObjectScanner.Protection
                 // I can't find this specific filename documented anywhere, but, all of these
                 // games do not require a key to be input
                 new(new FilePathMatch("cdcode.key"), "CD-Cops Codefree"),
-                
+
                 // DVD-Cops Codefree does exist https://www.linkdatasecurity.com/index.htm#/protection-products/cd-dvd-usb-copy-protection/dvdvers
                 // but we currently have no samples. Presumably this is what the file would be called?
                 new(new FilePathMatch("dvdcode.key"), "DVD-Cops Codefree (Unconfirmed - Please report to us on Github)"),
@@ -269,7 +269,7 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetVersionString(string match)
         {
-            // Full string ends with # (i.e. "CD-Cops,  ver. 1.72,  #"), use that to compensate for comma in version 
+            // Full string ends with # (i.e. "CD-Cops,  ver. 1.72,  #"), use that to compensate for comma in version
             // number cases (don't change the comma, see earlier to-do) like "DVD-Cops, ver. 1,60,  #"
             // TODO: improve regex via the starting "N" character? Possibly unnecessary?
             var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,\s{1,}#)");

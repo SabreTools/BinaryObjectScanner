@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
     /// The internal name of the Kalypso Launcher may be "Styx", as it is present as the File Description and Product Name in various versions of "KalypsoLauncher.dll".
     /// Kalypso FAQ, which includes information about Kalypso Launcher: https://www.kalypsomedia.com/us/frequently-asked-questions
     /// It was introduced in or before January 2011, based on this forum post introducing it: https://web.archive.org/web/20120524150700/http://forum.kalypsomedia.com/showthread.php?tid=7909
-    /// 
+    ///
     /// Known versions:
     /// 1.2.0.12: Found in Redump entry 95617.
     /// 2.0.4.2: Newest version as of 3/10/2024, downloaded from updating the installed game from Redump entry 95617.

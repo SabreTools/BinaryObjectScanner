@@ -13,11 +13,11 @@ namespace BinaryObjectScanner.Protection
     /// The ByteShield DRM itself is online activation based, using randomly generated activation codes it refers to as DACs (https://web.archive.org/web/20080921231346/http://www.byteshield.net/byteshield_whitepaper_0005.pdf).
     /// It appears that ByteShield advertised itself around online web forums (https://gamedev.net/forums/topic/508082-net-copy-protection-c/508082/ and https://cboard.cprogramming.com/tech-board/106642-how-add-copy-protection-software.html).
     /// Patent relating to ByteShield: https://patentimages.storage.googleapis.com/ed/76/c7/d98a56aeeca2e9/US7716474.pdf and https://patents.google.com/patent/US20100212028.
-    /// 
-    /// Games known to use it: 
+    ///
+    /// Games known to use it:
     /// Line Rider 2: Unbound (https://fileforums.com/showthread.php?t=86909).
     /// Football Manager 2011 (https://community.sigames.com/forums/topic/189163-for-those-of-you-struggling-with-byteshield-activation-issues/).
-    /// 
+    ///
     /// Publishers known to use it:
     /// PAN Vision (http://web.archive.org/web/20120413160122/http://www.byteshield.net/ -> Company -> Milestones).
     /// JIAN (http://web.archive.org/web/20120413160122/http://www.byteshield.net/ -> Company -> Milestones).
@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Protection
     /// N3V Games (http://web.archive.org/web/20120413160122/http://www.byteshield.net/ -> Customers).
     /// OnePlayS (http://web.archive.org/web/20120413160122/http://www.byteshield.net/ -> Customers).
     /// YAWMA (http://web.archive.org/web/20120413160122/http://www.byteshield.net/ -> Customers).
-    /// 
+    ///
     /// Further links and resources:
     /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_byteshield.shtml
     /// https://www.bcs.org/articles-opinion-and-research/is-there-anything-like-acceptable-drm/

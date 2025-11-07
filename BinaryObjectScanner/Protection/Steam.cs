@@ -67,7 +67,7 @@ namespace BinaryObjectScanner.Protection
                     // new FilePathMatch("steam.exe"),
 
                     new FilePathMatch("steam.ini"),
-                    
+
                     // TODO: Identify file using MSI property parsing.
                     new FilePathMatch("steam.msi"),
                 }, "Steam"),

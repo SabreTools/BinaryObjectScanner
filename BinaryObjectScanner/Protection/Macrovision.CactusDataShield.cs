@@ -68,12 +68,12 @@ namespace BinaryObjectScanner.Protection
                 // The file "DATA16.BML" is also present on this disc but the name is too generic to check for.
                 new(new FilePathMatch("CACTUSPJ.exe"), "PlayJ Music Player (Cactus Data Shield 200)"),
 
-                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]). 
+                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]).
                 // In "Volumina! - Puur" (7 43218 63282 2), this file is composed of multiple PLJ files combined together.
                 // In later versions, this file is a padded dummy file. ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
                 new(new FilePathMatch("YUCCA.CDS"), "Cactus Data Shield 200"),
 
-                // TODO: Find samples of the following: 
+                // TODO: Find samples of the following:
                 new(new FilePathMatch("CDSPlayer.app"), GetCactusDataShieldVersion, "Cactus Data Shield"),
                 new(new FilePathMatch("wmmp.exe"), GetCactusDataShieldVersion, "Cactus Data Shield"),
 
@@ -94,12 +94,12 @@ namespace BinaryObjectScanner.Protection
                 // The file "DATA16.BML" is also present on this disc but the name is too generic to check for.
                 new(new FilePathMatch("CACTUSPJ.exe"), "PlayJ Music Player (Cactus Data Shield 200)"),
 
-                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]), 
+                // Found in "Volumia!" by Puur (Barcode 7 43218 63282 2) (Discogs Release Code [r795427]),
                 // In "Volumia! - Puur", this file is composed of multiple PLJ files combined together.
                 // In later versions, this file is a padded dummy file. ("Ich Habe Einen Traum" by Uwe Busse (Barcode 9 002723 251203)).
                 new(new FilePathMatch("YUCCA.CDS"), "Cactus Data Shield 200"),
 
-                // TODO: Find samples of the following: 
+                // TODO: Find samples of the following:
                 new(new FilePathMatch("CDSPlayer.app"), "Cactus Data Shield 200"),
                 new(new FilePathMatch("wmmp.exe"), "Cactus Data Shield 200"),
 

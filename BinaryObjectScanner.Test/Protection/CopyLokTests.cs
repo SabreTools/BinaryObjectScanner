@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Test.Protection
             string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
-        
+
         [Fact]
         public void CheckDiskImageTest()
         {

@@ -79,7 +79,7 @@ namespace BinaryObjectScanner.Protection
         {
             return
             [
-                // Matches most games, but a few like http://redump.org/disc/16541/ 
+                // Matches most games, but a few like http://redump.org/disc/16541/
                 // are only matched on the 00001/2.TMP files. PiD and other programs
                 // don't detect this game either, though (Aside from the stub)
                 new(new byte?[]

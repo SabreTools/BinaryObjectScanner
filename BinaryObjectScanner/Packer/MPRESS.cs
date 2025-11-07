@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Packer
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // TODO: Confirm if both need to be present 
+            // TODO: Confirm if both need to be present
             // TODO: Figure out how to get version
 
             if (exe.ContainsSection(".MPRESS1"))

@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Protection
     /// The first archive of this URL that was used by Easy Anti-Cheat appears to be https://web.archive.org/web/20140324145706/https://www.easy.ac/.
     /// The first URL used for Easy Anti-Cheat appears to be http://easyanticheat.net/, with seemingly the oldest archive being this: https://web.archive.org/web/20071024001450/http://easyanticheat.net/en/.
     /// There's a version of Easy Anti-Cheat that's bundled into the Epic Online Services, which is known as the EOS version of Easy Anti-Cheat (https://www.pcgamingwiki.com/wiki/Easy_Anti-Cheat).
-    /// Further information and resources: 
+    /// Further information and resources:
     /// List of games protected by Easy Anti-Cheat: https://www.pcgamingwiki.com/wiki/Easy_Anti-Cheat and https://www.easy.ac/en-us/partners/
     /// https://dev.epicgames.com/docs/services/en-US/GameServices/AntiCheat/index.html
     /// https://www.unknowncheats.me/wiki/Easy_Anti_Cheat

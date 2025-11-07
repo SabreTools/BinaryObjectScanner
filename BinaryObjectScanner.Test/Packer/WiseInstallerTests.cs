@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Test.Packer
             string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
-    
+
         [Fact]
         public void CheckPortableExecutableTest()
         {

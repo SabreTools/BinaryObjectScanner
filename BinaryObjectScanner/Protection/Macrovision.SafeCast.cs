@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Protection
     /// SafeCast is in the same family of protections as SafeDisc, and appears to mainly be for license management, and doesn't appear to affect the mastering of the disc in any way.
     /// Although SafeCast is most commonly used in non-game software, there is one game that comes with both SafeDisc and SafeCast protections (Redump entry 83145).
     /// SafeCast has been confirmed to be present on some programs, such as AutoDesk 3ds Max (IA items CMCD0204 and game-programming-in-c-start-to-finish-2006), Photoshop CS2 (IA item ccd0605), and Boonty Box (IA items PC_Gamer_Disc_7.55_July_2005 and cdrom-pcgamercd7.58).
-    /// TODO: Check Boonty Box samples closer for new possible detections, there are at least more checks for FlexLM possible. 
+    /// TODO: Check Boonty Box samples closer for new possible detections, there are at least more checks for FlexLM possible.
     /// Macrovision bought the company C-Dilla and created SafeCast based on C-Dilla's existing products (https://web.archive.org/web/20030212040047/http://www.auditmypc.com/freescan/readingroom/cdilla.asp).
     /// There are multiple different versions of SafeCast out there.
     /// Deep dive of MechWarrior 4 and its expansions, which use SafeDisc, possibly SafeDisc LT, and SafeCast: https://digipres.club/@TheRogueArchivist/110224192068908590
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
     /// https://archive.org/details/ejay_nestle_trial
     /// https://archive.org/details/eJayXtremeSoundtraxx
     /// https://community.ptc.com/t5/Mathcad/SafeCast/td-p/25233
-    /// SafeCast resources: 
+    /// SafeCast resources:
     /// http://web.archive.org/web/20010417222834/http://www.macrovision.com/press_rel3_17_99.html (Press release introducing SafeCast)
     /// https://web.archive.org/web/20000129013431/http://www.macrovision.com/safecast_faq.html (SafeCast FAQ)
     /// https://web.archive.org/web/20040223025801/http://www.macrovision.com/products/legacy_products/safecast/safecast_cdilla_faq.shtml
@@ -205,7 +205,7 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 102979.
                 new(new FilePathMatch("SCRfrsh.exe"), "SafeCast"),
-                
+
                 // Found in Redump entries 26211 and 95524.
                 new(new FilePathMatch("SCSHD.CSA"), "SafeCast"),
 

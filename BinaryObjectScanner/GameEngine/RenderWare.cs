@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.GameEngine
     /// RenderWare (https://web.archive.org/web/20070214132346/http://www.renderware.com/) is an API and graphics engine created by Criterion in 1993.
     /// It appears that version 4.X was exclusively used by EA internally, with version 3.X being the final public version (https://sigmaco.org/3782-renderware/).
     /// It was available to use on many different platforms, with it being particularly useful for the PS2 (https://en.wikipedia.org/wiki/RenderWare).
-    /// 
+    ///
     /// Additional resources and documentation:
     /// RenderWare interview: https://web.archive.org/web/20031208124348/http://www.homelanfed.com/index.php?id=9856
     /// RenderWare V2.1 API reference: http://www.tnlc.com/rw/api/rwdoc.htm

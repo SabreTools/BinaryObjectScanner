@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // TODO: Determine if there's any consistency in the naming of the additional AFP files.
 
-                // Found in every confirmed sample of CD-Lock, generally (but not always) appears to include markers relating to the additional AFP files present (Redump entries 24287 and 31615). 
+                // Found in every confirmed sample of CD-Lock, generally (but not always) appears to include markers relating to the additional AFP files present (Redump entries 24287 and 31615).
                 new(new FilePathMatch("CONFIG.AFP"), "CD-Lock"),
 
                 // There is also a "$$$$$$$$.$$$" file present on some discs, but it isn't known if this is directly related to CD-Lock (Redump entries 37788 and 43221).

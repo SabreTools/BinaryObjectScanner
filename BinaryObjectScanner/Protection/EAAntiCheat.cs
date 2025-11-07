@@ -9,10 +9,10 @@ namespace BinaryObjectScanner.Protection
     /// <summary>
     /// EA Anti Cheat is a kernel-level anti-cheat developed and used by EA. (https://www.ea.com/security/news/eaac-deep-dive).
     /// List of games that contain EA Anti Cheat on Steam: https://steamdb.info/tech/AntiCheat/EA_AntiCheat/
-    /// 
+    ///
     /// An EasyAntiCheat installer is present in the file "EAAntiCheat.Installer.Tool.exe" found in "Plants vs. Zombies: Battle for Neighborville" (Steam Depot 1262241, Manifest 8124759833120741594).
     /// This could indicate that EasyAntiCheat is directly integrated into EA Anti Cheat.
-    /// 
+    ///
     /// The internal name appears to be "skyfall", as this is the Internal Name set to several EA Anti Cheat files, and the string "C:\dev\gitlab-runner\builds\r5uPUG7E\0\anticheat\skyfall\Build\Retail\EAAntiCheat.Installer.pdb" is present in "EAAntiCheat.Installer.Tool.exe".
     /// </summary>
     public class EAAntiCheat : IExecutableCheck<PortableExecutable>, IPathCheck

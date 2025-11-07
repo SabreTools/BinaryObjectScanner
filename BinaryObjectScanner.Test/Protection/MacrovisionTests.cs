@@ -53,7 +53,7 @@ namespace BinaryObjectScanner.Test.Protection
             string? actual = checker.CheckFilePath(path);
             Assert.Null(actual);
         }
-        
+
         [Fact]
         public void CheckDiskImageTest()
         {

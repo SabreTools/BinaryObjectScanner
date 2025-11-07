@@ -8,7 +8,7 @@ namespace BinaryObjectScanner.Protection
 {
     /// <summary>
     /// Roxxe was a Czech DRM. It appears to have been a simple disc check that also relied on unusual disc manufacturing and dummy files to attempt to prevent copying.
-    /// 
+    ///
     /// DRML: https://github.com/TheRogueArchivist/DRML/blob/main/entries/Roxxe/Roxxe.md
     /// </summary>
     public class Roxxe : IExecutableCheck<PortableExecutable>, IPathCheck

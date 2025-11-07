@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
             if (strs != null)
             {
                 // Found in "nfsc_link.exe" in IA item "nfscorigin".
-                // Full string: 
+                // Full string:
                 // (: ) InterLok PC v2.0, PACE Anti-Piracy, Copyright (C) 1998, ALL RIGHTS RESERVED
                 var match = strs.Find(s => s.Contains("InterLok") && s.Contains("PACE Anti-Piracy"));
                 if (match != null)

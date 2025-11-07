@@ -31,16 +31,16 @@ namespace BinaryObjectScanner.Protection
     /// https://web.archive.org/web/20041008173722/http://www.macrovision.com/pdfs/safedisc_datasheet.pdf
     /// https://www.cdmediaworld.com/hardware/cdrom/cd_protections_safedisc.shtml
     /// https://computerizedaccount.tripod.com/computerizedaccountingtraining/id27.html
-    /// 
+    ///
     /// SafeDisc Lite/LT is an alternate version of SafeDisc available that was based on SafeDisc 1 (https://web.archive.org/web/20030421023647/http://www.macrovision.com:80/solutions/software/cdrom/SafeDisc_WhitePaper_4-17-02-web.pdf).
     /// Although seemingly only officially referred to as "SafeDisc LT", a multitude of sources, including one that seemingly worked directly with Macrovision, call it "SafeDisc Lite" (http://www.eclipsedata.com/insidepages.asp?pageID=149).
     /// It doesn't typically require the disc after installation (unless game files are left on the disc in a minimal installation).
-    /// However, according to the white paper, Mac products can still choose to authenticate on each run. 
+    /// However, according to the white paper, Mac products can still choose to authenticate on each run.
     /// According to the same white paper, it only uses some protection methods of normal SafeDisc without specifying which.
     /// CDs still contain errors, though typically less (in the ballpark of ~100), and the white paper admits that DVDs with Lite are less secure due to not having this signature.
     /// It's currently unknown if Lite actually uses an active disc check, or if it just relies on the errors to prevent copying of the disc.
     /// SafeDisc Lite games are able to be installed and played in situations where bad sectors are not emulated (such as 86box v.4.2.1), meaning it likely doesn't actually check the signature.
-    /// 
+    ///
     /// Other protections in the Macrovision "Safe-" family of protections that need further investigation:
     /// SafeScan (https://cdn.loc.gov/copyright/1201/2003/reply/029.pdf).
     /// SafeDisc HD (https://web.archive.org/web/20000129100449/http://www.macrovision.com/scp_hd.html).
@@ -94,7 +94,7 @@ namespace BinaryObjectScanner.Protection
 
             name = exe.ProductName;
 
-            // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
+            // Present on all "CLOKSPL.DLL" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004.
             if (name.OptionalEquals("SafeDisc CDROM Protection System", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc 1.00.025-1.01.044";
 
@@ -114,7 +114,7 @@ namespace BinaryObjectScanner.Protection
 
             name = exe.FileDescription;
 
-            // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004. 
+            // Present on all "CLOKSPL.EXE" versions before SafeDisc 1.06.000. Found on Redump entries 61731 and 66004.
             // Only found so far on SafeDisc 1.00.025-1.01.044, but the report is currently left generic due to the generic nature of the check.
             if (name.OptionalEquals("SafeDisc", StringComparison.OrdinalIgnoreCase))
                 return "SafeDisc";
@@ -261,7 +261,7 @@ namespace BinaryObjectScanner.Protection
                 // Unknown if it's a game specific file, but it contains the stxt371 and stxt774 sections.
                 // new(new FilePathMatch("CoreDLL.dll"), "SafeDisc"),
 
-                // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941). 
+                // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941).
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
@@ -359,14 +359,14 @@ namespace BinaryObjectScanner.Protection
 
                 // Found in Redump entry 58990.
                 new(new FilePathMatch("SafediskSplash.bmp"), "SafeDisc"),
-                
+
                 // Used to distribute SafeDisc driver updates over the internet. Two distinct versions known to exist, with Microsoft also having distributed the later update as well.
                 // Version 1: https://web.archive.org/web/20040614184055/http://www.macrovision.com:80/products/safedisc/safedisc.exe
                 // Version 2: https://web.archive.org/web/20051104123646/http://www.macrovision.com/products/safedisc/safedisc.exe
                 // Microsoft download page: https://web.archive.org/web/20080204081329/http://www.microsoft.com/downloads/details.aspx?FamilyID=eae20f0f-c41c-44fe-84ce-1df707d7a2e9&DisplayLang=en
                 new(new FilePathMatch("safedisc.exe"), "SafeDisc Driver Installer"),
 
-                // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941). 
+                // Found in seemingly every SafeDisc Lite disc. (CD: Redump entries 25579 and 57986. DVD: Redump entry 63941).
                 new(new FilePathMatch("00000001.LT1"), "SafeDisc Lite"),
                 new(new FilePathMatch("LTDLL.DLL"), "SafeDisc Lite"),
 
@@ -478,7 +478,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 61731 and 66005.
                 "C13493AB753891B8BEE9E4E014896B026C01AC92" => "1.00.025-1.01.044",
 
-                // Found in Redump entries 1882 and 30049. 
+                // Found in Redump entries 1882 and 30049.
                 // It is currently unknown why the previous hash covers both the version before this one, and most afterwards, with this one being a consistent outlier between these versions.
                 "2418D791C7B9D4F05BCB01FAF98F770CDF798464" => "1.00.026",
 
@@ -709,7 +709,7 @@ namespace BinaryObjectScanner.Protection
             // This included version doesn't seem to be as accurate as hash checks are, but will be documented here and considered for future use if needed.
             // "1.0.25 1998/07/30" -> SafeDisc 1.00.025 (Redump entry 66005).
             // "1.0.26 1998/08/06" -> SafeDisc 1.00.026-1.00.030 (Redump entries 1882, 31575, and 34828).
-            // "1.0.32 1998/11/04" -> SafeDisc 1.00.032-1.00.035 (Redump entries 1883 and 36223). 
+            // "1.0.32 1998/11/04" -> SafeDisc 1.00.032-1.00.035 (Redump entries 1883 and 36223).
             // "1.1.34 1998/11/14" -> SafeDisc 1.01.034 (Redump entries 42155 and 47574).
             // "1.1.38 1999/01/21" -> SafeDisc 1.01.038 (Redump entry 51459).
             // "1.1.43 1999/02/25  -> SafeDisc 1.01.043 (Redump entries 34562 and 63304).
@@ -805,7 +805,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // File size of "dplayerx.dll" and others is a commonly used indicator of SafeDisc version, though it has been found to not be completely consistent.
                 // Checks for versions 1.2X have been commented out, due to these versions already being detected via more accurate checks.
-                // Examples of "dplayerx.dll" that are detected using these more accurate checks can be found in Redump entries 28810, 30121, and 37982. 
+                // Examples of "dplayerx.dll" that are detected using these more accurate checks can be found in Redump entries 28810, 30121, and 37982.
 
                 // Found in Redump entry 34828.
                 81_408 => "1.00.026 (pre-10/1998)",
@@ -816,7 +816,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 36223 and 40771.
                 77_824 => "1.00.035",
 
-                // Found in Redump entries 42155 and 47574. 
+                // Found in Redump entries 42155 and 47574.
                 115_712 => "1.01.034",
 
                 // Found in Redump entry 42155.
@@ -843,7 +843,7 @@ namespace BinaryObjectScanner.Protection
                     163,382 bytes corresponds to SafeDisc 1.30.010 (Redump entries 31526 and 55080).
                     165,888 bytes corresponds to SafeDisc 1.35.000 (Redump entries 9617 and 49552).
                     172,544 bytes corresponds to SafeDisc 1.40.004 (Redump entries 2595 and 30121).
-                    173,568 bytes corresponds to SafeDisc 1.41.000-1.41.001 (Redump entries 37832, and 44350). 
+                    173,568 bytes corresponds to SafeDisc 1.41.000-1.41.001 (Redump entries 37832, and 44350).
                     136,704 bytes corresponds to SafeDisc 1.45.011 (Redump entries 30555 and 55078).
                     138,752 bytes corresponds to SafeDisc 1.50.020 (Redump entries 28810 and 62935).
                 */
@@ -906,7 +906,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 37523 and 66586.
                 "87C0DA1B52681FA8052A915E85699738993BEA72" => "1.11.000",
 
-                // Found in Redump entries 21154 and 37982. 
+                // Found in Redump entries 21154 and 37982.
                 "3569FE747311265FDC83CBDF13361B4E06484725" => "1.20.000",
 
                 // Found in Redump entry 37920.
@@ -948,7 +948,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 15312 and 48863.
                 "414CAC2BE3D9BE73796D51A15076A5A323ABBF2C" => "2.30.031",
 
-                // Found in Redump entries 9819 and 53658. 
+                // Found in Redump entries 9819 and 53658.
                 "126DCA2317DA291CBDE13A91B3FE47BA4719446A" => "2.30.033",
 
                 // Found in Redump entries 9846 and 65642.
@@ -988,7 +988,7 @@ namespace BinaryObjectScanner.Protection
                 // Found in Redump entries 36511 and 74338.
                 "E5504C4C31561D38C1F626C851A8D06212EA13E0" => "3.15.010",
 
-                // Found in Redump entries 15383 and 35512. 
+                // Found in Redump entries 15383 and 35512.
                 "AABA7B3EF08E80BC55282DA3C3B7AA598379D385" => "3.15.011",
 
                 // Found in Redump entries 58625, 75782, and 84586.
@@ -1037,7 +1037,7 @@ namespace BinaryObjectScanner.Protection
 
         internal static string? GetSafeDiscSplshVersion(string firstMatchedString, List<string>? files)
         {
-            // Special thanks to TheMechasaur for combing through known SafeDisc games and cataloging the splash-screens used in them, making these detections possible. 
+            // Special thanks to TheMechasaur for combing through known SafeDisc games and cataloging the splash-screens used in them, making these detections possible.
 
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
@@ -1082,7 +1082,7 @@ namespace BinaryObjectScanner.Protection
             // The next are the files named "000004XX", "000008XX", "00000cXX", and "00001XXX". When one of these is present, they seemingly always come in pairs of 2 with the extensions ".016" and ".256". They're typically present in SafeDisc versions 1.06.000-2.51.021.
             // Next come the files simply named "0000000X", which still come in pairs with the extensions ".016" and ".256", starting in SafeDisc version 2.60.052 up until version 4.85.000. After this point, there doesn't seem to be any consistent SafeDisc splash-screen used at all.
             // Starting SafeDisc version 4.00.000, the files with the ".016" extension seem to mostly disappear, with the ".256" files still being present.
-            // Exceptions: 
+            // Exceptions:
             // The files "00000409.016" and "00000409.256" are present in Redump entry 39273, despite it being SafeDisc 2.80.011. This may be because this disc contains some form of SafeDisc Lite as well, which tends to more closely resemble SafeDisc 1.
             // Redump entry 51597 contains "00000000.016" and "00000000.256", breaking the trend of SafeDisc 4 not having any files with the ".016" extension. This may be due to this being a rerelease, so the splash-screen may have already been present in the original game files and carried over.
 

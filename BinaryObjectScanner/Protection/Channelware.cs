@@ -10,15 +10,15 @@ namespace BinaryObjectScanner.Protection
 {
     /// <summary>
     /// Channelware was an online activation DRM.
-    /// 
+    ///
     /// Official websites:
-    /// 
+    ///
     /// https://web.archive.org/web/19980212121046/http://www.channelware.com/index.html
     /// https://web.archive.org/web/20021002225705/http://cwsw.com/Home/default.asp
     /// https://web.archive.org/web/20040101180929/http://www.netactive.com/Home/
-    /// 
+    ///
     /// TODO:
-    /// Add version detection. Redump entry 116358 is version 1.x and Redump entry 12354 is 2.x, but the file versions are inconsistent. 
+    /// Add version detection. Redump entry 116358 is version 1.x and Redump entry 12354 is 2.x, but the file versions are inconsistent.
     /// Investigate "NetActive Reach", which is is either a newer version of this DRM, or a new DRM created by the same company. (https://web.archive.org/web/20040101162921/http://www.netactive.com/Products/)
     /// </summary>
     public class Channelware : IExecutableCheck<PortableExecutable>, IPathCheck

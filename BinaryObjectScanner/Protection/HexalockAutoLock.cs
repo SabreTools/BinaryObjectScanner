@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
     ///  Hexalock AutoLock was also able to be used with pressed CD-ROMs (Source: https://web.archive.org/web/20110828214830/http://hexalock.co.il/copyprotection/cdrom).
     ///  One pressed example has been found so far, though it seems that it may not have been hooked into the protection properly, as the game is able to be run directly from files extracted from the installer (Redump entry 95764/IA item "Nova_Spacebound_USA").
     ///  Though the protection seems unused in this sample, the final sectors of this disc are unable to be read by some software/drive combinations, which seems likely to be related to the protection.
-    ///  It also allowed you to protect multimedia documents, such as documents or pictures. 
+    ///  It also allowed you to protect multimedia documents, such as documents or pictures.
     ///  The official website is now dead, but there are a few archives made (https://web.archive.org/web/20110904233743/http://hexalock.co.il/).
     ///  There don't appear to be any archives of the "CD-RX" media available, though it appears that some are still for sale on Amazon:
     ///  https://www.amazon.cn/dp/B000F3RPCI + https://www.amazon.cn/dp/B000F3PJA8
@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.Protection
     ///  HexaLock AutoLock 4.7 official download archive: https://web.archive.org/web/20140801060304/http://hexalock.co.il/downloads/files/Psetup.exe
     ///  There appears to be another form of copy protection created by HexaLock called HexDVDR, but I have not been able to find a copy of it preserved (Source: https://web.archive.org/web/20140801060150/http://hexalock.co.il/news/2008-03-20/).
     ///  There is an example EXE protected using HexDVDR provided that is still online (https://web.archive.org/web/20140802144000/http://hexalock.co.il/downloads/files/Protected%20Img.zip).
-    ///  Patents relating to this protection: 
+    ///  Patents relating to this protection:
     ///  https://patentimages.storage.googleapis.com/64/d6/b1/91127b030d3503/US20060259975A1.pdf
     ///  https://patentimages.storage.googleapis.com/52/5b/3a/aee21ff4d987e9/US20060123483A1.pdf
     ///  Special thanks to Ribshark for looking into this protection and sharing his research on the topic!

@@ -6,7 +6,7 @@ using SabreTools.IO.Matching;
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>
-    /// WinLock (by B16MCC) is a program that allows the user to create a CD-R with intentional errors. 
+    /// WinLock (by B16MCC) is a program that allows the user to create a CD-R with intentional errors.
     /// It does this by modifying an existing cuesheet to include 3 additional tracks that wiould be created from the file "WinLock.PSX".
     /// It then allows the user to automatically modify that file while the CD-R is being burnt, causing there to be errors at the end of the disc.
     /// Note that no additional files are written to the disc itself, the additional tracks created are invalid.

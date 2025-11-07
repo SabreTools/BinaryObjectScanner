@@ -10,8 +10,8 @@ namespace BinaryObjectScanner.Protection
 {
     /// <summary>
     /// RipGuard was a copy protection made by Macrovision/Rovi to protect movie DVDs. It's known to use bad sectors to impede dumping, one of the relatively rare DVD DRMs to do this.
-    /// 
-    /// Discs known to have it: 
+    ///
+    /// Discs known to have it:
     /// https://forum.redfox.bz/threads/resolved-installs-rootkit-black-lagoon-vol-2-3-region-1.29660/
     /// https://forum.redfox.bz/threads/resolved-one-on-one-with-tony-horton-vol2-disc3.33901/
     /// https://moral.net.au/writing/2015/10/10/backing_up_dvds/

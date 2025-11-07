@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Protection
     /// <summary>
     /// "SVK - Protector"/"Slovak Protector"/SVKP (https://web.archive.org/web/20020604155614/http://www.anticracking.sk/) was a packer created by Pavol Cerven that focused on protecting and obfuscating executables.
     /// It offered features such as encryption, debugger detection, and protection against memory dumps (https://web.archive.org/web/20020805143050fw_/http://www.anticracking.sk/svkp.html).
-    /// 
+    ///
     /// Additional resources and documentation:
     /// SVKP 1.05 demo: https://web.archive.org/web/20020614222838/http://www.anticracking.sk/svkp_setup.rar
     /// SVKP 1.051 demo: https://web.archive.org/web/20020805001642/http://www.anticracking.sk/svkp_setup.rar

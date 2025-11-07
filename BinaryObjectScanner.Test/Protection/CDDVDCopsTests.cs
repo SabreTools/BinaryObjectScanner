@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Test.Protection
             string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
-    
+
         [Fact]
         public void CheckPortableExecutableTest()
         {
@@ -32,7 +32,7 @@ namespace BinaryObjectScanner.Test.Protection
             string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
-    
+
         [Fact]
         public void CheckDirectoryPathTest()
         {

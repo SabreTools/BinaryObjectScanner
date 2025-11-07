@@ -89,7 +89,7 @@ namespace BinaryObjectScanner.Protection
 
                 // There are a few other files present, but the file names on their own may be too overmatching. Due to the small sample size, it's not sure if these files are always present together.
                 // These files are "Asc001.dll", "Asc002.dll", "Asc003.dll", "Asc005.dll", and "Asc006.exe" (Found in Redump entry 73521/IA item "Nova_HoyleCasino99USA").
-            
+
                 // The "DATA.TAG" file in the "AgeiSoft" folder is an INI that includes:
                 // Company=AegiSoft Corporation
                 // Application=AegiSoft License Manager

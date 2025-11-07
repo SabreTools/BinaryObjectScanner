@@ -9,19 +9,19 @@ namespace BinaryObjectScanner.Protection
 {
     /// <summary>
     /// nProtect (AKA INCA Internet) (https://nprotect.com/) is a Korean software company that produces several DRM products.
-    /// 
+    ///
     /// nProtect GameGuard (https://nprotect.com/kr/b2b/prod_gg.html) is anti-cheat software used in a fair amount of online games.
     /// Partial list of games that use GameGuard: https://en.wikipedia.org/wiki/NProtect_GameGuard.
     /// Known versions of GameGuard:
     /// "2024.2.27.1" - Found in GameGuard.des in "Soulworker" (Steam Depot 1377581, Manifest 5092481117079359342).
-    /// 
+    ///
     /// nProtect KeyCrypt is an anti-keylogging product that seemingly has other DRM functions as well, such as shutting down processes it deems unnecessary (https://en.wikipedia.org/wiki/INCA_Internet#nProtect_Netizen,_nProtect_Personal,_nProtect_Keycrypt)
     /// TODO: Verify the exact functions of KeyCrypt.
-    /// 
+    ///
     /// Official sites for KeyCrypt (it is unknown what the difference between them are, as both are still online and active at the same time):
     /// https://nprotect.com/kr/b2b/prod_kcv.html
     /// https://nprotect.com/kr/b2b/prod_kcv65.html
-    /// 
+    ///
     /// Official documents about KeyCrypt:
     /// https://nprotect.com/nprotect_pdf/nProtect_KeyCryptV.pdf
     /// https://nprotect.com/nprotect_pdf/nProtect_KeyCrypt.pdf

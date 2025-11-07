@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Protection
     /// Details on how these steps work: https://web.archive.org/web/20011107003900/http://jove.prohosting.com/~tzcopy/dev.html
     /// Worth noting is that all of these features aim exclusively to prevent the protected CD-R from being copied, there are no program/driver/etc. files added to the modified image whatsoever.
     /// Due to this, it's unlikely that these earlier versions are able to be detected whatsoever.
-    /// 
+    ///
     /// After V1.1 Beta 9, the original author released the source code, retired from the project, and allowed others to continue the project (https://web.archive.org/web/20030619042134/http://www.tzcopyprotection.tk/).
     /// Several others began to contribute, with features such a new GUI, new protection steps, new image formats supported, etc. being added.
     /// Step 4 uses a "ghost" file that is added to the CUE and intended to be present during the start of burning a CD-R, but then modified during the burn so that there are intentional errors at the end of the disc.
@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Protection
     /// There's also a program made by this team called "TZ EXE Protector".
     /// https://web.archive.org/web/20060225153855/http://www.denet.plus.com/tz/Tzep2beta5.zip
     /// https://web.archive.org/web/20030205062029/http://snow.prohosting.com/~clone99/tzweb/files.html
-    /// 
+    ///
     /// Official websites:
     /// https://web.archive.org/web/20001109225600/http://members.nbci.com/tzcopy/
     /// https://web.archive.org/web/20030619042134/http://www.tzcopyprotection.tk/
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
     /// https://web.archive.org/web/20020203072859/http://www.robert-knight.net/
     /// https://web.archive.org/web/20021215153849/http://snow.prohosting.com/~clone99/cgi-bin/ikonboard/ikonboard.cgi
     /// https://web.archive.org/web/20021215180832/http://wave.prohosting.com/~tzcp/cgi-bin/ikonboard/ikonboard.cgi
-    /// 
+    ///
     /// Versions:
     /// V1.1 Beta II: https://cmw.mobiletarget.net/?f=tzcopyb2.zip
     /// V1.1 Beta 3: https://web.archive.org/web/20000820144023/http://members.xoom.com:80/tzcopy/upgb3.zip

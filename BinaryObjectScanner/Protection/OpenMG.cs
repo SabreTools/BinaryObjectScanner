@@ -10,7 +10,7 @@ using SabreTools.Serialization.Wrappers;
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>
-    /// OpenMG is a form of DRM created by Sony to control how music is copied and listened to on PC. 
+    /// OpenMG is a form of DRM created by Sony to control how music is copied and listened to on PC.
     /// It is known to be used with multiple CD audio protections, such as XCP, LabelGate, and quite possibly Key2AudioXS.
     /// References:
     /// https://en.wikipedia.org/wiki/OpenMG

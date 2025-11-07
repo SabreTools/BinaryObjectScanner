@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Protection
     /// This is further supported by the fact that the "NeacSafe.sys" driver is signed by NetEase.
     /// Another program by NetEase, MuMu Player, seems to have also included a "NetEase AC" at one point(https://www.pcgamingwiki.com/wiki/MuMu_Player).
     /// There is also a separate DRM service provided by NetEase called Yidun (http://dun.163.com + http://dun.163.com/locale/en), though this seems to be unrelated.
-    /// 
+    ///
     /// Additional resources:
     /// https://www.pcgamingwiki.com/wiki/Naraka:_Bladepoint
     /// https://github.com/SteamDatabase/FileDetectionRuleSets/pull/235

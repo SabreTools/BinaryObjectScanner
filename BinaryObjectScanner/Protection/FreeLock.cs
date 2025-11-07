@@ -6,7 +6,7 @@ using SabreTools.IO.Matching;
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>
-    /// Freelock is software intended to allow users to burn a copy protected PSX CD-R. 
+    /// Freelock is software intended to allow users to burn a copy protected PSX CD-R.
     /// It adds multiple garbage tracks to the end of the disc and creates intentional errors on the disc by attempting to burn a corrupted file.
     /// <see href="https://github.com/TheRogueArchivist/DRML/blob/main/entries/Freelock/Freelock.md"/>
     /// </summary>

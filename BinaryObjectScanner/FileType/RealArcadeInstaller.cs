@@ -4,7 +4,7 @@ namespace BinaryObjectScanner.FileType
 {
     /// <summary>
     /// RealArcade Installer. Known to use the ".rgs" file extension.
-    /// 
+    ///
     /// TODO: Add further parsing, game ID and name should be possible to parse.
     /// </summary>
     public class RealArcadeInstaller : DetectableBase<SabreTools.Serialization.Wrappers.RealArcadeInstaller>

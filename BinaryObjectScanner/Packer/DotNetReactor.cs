@@ -9,10 +9,10 @@ namespace BinaryObjectScanner.Packer
     /// <summary>
     /// .NET Reactor is a .NET obfuscator that was original released in 2004. https://web.archive.org/web/20040828162124/http://eziriz.com:80/
     /// It is currently still being updated and supported. https://www.eziriz.com/dotnet_reactor.htm
-    /// While ProtectionID does detect .NET Reactor, it's currently unknown exactly how. 
+    /// While ProtectionID does detect .NET Reactor, it's currently unknown exactly how.
     /// It seems to simply check for the string "<PrivateImplementationDetails>" in specific, and currently unknown, conditions but appears to be prone to false positives.
     /// A "Demo/Nag Screen" version is available for free, and may be able to be used to make samples to improve detections. https://www.eziriz.com/reactor_download.htm
-    /// 
+    ///
     /// Resource that could be useful for extraction: https://github.com/SychicBoy/NETReactorSlayer
     /// </summary>
     public class DotNetReactor : IExecutableCheck<PortableExecutable>
@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Packer
                         null, null, null, 0x7D
                     }, ".NET Reactor"),
 
-                    // Modified from the previous detection to detect a presumably newer version of .NET Reactor found in "KalypsoLauncher.dll" version 2.0.4.2. 
+                    // Modified from the previous detection to detect a presumably newer version of .NET Reactor found in "KalypsoLauncher.dll" version 2.0.4.2.
                     // TODO: Check if this can/should be made more specific.
                     // <PrivateImplementationDetails>.RSA
                     new(new byte?[]
@@ -68,7 +68,7 @@ namespace BinaryObjectScanner.Packer
                         null, null, null, null, null, null, null, null,
                         0x00, 0x7D, 0x00
                     }, ".NET Reactor (Unconfirmed - Please report to us on GitHub)"),
-                    
+
                     // Adapted from https://github.com/cod3nym/detection-rules/blob/main/yara/dotnet/obf_net_reactor.yar and confirmed to work with "KalypsoLauncher.dll" from Redump entry 95617.
                     // <Module>{[8]-[4]-[4]-[4]-[12]}
                     new(new byte?[]

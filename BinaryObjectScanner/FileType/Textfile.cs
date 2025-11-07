@@ -132,7 +132,7 @@ namespace BinaryObjectScanner.FileType
                 if (fileContent.Contains("<NAME>SAFECAST</NAME>"))
                     protections.Add("SafeCast");
 
-                // SafeDisc 
+                // SafeDisc
                 // TODO: Add better version parsing.
                 // Found in "Info.plist" in Redump entries 23983, 42762, 72713, 73070, and 89603.
                 if (fileContent.Contains("<string>com.europevisionmacro.SafeDiscDVD</string>"))

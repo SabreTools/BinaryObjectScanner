@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.Packer
                 return "NSIS";
 
             // Get the .data/DATA section strings, if they exist
-                var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
+            var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
             if (strs != null)
             {
                 if (strs.Exists(s => s.Contains("NullsoftInst")))

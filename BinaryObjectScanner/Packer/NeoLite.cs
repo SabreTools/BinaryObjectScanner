@@ -7,7 +7,7 @@ namespace BinaryObjectScanner.Packer
     /// NeoLite (https://web.archive.org/web/20000815214147/http://www.neoworx.com/products/neolite/default.asp) was a packer created by NeoWorx.
     /// The most common version appears to be 2.0, with earlier versions existing but with no archived copies available.
     /// NeoWorx was acquired by McAfee in October 2001, who seemingly dropped support for NeoLite (https://web.archive.org/web/20020603224725/http://www.mcafee.com/myapps/neoworx/default.asp).
-    /// 
+    ///
     /// Additional references and documentation:
     /// NeoLite 2.0 evaluation installer: https://web.archive.org/web/20001012061916/http://www.neoworx.com/download/neolte20.exe
     /// PEiD scanning definitions that include NeoLite: https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt

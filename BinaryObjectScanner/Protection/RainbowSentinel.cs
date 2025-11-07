@@ -17,8 +17,8 @@ namespace BinaryObjectScanner.Protection
     /// TODO: Investigate the possible integration between FlexLM and Rainbow Sentinel in IA item "prog-17_202403".
     /// TODO: Investigate the "NetSentinel Protection System" found in "NSRVOM.EXE" and "NSRVGX.EXE" in IA item "czchip199707cd".
     /// TODO: Investigate "sntnlusb.sys" (https://www.rainbow.com.my/document/endusertroubleshooting.pdf).
-    /// 
-    /// Versions: 
+    ///
+    /// Versions:
     /// Rainbow Sentinel PD-5.1: IA items "pcwkcd-1296, "CHIPTRMart97", and "bugcd199801".
     /// Rainbow Sentinel PD-5.1e (Beta): IA item "CHIPTRMart97".
     /// Rainbow Sentinel PD-5.37: File "CICA 32 For Windows CD-ROM (Walnut Creek) (October 1999) (Disc 4).iso" in IA item "CICA_32_For_Windows_CD-ROM_Walnut_Creek_October_1999".
@@ -27,12 +27,12 @@ namespace BinaryObjectScanner.Protection
     /// Rainbow Sentinel PD-17: IA item "czchip199707cd".
     /// Rainbow Sentinel PD-30: BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
     /// Rainbow Sentinel PD-31: BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".
-    /// 
+    ///
     /// Rainbow Sentinel SuperPro 5.0: IA items "chip-cds-2001-08".
     /// Rainbow Sentinel SuperPro 5.1: IA items "ASMEsMechanicalEngineeringToolkit1997December" and "aplicaciones-windows".
-    /// 
+    ///
     /// Rainbow SentinelPro 5.1: IA item "pcwkcd-1296".
-    /// 
+    ///
     /// Rainbow NetSentinel: IA item "czchip199707cd".
     /// </summary>
     public class RainbowSentinel : IExecutableCheck<NewExecutable>, IExecutableCheck<PortableExecutable>, IPathCheck
@@ -68,7 +68,7 @@ namespace BinaryObjectScanner.Protection
                     0x65, 0x72, 0x73, 0x69, 0x6F, 0x6E, 0x20, 0x00,
                     0x50, 0x44, 0x2D, 0x35, 0x2E, 0x31, 0x37
                 }, "Rainbow Sentinel PD-5.17"),
-                
+
                 // NetSentinel OS/2 security server
                 // Found in "NSRVOM.EXE" in IA item "czchip199707cd".
                 new(new byte?[]
@@ -77,7 +77,7 @@ namespace BinaryObjectScanner.Protection
                     0x6E, 0x65, 0x6C, 0x20, 0x4F, 0x53, 0x2F, 0x32,
                     0x20, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72
                 }, "Rainbow NetSentinel Server for OS/2"),
-                
+
                 // NetSentinel  Monitor
                 // Found in "OS2MON.EXE" in IA item "czchip199707cd".
                 new(new byte?[]
@@ -387,7 +387,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // The Parallel Port driver for Rainbow Sentinel (https://www.rainbow.com.my/document/endusertroubleshooting.pdf).
                 // Unforutnately, the file name overlaps with a file used by Clam Sentinel (https://clamsentinel.sourceforge.net/).
-                // TODO: Add LE check for "SENTINEL.VXD" once LE checks are implemented. 
+                // TODO: Add LE check for "SENTINEL.VXD" once LE checks are implemented.
                 // new(new FilePathMatch("SENTINEL.VXD"), "Rainbow Sentinel"),
 
                 // Found in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]" and IA item "auto-cad-r14-cdrom".

@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
     /// https://www.cadlinecommunity.co.uk/hc/en-us/articles/201873101-C-dilla-Failing-to-Install-or-Stops-Working-
     /// https://archive.org/details/acadlt2002cd
     /// https://archive.org/details/telepower
-    /// 
+    ///
     /// It seems that C-Dilla License Management System is a newer name for their CD-Secure product, based on this URL (https://web.archive.org/web/20050211004709/http://www.macrovision.com/products/cdsecure/downloads.shtml) leading to a download of LMS.
     /// Known versions:
     /// 1.31.34 (1.37.00?) (IA item "PCDDec1995").
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
     /// 3.24.010 (IA item "ejay_nestle_trial").
     /// 3.27.000 (https://download.autodesk.com/mne/web/support/3dstudio/C-Dilla3.27.zip).
     /// 4.11.000 (Possibly an internal version used by SafeCast in Redump entry 95524).
-    /// 
+    ///
     /// TODO:
     /// Investigate C-Dilla CD-Compress.
     /// </summary>

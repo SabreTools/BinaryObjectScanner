@@ -14,8 +14,8 @@ namespace BinaryObjectScanner.Protection
     // TODO: Figure out if Light and Professional are what designate rings and rings+disccheck
     public class CopyX : IExecutableCheck<PortableExecutable>, IPathCheck
     {
-        // Previous check 'Tivola Ring Protect' removed because it was found to actually be copy-x. 
-        // The checks were for ZDAT/webmast.dxx and ZDAT/webmast.dxx, for Redump IDs 81628 and 116418.   
+        // Previous check 'Tivola Ring Protect' removed because it was found to actually be copy-x.
+        // The checks were for ZDAT/webmast.dxx and ZDAT/webmast.dxx, for Redump IDs 81628 and 116418.
 
         // https://web.archive.org/web/20011016234742/http://www.optimal-online.de:80/product/copy_x.htm
         // There are four kinds of copy-X; Light, Profesisonal, audio, and Trial Maker.
@@ -37,7 +37,7 @@ namespace BinaryObjectScanner.Protection
         // games, Tivola. Still, most use ZDAT.
 
         // Professional:
-        // All instances of professional contain a disc check, performed via optgraph.dll. 
+        // All instances of professional contain a disc check, performed via optgraph.dll.
         // All instances of professional contain in a directory usually (but not always, German Emergency 2 Deluxe has a
         // Videos folder as well, which isn't involved in rings/protection) at the end of the image, 3 files:
         // gov_[something].x64, iofile.x64, and sound.x64. So far, they have always been in a directory called "System".
@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
 
             if (exe.OverlayStrings != null)
             {
-                // Checks if main executable contains reference to optgraph.dll. 
+                // Checks if main executable contains reference to optgraph.dll.
                 // This might be better removed later, as Redump ID 82475 is a false positive, and also doesn't actually
                 // contain the actual optgraph.dll file.
                 // TODO: Find a way to check for situations like Redump ID 48393, where the string is spaced out with
@@ -97,7 +97,7 @@ namespace BinaryObjectScanner.Protection
             // Directory checks intentionally only detect Light
 
             // Excludes files with .x64 extension to avoid flagging Professional files.
-            // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring 
+            // Sorts list of files in ZDAT* so just the first file gets pulled, later ones have a chance of the ring
             // intersecting the start of the file.
 
             // Kenny's Adventure uses System instead of ZDAT.
