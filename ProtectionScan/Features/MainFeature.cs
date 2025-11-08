@@ -29,6 +29,11 @@ namespace ProtectionScan.Features
         private const string _fileOnlyName = "file-only";
         internal readonly FlagInput FileOnlyInput = new(_fileOnlyName, ["-f", "--file"], "Print to file only");
 
+#if NETCOREAPP
+        private const string _jsonName = "json"; 
+        internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
+#endif
+
         private const string _noArchivesName = "no-archives";
         internal readonly FlagInput NoArchivesInput = new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
 
@@ -47,6 +52,11 @@ namespace ProtectionScan.Features
         /// Output information to file only, skip printing to console
         /// </summary>
         public bool FileOnly { get; private set; }
+        
+        /// <summary>
+        /// Output information to json
+        /// </summary>
+        public bool JsonFlag { get; private set; }
 
         public MainFeature()
             : base(DisplayName, _flags, _description)
@@ -55,6 +65,9 @@ namespace ProtectionScan.Features
 
             Add(DebugInput);
             Add(FileOnlyInput);
+#if NETCOREAPP
+            Add(JsonInput);
+#endif
             Add(NoContentsInput);
             Add(NoArchivesInput);
             Add(NoPathsInput);
@@ -70,6 +83,9 @@ namespace ProtectionScan.Features
 
             // Get the options from the arguments
             FileOnly = GetBoolean(_fileOnlyName);
+#if NETCOREAPP            
+            JsonFlag = GetBoolean(_jsonName);
+#endif
 
             // Create scanner for all paths
             var scanner = new Scanner(
@@ -127,7 +143,12 @@ namespace ProtectionScan.Features
             try
             {
                 var protections = scanner.GetProtections(path);
+
                 WriteProtectionResultFile(path, protections);
+                
+#if NETCOREAPP
+                WriteProtectionResultJson(path, protections);
+#endif
             }
             catch (Exception ex)
             {
@@ -199,5 +220,45 @@ namespace ProtectionScan.Features
             // Dispose of the writer
             sw?.Dispose();
         }
+        
+#if NETCOREAPP
+        /// <summary>
+        /// Write the protection results from a single path to a json file, if possible
+        /// </summary>
+        /// <param name="path">File or directory path</param>
+        /// <param name="protections">Dictionary of protections found, if any</param>
+        private static void WriteProtectionResultJson(string path, Dictionary<string, List<string>> protections)
+        {
+            if (protections == null)
+            {
+                Console.WriteLine($"No protections found for {path}");
+                return;
+            }
+
+            // Attempt to open a protection file for writing
+            StreamWriter? jsw = null;
+            try
+            {
+                jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+                // Create the output data
+                string serializedData = System.Text.Json.JsonSerializer.Serialize(protections, JsonSerializerOptions);
+
+                // Write the output data
+                // TODO: this prints plus symbols wrong, probably some other things too
+                jsw?.WriteLine(serializedData);
+                jsw?.Flush();
+            
+                // Dispose of the writer
+                jsw?.Dispose();
+            }
+            catch { }
+        }
+        
+        /// <summary>
+        /// JSON serializer options for output printing
+        /// </summary>
+        private static System.Text.Json.JsonSerializerOptions JsonSerializerOptions
+            => new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+#endif
     }
 }
