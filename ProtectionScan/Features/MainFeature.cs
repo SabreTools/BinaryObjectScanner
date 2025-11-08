@@ -321,6 +321,11 @@ namespace ProtectionScan.Features
                     DeepInsert(ref nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
                 }
 
+                // While it's possible to hardcode the root dictionary key to be changed to the base path beforehand, 
+                // it's cleaner to avoid trying to circumvent the path splitting logic, and just move the root 
+                // dictionary value into an entry with the base path as the key.
+                // There is no input as far as has been tested that can result in there not being a root dictionary key
+                // of an empty string, so this is safe.
                 var tempValue = nestedDictionary[""];
                 nestedDictionary.Remove("");
                 nestedDictionary.Add(trimmedPath, tempValue);
@@ -352,7 +357,7 @@ namespace ProtectionScan.Features
             var current = nestedDictionary; 
             var pathParts = path.Split(Path.DirectorySeparatorChar); 
 
-            // Traverses the nested dictionary until the "root" dictionary is reached.
+            // Traverses the nested dictionary until the "leaf" dictionary is reached.
             for (int i = 0; i < pathParts.Length; i++)
             {
                 var part = pathParts[i];
@@ -388,7 +393,7 @@ namespace ProtectionScan.Features
                         }
                     }
                 }
-                else // If the root dictionary has been reached, add the file and its protections.
+                else // If the "leaf" dictionary has been reached, add the file and its protections.
                 {
                     current.Add(part, protections);
                 }
