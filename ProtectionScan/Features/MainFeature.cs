@@ -294,7 +294,10 @@ namespace ProtectionScan.Features
                 // Attempt to open a protection file for writing
                 using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
-                var jsonDictionary = new Dictionary<string, dynamic>();
+                // A nested dictionary is used in order to avoid complex and unnecessary custom serialization.
+                // A dictionary with a dynamic value is used so that it's not necessary to first parse entries into a 
+                // traditional node system and then bubble up the entire chain creating non-dynamic dictionaries.
+                var nestedDictionary = new Dictionary<string, dynamic>();
                 var trimmedPath = path.TrimEnd(['\\', '/']); 
                 
                 // Sort the keys for consistent output
@@ -314,16 +317,17 @@ namespace ProtectionScan.Features
                     Array.Sort(fileProtections);
                     //foreach (var fileProtection in fileProtections)
 
-                    DeepInsert(ref jsonDictionary, key.Substring(trimmedPath.Length), fileProtections, trimmedPath);
+                    // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
+                    DeepInsert(ref nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
                 }
 
-                var tempValue = jsonDictionary[""];
-                jsonDictionary.Remove("");
-                jsonDictionary.Add(trimmedPath, tempValue);
+                var tempValue = nestedDictionary[""];
+                nestedDictionary.Remove("");
+                nestedDictionary.Add(trimmedPath, tempValue);
 
                 // Create the output data
                 var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                string serializedData = System.Text.Json.JsonSerializer.Serialize(jsonDictionary, jsonSerializerOptions);
+                string serializedData = System.Text.Json.JsonSerializer.Serialize(nestedDictionary, jsonSerializerOptions);
 
                 // Write the output data
                 // TODO: this prints plus symbols wrong, probably some other things too
@@ -337,25 +341,40 @@ namespace ProtectionScan.Features
             }
         }
 
-        public static void DeepInsert(ref Dictionary<string, dynamic> obj, string path, string[] value, string trimmedPath)
+        /// <summary>
+        /// Inserts file protection dictionary entries into a nested dictionary based on path
+        /// </summary>
+        /// <param name="nestedDictionary">File or directory path</param>
+        /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
+        /// <param name="protections">The scanned protection(s) for a given file</param>
+        public static void DeepInsert(ref Dictionary<string, dynamic> nestedDictionary, string path, string[] protections)
         {
-            var current = obj;
-            var pathParts = path.Split(Path.DirectorySeparatorChar);
+            var current = nestedDictionary; 
+            var pathParts = path.Split(Path.DirectorySeparatorChar); 
 
+            // Traverses the nested dictionary until the "root" dictionary is reached.
             for (int i = 0; i < pathParts.Length; i++)
             {
                 var part = pathParts[i];
                 if (i != (pathParts.Length - 1))
                 {
-                    if (!current.ContainsKey(part))
+                    if (!current.ContainsKey(part)) // Inserts new subdictionaries if one doesn't already exist
                     {
                         var innerObject = new Dictionary<string, dynamic>();
                         current[part] = innerObject;
                         current =  innerObject;
                     }
-                    else
+                    else // Traverses already existing subdictionaries
                     {
                         var innerObject = current[part];
+                        
+                        // If i.e. a packer has protections detected on it, and then files within it also have 
+                        // detections of their own, the later traversal of the files within it will fail, as
+                        // the subdictionary for that packer has already been set to <string, string>. Since it's
+                        // no longer dynamic after being assigned once, the existing value must be pulled, then the
+                        // new subdictionary can be added, and then the existing value can be re-added within the
+                        // packer with a key of an empty string, in order to indicate it's for the packer itself, and
+                        // to avoid potential future collisions.
                         if (innerObject.GetType() != typeof(Dictionary<string, object>))
                         {
                             current[part] = new Dictionary<string, object>();
@@ -369,9 +388,9 @@ namespace ProtectionScan.Features
                         }
                     }
                 }
-                else
+                else // If the root dictionary has been reached, add the file and its protections.
                 {
-                    current.Add(part, value);
+                    current.Add(part, protections);
                 }
             }
         }
