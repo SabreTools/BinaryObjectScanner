@@ -33,10 +33,8 @@ namespace ProtectionScan.Features
         private const string _jsonName = "json";
         internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
 
-#if NET6_0_OR_GREATER
         private const string _nestedName = "nested";
         internal readonly FlagInput NestedInput = new(_nestedName, ["-n", "--nested"], "Output to nested json file");
-#endif
 #endif
 
         private const string _noArchivesName = "no-archives";
@@ -84,9 +82,7 @@ namespace ProtectionScan.Features
             Add(FileOnlyInput);
 #if NETCOREAPP
             Add(JsonInput);
-#if NET6_0_OR_GREATER
             Add(NestedInput);
-#endif
 #endif
             Add(NoContentsInput);
             Add(NoArchivesInput);
@@ -106,9 +102,7 @@ namespace ProtectionScan.Features
             FileOnly = GetBoolean(_fileOnlyName);
 #if NETCOREAPP
             Json = GetBoolean(_jsonName);
-#if NET6_0_OR_GREATER
             Nested = GetBoolean(_nestedName);
-#endif
 #endif
 
             // Create scanner for all paths
@@ -172,10 +166,8 @@ namespace ProtectionScan.Features
 #if NETCOREAPP
                 if (Json)
                     WriteProtectionResultJson(path, protections);
-#if NET6_0_OR_GREATER
                 if (Nested)
                     WriteProtectionResultNestedJson(path, protections);
-#endif
 #endif
             }
             catch (Exception ex)
@@ -284,7 +276,6 @@ namespace ProtectionScan.Features
             }
         }
 
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Write the protection results from a single path to a nested json file, if possible
         /// </summary>
@@ -384,7 +375,6 @@ namespace ProtectionScan.Features
                 }
             }
         }
-#endif
 #endif
     }
 }
