@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-#if NETCOREAPP
-#endif
 using BinaryObjectScanner;
 using SabreTools.CommandLine;
 using SabreTools.CommandLine.Inputs;
@@ -42,24 +40,16 @@ namespace ProtectionScan.Features
 #endif
 
         private const string _noArchivesName = "no-archives";
-
-        internal readonly FlagInput NoArchivesInput =
-            new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
+        internal readonly FlagInput NoArchivesInput = new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
 
         private const string _noContentsName = "no-contents";
-
-        internal readonly FlagInput NoContentsInput =
-            new(_noContentsName, ["-nc", "--no-contents"], "Disable scanning for content checks");
+        internal readonly FlagInput NoContentsInput = new(_noContentsName, ["-nc", "--no-contents"], "Disable scanning for content checks");
 
         private const string _noPathsName = "no-paths";
-
-        internal readonly FlagInput NoPathsInput =
-            new(_noPathsName, ["-np", "--no-paths"], "Disable scanning for path checks");
+        internal readonly FlagInput NoPathsInput = new(_noPathsName, ["-np", "--no-paths"], "Disable scanning for path checks");
 
         private const string _noSubdirsName = "no-subdirs";
-
-        internal readonly FlagInput NoSubdirsInput =
-            new(_noSubdirsName, ["-ns", "--no-subdirs"], "Disable scanning subdirectories");
+        internal readonly FlagInput NoSubdirsInput = new(_noSubdirsName, ["-ns", "--no-subdirs"], "Disable scanning subdirectories");
 
         #endregion
 
@@ -192,8 +182,7 @@ namespace ProtectionScan.Features
             {
                 try
                 {
-                    using var sw =
-                        new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
+                    using var sw = new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
                     sw.WriteLine(ex);
                 }
                 catch
@@ -225,8 +214,7 @@ namespace ProtectionScan.Features
             }
             catch
             {
-                Console.WriteLine(
-                    "Could not open protection log file for writing. Only a console log will be provided.");
+                Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
                 FileOnly = false;
             }
 
@@ -278,8 +266,7 @@ namespace ProtectionScan.Features
             try
             {
                 // Attempt to open a protection file for writing
-                using var jsw =
-                    new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+                using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
                 // Create the output data
                 var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
@@ -314,8 +301,7 @@ namespace ProtectionScan.Features
             try
             {
                 // Attempt to open a protection file for writing
-                using var jsw =
-                    new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+                using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
                 var jsonDictionary = new Dictionary<string, dynamic>();
                 var trimmedPath = path.TrimEnd(['\\', '/']); 
