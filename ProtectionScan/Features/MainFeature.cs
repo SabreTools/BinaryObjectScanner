@@ -28,10 +28,12 @@ namespace ProtectionScan.Features
 
         private const string _fileOnlyName = "file-only";
         internal readonly FlagInput FileOnlyInput = new(_fileOnlyName, ["-f", "--file"], "Print to file only");
-        
-        private const string _jsonName = "json";
+
+#if NETCOREAPP
+        private const string _jsonName = "json"; 
         internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
-        
+#endif
+
         private const string _noArchivesName = "no-archives";
         internal readonly FlagInput NoArchivesInput = new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
 
@@ -81,7 +83,9 @@ namespace ProtectionScan.Features
 
             // Get the options from the arguments
             FileOnly = GetBoolean(_fileOnlyName);
+#if NETCOREAPP            
             JsonFlag = GetBoolean(_jsonName);
+#endif
 
             // Create scanner for all paths
             var scanner = new Scanner(
