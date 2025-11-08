@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if NETCOREAPP
+#endif
 using BinaryObjectScanner;
 using SabreTools.CommandLine;
 using SabreTools.CommandLine.Inputs;
@@ -32,19 +34,32 @@ namespace ProtectionScan.Features
 #if NETCOREAPP
         private const string _jsonName = "json";
         internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
+
+#if NET6_0_OR_GREATER
+        private const string _nestedName = "nested";
+        internal readonly FlagInput NestedInput = new(_nestedName, ["-n", "--nested"], "Output to nested json file");
+#endif
 #endif
 
         private const string _noArchivesName = "no-archives";
-        internal readonly FlagInput NoArchivesInput = new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
+
+        internal readonly FlagInput NoArchivesInput =
+            new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
 
         private const string _noContentsName = "no-contents";
-        internal readonly FlagInput NoContentsInput = new(_noContentsName, ["-nc", "--no-contents"], "Disable scanning for content checks");
+
+        internal readonly FlagInput NoContentsInput =
+            new(_noContentsName, ["-nc", "--no-contents"], "Disable scanning for content checks");
 
         private const string _noPathsName = "no-paths";
-        internal readonly FlagInput NoPathsInput = new(_noPathsName, ["-np", "--no-paths"], "Disable scanning for path checks");
+
+        internal readonly FlagInput NoPathsInput =
+            new(_noPathsName, ["-np", "--no-paths"], "Disable scanning for path checks");
 
         private const string _noSubdirsName = "no-subdirs";
-        internal readonly FlagInput NoSubdirsInput = new(_noSubdirsName, ["-ns", "--no-subdirs"], "Disable scanning subdirectories");
+
+        internal readonly FlagInput NoSubdirsInput =
+            new(_noSubdirsName, ["-ns", "--no-subdirs"], "Disable scanning subdirectories");
 
         #endregion
 
@@ -63,6 +78,11 @@ namespace ProtectionScan.Features
         /// Enable JSON output
         /// </summary>
         public bool Json { get; private set; }
+
+        /// <summary>
+        /// Enable nested JSON output
+        /// </summary>
+        public bool Nested { get; private set; }
 #endif
 
         public MainFeature()
@@ -74,6 +94,9 @@ namespace ProtectionScan.Features
             Add(FileOnlyInput);
 #if NETCOREAPP
             Add(JsonInput);
+#if NET6_0_OR_GREATER
+            Add(NestedInput);
+#endif
 #endif
             Add(NoContentsInput);
             Add(NoArchivesInput);
@@ -93,6 +116,9 @@ namespace ProtectionScan.Features
             FileOnly = GetBoolean(_fileOnlyName);
 #if NETCOREAPP
             Json = GetBoolean(_jsonName);
+#if NET6_0_OR_GREATER
+            Nested = GetBoolean(_nestedName);
+#endif
 #endif
 
             // Create scanner for all paths
@@ -156,13 +182,18 @@ namespace ProtectionScan.Features
 #if NETCOREAPP
                 if (Json)
                     WriteProtectionResultJson(path, protections);
+#if NET6_0_OR_GREATER
+                if (Nested)
+                    WriteProtectionResultNestedJson(path, protections);
+#endif
 #endif
             }
             catch (Exception ex)
             {
                 try
                 {
-                    using var sw = new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
+                    using var sw =
+                        new StreamWriter(File.OpenWrite($"exception-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.txt"));
                     sw.WriteLine(ex);
                 }
                 catch
@@ -194,7 +225,8 @@ namespace ProtectionScan.Features
             }
             catch
             {
-                Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
+                Console.WriteLine(
+                    "Could not open protection log file for writing. Only a console log will be provided.");
                 FileOnly = false;
             }
 
@@ -246,7 +278,8 @@ namespace ProtectionScan.Features
             try
             {
                 // Attempt to open a protection file for writing
-                using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+                using var jsw =
+                    new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
                 // Create the output data
                 var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
@@ -263,6 +296,104 @@ namespace ProtectionScan.Features
                 Console.WriteLine();
             }
         }
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Write the protection results from a single path to a nested json file, if possible
+        /// </summary>
+        /// <param name="path">File or directory path</param>
+        /// <param name="protections">Dictionary of protections found, if any</param>
+        private void WriteProtectionResultNestedJson(string path, Dictionary<string, List<string>> protections)
+        {
+            if (protections == null)
+            {
+                Console.WriteLine($"No protections found for {path}");
+                return;
+            }
+
+            try
+            {
+                // Attempt to open a protection file for writing
+                using var jsw =
+                    new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+
+                var x = new Dictionary<string, dynamic>();
+
+                // Sort the keys for consistent output
+                string[] keys = [.. protections.Keys];
+                Array.Sort(keys);
+
+                // Loop over all keys
+                foreach (string key in keys)
+                {
+                    // Skip over files with no protection
+                    var value = protections[key];
+                    if (value.Count == 0)
+                        continue;
+
+                    // Sort the detected protections for consistent output
+                    string[] fileProtections = [.. value];
+                    Array.Sort(fileProtections);
+                    //foreach (var fileProtection in fileProtections)
+
+                    DeepInsert(ref x, key, fileProtections);
+                }
+
+                // Create the output data
+                var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                string serializedData = System.Text.Json.JsonSerializer.Serialize(x, jsonSerializerOptions);
+
+                // Write the output data
+                // TODO: this prints plus symbols wrong, probably some other things too
+                jsw.WriteLine(serializedData);
+                jsw.Flush();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(Debug ? ex : "[Exception opening file, please try again]");
+                Console.WriteLine();
+            }
+        }
+
+        public static void DeepInsert(ref Dictionary<string, dynamic> obj, string path, string[] value)
+        {
+            var current = obj;
+            var pathParts = path.Split(Path.DirectorySeparatorChar);
+
+            for (int i = 0; i < pathParts.Length; i++)
+            {
+                var part = pathParts[i];
+                if (i != (pathParts.Length - 1))
+                {
+                    if (!current.ContainsKey(part))
+                    {
+                        var innerObject = new Dictionary<string, dynamic>();
+                        current[part] = innerObject;
+                        current =  innerObject;
+                    }
+                    else
+                    {
+                        var innerObject = current[part];
+                        if (innerObject.GetType() != typeof(Dictionary<string, object>))
+                        {
+                            current[part] = new Dictionary<string, object>();
+                            current = current[part];
+                            current.Add("", innerObject);
+                        }
+                        else
+                        {
+                            current[part] = innerObject;
+                            current =  innerObject;       
+                        }
+                    }
+                }
+                else
+                {
+                    current.Add(part, value);
+                }
+            }
+        }
+#endif
 #endif
     }
 }
