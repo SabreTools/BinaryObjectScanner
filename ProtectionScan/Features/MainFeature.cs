@@ -326,18 +326,23 @@ namespace ProtectionScan.Features
                 // dictionary value into an entry with the base path as the key.
                 // There is no input as far as has been tested that can result in there not being a root dictionary key
                 // of an empty string, so this is safe.
-                var tempValue = nestedDictionary[""];
-                nestedDictionary.Remove("");
-                nestedDictionary.Add(trimmedPath, tempValue);
+                // The only exception is if absolutely no protections were returned whatsoever, which is why there's a
+                // safeguard here at all
+                if (nestedDictionary.ContainsKey(""))
+                {
+                    var tempValue = nestedDictionary[""];
+                    nestedDictionary.Remove("");
+                    nestedDictionary.Add(trimmedPath, tempValue);
 
-                // Create the output data
-                var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                string serializedData = System.Text.Json.JsonSerializer.Serialize(nestedDictionary, jsonSerializerOptions);
+                    // Create the output data
+                    var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                    string serializedData = System.Text.Json.JsonSerializer.Serialize(nestedDictionary, jsonSerializerOptions);
 
-                // Write the output data
-                // TODO: this prints plus symbols wrong, probably some other things too
-                jsw.WriteLine(serializedData);
-                jsw.Flush();
+                    // Write the output data
+                    // TODO: this prints plus symbols wrong, probably some other things too
+                    jsw.WriteLine(serializedData);
+                    jsw.Flush(); 
+                }
             }
             catch (Exception ex)
             {
