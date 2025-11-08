@@ -317,8 +317,9 @@ namespace ProtectionScan.Features
                 using var jsw =
                     new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
-                var x = new Dictionary<string, dynamic>();
-
+                var jsonDictionary = new Dictionary<string, dynamic>();
+                var trimmedPath = path.TrimEnd(['\\', '/']); 
+                
                 // Sort the keys for consistent output
                 string[] keys = [.. protections.Keys];
                 Array.Sort(keys);
@@ -336,12 +337,16 @@ namespace ProtectionScan.Features
                     Array.Sort(fileProtections);
                     //foreach (var fileProtection in fileProtections)
 
-                    DeepInsert(ref x, key, fileProtections);
+                    DeepInsert(ref jsonDictionary, key.Substring(trimmedPath.Length), fileProtections, trimmedPath);
                 }
+
+                var tempValue = jsonDictionary[""];
+                jsonDictionary.Remove("");
+                jsonDictionary.Add(trimmedPath, tempValue);
 
                 // Create the output data
                 var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                string serializedData = System.Text.Json.JsonSerializer.Serialize(x, jsonSerializerOptions);
+                string serializedData = System.Text.Json.JsonSerializer.Serialize(jsonDictionary, jsonSerializerOptions);
 
                 // Write the output data
                 // TODO: this prints plus symbols wrong, probably some other things too
@@ -355,7 +360,7 @@ namespace ProtectionScan.Features
             }
         }
 
-        public static void DeepInsert(ref Dictionary<string, dynamic> obj, string path, string[] value)
+        public static void DeepInsert(ref Dictionary<string, dynamic> obj, string path, string[] value, string trimmedPath)
         {
             var current = obj;
             var pathParts = path.Split(Path.DirectorySeparatorChar);
