@@ -63,9 +63,9 @@ namespace ProtectionScan.Features
 
             Add(DebugInput);
             Add(FileOnlyInput);
-            #if NETCOREAPP
+#if NETCOREAPP
             Add(JsonInput);
-            #endif
+#endif
             Add(NoContentsInput);
             Add(NoArchivesInput);
             Add(NoPathsInput);
@@ -236,32 +236,25 @@ namespace ProtectionScan.Features
             try
             {
                 jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+                // Create the output data
+                string serializedData = System.Text.Json.JsonSerializer.Serialize(protections, JsonSerializerOptions);
+
+                // Write the output data
+                // TODO: this prints plus symbols wrong, probably some other things too
+                jsw?.WriteLine(serializedData);
+                jsw?.Flush();
+            
+                // Dispose of the writer
+                jsw?.Dispose();
             }
             catch { }
-
-            // Create the output data
-            string serializedData = System.Text.Json.JsonSerializer.Serialize(protections, JsonSerializerOptions);
-
-            // Write the output data
-            // TODO: this prints plus symbols wrong, probably some other things too
-            jsw?.WriteLine(serializedData);
-            jsw?.Flush();
-            
-            // Dispose of the writer
-            jsw?.Dispose();
         }
         
         /// <summary>
         /// JSON serializer options for output printing
         /// </summary>
         private static System.Text.Json.JsonSerializerOptions JsonSerializerOptions
-        {
-            get
-            {
-                var serializer = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                return serializer;
-            }
-        }
+            => new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
 #endif
     }
 }
