@@ -50,6 +50,11 @@ namespace ProtectionScan.Features
         /// Output information to file only, skip printing to console
         /// </summary>
         public bool FileOnly { get; private set; }
+        
+        /// <summary>
+        /// Output information to json
+        /// </summary>
+        public bool JsonFlag { get; private set; }
 
         public MainFeature()
             : base(DisplayName, _flags, _description)
@@ -58,7 +63,9 @@ namespace ProtectionScan.Features
 
             Add(DebugInput);
             Add(FileOnlyInput);
+            #if NETCOREAPP
             Add(JsonInput);
+            #endif
             Add(NoContentsInput);
             Add(NoArchivesInput);
             Add(NoPathsInput);
@@ -74,6 +81,7 @@ namespace ProtectionScan.Features
 
             // Get the options from the arguments
             FileOnly = GetBoolean(_fileOnlyName);
+            JsonFlag = GetBoolean(_jsonName);
 
             // Create scanner for all paths
             var scanner = new Scanner(
@@ -88,7 +96,7 @@ namespace ProtectionScan.Features
             for (int i = 0; i < Inputs.Count; i++)
             {
                 string arg = Inputs[i];
-                GetAndWriteProtections(scanner, arg, GetBoolean(_jsonName));
+                GetAndWriteProtections(scanner, arg);
             }
 
             return true;
@@ -116,7 +124,7 @@ namespace ProtectionScan.Features
         /// </summary>
         /// <param name="scanner">Scanner object to use</param>
         /// <param name="path">File or directory path</param>
-        private void GetAndWriteProtections(Scanner scanner, string path, bool json)
+        private void GetAndWriteProtections(Scanner scanner, string path)
         {
             // Normalize by getting the full path
             path = Path.GetFullPath(path);
@@ -131,16 +139,12 @@ namespace ProtectionScan.Features
             try
             {
                 var protections = scanner.GetProtections(path);
-#if NETCOREAPP
 
-                if (json)
-                    WriteProtectionResultJson(path, protections);
-                else 
-                    WriteProtectionResultFile(path, protections);
-#else
                 WriteProtectionResultFile(path, protections);
+                
+#if NETCOREAPP
+                WriteProtectionResultJson(path, protections);
 #endif
-
             }
             catch (Exception ex)
             {
@@ -179,6 +183,7 @@ namespace ProtectionScan.Features
             catch
             {
                 Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
+                FileOnly = false;
             }
 
             // Sort the keys for consistent output
@@ -232,11 +237,8 @@ namespace ProtectionScan.Features
             {
                 jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
             }
-            catch
-            {
-                Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
-            }
-            
+            catch { }
+
             // Create the output data
             string serializedData = System.Text.Json.JsonSerializer.Serialize(protections, JsonSerializerOptions);
 
@@ -256,11 +258,7 @@ namespace ProtectionScan.Features
         {
             get
             {
-#if NETCOREAPP3_1
                 var serializer = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-#else
-                var serializer = new System.Text.Json.JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
-#endif
                 return serializer;
             }
         }
