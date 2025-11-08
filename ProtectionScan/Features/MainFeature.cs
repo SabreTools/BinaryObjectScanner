@@ -28,7 +28,10 @@ namespace ProtectionScan.Features
 
         private const string _fileOnlyName = "file-only";
         internal readonly FlagInput FileOnlyInput = new(_fileOnlyName, ["-f", "--file"], "Print to file only");
-
+        
+        private const string _jsonName = "json";
+        internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
+        
         private const string _noArchivesName = "no-archives";
         internal readonly FlagInput NoArchivesInput = new(_noArchivesName, ["-na", "--no-archives"], "Disable scanning archives");
 
@@ -55,6 +58,7 @@ namespace ProtectionScan.Features
 
             Add(DebugInput);
             Add(FileOnlyInput);
+            Add(JsonInput);
             Add(NoContentsInput);
             Add(NoArchivesInput);
             Add(NoPathsInput);
@@ -84,7 +88,7 @@ namespace ProtectionScan.Features
             for (int i = 0; i < Inputs.Count; i++)
             {
                 string arg = Inputs[i];
-                GetAndWriteProtections(scanner, arg);
+                GetAndWriteProtections(scanner, arg, GetBoolean(_jsonName));
             }
 
             return true;
@@ -112,7 +116,7 @@ namespace ProtectionScan.Features
         /// </summary>
         /// <param name="scanner">Scanner object to use</param>
         /// <param name="path">File or directory path</param>
-        private void GetAndWriteProtections(Scanner scanner, string path)
+        private void GetAndWriteProtections(Scanner scanner, string path, bool json)
         {
             // Normalize by getting the full path
             path = Path.GetFullPath(path);
@@ -127,7 +131,16 @@ namespace ProtectionScan.Features
             try
             {
                 var protections = scanner.GetProtections(path);
+#if NETCOREAPP
+
+                if (json)
+                    WriteProtectionResultJson(path, protections);
+                else 
+                    WriteProtectionResultFile(path, protections);
+#else
                 WriteProtectionResultFile(path, protections);
+#endif
+
             }
             catch (Exception ex)
             {
@@ -166,7 +179,6 @@ namespace ProtectionScan.Features
             catch
             {
                 Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
-                FileOnly = false;
             }
 
             // Sort the keys for consistent output
@@ -199,5 +211,59 @@ namespace ProtectionScan.Features
             // Dispose of the writer
             sw?.Dispose();
         }
+        
+#if NETCOREAPP
+        /// <summary>
+        /// Write the protection results from a single path to a json file, if possible
+        /// </summary>
+        /// <param name="path">File or directory path</param>
+        /// <param name="protections">Dictionary of protections found, if any</param>
+        private static void WriteProtectionResultJson(string path, Dictionary<string, List<string>> protections)
+        {
+            if (protections == null)
+            {
+                Console.WriteLine($"No protections found for {path}");
+                return;
+            }
+
+            // Attempt to open a protection file for writing
+            StreamWriter? jsw = null;
+            try
+            {
+                jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
+            }
+            catch
+            {
+                Console.WriteLine("Could not open protection log file for writing. Only a console log will be provided.");
+            }
+            
+            // Create the output data
+            string serializedData = System.Text.Json.JsonSerializer.Serialize(protections, JsonSerializerOptions);
+
+            // Write the output data
+            // TODO: this prints plus symbols wrong, probably some other things too
+            jsw?.WriteLine(serializedData);
+            jsw?.Flush();
+            
+            // Dispose of the writer
+            jsw?.Dispose();
+        }
+        
+        /// <summary>
+        /// JSON serializer options for output printing
+        /// </summary>
+        private static System.Text.Json.JsonSerializerOptions JsonSerializerOptions
+        {
+            get
+            {
+#if NETCOREAPP3_1
+                var serializer = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+#else
+                var serializer = new System.Text.Json.JsonSerializerOptions { IncludeFields = true, WriteIndented = true };
+#endif
+                return serializer;
+            }
+        }
+#endif
     }
 }
