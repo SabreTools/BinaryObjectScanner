@@ -328,21 +328,21 @@ namespace ProtectionScan.Features
                 // of an empty string, so this is safe.
                 // The only exception is if absolutely no protections were returned whatsoever, which is why there's a
                 // safeguard here at all
-                if (nestedDictionary.ContainsKey(""))
+                
+                var finalDictionary = new Dictionary<string, Dictionary<string, object>>()
                 {
-                    var tempValue = nestedDictionary[""];
-                    nestedDictionary.Remove("");
-                    nestedDictionary.Add(trimmedPath, tempValue);
+                    {trimmedPath, nestedDictionary}
+                };
+                
+                // Create the output data
+                var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                string serializedData = System.Text.Json.JsonSerializer.Serialize(finalDictionary, jsonSerializerOptions);
 
-                    // Create the output data
-                    var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                    string serializedData = System.Text.Json.JsonSerializer.Serialize(nestedDictionary, jsonSerializerOptions);
-
-                    // Write the output data
-                    // TODO: this prints plus symbols wrong, probably some other things too
-                    jsw.WriteLine(serializedData);
-                    jsw.Flush(); 
-                }
+                // Write the output data
+                // TODO: this prints plus symbols wrong, probably some other things too
+                jsw.WriteLine(serializedData);
+                jsw.Flush(); 
+                
             }
             catch (Exception ex)
             {
@@ -360,6 +360,7 @@ namespace ProtectionScan.Features
         public static void DeepInsert(ref Dictionary<string, object> nestedDictionary, string path, string[] protections)
         {
             var current = nestedDictionary; 
+            path = path.TrimStart(Path.DirectorySeparatorChar);
             var pathParts = path.Split(Path.DirectorySeparatorChar); 
 
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
