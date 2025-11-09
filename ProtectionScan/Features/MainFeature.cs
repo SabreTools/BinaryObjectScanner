@@ -381,11 +381,10 @@ namespace ProtectionScan.Features
                         
                         // If i.e. a packer has protections detected on it, and then files within it also have 
                         // detections of their own, the later traversal of the files within it will fail, as
-                        // the subdictionary for that packer has already been set to <string, string>. Since it's
-                        // no longer object after being assigned once, the existing value must be pulled, then the
-                        // new subdictionary can be added, and then the existing value can be re-added within the
-                        // packer with a key of an empty string, in order to indicate it's for the packer itself, and
-                        // to avoid potential future collisions.
+                        // the subdictionary for that packer has already been set to <string, string>. The existing
+                        // value must be pulled, then the new subdictionary can be added, and then the existing value
+                        // can be re-added within the packer with a key of an empty string, in order to indicate it's
+                        // for the packer itself, and to avoid potential future collisions.
                         if (innerObject.GetType() != typeof(Dictionary<string, object>))
                         {
                             current[part] = new Dictionary<string, object>();
