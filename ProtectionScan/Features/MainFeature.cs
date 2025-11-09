@@ -295,9 +295,9 @@ namespace ProtectionScan.Features
                 using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
                 // A nested dictionary is used in order to avoid complex and unnecessary custom serialization.
-                // A dictionary with a dynamic value is used so that it's not necessary to first parse entries into a 
-                // traditional node system and then bubble up the entire chain creating non-dynamic dictionaries.
-                var nestedDictionary = new Dictionary<string, dynamic>();
+                // A dictionary with an object value is used so that it's not necessary to first parse entries into a 
+                // traditional node system and then bubble up the entire chain creating non-object dictionaries.
+                var nestedDictionary = new Dictionary<string, object>();
                 var trimmedPath = path.TrimEnd(['\\', '/']); 
                 
                 // Sort the keys for consistent output
@@ -357,7 +357,7 @@ namespace ProtectionScan.Features
         /// <param name="nestedDictionary">File or directory path</param>
         /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
         /// <param name="protections">The scanned protection(s) for a given file</param>
-        public static void DeepInsert(ref Dictionary<string, dynamic> nestedDictionary, string path, string[] protections)
+        public static void DeepInsert(ref Dictionary<string, object> nestedDictionary, string path, string[] protections)
         {
             var current = nestedDictionary; 
             var pathParts = path.Split(Path.DirectorySeparatorChar); 
@@ -370,7 +370,7 @@ namespace ProtectionScan.Features
                 {
                     if (!current.ContainsKey(part)) // Inserts new subdictionaries if one doesn't already exist
                     {
-                        var innerObject = new Dictionary<string, dynamic>();
+                        var innerObject = new Dictionary<string, object>();
                         current[part] = innerObject;
                         current =  innerObject;
                     }
@@ -381,20 +381,20 @@ namespace ProtectionScan.Features
                         // If i.e. a packer has protections detected on it, and then files within it also have 
                         // detections of their own, the later traversal of the files within it will fail, as
                         // the subdictionary for that packer has already been set to <string, string>. Since it's
-                        // no longer dynamic after being assigned once, the existing value must be pulled, then the
+                        // no longer object after being assigned once, the existing value must be pulled, then the
                         // new subdictionary can be added, and then the existing value can be re-added within the
                         // packer with a key of an empty string, in order to indicate it's for the packer itself, and
                         // to avoid potential future collisions.
                         if (innerObject.GetType() != typeof(Dictionary<string, object>))
                         {
                             current[part] = new Dictionary<string, object>();
-                            current = current[part];
+                            current = (Dictionary<string, object>)current[part];
                             current.Add("", innerObject);
                         }
                         else
                         {
                             current[part] = innerObject;
-                            current =  innerObject;       
+                            current =  (Dictionary<string, object>)innerObject;       
                         }
                     }
                 }
