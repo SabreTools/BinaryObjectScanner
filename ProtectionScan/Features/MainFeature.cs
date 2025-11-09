@@ -350,7 +350,7 @@ namespace ProtectionScan.Features
                         // value must be pulled, then the new subdictionary can be added, and then the existing value
                         // can be re-added within the packer with a key of an empty string, in order to indicate it's
                         // for the packer itself, and to avoid potential future collisions.
-                        if (innerObject.GetType() != typeof(Dictionary<string, object>))
+                        if (innerObject is string[])
                         {
                             current[part] = new Dictionary<string, object>();
                             current = (Dictionary<string, object>)current[part];
