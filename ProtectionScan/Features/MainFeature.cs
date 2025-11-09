@@ -34,7 +34,7 @@ namespace ProtectionScan.Features
         internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
 
         private const string _nestedName = "nested";
-        internal readonly FlagInput NestedInput = new(_nestedName, ["-n", "--nested"], "Output to nested json file");
+        internal readonly FlagInput NestedInput = new(_nestedName, ["-n", "--nested"], "Output to nested json file if json is already enabled");
 #endif
 
         private const string _noArchivesName = "no-archives";
@@ -166,8 +166,6 @@ namespace ProtectionScan.Features
 #if NETCOREAPP
                 if (Json)
                     WriteProtectionResultJson(path, protections);
-                if (Nested)
-                    WriteProtectionResultNestedJson(path, protections);
 #endif
             }
             catch (Exception ex)
@@ -260,89 +258,56 @@ namespace ProtectionScan.Features
                 // Attempt to open a protection file for writing
                 using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
 
-                // Create the output data
                 var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                string serializedData = System.Text.Json.JsonSerializer.Serialize(protections, jsonSerializerOptions);
+                string serializedData;
+                if (Nested)
+                {
+                    // A nested dictionary is used in order to avoid complex and unnecessary custom serialization.
+                    // A dictionary with an object value is used so that it's not necessary to first parse entries into a 
+                    // traditional node system and then bubble up the entire chain creating non-object dictionaries.
+                    var nestedDictionary = new Dictionary<string, object>();
+                    var trimmedPath = path.TrimEnd(['\\', '/']); 
+                    
+                    // Sort the keys for consistent output
+                    string[] keys = [.. protections.Keys];
+                    Array.Sort(keys);
+
+                    // Loop over all keys
+                    foreach (string key in keys)
+                    {
+                        // Skip over files with no protection
+                        var value = protections[key];
+                        if (value.Count == 0)
+                            continue;
+
+                        // Sort the detected protections for consistent output
+                        string[] fileProtections = [.. value];
+                        Array.Sort(fileProtections);
+                        //foreach (var fileProtection in fileProtections)
+
+                        // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
+                        DeepInsert(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
+                    }
+
+                    // Move nested dictionary into final dictionary with the base path as a key.
+                    var finalDictionary = new Dictionary<string, Dictionary<string, object>>()
+                    {
+                        {trimmedPath, nestedDictionary}
+                    };
+                    
+                    // Create the output data
+                    serializedData = System.Text.Json.JsonSerializer.Serialize(finalDictionary, jsonSerializerOptions);
+                }
+                else
+                {
+                    // Create the output data
+                    serializedData = System.Text.Json.JsonSerializer.Serialize(protections, jsonSerializerOptions);
+                }
 
                 // Write the output data
                 // TODO: this prints plus symbols wrong, probably some other things too
                 jsw.WriteLine(serializedData);
                 jsw.Flush();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(Debug ? ex : "[Exception opening file, please try again]");
-                Console.WriteLine();
-            }
-        }
-
-        /// <summary>
-        /// Write the protection results from a single path to a nested json file, if possible
-        /// </summary>
-        /// <param name="path">File or directory path</param>
-        /// <param name="protections">Dictionary of protections found, if any</param>
-        private void WriteProtectionResultNestedJson(string path, Dictionary<string, List<string>> protections)
-        {
-            if (protections == null)
-            {
-                Console.WriteLine($"No protections found for {path}");
-                return;
-            }
-
-            try
-            {
-                // Attempt to open a protection file for writing
-                using var jsw = new StreamWriter(File.OpenWrite($"protection-{DateTime.Now:yyyy-MM-dd_HHmmss.ffff}.json"));
-
-                // A nested dictionary is used in order to avoid complex and unnecessary custom serialization.
-                // A dictionary with an object value is used so that it's not necessary to first parse entries into a 
-                // traditional node system and then bubble up the entire chain creating non-object dictionaries.
-                var nestedDictionary = new Dictionary<string, object>();
-                var trimmedPath = path.TrimEnd(['\\', '/']); 
-                
-                // Sort the keys for consistent output
-                string[] keys = [.. protections.Keys];
-                Array.Sort(keys);
-
-                // Loop over all keys
-                foreach (string key in keys)
-                {
-                    // Skip over files with no protection
-                    var value = protections[key];
-                    if (value.Count == 0)
-                        continue;
-
-                    // Sort the detected protections for consistent output
-                    string[] fileProtections = [.. value];
-                    Array.Sort(fileProtections);
-                    //foreach (var fileProtection in fileProtections)
-
-                    // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
-                    DeepInsert(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
-                }
-
-                // While it's possible to hardcode the root dictionary key to be changed to the base path beforehand, 
-                // it's cleaner to avoid trying to circumvent the path splitting logic, and just move the root 
-                // dictionary value into an entry with the base path as the key.
-                // There is no input as far as has been tested that can result in there not being a root dictionary key
-                // of an empty string, so this is safe.
-                // The only exception is if absolutely no protections were returned whatsoever, which is why there's a
-                // safeguard here at all
-                
-                var finalDictionary = new Dictionary<string, Dictionary<string, object>>()
-                {
-                    {trimmedPath, nestedDictionary}
-                };
-                
-                // Create the output data
-                var jsonSerializerOptions = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-                string serializedData = System.Text.Json.JsonSerializer.Serialize(finalDictionary, jsonSerializerOptions);
-
-                // Write the output data
-                // TODO: this prints plus symbols wrong, probably some other things too
-                jsw.WriteLine(serializedData);
-                jsw.Flush(); 
-                
             }
             catch (Exception ex)
             {
