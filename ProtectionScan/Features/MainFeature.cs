@@ -318,7 +318,7 @@ namespace ProtectionScan.Features
                     //foreach (var fileProtection in fileProtections)
 
                     // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
-                    DeepInsert(ref nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
+                    DeepInsert(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
                 }
 
                 // While it's possible to hardcode the root dictionary key to be changed to the base path beforehand, 
@@ -357,7 +357,7 @@ namespace ProtectionScan.Features
         /// <param name="nestedDictionary">File or directory path</param>
         /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
         /// <param name="protections">The scanned protection(s) for a given file</param>
-        public static void DeepInsert(ref Dictionary<string, object> nestedDictionary, string path, string[] protections)
+        public static void DeepInsert(Dictionary<string, object> nestedDictionary, string path, string[] protections)
         {
             var current = nestedDictionary; 
             path = path.TrimStart(Path.DirectorySeparatorChar);
