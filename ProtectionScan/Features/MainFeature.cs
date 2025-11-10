@@ -365,6 +365,7 @@ namespace ProtectionScan.Features
                 current[part] = innerObject;
                 current =  (Dictionary<string, object>)current[part];       
             }
+            
             // If the "leaf" dictionary has been reached, add the file and its protections.
             current.Add(pathParts[^1], protections);
         }
