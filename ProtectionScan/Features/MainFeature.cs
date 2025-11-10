@@ -270,7 +270,7 @@ namespace ProtectionScan.Features
                     string[] keys = [.. protections.Keys];
                     Array.Sort(keys);
                     
-                    var modifyNodeList = new List<(object, string, string[])>();
+                    var modifyNodeList = new List<(Dictionary<string, object>, string, string[])>();
 
                     // Loop over all keys
                     foreach (string key in keys)
@@ -293,10 +293,9 @@ namespace ProtectionScan.Features
                     {
                         string part = modifyNodeList[i].Item2;
                         string[] nodeProtections = modifyNodeList[i].Item3;
-                        Dictionary<string, object> node = (Dictionary<string, object>)modifyNodeList[i].Item1;
-                        var copyDictionary = new Dictionary<string, object>((Dictionary<string, object>)node[part]);
-                        node[part] = new List<object>();
-                        List<object> modifyNode = (List<object>)node[part];
+                        var copyDictionary = new Dictionary<string, object>((Dictionary<string, object>)modifyNodeList[i].Item1[part]);
+                        modifyNodeList[i].Item1[part] = new List<object>();
+                        List<object> modifyNode = (List<object>)modifyNodeList[i].Item1[part];
                         modifyNode.Add(nodeProtections);
                         modifyNode.Add(copyDictionary);
                     }
@@ -334,7 +333,7 @@ namespace ProtectionScan.Features
         /// <param name="nestedDictionary">File or directory path</param>
         /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
         /// <param name="protections">The scanned protection(s) for a given file</param>
-        public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections, List<(object, string, string[])> modifyNodeList)
+        public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections, List<(Dictionary<string, object>, string, string[])> modifyNodeList)
         {
             var current = nestedDictionary; 
             path = path.TrimStart(Path.DirectorySeparatorChar);
