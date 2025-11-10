@@ -263,6 +263,10 @@ namespace ProtectionScan.Features
                     // A nested dictionary is used to achieve proper serialization.
                     var nestedDictionary = new Dictionary<string, object>();
                     var trimmedPath = path.TrimEnd(['\\', '/']);
+                    
+                    // Move nested dictionary into final dictionary with the base path as a key.
+                    //var finalDictionary = new Dictionary<string, Dictionary<string, object>>();
+                    //finalDictionary.Add(trimmedPath, nestedDictionary);
 
                     // Sort the keys for consistent output
                     string[] keys = [.. protections.Keys];
@@ -283,7 +287,7 @@ namespace ProtectionScan.Features
                         Array.Sort(fileProtections);
 
                         // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
-                        InsertNode(nestedDictionary, key[trimmedPath.Length..], fileProtections, modifyNodeList);
+                        InsertNode(nestedDictionary, key[trimmedPath.Length..], trimmedPath, fileProtections, modifyNodeList);
                     }
 
                     // Adds the non-leaf-node protections back in
@@ -297,15 +301,9 @@ namespace ProtectionScan.Features
 
                         modifyNodeList[i].Item1[modifyNodeList[i].Item2] = modifyNode;
                     }
-
-                    // Move nested dictionary into final dictionary with the base path as a key.
-                    var finalDictionary = new Dictionary<string, Dictionary<string, object>>()
-                    {
-                        {trimmedPath, nestedDictionary}
-                    };
-
+                    
                     // Create the output data
-                    serializedData = System.Text.Json.JsonSerializer.Serialize(finalDictionary, jsonSerializerOptions);
+                    serializedData = System.Text.Json.JsonSerializer.Serialize(nestedDictionary, jsonSerializerOptions);
                 }
                 else
                 {
@@ -334,15 +332,26 @@ namespace ProtectionScan.Features
         /// <param name="protections">The scanned protection(s) for a given file</param>
         private static void InsertNode(Dictionary<string, object> nestedDictionary,
             string path,
+            string fullPath,
             string[] protections,
             List<(Dictionary<string, object>, string, string[])> modifyNodeList)
         {
-            var current = nestedDictionary;
             var pathParts = path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+            if (pathParts.Length <= 0)
+            {
+                modifyNodeList.Add((nestedDictionary, fullPath, protections));
+                return;
+            }
+            
+            if (!nestedDictionary.ContainsKey(fullPath))
+                nestedDictionary[fullPath] = new Dictionary<string, object>();
 
+            var current = (Dictionary<string, object>)nestedDictionary[fullPath];
+            
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
             for (int i = 0; i < pathParts.Length - 1; i++)
             {
+                
                 var part = pathParts[i];
 
                 // Inserts new subdictionaries if one doesn't already exist
@@ -367,7 +376,28 @@ namespace ProtectionScan.Features
             }
 
             // If the "leaf" dictionary has been reached, add the file and its protections.
-            current.Add(pathParts[^1], protections);
+            if (current.ContainsKey(pathParts[^1]))
+            {
+                var array1 = (string[])current[pathParts[^1]];
+                var array2 = protections;
+
+                string[] result = new string[array1.Length + array2.Length];
+                for (int i = 0; i < array1.Length; i++)
+                {
+                    result[i] = array1[i];
+                }
+
+                for (int i = 0; i < array2.Length; i++)
+                {
+                    result[array1.Length + i] = array2[i];
+                }
+
+                current[pathParts[^1]] = result;
+            }
+            else
+            {
+                current.Add(pathParts[^1], protections);
+            }
         }
 #endif
     }
