@@ -336,9 +336,7 @@ namespace ProtectionScan.Features
             string[] protections,
             List<(Dictionary<string, object>, string, string[])> modifyNodeList)
         {
-            
             var pathParts = path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
-
             if (pathParts.Length <= 0)
             {
                 modifyNodeList.Add((nestedDictionary, fullPath, protections));
