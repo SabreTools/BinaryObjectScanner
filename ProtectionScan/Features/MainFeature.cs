@@ -379,6 +379,7 @@ namespace ProtectionScan.Features
                 current = (Dictionary<string, object>)current[part];
             }
 
+            // If the "leaf" dictionary has been reached, add the file and its protections.
             current.Add(pathParts[^1], protections);
         }
 #endif
