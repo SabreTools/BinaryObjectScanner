@@ -350,7 +350,6 @@ namespace ProtectionScan.Features
 
             var current = (Dictionary<string, object>)nestedDictionary[fullPath];
             
-
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
             for (int i = 0; i < pathParts.Length - 1; i++)
             {
