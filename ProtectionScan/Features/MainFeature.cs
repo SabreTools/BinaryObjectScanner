@@ -294,11 +294,9 @@ namespace ProtectionScan.Features
                         var modifyNode = modifyNodeList[i].Item1[modifyNodeList[i].Item2];
                         var copyDictionary = new Dictionary<string, object>((Dictionary<string, object>)modifyNode);
                         modifyNode = new List<object>();
-                        if (modifyNode is List<object> modifyThisNode)
-                        {
-                            modifyThisNode.Add(modifyNodeList[i].Item3);
-                            modifyThisNode.Add(copyDictionary);
-                        }
+                        if (modifyNode is not List<object> modifyThisNode) continue;
+                        modifyThisNode.Add(modifyNodeList[i].Item3);
+                        modifyThisNode.Add(copyDictionary);
                     }
 
                     // Move nested dictionary into final dictionary with the base path as a key.
