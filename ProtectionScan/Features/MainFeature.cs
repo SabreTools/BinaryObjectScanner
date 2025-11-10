@@ -283,7 +283,7 @@ namespace ProtectionScan.Features
                         Array.Sort(fileProtections);
 
                         // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
-                        DeepInsert(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
+                        InsertNode(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
                     }
 
                     // Move nested dictionary into final dictionary with the base path as a key.
@@ -319,7 +319,7 @@ namespace ProtectionScan.Features
         /// <param name="nestedDictionary">File or directory path</param>
         /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
         /// <param name="protections">The scanned protection(s) for a given file</param>
-        public static void DeepInsert(Dictionary<string, object> nestedDictionary, string path, string[] protections)
+        public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections)
         {
             var current = nestedDictionary; 
             path = path.TrimStart(Path.DirectorySeparatorChar);
@@ -329,13 +329,16 @@ namespace ProtectionScan.Features
             for (int i = 0; i < pathParts.Length; i++)
             {
                 var part = pathParts[i];
-                if (i == (pathParts.Length - 1)) // If the "leaf" dictionary has been reached, add the file and its protections.
+                
+                // If the "leaf" dictionary has been reached, add the file and its protections.
+                if (i == (pathParts.Length - 1))
                 {
                     current.Add(part, protections);
                     continue;
                 }
                 
-                if (!current.ContainsKey(part)) // Inserts new subdictionaries if one doesn't already exist
+                // Inserts new subdictionaries if one doesn't already exist
+                if (!current.ContainsKey(part))
                 {
                     var innerObject = new Dictionary<string, object>();
                     current[part] = innerObject;
