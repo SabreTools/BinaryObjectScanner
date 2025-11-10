@@ -291,10 +291,9 @@ namespace ProtectionScan.Features
                     // Adds the non-leaf-node protections back in
                     for (int i = 0; i < modifyNodeList.Count; i++)
                     {
-                        var modifyNode = modifyNodeList[i].Item1[modifyNodeList[i].Item2];
-                        var copyDictionary = new Dictionary<string, object>((Dictionary<string, object>)modifyNode);
-                        modifyNode = new List<object>();
-                        if (modifyNode is not List<object> modifyThisNode) continue;
+                        var copyDictionary = modifyNodeList[i].Item1[modifyNodeList[i].Item2];
+                        modifyNodeList[i].Item1[modifyNodeList[i].Item2] = new List<object>();
+                        if (modifyNodeList[i].Item1[modifyNodeList[i].Item2] is not List<object> modifyThisNode) continue;
                         modifyThisNode.Add(modifyNodeList[i].Item3);
                         modifyThisNode.Add(copyDictionary);
                     }
