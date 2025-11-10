@@ -345,11 +345,10 @@ namespace ProtectionScan.Features
                 return;
             }
             
-            var current = nestedDictionary;
-            if (!current.ContainsKey(fullPath))
-                current[fullPath] = new Dictionary<string, object>();
+            if (!nestedDictionary.ContainsKey(fullPath))
+                nestedDictionary[fullPath] = new Dictionary<string, object>();
 
-            current = (Dictionary<string, object>)current[fullPath];
+            var current = (Dictionary<string, object>)nestedDictionary[fullPath];
             
 
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
