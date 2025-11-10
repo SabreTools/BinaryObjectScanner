@@ -34,7 +34,7 @@ namespace ProtectionScan.Features
         internal readonly FlagInput JsonInput = new(_jsonName, ["-j", "--json"], "Output to json file");
 
         private const string _nestedName = "nested";
-        internal readonly FlagInput NestedInput = new(_nestedName, ["-n", "--nested"], "Output to nested json file if json is already enabled");
+        internal readonly FlagInput NestedInput = new(_nestedName, ["-n", "--nested"], "Output to nested json file");
 #endif
 
         private const string _noArchivesName = "no-archives";
@@ -262,9 +262,7 @@ namespace ProtectionScan.Features
                 string serializedData;
                 if (Nested)
                 {
-                    // A nested dictionary is used in order to avoid complex and unnecessary custom serialization.
-                    // A dictionary with an object value is used so that it's not necessary to first parse entries into a 
-                    // traditional node system and then bubble up the entire chain creating non-object dictionaries.
+                    // A nested dictionary is used to achieve proper serialization.
                     var nestedDictionary = new Dictionary<string, object>();
                     var trimmedPath = path.TrimEnd(['\\', '/']); 
                     
@@ -283,7 +281,6 @@ namespace ProtectionScan.Features
                         // Sort the detected protections for consistent output
                         string[] fileProtections = [.. value];
                         Array.Sort(fileProtections);
-                        //foreach (var fileProtection in fileProtections)
 
                         // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
                         DeepInsert(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
@@ -344,12 +341,7 @@ namespace ProtectionScan.Features
                     {
                         var innerObject = current[part];
                         
-                        // If i.e. a packer has protections detected on it, and then files within it also have 
-                        // detections of their own, the later traversal of the files within it will fail, as
-                        // the subdictionary for that packer has already been set to <string, string>. The existing
-                        // value must be pulled, then the new subdictionary can be added, and then the existing value
-                        // can be re-added within the packer with a key of an empty string, in order to indicate it's
-                        // for the packer itself, and to avoid potential future collisions.
+                        // Handle instances where a protection was already assigned to the current node
                         if (innerObject is string[])
                         {
                             current[part] = new Dictionary<string, object>();
