@@ -347,24 +347,23 @@ namespace ProtectionScan.Features
                 // Inserts new subdictionaries if one doesn't already exist
                 if (!current.ContainsKey(part))
                 {
-                    var innerObject = new Dictionary<string, object>();
-                    current[part] = innerObject;
-                    current =  innerObject;
+                    var innerDictionary = new Dictionary<string, object>();
+                    current[part] = innerDictionary;
+                    current =  innerDictionary;
+                    continue;
                 }
-                else // Traverses already existing subdictionaries
+                
+                var innerObject = current[part];
+                
+                // Handle instances where a protection was already assigned to the current node
+                if (innerObject is string[] existingProtections)
                 {
-                    var innerObject = current[part];
-                    
-                    // Handle instances where a protection was already assigned to the current node
-                    if (innerObject is string[] existingProtections)
-                    {
-                        modifyNodeList.Add((current, part, existingProtections));
-                        innerObject = new Dictionary<string, object>();
-                    }
-                    
-                    current[part] = innerObject;
-                    current =  (Dictionary<string, object>)current[part];       
+                    modifyNodeList.Add((current, part, existingProtections));
+                    innerObject = new Dictionary<string, object>();
                 }
+                
+                current[part] = innerObject;
+                current =  (Dictionary<string, object>)current[part];       
             }
             // If the "leaf" dictionary has been reached, add the file and its protections.
             current.Add(pathParts[^1], protections);
