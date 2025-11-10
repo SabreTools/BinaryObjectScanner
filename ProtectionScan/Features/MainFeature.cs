@@ -263,6 +263,10 @@ namespace ProtectionScan.Features
                     // A nested dictionary is used to achieve proper serialization.
                     var nestedDictionary = new Dictionary<string, object>();
                     var trimmedPath = path.TrimEnd(['\\', '/']);
+                    
+                    // Move nested dictionary into final dictionary with the base path as a key.
+                    //var finalDictionary = new Dictionary<string, Dictionary<string, object>>();
+                    //finalDictionary.Add(trimmedPath, nestedDictionary);
 
                     // Sort the keys for consistent output
                     string[] keys = [.. protections.Keys];
@@ -283,7 +287,7 @@ namespace ProtectionScan.Features
                         Array.Sort(fileProtections);
 
                         // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
-                        InsertNode(nestedDictionary, key[trimmedPath.Length..], fileProtections, modifyNodeList);
+                        InsertNode(nestedDictionary, key[trimmedPath.Length..], trimmedPath, fileProtections, modifyNodeList);
                     }
 
                     // Adds the non-leaf-node protections back in
@@ -297,15 +301,9 @@ namespace ProtectionScan.Features
 
                         modifyNodeList[i].Item1[modifyNodeList[i].Item2] = modifyNode;
                     }
-
-                    // Move nested dictionary into final dictionary with the base path as a key.
-                    var finalDictionary = new Dictionary<string, Dictionary<string, object>>()
-                    {
-                        {trimmedPath, nestedDictionary}
-                    };
-
+                    
                     // Create the output data
-                    serializedData = System.Text.Json.JsonSerializer.Serialize(finalDictionary, jsonSerializerOptions);
+                    serializedData = System.Text.Json.JsonSerializer.Serialize(nestedDictionary, jsonSerializerOptions);
                 }
                 else
                 {
@@ -334,15 +332,30 @@ namespace ProtectionScan.Features
         /// <param name="protections">The scanned protection(s) for a given file</param>
         private static void InsertNode(Dictionary<string, object> nestedDictionary,
             string path,
+            string fullPath,
             string[] protections,
             List<(Dictionary<string, object>, string, string[])> modifyNodeList)
         {
-            var current = nestedDictionary;
+            
             var pathParts = path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+
+            if (pathParts.Length <= 0)
+            {
+                modifyNodeList.Add((nestedDictionary, fullPath, protections));
+                return;
+            }
+            
+            var current = nestedDictionary;
+            if (!current.ContainsKey(fullPath))
+                current[fullPath] = new Dictionary<string, object>();
+
+            current = (Dictionary<string, object>)current[fullPath];
+            
 
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
             for (int i = 0; i < pathParts.Length - 1; i++)
             {
+                
                 var part = pathParts[i];
 
                 // Inserts new subdictionaries if one doesn't already exist
@@ -366,7 +379,6 @@ namespace ProtectionScan.Features
                 current = (Dictionary<string, object>)current[part];
             }
 
-            // If the "leaf" dictionary has been reached, add the file and its protections.
             current.Add(pathParts[^1], protections);
         }
 #endif
