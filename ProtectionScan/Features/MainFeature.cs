@@ -269,6 +269,8 @@ namespace ProtectionScan.Features
                     // Sort the keys for consistent output
                     string[] keys = [.. protections.Keys];
                     Array.Sort(keys);
+                    
+                    var modifyNodeList = new List<(object, string, string[])>();
 
                     // Loop over all keys
                     foreach (string key in keys)
@@ -283,7 +285,27 @@ namespace ProtectionScan.Features
                         Array.Sort(fileProtections);
 
                         // Inserts key and protections into nested dictionary, with the key trimmed of the base path.
-                        InsertNode(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections);
+                        InsertNode(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections, modifyNodeList);
+                    }
+
+                    for (int i = 0; i < modifyNodeList.Count; i++)
+                    {
+                        var part = modifyNodeList[i].Item2;
+                        string[] nodeProtections = modifyNodeList[i].Item3;
+                        Dictionary<string, object> node = (Dictionary<string, object>)modifyNodeList[i].Item1;
+                        
+                        // Copy the existing KVPs out so they won't be lost
+                        var copyDictionary = new Dictionary<string, object>((Dictionary<string, object>)node[part]);
+                        
+                        //Redefine node that needs to be modified to a list of objects
+                        node[part] = new List<object>();
+                        List<object> modifyNode = (List<object>)node[part];
+                        
+                        // Add the "root" protection
+                        modifyNode.Add(nodeProtections);
+                        
+                        // Add all the subdirectories back
+                        modifyNode.Add(copyDictionary);
                     }
 
                     // Move nested dictionary into final dictionary with the base path as a key.
@@ -319,23 +341,16 @@ namespace ProtectionScan.Features
         /// <param name="nestedDictionary">File or directory path</param>
         /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
         /// <param name="protections">The scanned protection(s) for a given file</param>
-        public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections)
+        public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections, List<(object, string, string[])> modifyNodeList)
         {
             var current = nestedDictionary; 
             path = path.TrimStart(Path.DirectorySeparatorChar);
             var pathParts = path.Split(Path.DirectorySeparatorChar); 
 
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
-            for (int i = 0; i < pathParts.Length; i++)
+            for (int i = 0; i < pathParts.Length - 1; i++)
             {
                 var part = pathParts[i];
-                
-                // If the "leaf" dictionary has been reached, add the file and its protections.
-                if (i == (pathParts.Length - 1))
-                {
-                    current.Add(part, protections);
-                    continue;
-                }
                 
                 // Inserts new subdictionaries if one doesn't already exist
                 if (!current.ContainsKey(part))
@@ -351,17 +366,16 @@ namespace ProtectionScan.Features
                     // Handle instances where a protection was already assigned to the current node
                     if (innerObject is string[])
                     {
-                        current[part] = new Dictionary<string, object>();
-                        current = (Dictionary<string, object>)current[part];
-                        current.Add("", innerObject);
+                        modifyNodeList.Add((current, part, (string[])innerObject));
+                        innerObject = new Dictionary<string, object>();
                     }
-                    else
-                    {
-                        current[part] = innerObject;
-                        current =  (Dictionary<string, object>)innerObject;       
-                    }
+                    
+                    current[part] = innerObject;
+                    current =  (Dictionary<string, object>)current[part];       
                 }
             }
+            // If the "leaf" dictionary has been reached, add the file and its protections.
+            current.Add(pathParts[^1], protections);
         }
 #endif
     }
