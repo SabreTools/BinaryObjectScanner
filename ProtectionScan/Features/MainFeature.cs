@@ -336,8 +336,7 @@ namespace ProtectionScan.Features
         public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections, List<(Dictionary<string, object>, string, string[])> modifyNodeList)
         {
             var current = nestedDictionary; 
-            path = path.TrimStart(Path.DirectorySeparatorChar);
-            var pathParts = path.Split(Path.DirectorySeparatorChar); 
+            var pathParts = path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries); 
 
             // Traverses the nested dictionary until the "leaf" dictionary is reached.
             for (int i = 0; i < pathParts.Length - 1; i++)
