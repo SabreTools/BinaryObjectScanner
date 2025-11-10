@@ -376,7 +376,28 @@ namespace ProtectionScan.Features
             }
 
             // If the "leaf" dictionary has been reached, add the file and its protections.
-            current.Add(pathParts[^1], protections);
+            if (current.ContainsKey(pathParts[^1]))
+            {
+                var array1 = (string[])current[pathParts[^1]];
+                var array2 = protections;
+
+                string[] result = new string[array1.Length + array2.Length];
+                for (int i = 0; i < array1.Length; i++)
+                {
+                    result[i] = array1[i];
+                }
+
+                for (int i = 0; i < array2.Length; i++)
+                {
+                    result[array1.Length + i] = array2[i];
+                }
+
+                current[pathParts[^1]] = result;
+            }
+            else
+            {
+                current.Add(pathParts[^1], protections);
+            }
         }
 #endif
     }
