@@ -81,8 +81,8 @@ namespace ProtectionScan.Features
             Add(DebugInput);
             Add(FileOnlyInput);
 #if NETCOREAPP
+            JsonInput.Add(NestedInput);
             Add(JsonInput);
-            Add(NestedInput);
 #endif
             Add(NoContentsInput);
             Add(NoArchivesInput);
