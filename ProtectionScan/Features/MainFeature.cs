@@ -288,23 +288,16 @@ namespace ProtectionScan.Features
                         InsertNode(nestedDictionary, key.Substring(trimmedPath.Length), fileProtections, modifyNodeList);
                     }
 
+                    // Adds the non-leaf-node protections back in
                     for (int i = 0; i < modifyNodeList.Count; i++)
                     {
                         var part = modifyNodeList[i].Item2;
                         string[] nodeProtections = modifyNodeList[i].Item3;
                         Dictionary<string, object> node = (Dictionary<string, object>)modifyNodeList[i].Item1;
-                        
-                        // Copy the existing KVPs out so they won't be lost
                         var copyDictionary = new Dictionary<string, object>((Dictionary<string, object>)node[part]);
-                        
-                        //Redefine node that needs to be modified to a list of objects
                         node[part] = new List<object>();
                         List<object> modifyNode = (List<object>)node[part];
-                        
-                        // Add the "root" protection
                         modifyNode.Add(nodeProtections);
-                        
-                        // Add all the subdirectories back
                         modifyNode.Add(copyDictionary);
                     }
 
