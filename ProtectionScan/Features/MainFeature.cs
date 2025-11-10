@@ -329,35 +329,34 @@ namespace ProtectionScan.Features
             for (int i = 0; i < pathParts.Length; i++)
             {
                 var part = pathParts[i];
-                if (i != (pathParts.Length - 1))
-                {
-                    if (!current.ContainsKey(part)) // Inserts new subdictionaries if one doesn't already exist
-                    {
-                        var innerObject = new Dictionary<string, object>();
-                        current[part] = innerObject;
-                        current =  innerObject;
-                    }
-                    else // Traverses already existing subdictionaries
-                    {
-                        var innerObject = current[part];
-                        
-                        // Handle instances where a protection was already assigned to the current node
-                        if (innerObject is string[])
-                        {
-                            current[part] = new Dictionary<string, object>();
-                            current = (Dictionary<string, object>)current[part];
-                            current.Add("", innerObject);
-                        }
-                        else
-                        {
-                            current[part] = innerObject;
-                            current =  (Dictionary<string, object>)innerObject;       
-                        }
-                    }
-                }
-                else // If the "leaf" dictionary has been reached, add the file and its protections.
+                if (i == (pathParts.Length - 1)) // If the "leaf" dictionary has been reached, add the file and its protections.
                 {
                     current.Add(part, protections);
+                    continue;
+                }
+                
+                if (!current.ContainsKey(part)) // Inserts new subdictionaries if one doesn't already exist
+                {
+                    var innerObject = new Dictionary<string, object>();
+                    current[part] = innerObject;
+                    current =  innerObject;
+                }
+                else // Traverses already existing subdictionaries
+                {
+                    var innerObject = current[part];
+                    
+                    // Handle instances where a protection was already assigned to the current node
+                    if (innerObject is string[])
+                    {
+                        current[part] = new Dictionary<string, object>();
+                        current = (Dictionary<string, object>)current[part];
+                        current.Add("", innerObject);
+                    }
+                    else
+                    {
+                        current[part] = innerObject;
+                        current =  (Dictionary<string, object>)innerObject;       
+                    }
                 }
             }
         }
