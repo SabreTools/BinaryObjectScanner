@@ -357,9 +357,9 @@ namespace ProtectionScan.Features
                     var innerObject = current[part];
                     
                     // Handle instances where a protection was already assigned to the current node
-                    if (innerObject is string[])
+                    if (innerObject is string[] existingProtections)
                     {
-                        modifyNodeList.Add((current, part, (string[])innerObject));
+                        modifyNodeList.Add((current, part, existingProtections));
                         innerObject = new Dictionary<string, object>();
                     }
                     
