@@ -332,7 +332,10 @@ namespace ProtectionScan.Features
         /// <param name="nestedDictionary">File or directory path</param>
         /// <param name="path">The "key" for the given protection entry, already trimmed of its base path</param>
         /// <param name="protections">The scanned protection(s) for a given file</param>
-        public static void InsertNode(Dictionary<string, object> nestedDictionary, string path, string[] protections, List<(Dictionary<string, object>, string, string[])> modifyNodeList)
+        private static void InsertNode(Dictionary<string, object> nestedDictionary,
+            string path,
+            string[] protections,
+            List<(Dictionary<string, object>, string, string[])> modifyNodeList)
         {
             var current = nestedDictionary;
             var pathParts = path.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
