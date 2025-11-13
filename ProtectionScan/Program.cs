@@ -71,6 +71,10 @@ namespace ProtectionScan
 
             commandSet.Add(new Help(["-?", "-h", "--help"]));
             commandSet.Add(mainFeature.DebugInput);
+#if NETCOREAPP
+            commandSet.Add(mainFeature.JsonInput);
+            commandSet.Add(mainFeature.NestedInput);
+#endif
             commandSet.Add(mainFeature.NoContentsInput);
             commandSet.Add(mainFeature.NoArchivesInput);
             commandSet.Add(mainFeature.NoPathsInput);
