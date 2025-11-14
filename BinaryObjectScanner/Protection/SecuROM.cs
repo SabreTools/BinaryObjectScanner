@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Protection
             {"C6DFF6B08EE126893840E107FD4EC9F6", "Alice - Madness Returns (USA)+(Europe)"},
             {"D7703D32B72185358D58448B235BD55E", "Arcania - Gothic 4 (Australia)"}, // International version (English, French, Italian, German, Spanish)
             // Arcania - Gothic 4 - Polish(/Hungarian?) - known to most likely exist. Likely matches support site exe.
-            {"83CD6225899C08422F860095962287A5", "Arcania - Gothic 4 - Russian (not in redump yet)"},
+            {"83CD6225899C08422F860095962287A5", "Arcania - Gothic 4 (Russia)"},
             // Arcania - Gothic 4 - Chinese - known to most likely exist. Likely matches support site exe.
             {"FAF6DD75DDB335101CB77A714793DC28", "Batman - Arkham City - Game of the Year Edition (UK)"},
             {"77999579EE4378BDFAC9438CC9CDB44E", "Batman - Arkham City (USA)+(Europe)"},
