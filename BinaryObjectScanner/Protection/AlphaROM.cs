@@ -70,6 +70,7 @@ namespace BinaryObjectScanner.Protection
             // Alpharom disc check #2: disc has publisher identifier filled with varying amount of data (26-50 bytes
             // have been observed) followed by spaces. There's a decent chance this is just a Japanese text string, but
             // UTF, Shift-JIS, and EUC-JP all fail to display anything but garbage.
+            // TODO: This fails on some discs like Redump ID 127450, where publisher identifier is all 0x00.
 
             var publisherIdentifier = pvd.PublisherIdentifier;
             int firstSpace = Array.FindIndex(publisherIdentifier, b => b == 0x20);

@@ -43,9 +43,12 @@ namespace BinaryObjectScanner.Protection
             // Early tages has a 4-byte value at the beginning of the AU data and nothing else.
             // Redump ID  8776, 21321, 35932
             offset = 0;
-            uint earlyTagesBytes = applicationUse.ReadUInt32LittleEndian(ref offset);
+            var earlyTagesBytes = applicationUse.ReadBytes(ref offset, 4);
             var zeroBytes = applicationUse.ReadBytes(ref offset, 508);
-            if (Array.TrueForAll(zeroBytes, b => b == 0x00) && earlyTagesBytes != 0)
+            
+            // Check on earlyTagesBytes needed because Redump ID 56899 begins with "FUN" and is then all 0x00.
+            // 0x70 value is probably just by chance of where early TAGES checks, but it seems to be consistent.
+            if (Array.TrueForAll(zeroBytes, b => b == 0x00) && !Array.TrueForAll(earlyTagesBytes, b => b == 0x00) && earlyTagesBytes[3] == 0x70)
                 return "TAGES (Early)";
 
             // The original releases of Moto Racer 3 (31578, 34669) are so early they have seemingly nothing identifiable.

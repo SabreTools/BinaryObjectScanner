@@ -107,6 +107,11 @@ namespace BinaryObjectScanner.FileType
                 // character. If these are found to be causing issues they can be added.
             }
 
+            offset = 1;
+            potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
+            if (potentialAppUseString == "FS")
+                return false;
+            
             offset = 141;
             potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
             if (potentialAppUseString == "CD-XA001")
