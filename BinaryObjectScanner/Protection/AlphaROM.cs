@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Data.Models.ISO9660;
@@ -56,8 +57,8 @@ namespace BinaryObjectScanner.Protection
             if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
 
-            // Alpharom disc check #1: disc has varying (but observed to at least always be larger than 14) length
-            // string made up of numbers and capital letters.
+            // Disc has varying (but observed to at least always be larger than 14) length
+            // application identifier string made up of numbers and capital letters.
             // TODO: triple-check that length is never below 14
             int offset = 0;
             var applicationIdentifierString = pvd.ApplicationIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
@@ -67,28 +68,44 @@ namespace BinaryObjectScanner.Protection
             if (!Regex.IsMatch(applicationIdentifierString, "^[A-Z0-9]*$"))
                 return null;
 
-            // Alpharom disc check #2: disc has publisher identifier filled with varying amount of data (26-50 bytes
-            // have been observed) followed by spaces. There's a decent chance this is just a Japanese text string, but
-            // UTF, Shift-JIS, and EUC-JP all fail to display anything but garbage.
-            // TODO: This fails on some discs like Redump ID 127450, where publisher identifier is all 0x00.
+            // While some alpharom discs have data in the publisher identifier that can be checked, not all of them do,
+            // so that can't reliably be used. There are two formats currently observed regarding the application
+            // identifier strings.
+            // #1 examples: DCOBG11C1B094961XN, DCXA9083CA554846GP, RCXA1107UD2510461A
+            // #2 examples: 2003120514103077LAHD, 20040326195254AVKC, 20051019163346WXUDCD
 
-            var publisherIdentifier = pvd.PublisherIdentifier;
-            int firstSpace = Array.FindIndex(publisherIdentifier, b => b == 0x20);
-            if (firstSpace <= 10 || firstSpace >= 120)
-                return null;
+            var applicationIdentifierStringBytes = Encoding.ASCII.GetBytes(applicationIdentifierString);
+            
+            // Type #1: 18 characters long, mix of letters and numbers. Since the string has already been confirmed
+            // to only consist of capital letters and numbers, a basic byte value check can be performed to ensure
+            // at least 5 bytes are numbers and 5 bytes are letters. Unfortunately, there doesn't seem to be quite
+            // enough of a pattern to have a better check than this, but it works well enough.
+            if (applicationIdentifierString.Length == 18 
+                && Array.FindAll(applicationIdentifierStringBytes, b => b < 60).Length >= 5
+                && Array.FindAll(applicationIdentifierStringBytes, b => b > 60).Length >= 5)
+                return "AlphaROM";
+            
+            // Type #2: Usually 20 characters long, but Redump ID 124334 is 18 characters long. Validate that it
+            // starts with YYYYMMDD, followed by 6-8 more numbers, followed by letters.
+            if (applicationIdentifierString.Length >= 18 && applicationIdentifierString.Length <= 20)
+            {
+                if (Int32.TryParse(applicationIdentifierString.Substring(0, 4), out int year) == false
+                    ||  Int32.TryParse(applicationIdentifierString.Substring(4, 2), out int month) == false
+                    ||  Int32.TryParse(applicationIdentifierString.Substring(6, 2), out int day) == false
+                    ||  Int32.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime) == false)
+                    return null;
+                if (year >= 2009 || year < 2000 || month > 12 || day > 31)
+                    return null;
+                
+                int index = Array.FindIndex(applicationIdentifierStringBytes, b => b > 60);
+                
+                var startingNumbers = Encoding.ASCII.GetBytes(applicationIdentifierString.Substring(0, index));
+                var finalCharacters = Encoding.ASCII.GetBytes(applicationIdentifierString.Substring(index));
+                if (Array.TrueForAll(startingNumbers, b => b < 60) && Array.TrueForAll(finalCharacters, b => b > 60))
+                    return "AlphaROM";
+            }
 
-            var publisherData = new byte[firstSpace];
-            var publisherSpaces = new byte[publisherData.Length - firstSpace];
-            Array.Copy(publisherIdentifier, 0, publisherData, 0, firstSpace);
-            Array.Copy(publisherIdentifier, firstSpace, publisherSpaces, 0, publisherData.Length - firstSpace);
-
-            if (!Array.TrueForAll(publisherSpaces, b => b == 0x20))
-                return null;
-
-            if (!FileType.ISO9660.IsPureData(publisherData))
-                return null;
-
-            return "AlphaROM";
+            return null;
         }
 
         /// <inheritdoc/>
