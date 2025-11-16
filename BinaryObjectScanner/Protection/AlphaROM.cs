@@ -80,20 +80,25 @@ namespace BinaryObjectScanner.Protection
             // to only consist of capital letters and numbers, a basic byte value check can be performed to ensure
             // at least 5 bytes are numbers and 5 bytes are letters. Unfortunately, there doesn't seem to be quite
             // enough of a pattern to have a better check than this, but it works well enough.
-            if (applicationIdentifierString.Length == 18 
+            if (applicationIdentifierString.Length == 18
                 && Array.FindAll(applicationIdentifierStringBytes, b => b < 60).Length >= 5
                 && Array.FindAll(applicationIdentifierStringBytes, b => b > 60).Length >= 5)
+            {
                 return "AlphaROM";
+            }
             
             // Type #2: Usually 20 characters long, but Redump ID 124334 is 18 characters long. Validate that it
             // starts with YYYYMMDD, followed by 6-8 more numbers, followed by letters.
             if (applicationIdentifierString.Length >= 18 && applicationIdentifierString.Length <= 20)
             {
                 if (Int32.TryParse(applicationIdentifierString.Substring(0, 4), out int year) == false
-                    ||  Int32.TryParse(applicationIdentifierString.Substring(4, 2), out int month) == false
-                    ||  Int32.TryParse(applicationIdentifierString.Substring(6, 2), out int day) == false
-                    ||  Int32.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime) == false)
+                    || Int32.TryParse(applicationIdentifierString.Substring(4, 2), out int month) == false
+                    || Int32.TryParse(applicationIdentifierString.Substring(6, 2), out int day) == false
+                    || Int32.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime) == false)
+                {
                     return null;
+                }
+                
                 if (year >= 2009 || year < 2000 || month > 12 || day > 31)
                     return null;
                 

@@ -107,6 +107,7 @@ namespace BinaryObjectScanner.FileType
                 // character. If these are found to be causing issues they can be added.
             }
 
+            // Seems to come from "FERGUS_MCNEILL - ISOCD 1.00 by Pantaray, Inc. USA -"
             offset = 1;
             potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
             if (potentialAppUseString == "FS")
