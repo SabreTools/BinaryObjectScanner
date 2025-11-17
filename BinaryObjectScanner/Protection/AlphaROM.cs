@@ -84,7 +84,7 @@ namespace BinaryObjectScanner.Protection
                 && Array.FindAll(applicationIdentifierStringBytes, b => b < 60).Length >= 5
                 && Array.FindAll(applicationIdentifierStringBytes, b => b > 60).Length >= 5)
             {
-                return "AlphaROM";
+                return "Alpha-ROM";
             }
             
             // Type #2: Usually 20 characters long, but Redump ID 124334 is 18 characters long. Validate that it
@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Protection
                 var startingNumbers = Encoding.ASCII.GetBytes(applicationIdentifierString.Substring(0, index));
                 var finalCharacters = Encoding.ASCII.GetBytes(applicationIdentifierString.Substring(index));
                 if (Array.TrueForAll(startingNumbers, b => b < 60) && Array.TrueForAll(finalCharacters, b => b > 60))
-                    return "AlphaROM";
+                    return "Alpha-ROM";
             }
 
             return null;
