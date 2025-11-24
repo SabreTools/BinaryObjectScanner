@@ -32,12 +32,17 @@ namespace BinaryObjectScanner.Protection
             if (copyrightString == null || copyrightString.Length < 19)
                 return null;
 
-            copyrightString = copyrightString.Substring(0, 19); // Redump ID 15896 has a trailing space
+            // Redump ID 15896 has a trailing space
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            copyrightString = copyrightString[..19];
+#else
+            copyrightString = copyrightString.Substring(0, 19);
+#endif
 
             // Stores some kind of serial in the copyright string, format 0000-XXXX-XXXX-XXXX where it can be numbers or
             // capital letters.
 
-            if (!Regex.IsMatch(copyrightString, "[0]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}"))
+            if (!Regex.IsMatch(copyrightString, "[0]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}", RegexOptions.Compiled))
                 return null;
 
             offset = 0;

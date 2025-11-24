@@ -23,7 +23,11 @@ namespace BinaryObjectScanner.Protection
                     if (bupfile.DirectoryName == null)
                         continue;
 
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                    string ifofile = Path.Combine(bupfile.DirectoryName, bupfile.Name[..^bupfile.Extension.Length] + ".ifo");
+#else
                     string ifofile = Path.Combine(bupfile.DirectoryName, bupfile.Name.Substring(0, bupfile.Name.Length - bupfile.Extension.Length) + ".ifo");
+#endif
                     if (bupfile.Length != ifofile.FileSize())
                     {
                         protections.Add("DVD-Movie-PROTECT (Unconfirmed - Please report to us on Github)");

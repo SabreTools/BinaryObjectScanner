@@ -10,9 +10,9 @@ namespace BinaryObjectScanner.Packer
     // https://raw.githubusercontent.com/wolfram77web/app-peid/master/userdb.txt
     public class UPX : IExecutableCheck<PortableExecutable>
     {
-        private static readonly Regex _oldUpxVersionMatch = new Regex(@"\$Id: UPX (.*?) Copyright \(C\)", RegexOptions.Compiled);
+        private static readonly Regex _oldUpxVersionMatch = new(@"\$Id: UPX (.*?) Copyright \(C\)", RegexOptions.Compiled);
 
-        private static readonly Regex _upxVersionMatch = new Regex(@"^([0-9]\.[0-9]{2})$", RegexOptions.Compiled);
+        private static readonly Regex _upxVersionMatch = new(@"^([0-9]\.[0-9]{2})$", RegexOptions.Compiled);
 
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)

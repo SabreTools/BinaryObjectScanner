@@ -72,6 +72,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Don't read entire file
+#pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
@@ -272,7 +273,7 @@ namespace BinaryObjectScanner.Protection
             // Full string ends with # (i.e. "CD-Cops,  ver. 1.72,  #"), use that to compensate for comma in version
             // number cases (don't change the comma, see earlier to-do) like "DVD-Cops, ver. 1,60,  #"
             // TODO: improve regex via the starting "N" character? Possibly unnecessary?
-            var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,\s{1,}#)");
+            var versionMatch = Regex.Match(match, @"(?<=D-Cops,\s{1,}ver. )(.*?)(?=,\s{1,}#)", RegexOptions.Compiled);
             if (versionMatch.Success)
                 return versionMatch.Value;
 

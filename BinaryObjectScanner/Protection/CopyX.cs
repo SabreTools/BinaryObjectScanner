@@ -110,7 +110,11 @@ namespace BinaryObjectScanner.Protection
             {
                 lightFiles = fileList.FindAll(f =>
                     {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                        f = f[path.Length..];
+#else
                         f = f.Remove(0, path.Length);
+#endif
                         f = f.TrimStart('/', '\\');
                         return f.StartsWith(dir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
                     });

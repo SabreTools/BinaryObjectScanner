@@ -57,7 +57,11 @@ namespace BinaryObjectScanner.Protection
         private static string GetVersion(string match)
         {
             match = match.Trim('*').Trim();
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            return match["Gefest Protection System ".Length..];
+#else
             return match.Substring("Gefest Protection System ".Length);
+#endif
         }
     }
 }

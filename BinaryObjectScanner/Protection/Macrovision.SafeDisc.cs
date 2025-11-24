@@ -1043,39 +1043,32 @@ namespace BinaryObjectScanner.Protection
                 return string.Empty;
 
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);
-            switch (sha1?.ToUpperInvariant())
+
+            return sha1?.ToUpperInvariant() switch
             {
                 // Found in Redump entry 63488.
-                case "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709":
-                    return "(Empty File)";
+                "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709" => "(Empty File)",
 
                 // First known generic SafeDisc splash-screen.
                 // 4-bit (16 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, 79272, and 110603.
-                case "D8A8CF761DD7C04F635385E4C4589E5F26C6171E":
-                    return "1.11.000-2.40.011";
+                "D8A8CF761DD7C04F635385E4C4589E5F26C6171E" => "1.11.000-2.40.011",
                 // 8-bit (256 color) version, found in Redump entries 43321, 45040, 45202, 66586, 68206, 75501, 79272, and 110603.
-                case "0C9E45BF3EBE1382A3593994328C22BCB9A55456":
-                    return "1.11.000-2.40.011";
+                "0C9E45BF3EBE1382A3593994328C22BCB9A55456" => "1.11.000-2.40.011",
 
                 // Second known generic SafeDisc splash-screen.
                 // 4-bit (16 color), found in Redump entries 46339 and 75897.
-                case "9B80F524D45041ED8CE1613AD5BDE94BFDBB2814":
-                    return "2.70.030-2.80.010";
+                "9B80F524D45041ED8CE1613AD5BDE94BFDBB2814" => "2.70.030-2.80.010",
                 // 8-bit (256 color) version, found in Redump entries 46339 and 75897.
-                case "827AE9A32906CBE9098C9101184E0BE74CEA2744":
-                    return "2.70.030-2.80.010";
+                "827AE9A32906CBE9098C9101184E0BE74CEA2744" => "2.70.030-2.80.010",
 
                 // Third known generic SafeDisc splash-screen.
                 // 4-bit (16 color), found in Redump entries 74338, 75782, 84985, and 91552.
-                case "814ED63FD619655650E271D1B8B46BBE39C3655A":
-                    return "3.15.010-3.20.022";
+                "814ED63FD619655650E271D1B8B46BBE39C3655A" => "3.15.010-3.20.022",
                 // 8-bit (256 color) version, found in Redump entries 31824, 74338, 75782, 84985, 91552, and 104053.
-                case "40C7ACEDB6C41AB067285090373E886EFB4F4AC4":
-                    return "3.15.010-4.60.000";
+                "40C7ACEDB6C41AB067285090373E886EFB4F4AC4" => "3.15.010-4.60.000",
 
-                default:
-                    return null;
-            }
+                _ => null,
+            };
 
             // There appear to be a few distinct generations of file names used for SafeDisc splash-screens.
             // The first are the files named "SPLSH16.BMP"/"SPLSH256.BMP", which were typically used in SafeDisc versions 1.00.025-1.01.044.

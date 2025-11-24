@@ -60,8 +60,8 @@ namespace BinaryObjectScanner.Protection
                 ], "Steam (.sis/.csm/.csd)"),
 
                 // These checks are grouped together due to the names being generic on their own (Redump entry 91450).
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     // TODO: Identify based on "Steam(TM)" being present in "Description" but not in "File Description".
                     // Overmatches on some files, such as IA item "ASMEsMechanicalEngineeringToolkit1997December".
                     // new FilePathMatch("steam.exe"),
@@ -70,7 +70,7 @@ namespace BinaryObjectScanner.Protection
 
                     // TODO: Identify file using MSI property parsing.
                     new FilePathMatch("steam.msi"),
-                }, "Steam"),
+                ], "Steam"),
 
                 new(new FilePathMatch("steam_api.dll"), "Steam"),
                 new(new FilePathMatch("steam_api64.dll"), "Steam"),

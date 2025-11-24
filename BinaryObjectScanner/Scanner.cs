@@ -153,7 +153,11 @@ namespace BinaryObjectScanner
                         // Get the reportable file name
                         string reportableFileName = file;
                         if (reportableFileName.StartsWith(tempFilePath))
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                            reportableFileName = reportableFileName[tempFilePathWithGuid.Length..];
+#else
                             reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+#endif
 
                         // Checkpoint
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
@@ -173,7 +177,11 @@ namespace BinaryObjectScanner
 
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
+#if NET20 || NET35
                         var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
+#else
+                        var fullProtection = fullProtectionList != null && !fullProtectionList.IsEmpty
+#endif
                             ? string.Join(", ", [.. fullProtectionList])
                             : null;
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, (i + 1) / (float)files.Count, fullProtection ?? string.Empty));
@@ -186,7 +194,11 @@ namespace BinaryObjectScanner
                     // Get the reportable file name
                     string reportableFileName = path;
                     if (reportableFileName.StartsWith(tempFilePath))
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                        reportableFileName = reportableFileName[tempFilePathWithGuid.Length..];
+#else
                         reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
+#endif
 
                     // Checkpoint
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
@@ -206,7 +218,11 @@ namespace BinaryObjectScanner
 
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
+#if NET20 || NET35
                     var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
+#else
+                    var fullProtection = fullProtectionList != null && !fullProtectionList.IsEmpty
+#endif
                         ? string.Join(", ", [.. fullProtectionList])
                         : null;
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 1, fullProtection ?? string.Empty));
@@ -473,27 +489,27 @@ namespace BinaryObjectScanner
         private static IDetectable? CreateDetectable(WrapperType fileType, IWrapper? wrapper)
         {
             // Use the wrapper before the type
-            switch (wrapper)
+            return wrapper switch
             {
-                case AACSMediaKeyBlock obj: return new FileType.AACSMediaKeyBlock(obj);
-                case BDPlusSVM obj: return new FileType.BDPlusSVM(obj);
-                case ISO9660 obj: return new FileType.ISO9660(obj);
-                case LDSCRYPT obj: return new FileType.LDSCRYPT(obj);
-                case LinearExecutable obj: return new FileType.LinearExecutable(obj);
-                case MSDOS obj: return new FileType.MSDOS(obj);
-                case NewExecutable obj: return new FileType.NewExecutable(obj);
-                case PlayJAudioFile obj: return new FileType.PLJ(obj);
-                case PortableExecutable obj: return new FileType.PortableExecutable(obj);
-                case RealArcadeInstaller obj: return new FileType.RealArcadeInstaller(obj);
-                case RealArcadeMezzanine obj: return new FileType.RealArcadeMezzanine(obj);
-                case SFFS obj: return new FileType.SFFS(obj);
-            }
+                AACSMediaKeyBlock obj => new FileType.AACSMediaKeyBlock(obj),
+                BDPlusSVM obj => new FileType.BDPlusSVM(obj),
+                ISO9660 obj => new FileType.ISO9660(obj),
+                LDSCRYPT obj => new FileType.LDSCRYPT(obj),
+                LinearExecutable obj => new FileType.LinearExecutable(obj),
+                MSDOS obj => new FileType.MSDOS(obj),
+                NewExecutable obj => new FileType.NewExecutable(obj),
+                PlayJAudioFile obj => new FileType.PLJ(obj),
+                PortableExecutable obj => new FileType.PortableExecutable(obj),
+                RealArcadeInstaller obj => new FileType.RealArcadeInstaller(obj),
+                RealArcadeMezzanine obj => new FileType.RealArcadeMezzanine(obj),
+                SFFS obj => new FileType.SFFS(obj),
 
-            // Fall back on the file type for types not implemented in Serialization
-            return fileType switch
-            {
-                WrapperType.Textfile => new FileType.Textfile(),
-                _ => null,
+                // Fall back on the file type for types not implemented in Serialization
+                _ => fileType switch
+                {
+                    WrapperType.Textfile => new FileType.Textfile(),
+                    _ => null,
+                },
             };
         }
 

@@ -41,6 +41,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // TODO: Don't read entire file
+#pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
@@ -335,24 +336,24 @@ namespace BinaryObjectScanner.Protection
                  new(new FilePathMatch("SNTUSB95.SYS"), "Rainbow Sentinel USB Driver"),
 
                  // Found in IA item "czchip199707cd".
-                 new(new List<PathMatch>
-                 {
+                 new(
+                 [
                      new FilePathMatch("DOSMON.EXE"),
                      new FilePathMatch("FIND.EXE"),
                      new FilePathMatch("NCEDIT.EXE"),
                      new FilePathMatch("NETEVAL.EXE"),
-                 }, "Rainbow NetSentinel Monitor for DOS"),
+                 ], "Rainbow NetSentinel Monitor for DOS"),
 
                  // Found in IA item "czchip199707cd".
-                 new(new List<PathMatch>
-                 {
+                 new(
+                 [
                      new FilePathMatch("OS2MON.EXE"),
                      new FilePathMatch("RHPANELP.DLL"),
-                 }, "Rainbow NetSentinel Monitor for OS/2"),
+                 ], "Rainbow NetSentinel Monitor for OS/2"),
 
                  // Found in IA item "czchip199707cd".
-                 new(new List<PathMatch>
-                 {
+                 new(
+                 [
                      new FilePathMatch("MAPFILE.TXT"),
                      new FilePathMatch("NKWIN32.DLL"),
                      new FilePathMatch("NSLMS32.DLL"),
@@ -362,7 +363,7 @@ namespace BinaryObjectScanner.Protection
                      new FilePathMatch("WINMON.EXE"),
                      new FilePathMatch("WINMON.HLP"),
                      new FilePathMatch("WMON_DOC.EXE"),
-                 }, "Rainbow NetSentinel Monitor for Win32"),
+                 ], "Rainbow NetSentinel Monitor for Win32"),
 
                  // Found in IA item "chip-cds-2001-08".
                  // File names for Rainbow Sentinel files sometimes found in ".cab" files.

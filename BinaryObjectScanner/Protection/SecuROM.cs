@@ -355,12 +355,12 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("SINTFNT.DLL"), "SecuROM New"),
 
                 // TODO: Find more samples of this for different versions
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("securom_v7_01.bak"),
                     new FilePathMatch("securom_v7_01.dat"),
                     new FilePathMatch("securom_v7_01.tmp"),
-                }, "SecuROM 7.01"),
+                ], "SecuROM 7.01"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

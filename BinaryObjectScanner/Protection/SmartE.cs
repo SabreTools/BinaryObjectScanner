@@ -50,11 +50,11 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("00001.TMP"),
                     new FilePathMatch("00002.TMP")
-                 }, "SmartE"),
+                 ], "SmartE"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: true);

@@ -68,7 +68,7 @@ namespace BinaryObjectScanner.FileType
             // Currently-found worst cases:
             // "Y:1BY:1BC" in Redump ID 23339
             var strings = bytes.ReadStringsWithEncoding(charLimit: 7, Encoding.ASCII);
-            var rgx = new Regex("[^a-zA-Z0-9 -'!,.]");
+            var rgx = new Regex("[^a-zA-Z0-9 -'!,.]", RegexOptions.Compiled);
             foreach (string str in strings)
             {
                 if (rgx.Replace(str, "").Length > 7)
@@ -112,7 +112,7 @@ namespace BinaryObjectScanner.FileType
             potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
             if (potentialAppUseString == "FS")
                 return false;
-            
+
             offset = 141;
             potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
             if (potentialAppUseString == "CD-XA001")

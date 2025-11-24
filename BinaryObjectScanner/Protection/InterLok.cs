@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetVersion(string match)
         {
-            var versionMatch = Regex.Match(match, @"(?<=InterLok )(.*?)(?=,)");
+            var versionMatch = Regex.Match(match, @"(?<=InterLok )(.*?)(?=,)", RegexOptions.Compiled);
             if (versionMatch.Success)
                 return versionMatch.Value;
 

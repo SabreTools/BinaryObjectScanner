@@ -13,10 +13,10 @@ namespace BinaryObjectScanner.Protection
     /// It may have been developed by Russobit-M, though the same source also says that StarForce was created by the same company as well, which seems unlikely (https://m.linkdatasecurity.com/pnews6.htm).
     /// Others online have been confused by this as well (https://forum.ixbt.com/topic.cgi?id=31:009712).
     /// A game referred to as having CD-Guard by http://lastboss.ru/games/RUS/randevu-s-neznakomkoi-2 that was published by Russobit-M is known to have an early version of StarForce (Redump entry 97088).
-    /// The FAQ on the game's official website indicates that StarForce specifically is present (https://web.archive.org/web/20011220224222/http://www.aha.ru/~exe_soft/russian/exesoft.htm). 
+    /// The FAQ on the game's official website indicates that StarForce specifically is present (https://web.archive.org/web/20011220224222/http://www.aha.ru/~exe_soft/russian/exesoft.htm).
     /// It's unknown for sure if there were two separate versions of this game that contained separate protections, or if the game never actually contained CD-Guard, or if CD-Guard was an early name for the StarForce line of products.
     /// There is a re-release of an earlier game by the same developer that seems to include both CD-Guard and StarForce drivers, with the CD-Guard driver seemingly not used during installation, nor installed onto the system (IA item "pahgeby-he3hakomkou").
-    /// 
+    ///
     /// Additional resources and references:
     /// https://gamecopyworld.com/games/pc_omikron.shtml
     /// https://forum.ixbt.com/topic.cgi?id=31:3985

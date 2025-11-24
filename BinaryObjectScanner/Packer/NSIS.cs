@@ -17,7 +17,11 @@ namespace BinaryObjectScanner.Packer
             string? name = exe.AssemblyDescription;
 
             if (name.OptionalStartsWith("Nullsoft Install System"))
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                return $"NSIS {name!["Nullsoft Install System".Length..].Trim()}";
+#else
                 return $"NSIS {name!.Substring("Nullsoft Install System".Length).Trim()}";
+#endif
 
             name = exe.AssemblyName;
 

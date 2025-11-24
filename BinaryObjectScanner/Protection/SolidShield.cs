@@ -87,7 +87,11 @@ namespace BinaryObjectScanner.Protection
                 {
                     var str = strs.Find(s => s.Contains("Solidshield "));
                     if (str != null)
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                        return $"SolidShield EXE Wrapper {str["Solidshield ".Length..]}";
+#else
                         return $"SolidShield EXE Wrapper {str.Substring("Solidshield ".Length)}";
+#endif
                 }
             }
 

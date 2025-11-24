@@ -360,16 +360,15 @@ namespace ProtectionScan.Features
                 var part = pathParts[i];
 
                 // Inserts new subdictionaries if one doesn't already exist
-                if (!current.ContainsKey(part))
+                if (!current.TryGetValue(part, out object? innerObject))
                 {
                     var innerDictionary = new Dictionary<string, object>();
-                    current[part] = innerDictionary;
+                    innerObject = innerDictionary;
+                    current[part] = innerObject;
                     current = innerDictionary;
                     continue;
                 }
 
-                // Handle instances where a protection was already assigned to the current node
-                var innerObject = current[part];
                 if (innerObject is string[] existingProtections)
                 {
                     modifyNodeList.Add((current, part, existingProtections));

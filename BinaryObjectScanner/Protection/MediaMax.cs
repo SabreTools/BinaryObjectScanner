@@ -63,22 +63,22 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found on "All That I Am" by Santana (Barcode 8 2876-59773-2 6)
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     // TODO: Verify if these are OR or AND
 					// TODO: Verify that this is directly related to MediaMax CD-3.
                     new FilePathMatch("PlayDisc.exe"),
                     new FilePathMatch("PlayDisc.xml"),
-                }, "MediaMax CD-3"),
+                ], "MediaMax CD-3"),
 
                 // Found on "Contraband" by Velvet Revolver (Barcode 8 28766 05242 8)
                 // "SCCD3X01.dll" should already be detected by the content checks, but not "SCCD3X02.dll".
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     // TODO: Verify if these are OR or AND
                     new FilePathMatch("SCCD3X01.dll"),
                     new FilePathMatch("SCCD3X02.dll"),
-                }, "MediaMax CD-3"),
+                ], "MediaMax CD-3"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);

@@ -102,12 +102,11 @@ namespace BinaryObjectScanner.Protection
                         // Mad Max, Metal Gear Solid: TPP, Rise of the Tomb Raider
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     0x51, 0x52, 0x41, 0x50, 0x41, 0x51, 0x4C, 0x8D,
                                     null, null, null, null, null, 0x4C, 0x8D, null,
                                     null, null, null, null, 0x4D, 0x29, 0xC1,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v1.0 (x64)"),
@@ -115,11 +114,10 @@ namespace BinaryObjectScanner.Protection
                         // Lords of the Fallen, Batman: AK, Just Cause 3, Sherlock Holmes: TdD, Tales of Berseria etc
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     0x48, 0x8D, 0x0D, null, null, null, null, 0xE9,
                                     null, null, null, null,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v2.0a (x64)"),
@@ -127,13 +125,12 @@ namespace BinaryObjectScanner.Protection
                         // Yesterday Origins
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     0x48, 0x89, null, null, null, null, null, 0x48,
                                     0x89, null, null, null, null, null, 0x4C, 0x89,
                                     null, null, null, null, null, 0x4C, 0x89, null,
                                     null, null, null, null, 0x48, 0x83, 0xFA, 0x01,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v2.0b (x64)"),
@@ -141,11 +138,10 @@ namespace BinaryObjectScanner.Protection
                         // Sniper Ghost Warrior 3 (beta), Dead Rising 4 (SteamStub-free)
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     null, null, null, null, null, null, null, null,
                                     0x4C, 0x89, 0x1C, 0x24, 0x49, 0x89, 0xE3,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v3.0a (x64)"),
@@ -153,13 +149,12 @@ namespace BinaryObjectScanner.Protection
                         // Train Sim World CSX Heavy Haul
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     0x4D, 0x8D, null, null, null, null, null, null,
                                     null, null, null, 0x48, 0x89, null, null, null,
                                     null, null, 0x48, 0x8D, null, null, 0x48, 0x89,
                                     null, 0x48, 0x89, null, 0x48, 0x89,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v3.0b (x64)"),
@@ -207,13 +202,12 @@ namespace BinaryObjectScanner.Protection
                         // Pro Evolution Soccer 2017, Champions of Anteria
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     0x55, 0x89, 0xE5, 0x8D, null, null, null, null,
                                     null, null, 0xE8, null, null, null, null, 0xE8,
                                     null, null, null, null, 0xE8, null, null, null,
                                     null, 0xE8, null, null, null, null,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v1.0 (x86)"),
@@ -221,11 +215,10 @@ namespace BinaryObjectScanner.Protection
                         // Romance of 13 Kingdoms, 2Dark
                         new(
                             new ContentMatch(
-                                new byte?[]
-                                {
+                                [
                                     0x8D, null, null, null, null, null, null, 0x89,
                                     0x7C, 0x24, 0x04, 0x89, 0xE7,
-                                },
+                                ],
                                 end: 0
                             ),
                         "Denuvo v2.0 (x86)"),

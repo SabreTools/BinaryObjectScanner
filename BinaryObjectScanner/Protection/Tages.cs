@@ -273,7 +273,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             // TODO: Determine difference between API and BASIC
-            byte typeByte = fileContent[positions[0] + 6];
+            _ = fileContent[positions[0] + 6];
             byte versionByte = fileContent[positions[0] + 7];
 
             return versionByte switch

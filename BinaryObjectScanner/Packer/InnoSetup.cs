@@ -60,6 +60,7 @@ namespace BinaryObjectScanner.Packer
             // TODO: Don't read entire file
             // TODO: Only 64 bytes at the end of the file is needed
 
+#pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return "Unknown 1.X";

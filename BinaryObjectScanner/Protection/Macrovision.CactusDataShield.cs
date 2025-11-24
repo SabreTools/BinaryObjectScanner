@@ -140,7 +140,11 @@ namespace BinaryObjectScanner.Protection
                 if (line == null)
                     return null;
 
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                return $"{line[3..]} ({sr.ReadLine()})";
+#else
                 return $"{line.Substring(3)} ({sr.ReadLine()})";
+#endif
             }
             catch
             {

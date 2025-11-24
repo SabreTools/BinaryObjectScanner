@@ -52,6 +52,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // TODO: Don't read entire file
+#pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
             if (data == null)
                 return null;
@@ -149,13 +150,13 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // Found in IA item "britney-spears-special-edition-cd-rom".
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("C2C.16"),
                     new FilePathMatch("C2C.DLL"),
                     new FilePathMatch("C2CDEL.16"),
                     new FilePathMatch("C2CDEL.EXE"),
-                }, "SafeCast"),
+                ], "SafeCast"),
 
                 // Found in IA item "ejay_nestle_trial".
                 new(new FilePathMatch("cdac01aa.dll"), "SafeCast"),

@@ -55,20 +55,20 @@ namespace BinaryObjectScanner.Protection
                     return "SVKP v1.051";
 
                 // Found in the SVKP 1.11 demo.
-                if (exe.EntryPointData.StartsWith(new byte?[]
-                {
+                if (exe.EntryPointData.StartsWith(
+                [
                     0x60, 0xE8, null, null, null, null, 0x5D, 0x81,
                     0xED, 0x06, null, null, null, 0x64, 0xA0, 0x23
-                }))
+                ]))
                     return "SVKP v1.11";
 
                 // Found in the SVKP 1.32 demo and Redump entry 84122.
-                if (exe.EntryPointData.StartsWith(new byte?[]
-                {
+                if (exe.EntryPointData.StartsWith(
+                [
                     0x60, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x5D, 0x81,
                     0xED, 0x06, 0x00, 0x00, 0x00, 0xEB, 0x05, 0xB8,
                     null, null, null, null, 0x64, 0xA0, 0x23
-                }))
+                ]))
                     return "SVKP v1.3+";
             }
 

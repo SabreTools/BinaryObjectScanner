@@ -65,7 +65,7 @@ namespace BinaryObjectScanner.Protection
             if (applicationIdentifierString == null || applicationIdentifierString.Length < 14)
                 return null;
 
-            if (!Regex.IsMatch(applicationIdentifierString, "^[A-Z0-9]*$"))
+            if (!Regex.IsMatch(applicationIdentifierString, "^[A-Z0-9]*$", RegexOptions.Compiled))
                 return null;
 
             // While some alpharom discs have data in the publisher identifier that can be checked, not all of them do,
@@ -75,7 +75,7 @@ namespace BinaryObjectScanner.Protection
             // #2 examples: 2003120514103077LAHD, 20040326195254AVKC, 20051019163346WXUDCD
 
             var applicationIdentifierStringBytes = Encoding.ASCII.GetBytes(applicationIdentifierString);
-            
+
             // Type #1: 18 characters long, mix of letters and numbers. Since the string has already been confirmed
             // to only consist of capital letters and numbers, a basic byte value check can be performed to ensure
             // at least 5 bytes are numbers and 5 bytes are letters. Unfortunately, there doesn't seem to be quite
@@ -86,26 +86,38 @@ namespace BinaryObjectScanner.Protection
             {
                 return "Alpha-ROM";
             }
-            
+
             // Type #2: Usually 20 characters long, but Redump ID 124334 is 18 characters long. Validate that it
             // starts with YYYYMMDD, followed by 6-8 more numbers, followed by letters.
             if (applicationIdentifierString.Length >= 18 && applicationIdentifierString.Length <= 20)
             {
-                if (Int32.TryParse(applicationIdentifierString.Substring(0, 4), out int year) == false
-                    || Int32.TryParse(applicationIdentifierString.Substring(4, 2), out int month) == false
-                    || Int32.TryParse(applicationIdentifierString.Substring(6, 2), out int day) == false
-                    || Int32.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime) == false)
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                if (int.TryParse(applicationIdentifierString.AsSpan(0, 4), out int year) == false
+                    || int.TryParse(applicationIdentifierString.AsSpan(4, 2), out int month) == false
+                    || int.TryParse(applicationIdentifierString.AsSpan(6, 2), out int day) == false
+                    || int.TryParse(applicationIdentifierString.AsSpan(8, 6), out int extraTime) == false)
+#else
+                if (int.TryParse(applicationIdentifierString.Substring(0, 4), out int year) == false
+                    || int.TryParse(applicationIdentifierString.Substring(4, 2), out int month) == false
+                    || int.TryParse(applicationIdentifierString.Substring(6, 2), out int day) == false
+                    || int.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime) == false)
+#endif
                 {
                     return null;
                 }
-                
+
                 if (year >= 2009 || year < 2000 || month > 12 || day > 31)
                     return null;
-                
+
                 int index = Array.FindIndex(applicationIdentifierStringBytes, b => b > 60);
-                
+
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                var startingNumbers = Encoding.ASCII.GetBytes(applicationIdentifierString[..index]);
+                var finalCharacters = Encoding.ASCII.GetBytes(applicationIdentifierString[index..]);
+#else
                 var startingNumbers = Encoding.ASCII.GetBytes(applicationIdentifierString.Substring(0, index));
                 var finalCharacters = Encoding.ASCII.GetBytes(applicationIdentifierString.Substring(index));
+#endif
                 if (Array.TrueForAll(startingNumbers, b => b < 60) && Array.TrueForAll(finalCharacters, b => b > 60))
                     return "Alpha-ROM";
             }

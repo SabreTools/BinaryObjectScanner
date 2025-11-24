@@ -30,13 +30,13 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             int offset = 0;
-            
+
             // StarForce Keyless check: the key is stored in the Data Preparer identifier.
             string? dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
-            
-            if (dataPreparerIdentiferString != null 
-                && dataPreparerIdentiferString.Length != 0 
-                && Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$"))
+
+            if (dataPreparerIdentiferString != null
+                && dataPreparerIdentiferString.Length != 0
+                && Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$", RegexOptions.Compiled))
             {
                 // It is returning the key, as it tells you what set of DPM your disc corresponds to, and it would also
                 // help show why a disc might be an alt of another disc (there are at least a decent amount of StarForce
@@ -49,23 +49,23 @@ namespace BinaryObjectScanner.Protection
                 // XXXXX-XXXXX-XXXXX-XXXXX-XXXXX (25 characters, plus 4 dashes seperating 5 groups of 5)
                 // XXXXXXXXXXXXXXXXXXXXXXXXXXXX (28 characters)
                 // XXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX (28 characters, with 4 dashes)
-                if (Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{25}$")
-                    || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$")
-                    || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{28}$")
-                    || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{4}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}$"))
+                if (Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{25}$", RegexOptions.Compiled)
+                    || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$", RegexOptions.Compiled)
+                    || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{28}$", RegexOptions.Compiled)
+                    || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{4}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}$", RegexOptions.Compiled))
                 {
                     return $"StarForce Keyless - {dataPreparerIdentiferString}";
                 }
 
                 // Redump ID 60270 is a unique case, there could possibly be more.
                 if (UnusualStarforceKeylessKeys.ContainsKey(dataPreparerIdentiferString))
-                    return $"StarForce Keyless - {dataPreparerIdentiferString}"; 
+                    return $"StarForce Keyless - {dataPreparerIdentiferString}";
             }
-            
+
             // Starforce general check: the reserved 653 bytes start with a 32-bit LE number that's slightly less
             // than the length of the volume size space. The difference varies, it's usually around 10. Check 500 to be
             // safe. The rest of the data is all 0x00. Not many starforce discs have this, but some do, and it's
-            // currently the only known non-keyless check. Redump ID 60266, 72531, 87181, 91734, 106732, 105356, 74578, 
+            // currently the only known non-keyless check. Redump ID 60266, 72531, 87181, 91734, 106732, 105356, 74578,
             // 78200 are some examples.
             if (FileType.ISO9660.NoteworthyApplicationUse(pvd))
                 return null;
@@ -83,7 +83,7 @@ namespace BinaryObjectScanner.Protection
             // through here.
             if (initialValue > pvd.VolumeSpaceSize || initialValue + 500 < pvd.VolumeSpaceSize || !Array.TrueForAll(zeroBytes, b => b == 0x00))
                 return null;
-            
+
             return "StarForce";
         }
 
@@ -201,31 +201,31 @@ namespace BinaryObjectScanner.Protection
             var matchers = new List<PathMatchSet>
             {
                 // This file combination is found in Redump entry 21136.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("protect.x86"),
                     new FilePathMatch("protect.x64"),
                     new FilePathMatch("protect.dll"),
                     new FilePathMatch("protect.exe"),
                     new FilePathMatch("protect.msg"),
-                }, "StarForce"),
+                ], "StarForce"),
 
                 // This file combination is found in multiple games, such as Redump entries 81756, 91336, and 93657.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("protect.x86"),
                     new FilePathMatch("protect.x64"),
                     new FilePathMatch("protect.dll"),
                     new FilePathMatch("protect.exe"),
-                }, "StarForce"),
+                ], "StarForce"),
 
                 // This file combination is found in Redump entry 96137.
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("protect.x86"),
                     new FilePathMatch("protect.dll"),
                     new FilePathMatch("protect.exe"),
-                }, "StarForce"),
+                ], "StarForce"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);

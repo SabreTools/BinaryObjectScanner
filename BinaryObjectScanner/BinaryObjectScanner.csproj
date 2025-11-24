@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <!-- Assembly Properties -->
-        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0;net10.0;netstandard2.0;netstandard2.1</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -34,11 +34,11 @@
     <PropertyGroup Condition="$(TargetFramework.StartsWith(`netcoreapp`)) OR $(TargetFramework.StartsWith(`net5`))">
         <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64</RuntimeIdentifiers>
     </PropertyGroup>
-    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net6`)) OR $(TargetFramework.StartsWith(`net7`)) OR $(TargetFramework.StartsWith(`net8`)) OR $(TargetFramework.StartsWith(`net9`))">
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net6`)) OR $(TargetFramework.StartsWith(`net7`)) OR $(TargetFramework.StartsWith(`net8`)) OR $(TargetFramework.StartsWith(`net9`)) OR $(TargetFramework.StartsWith(`net10`))">
         <RuntimeIdentifiers>win-x86;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup Condition="$(RuntimeIdentifier.StartsWith(`osx-arm`))">
-        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -46,12 +46,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="GrindCore.SharpCompress" Version="0.40.4-alpha" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
+        <PackageReference Include="GrindCore.SharpCompress" Version="0.41.0" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
         <PackageReference Include="MinThreadingBridge" Version="0.11.4" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))" />
-        <PackageReference Include="SabreTools.Hashing" Version="[1.5.1]" />
-        <PackageReference Include="SabreTools.IO" Version="[1.8.0]" />
-        <PackageReference Include="SabreTools.Serialization" Version="[2.1.0]" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
+        <PackageReference Include="SabreTools.Hashing" Version="[1.6.0]" />
+        <PackageReference Include="SabreTools.IO" Version="[1.9.0]" />
+        <PackageReference Include="SabreTools.Serialization" Version="[2.2.0]" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.0" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
     </ItemGroup>
 
 </Project>

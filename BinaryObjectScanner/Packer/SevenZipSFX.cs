@@ -12,7 +12,11 @@ namespace BinaryObjectScanner.Packer
             string? name = exe.AssemblyDescription;
 
             if (name.OptionalStartsWith("7-Zip Self-extracting Archive"))
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                return $"7-Zip SFX {exe.AssemblyDescription!["7-Zip Self-extracting Archive ".Length..]}";
+#else
                 return $"7-Zip SFX {exe.AssemblyDescription!.Substring("7-Zip Self-extracting Archive ".Length)}";
+#endif
 
             name = exe.FileDescription;
 

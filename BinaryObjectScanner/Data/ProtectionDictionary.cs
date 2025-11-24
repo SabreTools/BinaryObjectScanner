@@ -105,10 +105,11 @@ namespace BinaryObjectScanner.Data
                 string key = keys[i];
 
                 // If the key is empty, remove it
-                if (this[key] == null || this[key].Count == 0)
 #if NET20 || NET35
+                if (this[key] == null || this[key].Count == 0)
                     Remove(key);
 #else
+                if (this[key] == null || this[key].IsEmpty)
                     TryRemove(key, out _);
 #endif
             }
@@ -167,7 +168,11 @@ namespace BinaryObjectScanner.Data
                     continue;
 
                 // Otherwise, get the new key name and transfer over
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                string newKey = currentKey[pathToStrip!.Length..];
+#else
                 string newKey = currentKey.Substring(pathToStrip!.Length);
+#endif
                 this[newKey] = this[currentKey];
 #if NET20 || NET35
                 Remove(currentKey);
@@ -243,7 +248,11 @@ namespace BinaryObjectScanner.Data
             var protections = new List<string>();
 
             // If we have an indicator of multiple protections
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+            if (protection!.Contains(';'))
+#else
             if (protection!.Contains(";"))
+#endif
             {
                 var splitProtections = protection.Split(';');
                 protections.AddRange(splitProtections);

@@ -73,11 +73,11 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                new(new List<PathMatch>
-                {
+                new(
+                [
                     new FilePathMatch("SOFTLOCKC.dat"),
                     new FilePathMatch("SOFTLOCKI.dat"),
-                }, "SoftLock"),
+                ], "SoftLock"),
             };
 
             return MatchUtil.GetAllMatches(files, matchers, any: false);
