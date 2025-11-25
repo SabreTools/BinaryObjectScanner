@@ -10,7 +10,7 @@
         <Nullable>enable</Nullable>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Version>3.4.6</Version>
+        <Version>3.5.0</Version>
     </PropertyGroup>
 
     <!-- Support All Frameworks -->
