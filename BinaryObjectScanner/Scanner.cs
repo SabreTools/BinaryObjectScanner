@@ -378,7 +378,7 @@ namespace BinaryObjectScanner
                     _ = extractable.Extract(tempPath, _includeDebug);
 
                     // Check if any files extracted
-                    if (IOExtensions.SafeGetFiles(tempPath).Length > 0)
+                    if (IOExtensions.SafeGetFileSystemEntries(tempPath).Length > 0)
                     {
                         // Scan the output path
                         var subProtections = GetProtectionsImpl(tempPath, depth + 1);
