@@ -345,6 +345,7 @@ namespace ProtectionScan.Features
             if (pathParts.Length == 0)
             {
                 modifyNodeList.Add((dict, path, protections));
+                dict[path] = new Dictionary<string, object>();
                 return;
             }
 
