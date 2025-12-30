@@ -45,11 +45,12 @@ namespace BinaryObjectScanner.Protection
 
                 // Thus far, the StarForce Keyless key is always made up of a number of characters, all either capital letters or
                 // numbers, sometimes with dashes in between. Thus far, 4 formats have been observed:
+                // 24 characters has been observed on one single disc (RID 68149). Maybe one is a space?
                 // XXXXXXXXXXXXXXXXXXXXXXXXX (25 characters)
                 // XXXXX-XXXXX-XXXXX-XXXXX-XXXXX (25 characters, plus 4 dashes seperating 5 groups of 5)
                 // XXXXXXXXXXXXXXXXXXXXXXXXXXXX (28 characters)
                 // XXXX-XXXXXX-XXXXXX-XXXXXX-XXXXXX (28 characters, with 4 dashes)
-                if (Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{25}$", RegexOptions.Compiled)
+                if (Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{24,25}$", RegexOptions.Compiled)
                     || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$", RegexOptions.Compiled)
                     || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{28}$", RegexOptions.Compiled)
                     || Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9]{4}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}-[A-Z0-9]{6}$", RegexOptions.Compiled))
