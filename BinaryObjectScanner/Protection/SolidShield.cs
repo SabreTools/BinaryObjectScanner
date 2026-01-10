@@ -41,7 +41,9 @@ namespace BinaryObjectScanner.Protection
             // Only observed with Solidshield 3.0.0.0 games such as Redump ID 119211. Extracted from main executable. 
             if (exe.FileDescription.OptionalStartsWith("CORE Library", StringComparison.OrdinalIgnoreCase)
                 && name.OptionalStartsWith("Solidshield", StringComparison.OrdinalIgnoreCase))
+            {
                 return $"SolidShield {exe.GetInternalVersion()}";
+            }
 
             if (name.OptionalStartsWith("Solidshield Activation Library", StringComparison.OrdinalIgnoreCase))
                 return $"SolidShield Core.dll {exe.GetInternalVersion()}";
