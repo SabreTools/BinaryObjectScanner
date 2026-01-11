@@ -12,6 +12,10 @@ namespace BinaryObjectScanner.Protection
         // LockBlocks falls under this category, being created by and seemingly exclusively in Dinamic Multimedia products, but in every place I find it described online, it is said to very specifically have two rings on the data side of the disc.
         // Due to there being seemingly no absolute defining feature to LockBlocks other than this, any protected disc from Dinamic Multimedia that doesn't specifically have two rings is considered to have "Dinamic Multimedia Protection".
         // That being said, it may be entirely possible that LockBlocks is the name for all these protections as a whole, as some sources seem to consider games that don't seem to have two rings to have LockBlocks.
+        // FX Interactive was formed by people formerly working at Dinamic Multimedia. The ring system used by this company shares many features of the Dinamic one, including using the same Mastering SIDs. It's possible related as a result but no direct connection has been found.  
+        //  Another possibly related DRM is SonoProtec. All known instances of Dinamic Multimedia Protection (aswell as FX Interactive) have been mastered at Sonopress Ibermemory SA. And while no directly comfirmed isntances of Sonoprotec has been found. Patent for this protection was filled by Sonopress on 1999-04-20. Around the same time Dinamic Multimedia Protection started showing up and patent description is very similar to how LockBlocks was described.
+        // The patent above was also cited by MPO Iberica at a family level in their own patent for ringed discs (Whose name is currently unknown). Like the FX and Dinamic ones it to was based around dummy files with seemingly random names and file extensions located at the middle of the disc, but a direct connection is unconfirmed.   
+        
 
         // Resources:
         // https://www.cdmediaworld.com/hardware/cdrom/cd_protections_lockblocks.shtml
@@ -21,6 +25,11 @@ namespace BinaryObjectScanner.Protection
         // https://www.gamecopyworld.com/games/pc_pc_atletismo.shtml
         // https://www.gamecopyworld.com/games/pc_pc_calcio_2000.shtml
         // https://www.gamecopyworld.com/games/pc_pc_futbol_2000.shtml
+        // https://www.gamecopyworld.com/games/pc_space_clash.shtml
+        // https://www.trademarkelite.com/europe/trademark/trademark-detail/001282730/SONOPROTEC
+        // https://www.patents.google.com/patent/EP1107251A1
+        // https://www.patents.google.com/patent/ES2149719A1
+        // https://www.patents.google.com/patent/EP1239473A1
 
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
@@ -58,6 +67,15 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("opublic.001"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
                 new(new FilePathMatch("spland.sc0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
                 new(new FilePathMatch("uqprime.ipx"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                // Uncopyable files found in at least http://redump.org/disc/55245/, and likely in multiple others.
+                new(new FilePathMatch("ZAXARAIE.DA0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("IEDESAEO.EAS"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("NAIOUEGO.FEK"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("PIDAEIAI.DA0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("SIXADIRE.PAU"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("UOUOZEJE.DA0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("BAWIVOZI.YAQ"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
+                new(new FilePathMatch("YAUAEARO.QAI"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
             };
 
             return MatchUtil.GetFirstMatch(path, matchers, any: true);
