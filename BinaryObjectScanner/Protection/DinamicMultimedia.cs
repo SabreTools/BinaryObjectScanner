@@ -13,8 +13,8 @@ namespace BinaryObjectScanner.Protection
         // Due to there being seemingly no absolute defining feature to LockBlocks other than this, any protected disc from Dinamic Multimedia that doesn't specifically have two rings is considered to have "Dinamic Multimedia Protection".
         // That being said, it may be entirely possible that LockBlocks is the name for all these protections as a whole, as some sources seem to consider games that don't seem to have two rings to have LockBlocks.
         // FX Interactive was formed by people formerly working at Dinamic Multimedia. The ring system used by this company shares many features of the Dinamic one, including using the same Mastering SIDs. It's possible related as a result but no direct connection has been found.  
-        //  Another possibly related DRM is SonoProtec. All known instances of Dinamic Multimedia Protection (aswell as FX Interactive) have been mastered at Sonopress Ibermemory SA. And while no directly comfirmed isntances of Sonoprotec has been found. Patent for this protection was filled by Sonopress on 1999-04-20. Around the same time Dinamic Multimedia Protection started showing up and patent description is very similar to how LockBlocks was described.
-        // The patent above was also cited by MPO Iberica at a family level in their own patent for ringed discs (Whose name is currently unknown). Like the FX and Dinamic ones it to was based around dummy files with seemingly random names and file extensions located at the middle of the disc, but a direct connection is unconfirmed.   
+        //  Another possibly related DRM is SonoProtec. All known instances of Dinamic Multimedia Protection (aswell as FX Interactive) have been mastered at Sonopress Ibermemory SA. And while no directly comfirmed isntances of Sonoprotec has been found. Patent for this protection was filled by Sonopress Ibermemory SA on 1998-11-06. Around the same time Dinamic Multimedia Protection started showing up and patent description is very similar to how LockBlocks was described.
+     
         
 
         // Resources:
@@ -29,7 +29,6 @@ namespace BinaryObjectScanner.Protection
         // https://www.trademarkelite.com/europe/trademark/trademark-detail/001282730/SONOPROTEC
         // https://www.patents.google.com/patent/EP1107251A1
         // https://www.patents.google.com/patent/ES2149719A1
-        // https://www.patents.google.com/patent/EP1239473A1
 
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
@@ -55,7 +54,7 @@ namespace BinaryObjectScanner.Protection
         {
             var matchers = new List<PathMatchSet>
             {
-                // Many more checks are likely possible based on the sources, but only ones that have been personally verified are getting added.
+                // Many more checks are likely possible based on the sources, but only ones that have been personally verified are getting added. As it stands now file names might be randomised though and not a good source for detection.
 
                 // Uncopyable files found in at least http://redump.org/disc/70531/, and likely in multiple others.
                 new(new FilePathMatch("2kscore.sc0"), "Dinamic Multimedia Protection/LockBlocks [Check disc for 2 physical rings]"),
