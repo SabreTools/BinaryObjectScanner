@@ -100,7 +100,7 @@ namespace BinaryObjectScanner.Protection
             if (!string.IsNullOrEmpty(safeCast))
                 resultsList.Add(safeCast!);
 
-            if (resultsList != null && resultsList.Count > 0)
+            if (resultsList is not null && resultsList.Count > 0)
                 return string.Join(";", [.. resultsList]);
 
             return null;
@@ -136,12 +136,12 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, exe.HeaderPaddingStrings, exe.HeaderPaddingData, true);
-                if (sectionMatch != null)
+                if (sectionMatch is not null)
                     resultsList.Add(sectionMatch);
 
                 // Get the .data section, if it exists, for protected sections.
                 sectionMatch = CheckSectionForProtection(file, includeDebug, exe.GetFirstSectionStrings(".data"), exe.GetFirstSectionData(".data"), true);
-                if (sectionMatch != null)
+                if (sectionMatch is not null)
                     resultsList.Add(sectionMatch!);
 
                 int entryPointIndex = exe.FindEntryPointSectionIndex();
@@ -169,12 +169,12 @@ namespace BinaryObjectScanner.Protection
             {
                 // Check the header padding for protected sections.
                 var sectionMatch = CheckSectionForProtection(file, includeDebug, exe.HeaderPaddingStrings, exe.HeaderPaddingData, false);
-                if (sectionMatch != null)
+                if (sectionMatch is not null)
                     resultsList.Add(sectionMatch);
 
                 // Check the .data section, if it exists, for protected sections.
                 sectionMatch = CheckSectionForProtection(file, includeDebug, exe.GetFirstSectionStrings(".data"), exe.GetFirstSectionData(".data"), false);
-                if (sectionMatch != null)
+                if (sectionMatch is not null)
                     resultsList.Add(sectionMatch);
             }
 
@@ -210,7 +210,7 @@ namespace BinaryObjectScanner.Protection
 
             // Clean the result list
             resultsList = CleanResultList(resultsList);
-            if (resultsList != null && resultsList.Count > 0)
+            if (resultsList is not null && resultsList.Count > 0)
                 return string.Join(";", [.. resultsList]);
 
             return null;
@@ -223,40 +223,40 @@ namespace BinaryObjectScanner.Protection
 
             // Run Macrovision directory checks
             var macrovision = MacrovisionCheckDirectoryPath(path, files);
-            if (macrovision != null)
+            if (macrovision is not null)
                 results.AddRange(macrovision);
 
             // Run Cactus Data Shield directory checks
             var cactusDataShield = CactusDataShieldCheckDirectoryPath(path, files);
-            if (cactusDataShield != null)
+            if (cactusDataShield is not null)
                 results.AddRange(cactusDataShield);
 
             // Run C-Dilla directory checks
             var cDilla = CDillaCheckDirectoryPath(path, files);
-            if (cDilla != null)
+            if (cDilla is not null)
                 results.AddRange(cDilla);
 
             // Run FLEXnet directory checks
             var flexNet = FLEXNetCheckDirectoryPath(path, files);
-            if (flexNet != null)
+            if (flexNet is not null)
                 results.AddRange(flexNet);
 
             // Run RipGuard directory checks
             var ripGuard = RipGuardCheckDirectoryPath(path, files);
-            if (ripGuard != null)
+            if (ripGuard is not null)
                 results.AddRange(ripGuard);
 
             // Run SafeCast directory checks
             var safeCast = SafeCastCheckDirectoryPath(path, files);
-            if (safeCast != null)
+            if (safeCast is not null)
                 results.AddRange(safeCast);
 
             // Run SafeDisc directory checks
             var safeDisc = SafeDiscCheckDirectoryPath(path, files);
-            if (safeDisc != null)
+            if (safeDisc is not null)
                 results.AddRange(safeDisc);
 
-            if (results != null && results.Count > 0)
+            if (results is not null && results.Count > 0)
                 return results;
 
             return [];
@@ -304,7 +304,7 @@ namespace BinaryObjectScanner.Protection
 
             // Clean the result list
             resultsList = CleanResultList(resultsList);
-            if (resultsList != null && resultsList.Count > 0)
+            if (resultsList is not null && resultsList.Count > 0)
                 return string.Join(";", [.. resultsList]);
 
             return null;
@@ -498,7 +498,7 @@ namespace BinaryObjectScanner.Protection
         private static string? CheckSectionForProtection(string file, bool includeDebug, List<string>? sectionStrings, byte[]? sectionRaw, bool newVersion)
         {
             // Get the section strings, if they exist
-            if (sectionStrings != null)
+            if (sectionStrings is not null)
             {
                 // If we don't have the "BoG_" string, the section isn't protected.
                 if (!sectionStrings.Exists(s => s.Contains("BoG_")))
@@ -524,7 +524,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the section data, if it exists
-            if (sectionRaw != null)
+            if (sectionRaw is not null)
             {
                 // TODO: Add more checks to help differentiate between SafeDisc and SafeCast.
                 var matchers = new List<ContentMatchSet>
@@ -547,7 +547,7 @@ namespace BinaryObjectScanner.Protection
         internal static string? GetMacrovisionVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             // Begin reading 2 bytes after "BoG_ *90.0&!!  Yy>" for older versions
@@ -831,7 +831,7 @@ namespace BinaryObjectScanner.Protection
         private static List<string>? CleanResultList(List<string>? resultsList)
         {
             // If we have an invalid result list
-            if (resultsList == null || resultsList.Count == 0)
+            if (resultsList is null || resultsList.Count == 0)
                 return resultsList;
 
             // Remove duplicates

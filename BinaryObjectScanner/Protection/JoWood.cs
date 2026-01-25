@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Protection
                 if (exe.ContainsSection(".dcrtext") && importTableMatches)
                 {
                     var dcrtextData = exe.GetFirstSectionData(".dcrtext");
-                    if (dcrtextData != null)
+                    if (dcrtextData is not null)
                     {
                         var matchers = new List<ContentMatchSet>
                     {
@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             return Encoding.ASCII.GetString(fileContent, positions[0] + 67, 8);

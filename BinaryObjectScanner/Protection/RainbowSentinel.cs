@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Don't read entire file
 #pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
-            if (data == null)
+            if (data is null)
                 return null;
 
             // TODO: Figure out what NE section this lives in
@@ -107,7 +107,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the resident and non-resident name table strings
             var nrntStrs = Array.ConvertAll(exe.NonResidentNameTable ?? [],
-                rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
+                rnte => rnte?.NameString is null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
 
             // Check the nonresident-name table
             // Found in "SSWIN.dll" in IA item "pcwkcd-1296".
@@ -196,7 +196,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "ADESKSYS.DLL"/"WINADMIN.EXE"/"WINQUERY.EXE" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\netsetup\SUPPORT\IPX".
                 if (strs.Exists(s => s.Contains("Rainbow SentinelSuperPro")))
@@ -209,7 +209,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rdata section strings, if they exist
             strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "SP32W.DLL" in IA item "pcwkcd-1296".
                 if (strs.Exists(s => s.Contains("SentinelPro WIN32 DLL")))
@@ -234,7 +234,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rsrc section strings, if they exist
             strs = exe.GetFirstSectionStrings(".rsrc");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "WINMON.exe" in IA item "czchip199707cd".
                 if (strs.Exists(s => s.Contains("NetSentinel Monitor")))
@@ -243,7 +243,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .text section strings, if they exist
             strs = exe.GetFirstSectionStrings(".text");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "ACLT.HWL" in BA entry "Autodesk AutoCAD LT 98 (1998) (CD) [English] [Dutch]", folder "\aclt\DRV\W95LOCK".
                 // Found in "ACAD.HWL" in BA entry "Autodesk AutoCAD r14 (1997)" and IA item "auto-cad-r14-cdrom".
@@ -271,7 +271,6 @@ namespace BinaryObjectScanner.Protection
                 if (strs.Exists(s => s.Contains("Sentinel Windows NT Driver Setup")))
                     return "Rainbow Sentinel";
             }
-
 
             return null;
         }

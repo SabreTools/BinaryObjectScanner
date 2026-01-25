@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the code/CODE section strings, if they exist
             var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "NECRO95.EXE" in IA item "NBECRORV11".
                 // Full string:

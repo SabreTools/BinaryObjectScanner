@@ -29,7 +29,7 @@ namespace BinaryObjectScanner.Protection
 
             int offset = 0;
             var copyrightString = pvd.CopyrightFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
-            if (copyrightString == null || copyrightString.Length < 19)
+            if (copyrightString is null || copyrightString.Length < 19)
                 return null;
 
             // Redump ID 15896 has a trailing space
@@ -52,7 +52,7 @@ namespace BinaryObjectScanner.Protection
             // number and should not be printed.
             // Previous versions just have spaces here, so it doesn't need to be validated beyond that.
             var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
-            if (abstractIdentifierString == null || abstractIdentifierString.Trim().Length == 0)
+            if (abstractIdentifierString is null || abstractIdentifierString.Trim().Length == 0)
                 return "ProtectDiSC 6-7.x";
 
             return "ProtectDiSC 7.x+";
@@ -68,7 +68,7 @@ namespace BinaryObjectScanner.Protection
             for (int i = 3; i < sections.Length; i++)
             {
                 var nthSectionData = exe.GetSectionData(i);
-                if (nthSectionData == null)
+                if (nthSectionData is null)
                     continue;
 
                 var matchers = new List<ContentMatchSet>
@@ -84,7 +84,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            if (dataSectionRaw is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -104,10 +104,10 @@ namespace BinaryObjectScanner.Protection
             {
                 // Get the n - 1 section strings, if they exist
                 var strs = exe.GetSectionStrings(sections.Length - 2);
-                if (strs != null)
+                if (strs is not null)
                 {
                     var str = strs.Find(s => s.Contains("VOB ProtectCD"));
-                    if (str != null)
+                    if (str is not null)
                         return $"VOB ProtectCD {GetOldVersion(str)}";
                 }
             }
@@ -118,7 +118,7 @@ namespace BinaryObjectScanner.Protection
             if (sections.Length > 0)
             {
                 var lastSectionData = exe.GetSectionData(sections.Length - 1);
-                if (lastSectionData != null)
+                if (lastSectionData is not null)
                 {
                     var matchers = new List<ContentMatchSet>
                 {
@@ -201,7 +201,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion3till6(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             string version = GetVOBVersion(fileContent, positions[0]);
@@ -214,7 +214,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion6till8(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             string version;
@@ -270,7 +270,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion76till10(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             int index = positions[0] + 37;

@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the .rdata section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("XCP.DAT")))
                     return "XCP";
@@ -37,7 +37,7 @@ namespace BinaryObjectScanner.Protection
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var protections = new List<string>();
-            if (files == null)
+            if (files is null)
                 return protections;
 
             // TODO: Verify if these are OR or AND

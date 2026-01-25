@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: triple-check that length is never below 14
             int offset = 0;
             var applicationIdentifierString = pvd.ApplicationIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
-            if (applicationIdentifierString == null || applicationIdentifierString.Length < 14)
+            if (applicationIdentifierString is null || applicationIdentifierString.Length < 14)
                 return null;
 
             if (!Regex.IsMatch(applicationIdentifierString, "^[A-Z0-9]*$", RegexOptions.Compiled))
@@ -92,15 +92,15 @@ namespace BinaryObjectScanner.Protection
             if (applicationIdentifierString.Length >= 18 && applicationIdentifierString.Length <= 20)
             {
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
-                if (int.TryParse(applicationIdentifierString.AsSpan(0, 4), out int year) == false
-                    || int.TryParse(applicationIdentifierString.AsSpan(4, 2), out int month) == false
-                    || int.TryParse(applicationIdentifierString.AsSpan(6, 2), out int day) == false
-                    || int.TryParse(applicationIdentifierString.AsSpan(8, 6), out int extraTime) == false)
+                if (!int.TryParse(applicationIdentifierString.AsSpan(0, 4), out int year)
+                    || !int.TryParse(applicationIdentifierString.AsSpan(4, 2), out int month)
+                    || i!nt.TryParse(applicationIdentifierString.AsSpan(6, 2), out int day)
+                    || i!nt.TryParse(applicationIdentifierString.AsSpan(8, 6), out int extraTime))
 #else
-                if (int.TryParse(applicationIdentifierString.Substring(0, 4), out int year) == false
-                    || int.TryParse(applicationIdentifierString.Substring(4, 2), out int month) == false
-                    || int.TryParse(applicationIdentifierString.Substring(6, 2), out int day) == false
-                    || int.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime) == false)
+                if (!int.TryParse(applicationIdentifierString.Substring(0, 4), out int year)
+                    || !int.TryParse(applicationIdentifierString.Substring(4, 2), out int month)
+                    || !int.TryParse(applicationIdentifierString.Substring(6, 2), out int day)
+                    || !int.TryParse(applicationIdentifierString.Substring(8, 6), out int extraTime))
 #endif
                 {
                     return null;
@@ -133,7 +133,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("\\SETTEC")))
                     return "Alpha-ROM";
@@ -144,7 +144,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rdata section strings, if they exist
             strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("This Game is Japan Only")))
                     return "Alpha-ROM";
@@ -159,7 +159,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the overlay data, if it exists
-            if (exe.OverlayStrings != null)
+            if (exe.OverlayStrings is not null)
             {
                 // Found in Redump entry 84122.
                 if (exe.OverlayStrings.Exists(s => s.Contains("SETTEC0000")))

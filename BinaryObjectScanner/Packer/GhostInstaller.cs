@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Packer
         {
             // <see href="https://www.virustotal.com/gui/file/b2fc4cffe5131195baf419e96c9fa68c3f23208986fb14e3c5b458b1e7d6af89/details"/>
             var overlayData = exe.OverlayData;
-            if (overlayData != null)
+            if (overlayData is not null)
             {
                 // GIPEND
                 if (overlayData.EndsWith([0x47, 0x49, 0x50, 0x45, 0x4E, 0x44]))

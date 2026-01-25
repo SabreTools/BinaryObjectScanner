@@ -243,15 +243,15 @@ namespace BinaryObjectScanner.Protection
         {
             // Check if executable is a SecuROM PA module
             var paModule = CheckProductActivation(exe);
-            if (paModule != null)
+            if (paModule is not null)
                 return paModule;
 
             // Check if executable contains a SecuROM Matroschka Package
             var package = exe.MatroschkaPackage;
-            if (package != null)
+            if (package is not null)
             {
                 var packageType = CheckMatroschkaPackage(package, includeDebug);
-                if (packageType != null)
+                if (packageType is not null)
                     return packageType;
             }
 
@@ -285,7 +285,7 @@ namespace BinaryObjectScanner.Protection
 
             // Search after the last section
             string? v4Version = GetV4Version(exe);
-            if (v4Version != null)
+            if (v4Version is not null)
                 return $"SecuROM {v4Version}";
 
             // TODO: Investigate if this can be found by aligning to section containing entry point
@@ -295,14 +295,14 @@ namespace BinaryObjectScanner.Protection
             for (int i = 4; i < sections.Length; i++)
             {
                 var nthSection = sections[i];
-                if (nthSection == null)
+                if (nthSection is null)
                     continue;
 
                 string nthSectionName = Encoding.ASCII.GetString(nthSection.Name ?? []).TrimEnd('\0');
                 if (nthSectionName != ".idata" && nthSectionName != ".rsrc")
                 {
                     var nthSectionData = exe.GetFirstSectionData(nthSectionName);
-                    if (nthSectionData == null)
+                    if (nthSectionData is null)
                         continue;
 
                     var matchers = new List<ContentMatchSet>
@@ -319,7 +319,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .rdata section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`
                 if (strs.Exists(s => s.Contains("/secuexp")))
@@ -397,7 +397,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Cache the overlay data for easier access
             var overlayData = exe.OverlayData;
-            if (overlayData == null || overlayData.Length < 20)
+            if (overlayData is null || overlayData.Length < 20)
                 return null;
 
             // Search for the "AddD" string in the overlay
@@ -421,7 +421,7 @@ namespace BinaryObjectScanner.Protection
             // Deserialize the AddD header
             var reader = new SabreTools.Serialization.Readers.SecuROMAddD();
             var addD = reader.Deserialize(overlayData, index);
-            if (addD == null)
+            if (addD is null)
                 return null;
 
             // All samples have had 3 entries -- Revisit if needed
@@ -443,7 +443,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetV5Version(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             int index = positions[0] + 8; // Begin reading after "ÊÝÝ¬"
@@ -485,7 +485,7 @@ namespace BinaryObjectScanner.Protection
         {
             // If SecuROM is stripped, the MS-DOS stub might be shorter.
             // We then know that SecuROM -was- there, but we don't know what exact version.
-            if (exe.StubExecutableData == null)
+            if (exe.StubExecutableData is null)
                 return "7 remnants";
 
             //SecuROM 7 new and 8 -- 64 bytes for DOS stub, 236 bytes in total
@@ -523,7 +523,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
-            if (dataSectionRaw == null)
+            if (dataSectionRaw is null)
                 return "8";
 
             // Search .data for the version indicator
@@ -556,16 +556,16 @@ namespace BinaryObjectScanner.Protection
         private static string? CheckMatroschkaPackage(SecuROMMatroschkaPackage package, bool includeDebug)
         {
             // Check for all 0x00 required, as at least one known non-RC matroschka has the field, just empty.
-            if (package.KeyHexString == null || package.KeyHexString.Trim('\0').Length == 0)
+            if (package.KeyHexString is null || package.KeyHexString.Trim('\0').Length == 0)
                 return "SecuROM Matroschka Package";
 
-            if (package.Entries == null || package.Entries.Length == 0)
+            if (package.Entries is null || package.Entries.Length == 0)
                 return "SecuROM Matroschka Package - No Entries? - Please report to us on GitHub";
 
             // The second entry in a Release Control matroschka package is always the encrypted executable
             var entry = package.Entries[1];
 
-            if (entry.MD5 == null || entry.MD5.Length == 0)
+            if (entry.MD5 is null || entry.MD5.Length == 0)
                 return "SecuROM Matroschka Package - No MD5? - Please report to us on GitHub";
 
             string md5String = BitConverter.ToString(entry.MD5!);
@@ -581,7 +581,7 @@ namespace BinaryObjectScanner.Protection
             // If not known, check if encrypted executable is likely an alt signing of a known executable
             // Filetime could be checked here, but if it was signed at a different time, the time will vary anyways
             var readPath = entry.Path;
-            if (readPath == null || readPath.Length == 0)
+            if (readPath is null || readPath.Length == 0)
                 return $"SecuROM Release Control - Unknown executable {md5String},{entry.Size} - Please report to us on GitHub!";
 
             var readPathName = readPath.TrimEnd('\0');

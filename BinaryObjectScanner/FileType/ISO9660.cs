@@ -90,7 +90,7 @@ namespace BinaryObjectScanner.FileType
 
             int offset = 0;
             string? potentialAppUseString = applicationUse.ReadNullTerminatedAnsiString(ref offset);
-            if (potentialAppUseString != null && potentialAppUseString.Length > 0) // Some image authoring programs add a starting string to AU data
+            if (potentialAppUseString is not null && potentialAppUseString.Length > 0) // Some image authoring programs add a starting string to AU data
             {
                 if (potentialAppUseString.StartsWith("ImgBurn"))
                     return false;

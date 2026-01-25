@@ -23,7 +23,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("wextract_cleanup")))
                     return $"Microsoft CAB SFX {GetVersion(exe)}";
@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .text section strings, if they exist
             strs = exe.GetFirstSectionStrings(".text");
-            if (strs != null)
+            if (strs is not null)
             {
                 // This detects a different but similar type of SFX that uses Microsoft CAB files.
                 // Further research is needed to see if it's just a different version or entirely separate.

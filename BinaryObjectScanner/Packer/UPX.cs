@@ -18,14 +18,14 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Check header padding strings
-            if (exe.HeaderPaddingStrings != null && exe.HeaderPaddingStrings.Count > 0)
+            if (exe.HeaderPaddingStrings is not null && exe.HeaderPaddingStrings.Count > 0)
             {
                 var match = exe.HeaderPaddingStrings.Find(s => s.Contains("UPX!"));
-                //if (match != null)
+                //if (match is not null)
                 //    return "UPX";
 
                 match = exe.HeaderPaddingStrings.Find(s => s.StartsWith("$Id: UPX"));
-                if (match != null)
+                if (match is not null)
                 {
                     var regexMatch = _oldUpxVersionMatch.Match(match);
                     if (regexMatch.Success)
@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Packer
                 }
 
                 match = exe.HeaderPaddingStrings.Find(s => _upxVersionMatch.IsMatch(s));
-                if (match != null && exe.HeaderPaddingStrings.Exists(s => s == "UPX!"))
+                if (match is not null && exe.HeaderPaddingStrings.Exists(s => s == "UPX!"))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)
@@ -43,7 +43,7 @@ namespace BinaryObjectScanner.Packer
                     else
                         return "UPX (Unknown Version)";
                 }
-                else if (match != null && exe.HeaderPaddingStrings.Exists(s => s == "NOS "))
+                else if (match is not null && exe.HeaderPaddingStrings.Exists(s => s == "NOS "))
                 {
                     var regexMatch = _upxVersionMatch.Match(match);
                     if (regexMatch.Success)

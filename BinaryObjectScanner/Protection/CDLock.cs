@@ -31,7 +31,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            if (dataSectionRaw is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {

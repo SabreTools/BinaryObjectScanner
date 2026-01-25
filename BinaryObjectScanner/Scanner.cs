@@ -110,7 +110,7 @@ namespace BinaryObjectScanner
         private ProtectionDictionary GetProtectionsImpl(List<string>? paths, int depth)
         {
             // If we have no paths, we can't scan
-            if (paths == null || paths.Count == 0)
+            if (paths is null || paths.Count == 0)
             {
                 if (_includeDebug) Console.WriteLine("No paths found to scan, skipping...");
                 return [];
@@ -166,21 +166,21 @@ namespace BinaryObjectScanner
                         if (_scanPaths)
                         {
                             var filePathProtections = HandlePathChecks(file, files: null);
-                            if (filePathProtections != null && filePathProtections.Count > 0)
+                            if (filePathProtections is not null && filePathProtections.Count > 0)
                                 protections.Append(filePathProtections);
                         }
 
                         // Scan for content-detectable protections
                         var fileProtections = GetInternalProtections(file, depth);
-                        if (fileProtections != null && fileProtections.Count > 0)
+                        if (fileProtections is not null && fileProtections.Count > 0)
                             protections.Append(fileProtections);
 
                         // Checkpoint
                         protections.TryGetValue(file, out var fullProtectionList);
 #if NET20 || NET35
-                        var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
+                        var fullProtection = fullProtectionList is not null && fullProtectionList.Count > 0
 #else
-                        var fullProtection = fullProtectionList != null && !fullProtectionList.IsEmpty
+                        var fullProtection = fullProtectionList is not null && !fullProtectionList.IsEmpty
 #endif
                             ? string.Join(", ", [.. fullProtectionList])
                             : null;
@@ -207,21 +207,21 @@ namespace BinaryObjectScanner
                     if (_scanPaths)
                     {
                         var filePathProtections = HandlePathChecks(path, files: null);
-                        if (filePathProtections != null && filePathProtections.Count > 0)
+                        if (filePathProtections is not null && filePathProtections.Count > 0)
                             protections.Append(filePathProtections);
                     }
 
                     // Scan for content-detectable protections
                     var fileProtections = GetInternalProtections(path, depth);
-                    if (fileProtections != null && fileProtections.Count > 0)
+                    if (fileProtections is not null && fileProtections.Count > 0)
                         protections.Append(fileProtections);
 
                     // Checkpoint
                     protections.TryGetValue(path, out var fullProtectionList);
 #if NET20 || NET35
-                    var fullProtection = fullProtectionList != null && fullProtectionList.Count > 0
+                    var fullProtection = fullProtectionList is not null && fullProtectionList.Count > 0
 #else
-                    var fullProtection = fullProtectionList != null && !fullProtectionList.IsEmpty
+                    var fullProtection = fullProtectionList is not null && !fullProtectionList.IsEmpty
 #endif
                         ? string.Join(", ", [.. fullProtectionList])
                         : null;
@@ -348,7 +348,7 @@ namespace BinaryObjectScanner
 
             // Try to scan file contents
             var detectable = CreateDetectable(fileType, wrapper);
-            if (_scanContents && detectable != null)
+            if (_scanContents && detectable is not null)
             {
                 try
                 {
@@ -464,15 +464,15 @@ namespace BinaryObjectScanner
             if (File.Exists(path))
             {
                 var protection = impl.CheckFilePath(path!);
-                if (protection != null)
+                if (protection is not null)
                     protections.Add(protection);
             }
 
             // If we have a directory path
-            if (Directory.Exists(path) && files != null && files.Count > 0)
+            if (Directory.Exists(path) && files is not null && files.Count > 0)
             {
                 var subProtections = impl.CheckDirectoryPath(path!, files);
-                if (subProtections != null)
+                if (subProtections is not null)
                     protections.AddRange(subProtections);
             }
 
@@ -505,11 +505,13 @@ namespace BinaryObjectScanner
                 SFFS obj => new FileType.SFFS(obj),
 
                 // Fall back on the file type for types not implemented in Serialization
+#pragma warning disable IDE0072
                 _ => fileType switch
                 {
                     WrapperType.Textfile => new FileType.Textfile(),
                     _ => null,
                 },
+#pragma warning restore IDE0072
             };
         }
 

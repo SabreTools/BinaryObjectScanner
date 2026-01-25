@@ -52,14 +52,14 @@ namespace BinaryObjectScanner.Protection
         internal static string? SafeDiscCheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Found in Redump entry 57986.
-            if (exe.ImportHintNameTable != null)
+            if (exe.ImportHintNameTable is not null)
             {
                 if (Array.Exists(exe.ImportHintNameTable, ihne => ihne?.Name == "LTDLL_Authenticate"))
                     return "SafeDisc Lite";
             }
 
             // Found in Redump entry 57986.
-            if (exe.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable is not null)
             {
                 if (Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name == "ltdll.dll"))
                     return "SafeDisc Lite";
@@ -67,7 +67,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in Redump entries 14928, 25579, 32751.
                 if (strs.Exists(s => s.Contains("LTDLL_Initialise")))
@@ -312,7 +312,6 @@ namespace BinaryObjectScanner.Protection
                 new(new FilePathMatch("00000809.256"), GetSafeDiscSplshVersion, "SafeDisc"),
                 new(new FilePathMatch("00001009.016"), GetSafeDiscSplshVersion, "SafeDisc"),
                 new(new FilePathMatch("00001009.256"), GetSafeDiscSplshVersion, "SafeDisc"),
-
 
                 new(new FilePathMatch("DPLAYERX.DLL"), GetSafeDiscDPlayerXVersion, "SafeDisc"),
                 new(new FilePathMatch("drvmgt.dll"), GetSafeDiscDrvmgtVersion, "SafeDisc"),
@@ -714,7 +713,6 @@ namespace BinaryObjectScanner.Protection
             // "1.1.38 1999/01/21" -> SafeDisc 1.01.038 (Redump entry 51459).
             // "1.1.43 1999/02/25  -> SafeDisc 1.01.043 (Redump entries 34562 and 63304).
             // "1.1.44 1999/03/08" -> SafeDisc 1.01.044 (Redump entries 61731 and 81619).
-
 
             // The hash of every "CLOKSPL.EXE" correlates directly to a specific SafeDisc version.
             var sha1 = HashTool.GetFileHash(firstMatchedString, HashType.SHA1);

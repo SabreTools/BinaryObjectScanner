@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("NullsoftInst")))
                     return "NSIS";
@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the overlay strings, if they exist
             strs = exe.OverlayStrings;
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("NullsoftInst")))
                     return "NSIS";

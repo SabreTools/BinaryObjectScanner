@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Get the last section data, if it exists
                 var lastSectionData = exe.GetSectionData(sections.Length - 1);
-                if (lastSectionData != null)
+                if (lastSectionData is not null)
                 {
                     // All sections seen so far are the last sections, so this is "technically"
                     // the only known needed check so far. Others kept as backups if this fails

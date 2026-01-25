@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .text section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".text");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "The Sudoku Challenge Collection.exe" in "The Sudoku Challenge! Collection" by Play at Joe's.
                 if (strs.Exists(s => s.Contains("mfint.dll")))
@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the code/CODE section strings, if they exist
             strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "launcher.exe" in "Sea Adventure / Adventure de la Mer" by Compedia.
                 if (strs.Exists(s => s.Contains("mfint.dll")))
@@ -72,7 +72,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the UPX1 section strings, if they exist
             strs = exe.GetFirstSectionStrings("UPX1");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "postmanpat.exe" in "Postman Pat" by Compedia.
                 if (strs.Exists(s => s.Contains("mfint.dll")))

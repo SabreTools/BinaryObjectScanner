@@ -34,7 +34,7 @@ namespace BinaryObjectScanner.Protection
             // StarForce Keyless check: the key is stored in the Data Preparer identifier.
             string? dataPreparerIdentiferString = pvd.DataPreparerIdentifier.ReadNullTerminatedAnsiString(ref offset)?.Trim();
 
-            if (dataPreparerIdentiferString != null
+            if (dataPreparerIdentiferString is not null
                 && dataPreparerIdentiferString.Length != 0
                 && Regex.IsMatch(dataPreparerIdentiferString, "^[A-Z0-9-]*$", RegexOptions.Compiled))
             {
@@ -168,7 +168,7 @@ namespace BinaryObjectScanner.Protection
             //     return $"StarForce {Tools.Utilities.GetInternalVersion(exe)}";
 
             // Check the export name table
-            if (exe.ExportNameTable?.Strings != null)
+            if (exe.ExportNameTable?.Strings is not null)
             {
                 // TODO: Should we just check for "PSA_*" instead of a single entry?
                 if (Array.Exists(exe.ExportNameTable.Strings, s => s == "PSA_GetDiscLabel"))

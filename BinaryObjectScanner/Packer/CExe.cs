@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Packer
             if (exe.FindResourceByNamedType("99, ").Count == 2)
                 return "CExe";
 
-            if (exe.StubExecutableData != null)
+            if (exe.StubExecutableData is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {

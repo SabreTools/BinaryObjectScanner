@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Protection
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var protections = new List<string>();
-            if (files == null)
+            if (files is null)
                 return protections;
 
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))

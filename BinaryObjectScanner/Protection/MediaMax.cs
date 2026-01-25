@@ -41,14 +41,14 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("CD3 Launch Error")))
                     return "MediaMax CD-3";
             }
 
             // Get the export name table
-            if (exe.ExportNameTable?.Strings != null)
+            if (exe.ExportNameTable?.Strings is not null)
             {
                 if (Array.Exists(exe.ExportNameTable.Strings, s => s == "DllInstallSbcp"))
                     return "MediaMax CD-3";

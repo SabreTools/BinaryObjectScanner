@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Investigate the "Debugger or tool for monitoring detected!!!.Application cannot be run with debugger or monitoring tool(s) loaded!.            Please unload it and restart the application" strings present in seemingly every version.
 
             // Get the entry point data, if it exists.
-            if (exe.EntryPointData != null)
+            if (exe.EntryPointData is not null)
             {
                 // Found in the SVKP 1.05 demo.
                 if (exe.EntryPointData.StartsWith(new byte?[]

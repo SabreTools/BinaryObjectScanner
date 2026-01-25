@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "rebound.exe" in the installation directory for "Rebound" in IA item "Nova_RealArcadeCD_USA".
                 if (strs.Exists(s => s.Contains("RngInterstitialDLL")))

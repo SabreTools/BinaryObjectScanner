@@ -30,7 +30,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the code/CODE section strings, if they exist
             var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("wtmdum.imp")))
                     return "WTM CD Protect";
@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .text section strings, if they exist
             strs = exe.GetFirstSectionStrings(".text");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("WTM DIGITAL Photo Protect")))
                     return "WTM Protection Viewer";

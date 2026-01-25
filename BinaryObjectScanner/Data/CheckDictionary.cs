@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Data
         /// <remarks>Handles the proper Add implementation</remarks>
         public void Append(T key, string? value)
         {
-            if (value == null || value.Trim().Length == 0)
+            if (value is null || value.Trim().Length == 0)
                 return;
 
 #if NET20 || NET35

@@ -20,10 +20,10 @@ namespace BinaryObjectScanner.Protection
             // Most every tested sample of "engine32.dll" has a product name of "engine32", and the file description typically follows the naming pattern of "[Game Name] DLL-helper".
 
             // Detects Engine32 within the game executables that contain it.
-            if (exe.ImportDirectoryTable != null && exe.ImportHintNameTable != null)
+            if (exe.ImportDirectoryTable is not null && exe.ImportHintNameTable is not null)
             {
                 bool importDirectoryTableMatch = Array.Exists(exe.ImportDirectoryTable,
-                    idte => idte?.Name != null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
+                    idte => idte?.Name is not null && idte.Name.Equals("ENGINE32.DLL", StringComparison.OrdinalIgnoreCase));
                 bool hintNameTableMatch = Array.Exists(exe.ImportHintNameTable,
                     ihne => ihne?.Name == "InitEngine");
 
@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Detects Engine32 within the file "engine32.dll".
-            if (exe.ExportNameTable?.Strings != null)
+            if (exe.ExportNameTable?.Strings is not null)
             {
                 bool exportNameTableMatch1 = Array.Exists(exe.ExportNameTable.Strings, s => s == "engine32.dll");
                 bool exportNameTableMatch2 = Array.Exists(exe.ExportNameTable.Strings, s => s == "DeinitEngine");

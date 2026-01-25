@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             string? finalString = reserved653Bytes.ReadNullTerminatedAnsiString(ref firstNonZero);
-            if (finalString == null)
+            if (finalString is null)
                 return null;
 
             // Redump ID 113120
@@ -189,7 +189,7 @@ namespace BinaryObjectScanner.Protection
 
         private static string GetBuild(byte[]? sectionContent, bool versionTwo)
         {
-            if (sectionContent == null)
+            if (sectionContent is null)
                 return "(Build unknown)";
 
             // Unkown + (char)0x00 + Unkown
@@ -214,7 +214,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion(byte[]? sectionContent, int position)
         {
             // If we have invalid data
-            if (sectionContent == null)
+            if (sectionContent is null)
                 return null;
 
             return Encoding.ASCII.GetString(sectionContent, position + 76, 4);

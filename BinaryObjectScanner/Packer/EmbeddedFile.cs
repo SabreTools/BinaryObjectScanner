@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Packer
 
             // Check the overlay, if it exists
             byte[]? overlayData = exe.OverlayData;
-            if (overlayData != null && overlayData.Length > 0)
+            if (overlayData is not null && overlayData.Length > 0)
             {
                 // Set the output variables
                 int overlayOffset = 0;
@@ -111,12 +111,12 @@ namespace BinaryObjectScanner.Packer
 
             // Only process the resources if they are recognized
             var resourceData = exe.ResourceData;
-            if (resourceData != null)
+            if (resourceData is not null)
             {
                 // Get the resources that have an archive signature
                 foreach (var value in resourceData.Values)
                 {
-                    if (value == null || value is not byte[] ba || ba.Length == 0)
+                    if (value is null || value is not byte[] ba || ba.Length == 0)
                         continue;
 
                     // Set the output variables
@@ -162,7 +162,7 @@ namespace BinaryObjectScanner.Packer
 
             // Check the overlay, if it exists
             byte[]? overlayData = exe.OverlayData;
-            if (overlayData != null && overlayData.Length > 0)
+            if (overlayData is not null && overlayData.Length > 0)
             {
                 // Set the output variables
                 int overlayOffset = 0;

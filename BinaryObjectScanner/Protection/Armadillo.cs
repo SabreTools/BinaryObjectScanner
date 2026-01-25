@@ -33,7 +33,7 @@ namespace BinaryObjectScanner.Protection
             {
                 // Get the section strings, if they exist
                 var strs = exe.GetFirstSectionStrings(sectionName);
-                if (strs != null)
+                if (strs is not null)
                 {
                     if (strs.Exists(s => s.Contains("ARMDEBUG")))
                         return "Armadillo";

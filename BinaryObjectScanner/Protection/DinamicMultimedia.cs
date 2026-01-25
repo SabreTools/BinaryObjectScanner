@@ -12,10 +12,8 @@ namespace BinaryObjectScanner.Protection
         // LockBlocks falls under this category, being created by and seemingly exclusively in Dinamic Multimedia products, but in every place I find it described online, it is said to very specifically have two rings on the data side of the disc.
         // Due to there being seemingly no absolute defining feature to LockBlocks other than this, any protected disc from Dinamic Multimedia that doesn't specifically have two rings is considered to have "Dinamic Multimedia Protection".
         // That being said, it may be entirely possible that LockBlocks is the name for all these protections as a whole, as some sources seem to consider games that don't seem to have two rings to have LockBlocks.
-        // FX Interactive was formed by people formerly working at Dinamic Multimedia. The ring system used by this company shares many features of the Dinamic one, including using the same Mastering SIDs. It's possible related as a result but no direct connection has been found.  
-        //  Another possibly related DRM is SonoProtec. All known instances of Dinamic Multimedia Protection (aswell as FX Interactive) have been mastered at Sonopress Ibermemory SA. And while no directly comfirmed isntances of Sonoprotec has been found. Patent for this protection was filled by Sonopress Ibermemory SA on 1998-11-06. Around the same time Dinamic Multimedia Protection started showing up and patent description is very similar to how LockBlocks was described.
-     
-        
+        // FX Interactive was formed by people formerly working at Dinamic Multimedia. The ring system used by this company shares many features of the Dinamic one, including using the same Mastering SIDs. It's possible related as a result but no direct connection has been found.
+        // Another possibly related DRM is SonoProtec. All known instances of Dinamic Multimedia Protection (aswell as FX Interactive) have been mastered at Sonopress Ibermemory SA. And while no directly comfirmed isntances of Sonoprotec has been found. Patent for this protection was filled by Sonopress Ibermemory SA on 1998-11-06. Around the same time Dinamic Multimedia Protection started showing up and patent description is very similar to how LockBlocks was described.
 
         // Resources:
         // https://www.cdmediaworld.com/hardware/cdrom/cd_protections_lockblocks.shtml

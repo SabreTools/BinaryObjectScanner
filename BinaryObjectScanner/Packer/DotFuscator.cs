@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Packer
         {
             // Get the .text section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".text");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("DotfuscatorAttribute")))
                     return "dotFuscator";

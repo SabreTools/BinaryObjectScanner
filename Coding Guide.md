@@ -65,7 +65,7 @@ This section contains information on code standards regardless of which part of 
 - Null-coalescing and null-checking operators can be used to make more readable statements and better get across what a statement or string of statements is doing.
 
     ```c#
-    if (obj?.Parameter != null) { ... }
+    if (obj?.Parameter is not null) { ... }
 
     bool value = DoSomething() ?? false;
     ```

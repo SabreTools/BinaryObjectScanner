@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Packer
         {
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // <see href="https://www.virustotal.com/gui/file/33b98b675d78b88ed317e7e52dca21ca07bd84e79211294fcec72cab48d11184"/>
                 if (strs.Exists(s => s.Contains("ReflexiveArcade")))

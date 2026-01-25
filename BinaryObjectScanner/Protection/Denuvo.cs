@@ -63,7 +63,7 @@ namespace BinaryObjectScanner.Protection
             // https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/_denuvoComplete.2.sg
 
             // Denuvo Protector
-            if (exe.OptionalHeader?.Magic == OHMN.PE32Plus && exe.EntryPointData != null)
+            if (exe.OptionalHeader?.Magic == OHMN.PE32Plus && exe.EntryPointData is not null)
             {
                 byte?[] denuvoProtector =
                 [

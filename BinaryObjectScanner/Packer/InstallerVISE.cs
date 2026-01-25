@@ -13,7 +13,7 @@ namespace BinaryObjectScanner.Packer
         {
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("ViseMain")))
                     return "Installer VISE";

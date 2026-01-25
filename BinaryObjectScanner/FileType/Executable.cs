@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.FileType
 
                 stream.Seek(0, SeekOrigin.Begin);
                 fileContent = stream.ReadBytes((int)stream.Length);
-                if (fileContent == null)
+                if (fileContent is null)
                     return protections;
             }
             catch (Exception ex)

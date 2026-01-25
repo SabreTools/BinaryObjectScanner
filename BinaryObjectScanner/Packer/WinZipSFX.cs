@@ -11,14 +11,14 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // If the resident-name table doesnt exist
-            if (exe.ResidentNameTable == null)
+            if (exe.ResidentNameTable is null)
                 return null;
 
             // Get the resident and non-resident name table strings
             var rntStrs = Array.ConvertAll(exe.ResidentNameTable,
-                rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
+                rnte => rnte?.NameString is null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
             var nrntStrs = Array.ConvertAll(exe.NonResidentNameTable ?? [],
-                nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
+                nrnte => nrnte?.NameString is null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
 
             // Check for the WinZip name strings
             bool winZipNameFound = Array.Exists(rntStrs, s => s.Contains("WZ-SE-01"));
@@ -40,7 +40,7 @@ namespace BinaryObjectScanner.Packer
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Check the export directory table, if it exists
-            if (exe.ExportDirectoryTable != null)
+            if (exe.ExportDirectoryTable is not null)
             {
                 var version = GetPEExportDirectoryVersion(exe);
                 if (!string.IsNullOrEmpty(version))

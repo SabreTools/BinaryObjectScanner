@@ -43,10 +43,10 @@ namespace BinaryObjectScanner.Protection
         internal static string? SafeCastCheckExecutable(string file, NewExecutable exe, bool includeDebug)
         {
             // Check for the CDAC01AA name string.
-            if (exe.ResidentNameTable != null)
+            if (exe.ResidentNameTable is not null)
             {
                 var residentNames = Array.ConvertAll(exe.ResidentNameTable,
-                    rnte => rnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
+                    rnte => rnte?.NameString is null ? string.Empty : Encoding.ASCII.GetString(rnte.NameString));
                 if (Array.Exists(residentNames, s => s.Contains("CDAC01AA")))
                     return "SafeCast";
             }
@@ -54,7 +54,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Don't read entire file
 #pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
-            if (data == null)
+            if (data is null)
                 return null;
 
             var neMatchSets = new List<ContentMatchSet>
@@ -75,10 +75,10 @@ namespace BinaryObjectScanner.Protection
             // TODO: Invesitgate if the "AdobeLM.dll" file (along with mentions of "AdobeLM" in executables) uniquely identifies SafeCast, or if it can be used with different DRM. (Found in IA item ccd0605)
 
             // Get the import directory table, if it exists
-            if (exe.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable is not null)
             {
                 if (Array.Exists(exe.ImportDirectoryTable,
-                    idte => idte?.Name != null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
+                    idte => idte?.Name is not null && idte.Name.Equals("CdaC14BA.dll", StringComparison.OrdinalIgnoreCase)))
                 {
                     return "SafeCast";
                 }
@@ -91,7 +91,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
                 if (strs.Exists(s => s.Contains("SOFTWARE\\C-Dilla\\SafeCast")))

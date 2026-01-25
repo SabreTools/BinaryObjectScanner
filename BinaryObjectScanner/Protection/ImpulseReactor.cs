@@ -33,13 +33,13 @@ namespace BinaryObjectScanner.Protection
 
             // TODO: Check for CVP* instead?
             bool containsCheck = false;
-            if (exe.ExportNameTable?.Strings != null)
+            if (exe.ExportNameTable?.Strings is not null)
                 containsCheck = Array.Exists(exe.ExportNameTable.Strings, s => s.OptionalStartsWith("CVPInitializeClient"));
 
             // Get the .rdata section strings, if they exist
             bool containsCheck2 = false;
             var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 containsCheck2 = strs.Exists(s => s.EndsWith("ATTLIST"))
                     && strs.Exists(s => s.Equals("ELEMENT"))

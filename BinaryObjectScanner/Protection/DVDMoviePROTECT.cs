@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Protection
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var protections = new List<string>();
-            if (files == null)
+            if (files is null)
                 return protections;
 
             if (Directory.Exists(Path.Combine(path, "VIDEO_TS")))
@@ -20,7 +20,7 @@ namespace BinaryObjectScanner.Protection
                 for (int i = 0; i < bupfiles.Count; i++)
                 {
                     var bupfile = new FileInfo(bupfiles[i]);
-                    if (bupfile.DirectoryName == null)
+                    if (bupfile.DirectoryName is null)
                         continue;
 
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER

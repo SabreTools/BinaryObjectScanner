@@ -26,7 +26,7 @@ namespace BinaryObjectScanner.Data
         public void Append(string key, string? value)
         {
             // If the value is empty, don't add it
-            if (value == null || value.Trim().Length == 0)
+            if (value is null || value.Trim().Length == 0)
                 return;
 
             EnsureKey(key);
@@ -47,7 +47,7 @@ namespace BinaryObjectScanner.Data
             EnsureKey(key);
             foreach (string value in values)
             {
-                if (value == null || value.Trim().Length == 0)
+                if (value is null || value.Trim().Length == 0)
                     continue;
 
                 foreach (string subValue in ProcessProtectionString(value))
@@ -79,7 +79,7 @@ namespace BinaryObjectScanner.Data
         public void Append(ProtectionDictionary? addition)
         {
             // If the dictionary is missing, just return
-            if (addition == null)
+            if (addition is null)
                 return;
 
             // Loop through each of the addition keys and add accordingly
@@ -106,10 +106,10 @@ namespace BinaryObjectScanner.Data
 
                 // If the key is empty, remove it
 #if NET20 || NET35
-                if (this[key] == null || this[key].Count == 0)
+                if (this[key] is null || this[key].Count == 0)
                     Remove(key);
 #else
-                if (this[key] == null || this[key].IsEmpty)
+                if (this[key] is null || this[key].IsEmpty)
                     TryRemove(key, out _);
 #endif
             }
@@ -189,13 +189,13 @@ namespace BinaryObjectScanner.Data
         /// <param name="values">Queue to get data from</param>
         private void AddRangeToKey(string key, IEnumerable<string> values)
         {
-            if (values == null)
+            if (values is null)
                 return;
 
             EnsureKey(key);
             foreach (string value in values)
             {
-                if (value == null || value.Trim().Length == 0)
+                if (value is null || value.Trim().Length == 0)
                     continue;
 
                 foreach (string subValue in ProcessProtectionString(value))

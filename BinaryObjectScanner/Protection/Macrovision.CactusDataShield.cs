@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("\\*.CDS")))
                     return "Cactus Data Shield 200";
@@ -113,7 +113,7 @@ namespace BinaryObjectScanner.Protection
         public static string GetCactusDataShieldVersion(string firstMatchedString, List<string>? files)
         {
             // If we have no files
-            if (files == null)
+            if (files is null)
                 return string.Empty;
 
             // Find the version.txt file first
@@ -137,7 +137,7 @@ namespace BinaryObjectScanner.Protection
             {
                 using var sr = new StreamReader(path, Encoding.Default);
                 var line = sr.ReadLine();
-                if (line == null)
+                if (line is null)
                     return null;
 
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER

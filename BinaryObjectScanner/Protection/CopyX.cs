@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Protection
             // Checks for Professional
             // PEX checks intentionally only detect Professional
 
-            if (exe.OverlayStrings != null)
+            if (exe.OverlayStrings is not null)
             {
                 // Checks if main executable contains reference to optgraph.dll.
                 // This might be better removed later, as Redump ID 82475 is a false positive, and also doesn't actually
@@ -76,7 +76,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Samples: Redump ID 82475, German Emergency 2 Deluxe, Redump ID 48393
                 if (strs.Exists(s => s.Contains("optgraph.dll")))
@@ -90,7 +90,7 @@ namespace BinaryObjectScanner.Protection
         public List<string> CheckDirectoryPath(string path, List<string>? files)
         {
             var protections = new List<string>();
-            if (files == null)
+            if (files is null)
                 return protections;
 
             // Checks for Light
@@ -124,7 +124,7 @@ namespace BinaryObjectScanner.Protection
                     break;
             }
 
-            if ((lightFiles != null) && (lightFiles.Count > 0))
+            if ((lightFiles is not null) && (lightFiles.Count > 0))
             {
                 try
                 {

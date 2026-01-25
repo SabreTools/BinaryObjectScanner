@@ -24,7 +24,7 @@ namespace BinaryObjectScanner.Packer
                 return "Wise Installation Wizard Module";
 
             // If the section header can be found
-            if (exe.WiseSection != null)
+            if (exe.WiseSection is not null)
                 return "Wise Installation Wizard Module";
 
             return null;

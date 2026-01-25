@@ -35,7 +35,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "START.EXE" (Redump entry 95010 and product ID SVWC-7185).
                 if (strs.Exists(s => s.Contains("LGCD2_LAUNCH")))

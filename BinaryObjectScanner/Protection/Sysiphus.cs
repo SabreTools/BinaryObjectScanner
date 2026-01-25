@@ -11,10 +11,10 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 var str = strs.Find(s => s.Contains("V SUHPISYS"));
-                if (str != null)
+                if (str is not null)
                     return $"Sysiphus {GetVersion(str)}";
             }
 

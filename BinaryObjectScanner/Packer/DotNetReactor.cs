@@ -25,7 +25,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .text section, if it exists
             var textData = exe.GetFirstSectionData(".text");
-            if (textData != null)
+            if (textData is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {

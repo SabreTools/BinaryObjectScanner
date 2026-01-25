@@ -75,7 +75,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .vbn section, if it exists
             var vbnData = exe.GetFirstSectionData(".vbn");
-            if (vbnData != null)
+            if (vbnData is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -195,7 +195,7 @@ namespace BinaryObjectScanner.Protection
         private string? GetVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             // Check the internal versions

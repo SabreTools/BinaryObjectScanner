@@ -11,13 +11,13 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the .rsrc section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".rsrc");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "nfsc_link.exe" in IA item "nfscorigin".
                 // Full string:
                 // (: ) InterLok PC v2.0, PACE Anti-Piracy, Copyright (C) 1998, ALL RIGHTS RESERVED
                 var match = strs.Find(s => s.Contains("InterLok") && s.Contains("PACE Anti-Piracy"));
-                if (match != null)
+                if (match is not null)
                     return $"PACE Anti-Piracy InterLok {GetVersion(match)}";
             }
 

@@ -37,8 +37,8 @@ namespace BinaryObjectScanner.Protection
                 return $"SolidShield {GetInternalVersion(exe)}";
 
             name = exe.ProductName;
-            
-            // Only observed with Solidshield 3.0.0.0 games such as Redump ID 119211. Extracted from main executable. 
+
+            // Only observed with Solidshield 3.0.0.0 games such as Redump ID 119211. Extracted from main executable.
             if (exe.FileDescription.OptionalStartsWith("CORE Library", StringComparison.OrdinalIgnoreCase)
                 && name.OptionalStartsWith("Solidshield", StringComparison.OrdinalIgnoreCase))
             {
@@ -61,7 +61,7 @@ namespace BinaryObjectScanner.Protection
             if (exe.ContainsSection(".init"))
             {
                 var initData = exe.GetFirstSectionData(".init");
-                if (initData != null)
+                if (initData is not null)
                 {
                     var matchers = new List<ContentMatchSet>
                 {
@@ -90,10 +90,10 @@ namespace BinaryObjectScanner.Protection
             {
                 // Get the nth section strings, if they exist
                 var strs = exe.GetSectionStrings(i);
-                if (strs != null)
+                if (strs is not null)
                 {
                     var str = strs.Find(s => s.Contains("Solidshield "));
-                    if (str != null)
+                    if (str is not null)
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
                         return $"SolidShield EXE Wrapper {str["Solidshield ".Length..]}";
 #else
@@ -103,7 +103,7 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the import directory table, if it exists
-            if (exe.ImportDirectoryTable != null)
+            if (exe.ImportDirectoryTable is not null)
             {
                 if (Array.Exists(exe.ImportDirectoryTable, idte => idte?.Name == "dvm.dll"))
                     return "SolidShield EXE Wrapper v1";
@@ -160,7 +160,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetExeWrapperVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             int position = positions[0];
@@ -187,7 +187,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersionPlusTages(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             int position = positions[0];

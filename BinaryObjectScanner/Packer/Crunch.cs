@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Packer
             // Get the last section strings, if they exist
             var sections = exe.SectionTable ?? [];
             var strs = exe.GetSectionStrings(sections.Length - 1);
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("BITARTS")))
                     return "Crunch";

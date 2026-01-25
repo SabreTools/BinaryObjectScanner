@@ -193,7 +193,7 @@ namespace ProtectionScan.Features
         /// <param name="protections">Dictionary of protections found, if any</param>
         private void WriteProtectionResults(string path, Dictionary<string, List<string>> protections)
         {
-            if (protections == null)
+            if (protections is null)
             {
                 Console.WriteLine($"No protections found for {path}");
                 return;
@@ -250,7 +250,7 @@ namespace ProtectionScan.Features
         /// <param name="protections">Dictionary of protections found, if any</param>
         private void WriteProtectionResultJson(string path, Dictionary<string, List<string>> protections)
         {
-            if (protections == null)
+            if (protections is null)
             {
                 Console.WriteLine($"No protections found for {path}");
                 return;

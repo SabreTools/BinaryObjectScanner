@@ -22,10 +22,10 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the header padding strings, if it exists
-            if (exe.HeaderPaddingStrings != null)
+            if (exe.HeaderPaddingStrings is not null)
             {
                 var match = exe.HeaderPaddingStrings.Find(s => s.Contains("Gefest Protection System"));
-                if (match != null)
+                if (match is not null)
                     return $"Gefest Protection System {GetVersion(match)}";
             }
 

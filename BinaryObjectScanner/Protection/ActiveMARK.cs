@@ -37,7 +37,7 @@ namespace BinaryObjectScanner.Protection
             // - In the stub data, there's a string for the download: "http://d.trymedia.com/dd/..."
 
             // Get the entry point data, if it exists
-            if (exe.EntryPointData != null)
+            if (exe.EntryPointData is not null)
             {
                 // Found in "Zuma.exe"
                 if (exe.EntryPointData.StartsWith(new byte?[] { 0x89, 0x25, 0x04, 0xF0, 0x86, 0x00, 0x68, 0x30 }))
@@ -46,7 +46,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data section strings, if they exist
             var strs = exe.GetLastSectionStrings(".data");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("MPRMMGVA"))
                     && strs.Exists(s => s.Contains("This application cannot run with an active debugger in memory.")))
@@ -60,14 +60,14 @@ namespace BinaryObjectScanner.Protection
             if (resources.Count > 0)
             {
                 bool match = resources
-                    .ConvertAll(r => r == null ? string.Empty : Encoding.ASCII.GetString(r))
+                    .ConvertAll(r => r is null ? string.Empty : Encoding.ASCII.GetString(r))
                     .FindIndex(r => r.Contains("ActiveMARK")) > -1;
                 if (match)
                     return "ActiveMARK";
             }
 
             // Get the overlay data, if it exists
-            if (exe.OverlayStrings != null)
+            if (exe.OverlayStrings is not null)
             {
                 if (exe.OverlayStrings.Exists(s => s.Contains("TMSAMVOH")))
                     return "ActiveMARK";
@@ -75,7 +75,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the last .bss section strings, if they exist
             strs = exe.GetLastSectionStrings(".bss");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("TMSAMVOF")))
                     return "ActiveMARK";

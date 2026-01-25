@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the export directory table
-            if (exe.ExportDirectoryTable != null)
+            if (exe.ExportDirectoryTable is not null)
             {
                 // Found in "cenega.dll" in IA item "speed-pack".
                 bool match = exe.ExportDirectoryTable.Name.OptionalEquals("ProtectDVD.dll", StringComparison.OrdinalIgnoreCase);

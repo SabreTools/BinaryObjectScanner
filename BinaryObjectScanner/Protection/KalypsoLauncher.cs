@@ -41,7 +41,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .text section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "TFT.exe" in Redump entry 95617.
                 if (strs.Exists(s => s.Contains("@KalypsoLauncherXml")))

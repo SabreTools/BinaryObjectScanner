@@ -150,7 +150,7 @@ namespace BinaryObjectScanner.Data
         {
             // Get information from the type param
             string? interfaceName = typeof(T).FullName;
-            if (interfaceName == null)
+            if (interfaceName is null)
                 return [];
 
             // If not all types can be loaded, use the ones that could be
@@ -173,7 +173,7 @@ namespace BinaryObjectScanner.Data
             foreach (Type? type in assemblyTypes)
             {
                 // Skip invalid types
-                if (type == null)
+                if (type is null)
                     continue;
 
                 // If the type isn't a class
@@ -187,7 +187,7 @@ namespace BinaryObjectScanner.Data
 
                 // Try to create a concrete instance of the type
                 var instance = (T?)Activator.CreateInstance(type);
-                if (instance != null)
+                if (instance is not null)
                     classTypes.Add(instance);
             }
 

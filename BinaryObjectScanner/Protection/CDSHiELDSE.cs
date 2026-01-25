@@ -10,7 +10,7 @@ namespace BinaryObjectScanner.Protection
         {
             // TODO: Indicates Hypertech Crack Proof as well?
             //// Get the import directory table
-            //if (exe.ImportDirectoryTable != null)
+            //if (exe.ImportDirectoryTable is not null)
             //{
             //    bool match = exe.ImportDirectoryTable.Any(idte => idte.Name == "KeRnEl32.dLl");
             //    if (match)
@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the code/CODE section strings, if they exist
             var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("~0017.tmp")))
                     return "CDSHiELD SE";

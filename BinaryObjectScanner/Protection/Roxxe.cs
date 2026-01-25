@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Protection
         {
             // Get the code/CODE section strings, if they exist
             var strs = exe.GetFirstSectionStrings("code") ?? exe.GetFirstSectionStrings("CODE");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "Owar.exe" in IA item "game4u-22-cd".
                 if (strs.Exists(s => s.Contains("TRCHANGER.INI")))
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Protection
             // Get the .rsrc section strings, if they exist
             // TODO: Check for these strings specifically within the application-defined resource that they're found in, not just the generic resource section.
             strs = exe.GetFirstSectionStrings(".rsrc");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "Owar.exe" in IA items "game4u-22-cd" and "original-war".
                 // These checks are less reliable, as they are still found in a version of the game that appears to have patched out Roxxe (the version present in IA item "original-war").

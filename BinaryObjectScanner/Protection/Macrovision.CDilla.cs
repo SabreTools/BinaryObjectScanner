@@ -56,7 +56,6 @@ namespace BinaryObjectScanner.Protection
             // File Description "C-Dilla Windows NT RTS" in "CDILLA05.DLL"/"CDILLA10.EXE"/"CDILLA16.EXE" from C-Dilla LMS version 3.27.000 for Windows NT.
             // File Description "C-Dilla Windows 16-Bit RTS Installer" in "CdaIns16.dll"/"CdSetup.exe" from C-Dilla LMS version 3.27.000.
 
-
             return null;
         }
 
@@ -115,7 +114,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 // Found in "DJMixStation\DJMixStation.exe" in IA item "ejay_nestle_trial".
                 if (strs.Exists(s => s.Contains("SOFTWARE\\C-Dilla\\RTS")))

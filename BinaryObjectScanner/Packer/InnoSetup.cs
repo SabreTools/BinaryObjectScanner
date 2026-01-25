@@ -15,7 +15,7 @@ namespace BinaryObjectScanner.Packer
         {
             // Check for "Inno" in the reserved words
             var reserved2 = exe.Stub?.Header?.Reserved2;
-            if (reserved2 != null && reserved2.Length > 5)
+            if (reserved2 is not null && reserved2.Length > 5)
             {
                 if (reserved2[4] == 0x6E49 && reserved2[5] == 0x6F6E)
                 {
@@ -35,10 +35,10 @@ namespace BinaryObjectScanner.Packer
         {
             // Get the .data/DATA section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 var str = strs.Find(s => s.StartsWith("Inno Setup Setup Data"));
-                if (str != null)
+                if (str is not null)
                 {
                     return str.Replace("Inno Setup Setup Data", "Inno Setup")
                         .Replace("(u)", "[Unicode]")
@@ -62,7 +62,7 @@ namespace BinaryObjectScanner.Packer
 
 #pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
-            if (data == null)
+            if (data is null)
                 return "Unknown 1.X";
 
             var matchers = new List<ContentMatchSet>

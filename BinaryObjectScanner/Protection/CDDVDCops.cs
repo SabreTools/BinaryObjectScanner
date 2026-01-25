@@ -74,7 +74,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Don't read entire file
 #pragma warning disable CS0618
             byte[]? data = exe.ReadArbitraryRange();
-            if (data == null)
+            if (data is null)
                 return null;
 
             // TODO: Figure out what NE section this lives in
@@ -121,11 +121,11 @@ namespace BinaryObjectScanner.Protection
 
             // Get the resident and non-resident name table strings
             var nrntStrs = Array.ConvertAll(exe.NonResidentNameTable ?? [],
-                nrnte => nrnte?.NameString == null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
+                nrnte => nrnte?.NameString is null ? string.Empty : Encoding.ASCII.GetString(nrnte.NameString));
 
             // Check the imported-name table
             // Found in "h3blade.exe" in Redump entry 85077.
-            if (exe.ImportedNameTable != null)
+            if (exe.ImportedNameTable is not null)
             {
                 foreach (var inte in exe.ImportedNameTable.Values)
                 {
@@ -150,7 +150,7 @@ namespace BinaryObjectScanner.Protection
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
             // Get the stub executable data, if it exists
-            if (exe.StubExecutableData != null)
+            if (exe.StubExecutableData is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -182,10 +182,10 @@ namespace BinaryObjectScanner.Protection
             // This contains the version section that the Content Check looked for. There are likely other sections
             // that may contain it. Update when more are found.
             var strs = exe.GetFirstSectionStrings(".data") ?? exe.GetFirstSectionStrings("DATA");
-            if (strs != null)
+            if (strs is not null)
             {
                 var match = strs.Find(s => s.Contains(" ver. ") && (s.Contains("CD-Cops, ") || s.Contains("DVD-Cops, ")));
-                if (match != null)
+                if (match is not null)
                     if (match.Contains("CD-Cops"))
                         return $"CD-Cops {GetVersionString(match)}";
                     else if (match.Contains("DVD-Cops"))
@@ -258,7 +258,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             string version = Encoding.ASCII.GetString(fileContent, positions[0] + 15, 4);

@@ -11,7 +11,7 @@ namespace BinaryObjectScanner.Packer
         {
             // Get the .rdata section strings, if they exist
             var strs = exe.GetFirstSectionStrings(".rdata");
-            if (strs != null)
+            if (strs is not null)
             {
                 if (strs.Exists(s => s.Contains("Software\\Caphyon\\Advanced Installer")))
                     return "Caphyon Advanced Installer SFX";

@@ -87,7 +87,7 @@ namespace BinaryObjectScanner.Protection
 
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            if (dataSectionRaw is not null)
             {
                 var matchers = new List<ContentMatchSet>
                 {
@@ -269,7 +269,7 @@ namespace BinaryObjectScanner.Protection
         private static string? GetVersion(string file, byte[]? fileContent, List<int> positions)
         {
             // If we have no content
-            if (fileContent == null)
+            if (fileContent is null)
                 return null;
 
             // TODO: Determine difference between API and BASIC

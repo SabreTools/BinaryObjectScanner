@@ -18,7 +18,7 @@ namespace BinaryObjectScanner.Packer
                 return "ASPack 2.29";
 
             // Use the entry point data, if it exists
-            if (exe.EntryPointData != null)
+            if (exe.EntryPointData is not null)
             {
                 var matchers = GenerateMatchers();
                 var match = MatchUtil.GetFirstMatch(file, exe.EntryPointData, matchers, includeDebug);
@@ -28,7 +28,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .adata* section, if it exists
             var adataSectionRaw = exe.GetFirstSectionData(".adata", exact: false);
-            if (adataSectionRaw != null)
+            if (adataSectionRaw is not null)
             {
                 var matchers = GenerateMatchers();
                 var match = MatchUtil.GetFirstMatch(file, adataSectionRaw, matchers, includeDebug);
@@ -38,7 +38,7 @@ namespace BinaryObjectScanner.Packer
 
             // Get the .data/DATA section, if it exists
             var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
-            if (dataSectionRaw != null)
+            if (dataSectionRaw is not null)
             {
                 var matchers = GenerateMatchers();
                 var match = MatchUtil.GetFirstMatch(file, dataSectionRaw, matchers, includeDebug);
