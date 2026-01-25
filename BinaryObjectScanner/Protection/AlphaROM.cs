@@ -94,8 +94,8 @@ namespace BinaryObjectScanner.Protection
 #if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
                 if (!int.TryParse(applicationIdentifierString.AsSpan(0, 4), out int year)
                     || !int.TryParse(applicationIdentifierString.AsSpan(4, 2), out int month)
-                    || i!nt.TryParse(applicationIdentifierString.AsSpan(6, 2), out int day)
-                    || i!nt.TryParse(applicationIdentifierString.AsSpan(8, 6), out int extraTime))
+                    || !int.TryParse(applicationIdentifierString.AsSpan(6, 2), out int day)
+                    || !int.TryParse(applicationIdentifierString.AsSpan(8, 6), out int extraTime))
 #else
                 if (!int.TryParse(applicationIdentifierString.Substring(0, 4), out int year)
                     || !int.TryParse(applicationIdentifierString.Substring(4, 2), out int month)
