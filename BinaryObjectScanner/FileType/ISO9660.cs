@@ -7,6 +7,7 @@ using BinaryObjectScanner.Data;
 using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO.Extensions;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>

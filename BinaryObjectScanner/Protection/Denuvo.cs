@@ -7,6 +7,7 @@ using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 using OHMN = SabreTools.Data.Models.COFF.OptionalHeaderMagicNumber;
 
+#pragma warning disable IDE0230 // Use UTF-8 string literal
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>

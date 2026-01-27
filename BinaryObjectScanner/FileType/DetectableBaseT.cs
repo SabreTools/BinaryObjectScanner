@@ -1,6 +1,7 @@
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>

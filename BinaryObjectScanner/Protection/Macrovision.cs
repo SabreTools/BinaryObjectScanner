@@ -8,6 +8,7 @@ using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>

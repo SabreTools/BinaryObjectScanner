@@ -153,7 +153,6 @@ namespace BinaryObjectScanner.FileType
                         protections.Add("SafeDiscLT for Macintosh (Unknown Version - Please report to us on GitHub)");
                 }
 
-
                 // The full line from a sample is as follows:
                 //
                 // The files securom_v7_01.dat and securom_v7_01.bak have been created during the installation of a SecuROM protected application.

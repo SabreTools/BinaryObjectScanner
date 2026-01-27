@@ -9,6 +9,7 @@ using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
 namespace BinaryObjectScanner.Protection
 {
     // This protection was called VOB ProtectCD / ProtectDVD in versions prior to 6

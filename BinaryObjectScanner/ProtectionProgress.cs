@@ -1,4 +1,5 @@
-﻿namespace BinaryObjectScanner
+﻿#pragma warning disable IDE0290 // Use primary constructor
+namespace BinaryObjectScanner
 {
     /// <summary>
     /// Struct representing protection scanning progress

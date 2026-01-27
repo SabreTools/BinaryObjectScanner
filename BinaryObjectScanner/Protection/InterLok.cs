@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
 
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
 namespace BinaryObjectScanner.Protection
 {
     public class InterLok : IExecutableCheck<PortableExecutable>

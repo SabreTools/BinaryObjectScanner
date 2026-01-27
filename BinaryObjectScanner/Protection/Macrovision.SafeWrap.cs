@@ -1,5 +1,7 @@
 ﻿using SabreTools.Serialization.Wrappers;
 
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>

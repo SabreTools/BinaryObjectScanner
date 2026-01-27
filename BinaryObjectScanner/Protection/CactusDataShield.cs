@@ -3,6 +3,7 @@ using BinaryObjectScanner.Interfaces;
 using SabreTools.IO;
 using SabreTools.IO.Matching;
 
+#pragma warning disable IDE0230 // Use UTF-8 string literal
 namespace BinaryObjectScanner.Protection
 {
     public class CactusDataShield : IContentCheck

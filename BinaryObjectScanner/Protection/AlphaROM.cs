@@ -6,6 +6,7 @@ using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
 namespace BinaryObjectScanner.Protection
 {
     /// <summary>

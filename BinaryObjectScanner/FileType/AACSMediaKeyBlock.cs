@@ -1,5 +1,6 @@
 using System.IO;
 
+#pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType
 {
     /// <summary>

@@ -9,6 +9,7 @@ using SabreTools.IO.Matching;
 using SabreTools.Serialization.Wrappers;
 using static SabreTools.Data.Models.SecuROM.Constants;
 
+#pragma warning disable IDE0059 // Unnecessary assignment of value
 namespace BinaryObjectScanner.Protection
 {
     // TODO: Investigate SecuROM for Macintosh
