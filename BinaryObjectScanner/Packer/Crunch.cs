@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Packer
             // TODO: Investigate if this can be found by aligning to section containing entry point
 
             // Get the last section strings, if they exist
-            var sections = exe.SectionTable ?? [];
+            var sections = exe.SectionTable;
             var strs = exe.GetSectionStrings(sections.Length - 1);
             if (strs is not null)
             {

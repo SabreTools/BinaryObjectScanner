@@ -19,7 +19,7 @@ namespace BinaryObjectScanner.Protection
 
             // TODO: Investigate if this can be found by aligning to section containing entry point
 
-            var sections = exe.SectionTable ?? [];
+            var sections = exe.SectionTable;
             if (sections.Length > 0)
             {
                 // Get the last section data, if it exists

@@ -85,7 +85,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Investigate if this can be found by aligning to section containing entry point
 
             // Search the last two available sections
-            var sections = exe.SectionTable ?? [];
+            var sections = exe.SectionTable;
             for (int i = Math.Max(sections.Length - 2, 0); i < sections.Length; i++)
             {
                 // Get the nth section strings, if they exist

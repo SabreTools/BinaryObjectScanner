@@ -65,7 +65,7 @@ namespace BinaryObjectScanner.Protection
             // TODO: Investigate if this can be found by aligning to section containing entry point
 
             // Get the 4th and 5th sections, if they exist (example names: ACE4/ACE5) (Found in Redump entries 94792, 94793)
-            var sections = exe.SectionTable ?? [];
+            var sections = exe.SectionTable;
             for (int i = 3; i < sections.Length; i++)
             {
                 var nthSectionData = exe.GetSectionData(i);
