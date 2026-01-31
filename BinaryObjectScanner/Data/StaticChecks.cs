@@ -17,9 +17,11 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                contentCheckClasses ??= InitCheckClasses<IContentCheck>();
-                return contentCheckClasses;
+                field ??= InitCheckClasses<IContentCheck>();
+                return field;
             }
+
+            private set;
         }
 
         /// <summary>
@@ -29,8 +31,8 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                iso9660CheckClasses ??= InitCheckClasses<IDiskImageCheck<ISO9660>>();
-                return iso9660CheckClasses;
+                field ??= InitCheckClasses<IDiskImageCheck<ISO9660>>();
+                return field;
             }
         }
 
@@ -41,8 +43,8 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                linearExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<LinearExecutable>>();
-                return linearExecutableCheckClasses;
+                field ??= InitCheckClasses<IExecutableCheck<LinearExecutable>>();
+                return field;
             }
         }
 
@@ -53,8 +55,8 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                msdosExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<MSDOS>>();
-                return msdosExecutableCheckClasses;
+                field ??= InitCheckClasses<IExecutableCheck<MSDOS>>();
+                return field;
             }
         }
 
@@ -65,8 +67,8 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                newExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<NewExecutable>>();
-                return newExecutableCheckClasses;
+                field ??= InitCheckClasses<IExecutableCheck<NewExecutable>>();
+                return field;
             }
         }
 
@@ -77,8 +79,8 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                pathCheckClasses ??= InitCheckClasses<IPathCheck>();
-                return pathCheckClasses;
+                field ??= InitCheckClasses<IPathCheck>();
+                return field;
             }
         }
 
@@ -89,9 +91,11 @@ namespace BinaryObjectScanner.Data
         {
             get
             {
-                portableExecutableCheckClasses ??= InitCheckClasses<IExecutableCheck<PortableExecutable>>();
-                return portableExecutableCheckClasses;
+                field ??= InitCheckClasses<IExecutableCheck<PortableExecutable>>();
+                return field;
             }
+
+            private set;
         }
 
         #endregion
@@ -101,37 +105,6 @@ namespace BinaryObjectScanner.Data
         /// <summary>
         /// Cache for all IContentCheck types
         /// </summary>
-        private static IContentCheck[]? contentCheckClasses;
-
-        /// <summary>
-        /// Cache for all IISOCheck<ISO9660> types
-        /// </summary>
-        private static IDiskImageCheck<ISO9660>[]? iso9660CheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<LinearExecutable> types
-        /// </summary>
-        private static IExecutableCheck<LinearExecutable>[]? linearExecutableCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<MSDOS> types
-        /// </summary>
-        private static IExecutableCheck<MSDOS>[]? msdosExecutableCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<NewExecutable> types
-        /// </summary>
-        private static IExecutableCheck<NewExecutable>[]? newExecutableCheckClasses;
-
-        /// <summary>
-        /// Cache for all IPathCheck types
-        /// </summary>
-        private static IPathCheck[]? pathCheckClasses;
-
-        /// <summary>
-        /// Cache for all IExecutableCheck<PortableExecutable> types
-        /// </summary>
-        private static IExecutableCheck<PortableExecutable>[]? portableExecutableCheckClasses;
 
         #endregion
 
