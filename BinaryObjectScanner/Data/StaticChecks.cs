@@ -100,14 +100,6 @@ namespace BinaryObjectScanner.Data
 
         #endregion
 
-        #region Internal Instances
-
-        /// <summary>
-        /// Cache for all IContentCheck types
-        /// </summary>
-
-        #endregion
-
         #region Helpers
 
         /// <summary>
