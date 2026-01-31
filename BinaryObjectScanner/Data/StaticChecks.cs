@@ -20,8 +20,6 @@ namespace BinaryObjectScanner.Data
                 field ??= InitCheckClasses<IContentCheck>();
                 return field;
             }
-
-            private set;
         }
 
         /// <summary>
