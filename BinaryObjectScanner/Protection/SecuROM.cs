@@ -23,6 +23,7 @@ namespace BinaryObjectScanner.Protection
         private static readonly Dictionary<string, string> MatroschkaHashDictionary = new()
         {
             {"C6DFF6B08EE126893840E107FD4EC9F6", "Alice - Madness Returns (USA)+(Europe)"},
+            {"890C4DBDB7819D1FC73FE2105CED79FA", "Alice - Madness Returns (Steam v0)"},
             {"D7703D32B72185358D58448B235BD55E", "Arcania - Gothic 4 (Australia)"}, // International version (English, French, Italian, German, Spanish)
             // Arcania - Gothic 4 - Polish(/Hungarian?) - known to most likely exist. Likely matches support site exe.
             {"83CD6225899C08422F860095962287A5", "Arcania - Gothic 4 (Russia)"},
