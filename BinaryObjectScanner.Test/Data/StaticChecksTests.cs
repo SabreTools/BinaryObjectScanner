@@ -44,7 +44,7 @@ namespace BinaryObjectScanner.Test.Data
         public void PortableExecutableCheckClasses_Populated()
         {
             var actual = StaticChecks.PortableExecutableCheckClasses;
-            Assert.Equal(105, actual.Length);
+            Assert.Equal(106, actual.Length);
         }
     }
 }
