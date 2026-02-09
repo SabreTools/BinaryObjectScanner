@@ -92,8 +92,7 @@ namespace BinaryObjectScanner.Protection
             { 1302571565, "624 (v1) - server.dll" },
             { 1302826609, "624 (v2) - client.dll" },
             { 1302826617, "624 (v2) - server.dll" },
-            { 1303167652, "624 (v3) - client.dll" },
-            { 1303167652, "624 (v3) - server.dll" },
+            { 1303167652, "624 (v3) - client.dll or server.dll" }, // They managed to compile these at exactly the same time. Not worth adding a fallback check.
             { 1303340899, "624 (v4) - client.dll" },
             { 1303340888, "624 (v4) - server.dll" },
             { 1304039554, "624 (v5) - client.dll" },
@@ -116,8 +115,7 @@ namespace BinaryObjectScanner.Protection
             { 1309907989, "624 (v13) - server.dll" },
             { 1314674927, "624 (v14) - client.dll" },
             { 1314674916, "624 (v14) - server.dll" },
-            { 1315589945, "624 (v15) - client.dll" },
-            { 1315589945, "624 (v15) - server.dll" },
+            { 1315589945, "624 (v15) - client.dll or server.dll" },  // They managed to compile these at exactly the same time. Not worth adding a fallback check.
             { 1317149048, "624 (v16) - client.dll" },
             { 1317148954, "624 (v16) - server.dll" },
             { 1317924784, "624 (v17) - client.dll" },
@@ -139,8 +137,7 @@ namespace BinaryObjectScanner.Protection
             { 1303445283, "660 (v4) - server_sixense.dll" }, // Raw contains strips??
             { 1304564426, "660 (v5) - client_sixense.dll" },
             { 1304564439, "660 (v5) - server_sixense.dll" },
-            { 1305221656, "660 (v6) - client_sixense.dll" },
-            { 1305221656, "660 (v6) - server_sixense.dll" },
+            { 1305221656, "660 (v6) - client_sixense.dll or server_sixense.dll" }, // They managed to compile these at exactly the same time. Not worth adding a fallback check.
             { 1305768194, "660 (v7) - client_sixense.dll" },
             { 1305768193, "660 (v7) - server_sixense.dll" },
             { 1307416804, "660 (v8) - client_sixense.dll" },
@@ -156,10 +153,8 @@ namespace BinaryObjectScanner.Protection
             { 1336517443, "660 (v18) - server_sixense.dll" },
             { 1336928774, "660 (v19) - client_sixense.dll" },
             { 1336928791, "660 (v19) - server_sixense.dll" },
-            { 1337618665, "660 (v20) - client_sixense.dll" }, // Raw contains strips??
-            { 1337618520, "660 (v20) - server_sixense.dll" }, // Raw contains strips??
-            { 1337618665, "660 (v21) - client_sixense.dll" },
-            { 1337618520, "660 (v21) - server_sixense.dll" },
+            { 1337618665, "660 (v20-21) - client_sixense.dll" }, // Raw v20 contains strips already for some reason, v21 is stripped.
+            { 1337618520, "660 (v20-21) - server_sixense.dll" }, // Raw v20 contains strips already for some reason, v21 is stripped.
             { 1266543698, "8191 (v0) - JustCause2.exe" },
             { 1267609405, "8191 (v1) - JustCause2.exe" },
             { 1268790098, "8191 (v2) - JustCause2.exe" },
