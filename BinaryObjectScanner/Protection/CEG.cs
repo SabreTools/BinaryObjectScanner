@@ -16,7 +16,7 @@ namespace BinaryObjectScanner.Protection
             var strs = exe.GetFirstSectionStrings(".rdata");
             if (strs is not null)
             {
-                if (strs.Exists(s => s.Contains("STEAMSTART") && s.Contains("STEAM_DRM_IPC")))
+                if (strs.Exists(s => s.Contains("STEAMSTART")) && strs.Exists(s => s.Contains("STEAM_DRM_IPC")))
                 {
                     if (strs.Exists(s => s.Contains("This file has been stripped")))
                     {
