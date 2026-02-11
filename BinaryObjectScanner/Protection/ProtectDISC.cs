@@ -52,11 +52,14 @@ namespace BinaryObjectScanner.Protection
             // 7.5.0.61324 and 9.0.1119. ProtectDiSC versioning is very confusing, so this is not the "actual" version
             // number and should not be printed.
             // Previous versions just have spaces here, so it doesn't need to be validated beyond that.
-            var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
+            // Some ProtectDiSC 6 discs also have version number, such as RID 114936 having 1.1.2286.18916, and
+            // 131176 having 1.1.2162.19023. The below check is commented out because there's likely something that
+            // can be done with it, it's just difficult to do anything while ProtectDiSC versioning is still unclear.
+            /*var abstractIdentifierString = pvd.AbstractFileIdentifier.ReadNullTerminatedAnsiString(ref offset);
             if (abstractIdentifierString is null || abstractIdentifierString.Trim().Length == 0)
-                return "ProtectDiSC 6-7.x";
+                return "ProtectDiSC 6-7.x";*/
 
-            return "ProtectDiSC 7.x+";
+            return "ProtectDiSC 6+";
         }
 
         /// <inheritdoc/>
