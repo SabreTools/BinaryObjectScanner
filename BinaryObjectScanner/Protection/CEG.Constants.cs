@@ -888,8 +888,9 @@ namespace BinaryObjectScanner.Protection
 
             // Steam3 manifest IDs don't increment numerically, but it's easier for organization to order up that way.
 
-            // TODO: was anything in 573
-            // TODO: those 4 bioshock infinite ones
+            // TODO: 573 didn't have CEG in it, but probably should have.
+            // TODO: 4 bioshock infinite executables seemed to have CEG, but no mention of strips.
+
             #region steam3
 
             { 1345246771, "624 (294618337563028519) - client.dll" },
