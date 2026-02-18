@@ -2,13 +2,18 @@ using System.Collections.Generic;
 
 namespace BinaryObjectScanner.Protection
 {
+    // The large dictionaries and hash sets that CEG.cs needs for its logic.
+    // Contained in a separate file since dictionary size is very large.
     public partial class CEG
     {
         /// <summary>
         /// Dictionary of known CEG executables with the Steam Split GUID as the key, and the string value as a combination
         /// of depot ID, manifest version, and filename.
         /// </summary>
-        /// <remarks>Contained in a separate file since dictionary size is very large.</remarks>
+        /// <remarks>
+        /// As mentioned in CEG.cs, steam split GUID is used as the lookup key, as it identifies a unique
+        /// build of an executable.
+        /// </remarks>
         private static readonly Dictionary<string, string> CEGDictionary = new()
         {
 
@@ -907,7 +912,7 @@ namespace BinaryObjectScanner.Protection
             { "C9030A79-BDF5-44FC-A326-A8F4C66923D9", "57941 (v1) - Engine.dll" },
             { "46AE9FEB-5372-4CA7-A670-DD65D2858890", "57941 (v2) - Engine.dll" },
             { "0C7CB261-70E5-4AB3-9A25-AD56820E0362", "57941 (v3) - Engine.dll" },
-            { "1429ACD9-F711-42CB-B0EF-D3F2EDB65317", "57971 (v2) - Engine.dll" },
+            { "1429ACD9-F711-42CB-B0EF-D3F2EDB65317", "57971 (v2) - Engine.dll" }, //Raw contains strips already
             { "2A8F2CB7-0F55-4A76-AF52-93C9CC720ECE", "57971 (v3-6) - Engine.dll" }, //v3-5 contains strips but v6 does not
             { "0CF76A2C-528A-4054-9E49-11D431F7B4A4", "57971 (v7) - Engine.dll" },
             { "54896411-2A67-4215-BA3D-66BBDC6477DB", "57971 (v8-10) - Engine.dll" },
@@ -4468,8 +4473,14 @@ namespace BinaryObjectScanner.Protection
             #endregion
         };
 
-        // Cracks, and even otherwise uncracked/unmodified CEG executables from scene groups frequently have GUIDs
-        // zeroed out that shouldn't be. This backup dictionary is a fallback for such cases.
+        /// <summary>
+        /// Dictionary of known CEG executables with the COFF compilation timestamp as the key, and a string array
+        /// containing the one or more steam split GUIDs from executables with that timestamp.
+        /// </summary>
+        /// <remarks>
+        /// Cracks, and even otherwise uncracked/unmodified CEG executables from scene groups frequently have GUIDs,
+        /// zeroed out that shouldn't be. This backup dictionary is a fallback for such cases.
+        /// </remarks>
         private static readonly Dictionary<uint, string[]> CEGBackupDictionary = new()
         {
             {1241100718, [ "18140CC1-3CD6-443C-8CE0-AD59BA3FD63F" ] },
@@ -8815,27 +8826,38 @@ namespace BinaryObjectScanner.Protection
             {1534178082, [ "36DD7C19-D982-498C-8586-BF76BF016DE4" ] },
         };
 
-// TODO: This works on NET Framework 3.5 or higher, but there don't seem to be any version-specific Framework gates?
-// The handful of Steam2 binaries with strips accidentally left in will be added in the future.
 #if NETSTANDARD2_0_OR_GREATER || NET21_OR_GREATER || NETCOREAPP
+        /// <summary>
+        /// Hashset containing the steam split GUIDs for executables that proper strips have already been acquired for.
+        /// </summary>
+        /// <remarks>
+        /// In the future, this may be split out into two seperate tables, one for tampered/cracked executables
+        /// and one for executables that are untampered but still containing strips. It is uncertain if that will be
+        /// necessary at the moment, though.
+        /// </remarks>
         private static readonly HashSet<string> HaveStrips=
         [
             "0602B89C-4FAB-42F8-9772-C3A61D36AB93",
+            "060E4378-4B8C-40F5-ACFC-A42B98DBB076",
             "07E6E45C-53EC-4B02-AE0C-C1819A0FB711",
             "0BABFF62-3B97-47B3-AE40-0142E813AC3B",
             "0C7CB261-70E5-4AB3-9A25-AD56820E0362",
             "0DE14514-5181-46D2-8C77-1ABDECE94240",
+            "1429ACD9-F711-42CB-B0EF-D3F2EDB65317",
             "15CD5163-5D10-4105-A722-FFB9571C5056",
             "1A3B4A3C-2527-4083-BC81-E5F82A5D2CE4",
             "1D9D7F0A-6E7B-43EE-90EE-58F581C7F979",
             "1DE5BCDE-B808-429F-9E10-35EDF831C27C",
+            "231F723E-7254-4DC1-8B9C-022CE7904189",
             "26B97E2D-D353-4FB2-96E8-21D67C3C1F37",
             "276C2D70-95C4-43DF-8DA4-552E8C4C3B41",
             "2854AF7D-45F6-42C3-A616-EDA81538645F",
+            "2A8F2CB7-0F55-4A76-AF52-93C9CC720ECE",
             "2B7676EC-21B0-4E13-9C1B-54E3FCDB62CE",
             "2EBB06F5-26DF-4875-BF5B-E6DB76493F9F",
             "30D24BD9-4D77-4F49-985D-621B9A0D1E95",
             "36253D93-8480-4428-AFEA-34D3CBA7320A",
+            "3C6C52B9-4F6D-4115-A2CE-749650C22B59",
             "3FC9970B-52C6-4955-9646-8085EE449E6A",
             "4007E1C2-53C1-4A3C-AB65-ABD1CB9BEAB3",
             "41D9342E-3E66-42BA-B5DB-CA83CD8BD2B8",
@@ -8850,6 +8872,8 @@ namespace BinaryObjectScanner.Protection
             "567EDCFE-11A3-4D23-B93F-8AFCE5017E4D",
             "57821482-DD86-4245-8777-12F91CD2CBFE",
             "57B020ED-1F37-4129-A75B-D45E3BEA6B6E",
+            "5AD811F4-211E-49A7-B319-66CDB51145EF",
+            "5CBD1C44-1125-4223-9D2D-1141EBFA509D",
             "5EF4BC6E-E3A5-4005-BDFF-07E678C6D9EB",
             "5F42C2DC-BE31-43B0-A142-21EE176A2CD6",
             "612EB21A-ADBD-4816-BF14-EF2B582DCE82",
@@ -8875,6 +8899,7 @@ namespace BinaryObjectScanner.Protection
             "8700F4BC-40D8-4580-9C65-7634F986B8FA",
             "89A32520-62F6-4096-A44A-736542DAD36A",
             "89F1A432-21E8-443A-8D71-3C5CE21BF2CE",
+            "8DF83AB9-F9AA-4AF4-AA8F-263669FC4349",
             "90049F32-D85F-4D21-8B22-CB0F658EAADD",
             "914C4D90-AADC-4A6E-990A-CA32271B0D68",
             "91792E98-2899-407C-8A36-89468FC3B5CC",
@@ -8885,6 +8910,7 @@ namespace BinaryObjectScanner.Protection
             "99EA8B79-59FE-44F5-A853-8F6223AF84B2",
             "9B2061A9-B1DC-4960-BA05-EC15C1053C49",
             "9B92FE30-3C95-4B6F-B191-99314589C0AE",
+            "9CB6DD0A-C21F-47E4-ADDD-85F5E4D5AFA1",
             "9E7610EF-D53D-4D04-B84E-BEB03AC23304",
             "AA8038A1-D30B-4CB4-9C10-3975E040BD1D",
             "AB954105-F286-48A0-8DCB-340386EFB1FB",
@@ -8897,6 +8923,7 @@ namespace BinaryObjectScanner.Protection
             "C5B879E8-008C-420C-921D-A755DE0A868B",
             "C8B573B8-87DE-4753-A439-CC785304F772",
             "C8C62CD4-3853-4687-A7B7-348278CB8767",
+            "C98C9B3E-8694-44F1-A979-B8D1CE7DE2C0",
             "CB66315D-5B1D-467B-BEE7-3282295D51FD",
             "CBE134AF-C5BB-4A0B-B263-7CB1821C6FCF",
             "D22C72BD-5EC5-4705-89FB-881275D3199B",
