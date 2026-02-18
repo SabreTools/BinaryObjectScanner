@@ -4,6 +4,7 @@ namespace BinaryObjectScanner.Protection
 {
     // The large dictionaries and hash sets that CEG.cs needs for its logic.
     // Contained in a separate file since dictionary size is very large.
+    // TODO: Executables ran through LumaCEG are currently indistinguishable. A table of known OptionalHeader checksums may be worth looking into.
     public partial class CEG
     {
         /// <summary>
