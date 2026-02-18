@@ -88,6 +88,7 @@ namespace BinaryObjectScanner.Protection
                         {
                             return $"CEG - Possibly tampered - {tamperedName}{ReportHelper(tamperedName)}";
                         }
+
                         return "CEG - Unknown manifest, please report to us on GitHub!";
                     }
 
@@ -108,8 +109,8 @@ namespace BinaryObjectScanner.Protection
                                 returnString = $"{returnString} or";
                             }
                         }
-                        return returnString;
 
+                        return returnString;
                     }
 
                     // If it still can't be matched to anything, it's an unknown manifest.
@@ -123,7 +124,6 @@ namespace BinaryObjectScanner.Protection
                     return $"CEG - Stripped - {strippedName}";
                 else
                     return "CEG - Unknown manifest, please report to us on GitHub!";
-
             }
 
             // If the steam M instance is not all 0x00, it has strips.
@@ -131,7 +131,6 @@ namespace BinaryObjectScanner.Protection
                 return $"CEG - Contains Strips - {name}{ReportHelper(name)}";
             else
                 return "CEG - Unknown manifest, please report to us on GitHub!";
-
         }
 
         /// <summary>
@@ -141,7 +140,6 @@ namespace BinaryObjectScanner.Protection
         /// <returns>A string about reporting on GitHub if not found, otherwise returns null.</returns>
         private string? ReportHelper(string steamSplitGuid)
         {
-
 #if NETSTANDARD2_0_OR_GREATER || NET21_OR_GREATER || NETCOREAPP
             if (!HaveStrips.Contains(steamSplitGuid))
                 return "- Please report to us on GitHub!";
