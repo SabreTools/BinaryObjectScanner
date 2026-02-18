@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using SabreTools.IO.Extensions;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Serialization.Wrappers;
@@ -11,9 +9,6 @@ namespace BinaryObjectScanner.Protection
     /// of varying 4KiB "strips", and these "strips" would only be downloaded when the user attempted to run the game on
     /// Steam.
     /// </summary>
-    // TODO: DO .version CHECK TO AVOID steamclient.dll ISSUES
-    // TODO: add version and string checks as debug-gated info?
-    // TODO: add specific game output as debug-gated info?
     public partial class CEG : IExecutableCheck<PortableExecutable>
     {
         /// <summary>
@@ -45,9 +40,6 @@ namespace BinaryObjectScanner.Protection
         /// <inheritdoc/>
         public string? CheckExecutable(string file, PortableExecutable exe, bool includeDebug)
         {
-            // The .version section should always be present. Combined with a different check for a 4 byte constant,
-            // the string checks could be removed, although checking for strips still requires a string check anyways.
-
             string[] lookupValues = ["STEAM_GUIDD", "STEAM_MINSTANCE", "STEAM_SPLIT_GUID"];
             string[] returnedGuids = ["NOTHING", "NOTHING", "NOTHING"];
             int localOffset = 0;
@@ -56,8 +48,11 @@ namespace BinaryObjectScanner.Protection
                 var resourceDataList = exe.FindResourceByNamedType(lookupValues[i]);
                 if (resourceDataList.Count <= 0)
                 {
+                    // The .version section should always be present, besides the two aforementioned games that use
+                    // StarForce on top of CEG. If an executable contains a .version section, it almost certainly has
+                    // CEG.
                     if (exe.ContainsSection(".version"))
-                        return "CEG - Unable to parse resources";
+                        return "CEG - Unable to parse resources, please report to us on GitHub!";
 
                     return null;
                 }
@@ -75,21 +70,29 @@ namespace BinaryObjectScanner.Protection
             uint timestamp = exe.COFFFileHeader.TimeDateStamp;
 
             const string zeroGUID = "00000000-0000-0000-0000-000000000000";
+
+            // If steam M instance is all 0x00, either the executable is stripped or it was tampered with.
             if (steamMInstance == zeroGUID)
             {
+                // If the steam guid or the steam split guid are all 0x00, the executable is almost certainly
+                // tampered. Tampered executables are also desired, though, which is why it's reported.
                 // There's also one edge case with a manifest for depotID 246581 where they're all 0x00, but this one
-                // might not active anyways.
+                // might not active anyways, and is a pretty major edge case
                 if (steamGuid == zeroGUID || steamSplitGuid == zeroGUID)
                 {
+                    // If for whatever reason only the steam guid is zeroed out, the Steam Split Guid can still be
+                    // used to look up the executable.
                     if (steamSplitGuid != zeroGUID)
                     {
-                        if (CEGDictionary.TryGetValue(steamSplitGuid, out string? name))
+                        if (CEGDictionary.TryGetValue(steamSplitGuid, out string? tamperedName))
                         {
-                            return $"CEG - Possibly tampered - {name}{ReportHelper(name)}";
+                            return $"CEG - Possibly tampered - {tamperedName}{ReportHelper(tamperedName)}";
                         }
                         return "CEG - Unknown manifest, please report to us on GitHub!";
                     }
 
+                    // If it's tampered and the steam split guid is zeroed out, the compilation timestamp needs to be
+                    // used as a less precise fallback.
                     if (CEGBackupDictionary.TryGetValue(timestamp, out string[]? lookupGuids))
                     {
                         string returnString = "CEG - Possibly tampered, potentially";
@@ -98,7 +101,7 @@ namespace BinaryObjectScanner.Protection
                             string lookupGuid = lookupGuids[i];
                             if (CEGDictionary.TryGetValue(lookupGuid, out string? lookedUpName))
                             {
-                                returnString = $"{returnString} {lookedUpName}";
+                                returnString = $"{returnString} {lookedUpName}{ReportHelper(lookedUpName)}";
                                 if (i + 1 == lookupGuids.Length)
                                     break;
 
@@ -109,30 +112,38 @@ namespace BinaryObjectScanner.Protection
 
                     }
 
+                    // If it still can't be matched to anything, it's an unknown manifest.
                     return "CEG - Unknown manifest, please report to us on GitHub!";
                 }
-                else // Stripped
-                {
-                    if (CEGDictionary.TryGetValue(steamSplitGuid, out string? name))
-                        return $"CEG - Stripped - {name}";
-                    else
-                        return "CEG - Unknown manifest, please report to us on GitHub!";
-                }
-            }
-            else // Contains strips
-            {
-                if (CEGDictionary.TryGetValue(steamSplitGuid, out string? name))
-                    return $"CEG - Contains Strips - {name}{ReportHelper(name)}";
+
+                // If the steam M instance is all 0x00 but the other values are not, the executable is stripped.
+                // Some tampered executables may still wind up here, but there's only so much that can be done to
+                // compensate for tampering.
+                if (CEGDictionary.TryGetValue(steamSplitGuid, out string? strippedName))
+                    return $"CEG - Stripped - {strippedName}";
                 else
                     return "CEG - Unknown manifest, please report to us on GitHub!";
+
             }
+
+            // If the steam M instance is not all 0x00, it has strips.
+            if (CEGDictionary.TryGetValue(steamSplitGuid, out string? name))
+                return $"CEG - Contains Strips - {name}{ReportHelper(name)}";
+            else
+                return "CEG - Unknown manifest, please report to us on GitHub!";
+
         }
 
-        public string? ReportHelper(string lookupGuid)
+        /// <summary>
+        /// Checks if a given steam split guid is in the dictionary already to determine if reporting is desired.
+        /// </summary>
+        /// <param name="steamSplitGuid">Steam split GUID</param>
+        /// <returns>A string about reporting on GitHub if not found, otherwise returns null.</returns>
+        private string? ReportHelper(string steamSplitGuid)
         {
 
 #if NETSTANDARD2_0_OR_GREATER || NET21_OR_GREATER || NETCOREAPP
-            if (!HaveStrips.Contains(lookupGuid))
+            if (!HaveStrips.Contains(steamSplitGuid))
                 return "- Please report to us on GitHub!";
 
             return null;
