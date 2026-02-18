@@ -86,7 +86,7 @@ namespace BinaryObjectScanner.Protection
                     {
                         if (CEGDictionary.TryGetValue(steamSplitGuid, out string? tamperedName))
                         {
-                            return $"CEG - Possibly tampered - {tamperedName}{ReportHelper(tamperedName)}";
+                            return $"CEG - Possibly tampered - {tamperedName}{ReportHelper(steamSplitGuid)}";
                         }
 
                         return "CEG - Unknown manifest, please report to us on GitHub!";
@@ -102,7 +102,7 @@ namespace BinaryObjectScanner.Protection
                             string lookupGuid = lookupGuids[i];
                             if (CEGDictionary.TryGetValue(lookupGuid, out string? lookedUpName))
                             {
-                                returnString = $"{returnString} {lookedUpName}{ReportHelper(lookedUpName)}";
+                                returnString = $"{returnString} {lookedUpName}{ReportHelper(lookupGuid)}";
                                 if (i + 1 == lookupGuids.Length)
                                     break;
 
@@ -128,7 +128,7 @@ namespace BinaryObjectScanner.Protection
 
             // If the steam M instance is not all 0x00, it has strips.
             if (CEGDictionary.TryGetValue(steamSplitGuid, out string? name))
-                return $"CEG - Contains Strips - {name}{ReportHelper(name)}";
+                return $"CEG - Contains Strips - {name}{ReportHelper(steamSplitGuid)}";
             else
                 return "CEG - Unknown manifest, please report to us on GitHub!";
         }
