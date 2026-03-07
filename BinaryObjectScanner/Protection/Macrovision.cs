@@ -28,6 +28,26 @@ namespace BinaryObjectScanner.Protection
             if (diskImage.VolumeDescriptorSet[0] is not PrimaryVolumeDescriptor pvd)
                 return null;
 
+            var applicationUse = pvd.ApplicationUse;
+            var reserved653Bytes = pvd.Reserved653Bytes;
+
+            #region RipGuard
+
+            // Macrovision RipGuard protected DVDs have the string "MVSNRGFP" at the start of the application use, followed
+            // by some other data. The meaning of the rest of the data is unknown, but ultimately not necessary to check.
+            // Meaning of string unknown. Best guess is "Macrovision RipGuard (File?) Protection"
+            // While not checked, this string plus a similar-looking block of data appear near the very end of the image
+            // as well. Possibly part of another standard ISO9660 field?
+            byte[] ripGuardBytes = [0x4D, 0x56, 0x53, 0x4E, 0x52, 0x47, 0x46, 0x50]; // MVSNRGFP
+            int offset = 0;
+            var compareBytes = applicationUse.ReadBytes(ref offset, 8);
+            if (compareBytes.EqualsExactly(ripGuardBytes))
+                return "Macrovision RipGuard";
+
+            #endregion RipGuard
+
+            #region SafeDisc
+
             if (!FileType.ISO9660.NoteworthyApplicationUse(pvd))
                 return null;
 
@@ -37,12 +57,9 @@ namespace BinaryObjectScanner.Protection
             if (!FileType.ISO9660.NoteworthyReserved653Bytes(pvd))
                 return null;
 
-            var applicationUse = pvd.ApplicationUse;
-            var reserved653Bytes = pvd.Reserved653Bytes;
-
             #region Read Application Use
 
-            int offset = 0;
+            offset = 0;
             var appUseZeroBytes = applicationUse.ReadBytes(ref offset, 256);
             var appUseDataBytesOne = applicationUse.ReadBytes(ref offset, 128);
             offset += 64; // Some extra values get added here over time. Check is good enough, easier to skip this.
@@ -84,6 +101,8 @@ namespace BinaryObjectScanner.Protection
                 return null;
 
             return "SafeDisc";
+
+            #endregion
         }
 
         /// <inheritdoc/>
