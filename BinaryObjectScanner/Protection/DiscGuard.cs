@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.PortableExecutable.Resource.Entries;
 using SabreTools.IO;
 using SabreTools.IO.Extensions;
 using SabreTools.IO.Matching;
@@ -63,7 +64,7 @@ namespace BinaryObjectScanner.Protection
                 return "DiscGuard";
 
             // Found in "Alternate.exe" (Redump entry 31914) and "Alt.exe" (Redump entries 46743, 46961, 79284, and 79374).
-            List<Dictionary<int, string?>?> resources =
+            List<StringTableResource?> resources =
             [
                 .. exe.FindStringTableByEntry("DiscGuard"),
                 .. exe.FindStringTableByEntry("The file Dg.vbn was not found."),

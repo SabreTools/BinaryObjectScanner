@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Data.Models.PortableExecutable.Resource.Entries;
 using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 
@@ -116,7 +117,11 @@ namespace BinaryObjectScanner.Packer
                 // Get the resources that have an archive signature
                 foreach (var value in resourceData.Values)
                 {
-                    if (value is null || value is not byte[] ba || ba.Length == 0)
+                    if (value is null || value is not GenericResourceEntry gre)
+                        continue;
+
+                    byte[] ba = gre.Data;
+                    if (ba.Length == 0)
                         continue;
 
                     // Set the output variables
