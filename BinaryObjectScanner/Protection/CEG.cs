@@ -1,5 +1,5 @@
-using SabreTools.IO.Extensions;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 using SabreTools.Serialization.Wrappers;
 
 namespace BinaryObjectScanner.Protection
@@ -85,9 +85,7 @@ namespace BinaryObjectScanner.Protection
                     if (steamSplitGuid != zeroGUID)
                     {
                         if (CEGDictionary.TryGetValue(steamSplitGuid, out string? tamperedName))
-                        {
                             return $"CEG - Possibly tampered - {tamperedName} {ReportHelper(steamSplitGuid)}";
-                        }
 
                         return "CEG - Unknown manifest, please report to us on GitHub!";
                     }
@@ -138,16 +136,12 @@ namespace BinaryObjectScanner.Protection
         /// </summary>
         /// <param name="steamSplitGuid">Steam split GUID</param>
         /// <returns>A string about reporting on GitHub if not found, otherwise returns null.</returns>
-        private string? ReportHelper(string steamSplitGuid)
+        private static string? ReportHelper(string steamSplitGuid)
         {
-#if NETSTANDARD2_0_OR_GREATER || NET21_OR_GREATER || NETCOREAPP
             if (!HaveStrips.Contains(steamSplitGuid))
                 return "- Please report to us on GitHub!";
 
             return null;
-#else
-            return null;
-#endif
         }
     }
 }

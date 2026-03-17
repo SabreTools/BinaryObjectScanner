@@ -2,8 +2,6 @@ using System.Collections.Generic;
 
 namespace BinaryObjectScanner.Protection
 {
-    // The large dictionaries and hash sets that CEG.cs needs for its logic.
-    // Contained in a separate file since dictionary size is very large.
     // TODO: Executables ran through LumaCEG are currently indistinguishable. A table of known OptionalHeader checksums may be worth looking into.
     public partial class CEG
     {
@@ -1118,7 +1116,6 @@ namespace BinaryObjectScanner.Protection
             { "54896411-2A67-4215-BA3D-66BBDC6477DB", "57971 (v8-10) - Engine.dll" },
             { "DF48D246-BE5E-4947-8FE2-6F3F6B9FEC69", "57971 (v11) - Engine.dll" },
             { "85A14CBC-EDC1-4B8D-BCDF-434C71E825F1", "57971 (v12, 4510052899061345257) - Engine.dll" },
-
 
             #endregion
 
@@ -9204,16 +9201,19 @@ namespace BinaryObjectScanner.Protection
             { 1534178082, [ "36DD7C19-D982-498C-8586-BF76BF016DE4" ] },
         };
 
-#if NETSTANDARD2_0_OR_GREATER || NET21_OR_GREATER || NETCOREAPP
         /// <summary>
-        /// Hashset containing the steam split GUIDs for executables that proper strips have already been acquired for.
+        /// Set containing the steam split GUIDs for executables that proper strips have already been acquired for.
         /// </summary>
         /// <remarks>
         /// In the future, this may be split out into two seperate tables, one for tampered/cracked executables
         /// and one for executables that are untampered but still containing strips. It is uncertain if that will be
         /// necessary at the moment, though.
         /// </remarks>
-        private static readonly HashSet<string> HaveStrips=
+#if NET20 || NET35
+        private static readonly List<string> HaveStrips =
+#else
+        private static readonly HashSet<string> HaveStrips =
+#endif
         [
             "0602B89C-4FAB-42F8-9772-C3A61D36AB93",
             "060E4378-4B8C-40F5-ACFC-A42B98DBB076",
@@ -9318,6 +9318,5 @@ namespace BinaryObjectScanner.Protection
             "F7D0A3D5-A821-4C79-ABFC-59128E0FE3B9",
             "FBF6EAD2-00DF-44F1-80F6-6595B2E8BF44",
         ];
-#endif
     }
 }
