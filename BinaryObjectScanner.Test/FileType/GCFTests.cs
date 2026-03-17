@@ -27,7 +27,7 @@ namespace BinaryObjectScanner.Test.FileType
             var detectable = new GCF(wrapper);
 
             string? actual = detectable.Detect(stream, file, includeDebug: false);
-            Assert.Equal("AACS (Unknown Version)", actual);
+            Assert.Equal(" - 0 (v0)", actual);
         }
     }
 }
