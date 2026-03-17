@@ -493,6 +493,7 @@ namespace BinaryObjectScanner
             {
                 AACSMediaKeyBlock obj => new FileType.AACSMediaKeyBlock(obj),
                 BDPlusSVM obj => new FileType.BDPlusSVM(obj),
+                GCF obj => new FileType.GCF(obj),
                 ISO9660 obj => new FileType.ISO9660(obj),
                 LDSCRYPT obj => new FileType.LDSCRYPT(obj),
                 LinearExecutable obj => new FileType.LinearExecutable(obj),
