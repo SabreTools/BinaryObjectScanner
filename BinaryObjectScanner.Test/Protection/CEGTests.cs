@@ -14,7 +14,7 @@ namespace BinaryObjectScanner.Test.Protection
             Stream source = new MemoryStream(new byte[1024]);
             SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
 
-            var checker = new CenegaProtectDVD();
+            var checker = new CEG();
             string? actual = checker.CheckExecutable(file, exe, includeDebug: false);
             Assert.Null(actual);
         }
