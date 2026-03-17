@@ -21,12 +21,13 @@ namespace BinaryObjectScanner.FileType
             // At the moment, all samples of GCF files on redump are unencrypted. Combined with being uncertain about
             // whether this is the best way to check whether the GCF is encrypted, this block will be left commented
             // out until further research is done.
-            /*bool encrypted = false;
-            if (_wrapper.Files != null && _wrapper.Files.Length > 0)
-                encrypted = _wrapper.Files[0].Encrypted;
+            // bool encrypted = false;
+            // if (_wrapper.Files != null && _wrapper.Files.Length > 0)
+            //     encrypted = _wrapper.Files[0].Encrypted;
 
-            string encryptedString = encrypted ? "encrypted" : "unencrypted";
-            string returnString = $"{fileName} - {depotId} (v{manifestVersion}, {encryptedString})";*/
+            // string encryptedString = encrypted ? "encrypted" : "unencrypted";
+            // string returnString = $"{fileName} - {depotId} (v{manifestVersion}, {encryptedString})";
+
             string returnString = $"{fileName} - {depotId} (v{manifestVersion})";
             return returnString;
         }
