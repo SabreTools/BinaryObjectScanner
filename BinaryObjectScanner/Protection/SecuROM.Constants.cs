@@ -4,7 +4,7 @@ namespace BinaryObjectScanner.Protection
 {
     public partial class SecuROM
     {
-                /// <summary>
+        /// <summary>
         /// Matches hash of the Release Control-encrypted executable to known hashes
         /// </summary>
         /// <remarks>Allegedly, some version of Runaway: A Twist of Fate has RC</remarks>
