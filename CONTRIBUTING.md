@@ -1,6 +1,6 @@
 # Coding Guide
 
-This document serves as the official code standards guide for `BinaryObjectScanner` internal development. Please note that this is a work in progress and may not encapsulate all standards expected of new or existing code.
+This document serves as the official code standards guide for `BinaryObjectScanner` internal development. Please note that this is a work in progress and may not encapsulate all standards expected of new or existing code. The included `.editorconfig` file can help enforce some of the standards mentioned below.
 
 ## General Code Guidelines
 
