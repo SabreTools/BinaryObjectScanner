@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Data;
 using SabreTools.Data.Models.ISO9660;
-using SabreTools.IO.Extensions;
+using SabreTools.Text.Extensions;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType
@@ -13,10 +13,10 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// ISO9660
     /// </summary>
-    public class ISO9660 : DiskImage<SabreTools.Serialization.Wrappers.ISO9660>
+    public class ISO9660 : DiskImage<SabreTools.Wrappers.ISO9660>
     {
         /// <inheritdoc/>
-        public ISO9660(SabreTools.Serialization.Wrappers.ISO9660 wrapper) : base(wrapper) { }
+        public ISO9660(SabreTools.Wrappers.ISO9660 wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

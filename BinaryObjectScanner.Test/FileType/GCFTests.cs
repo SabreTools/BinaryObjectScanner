@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class GCFTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.GCF wrapper
+        private static readonly SabreTools.Wrappers.GCF wrapper
             = new(new SabreTools.Data.Models.GCF.File(), new MemoryStream(new byte[1024]));
 
         [Fact]

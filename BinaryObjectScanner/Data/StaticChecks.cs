@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Wrappers;
 
 namespace BinaryObjectScanner.Data
 {

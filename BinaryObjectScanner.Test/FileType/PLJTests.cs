@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class PLJTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.PlayJAudioFile wrapper
+        private static readonly SabreTools.Wrappers.PlayJAudioFile wrapper
             = new(new SabreTools.Data.Models.PlayJ.AudioFile(), new MemoryStream(new byte[1024]));
 
         [Fact]

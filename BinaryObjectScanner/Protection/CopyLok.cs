@@ -2,7 +2,8 @@ using System;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Data.Models.ISO9660;
 using SabreTools.IO.Extensions;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Numerics.Extensions;
+using SabreTools.Wrappers;
 
 namespace BinaryObjectScanner.Protection
 {

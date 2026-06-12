@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class RealArcadeMezzanineTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.RealArcadeMezzanine wrapper
+        private static readonly SabreTools.Wrappers.RealArcadeMezzanine wrapper
             = new(new SabreTools.Data.Models.RealArcade.Mezzanine(), new MemoryStream(new byte[1024]));
 
         [Fact]

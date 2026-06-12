@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class MSDOSTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.MSDOS wrapper
+        private static readonly SabreTools.Wrappers.MSDOS wrapper
             = new(new SabreTools.Data.Models.MSDOS.Executable(), new MemoryStream(new byte[1024]));
 
         [Fact]

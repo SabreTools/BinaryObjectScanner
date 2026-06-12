@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.Collections.Extensions;
 using SabreTools.IO.Extensions;
-using SabreTools.Serialization;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Numerics.Extensions;
+using SabreTools.Wrappers;
 
 namespace BinaryObjectScanner
 {

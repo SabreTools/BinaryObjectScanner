@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.IO;
-using SabreTools.IO.Matching;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Matching;
+using SabreTools.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {

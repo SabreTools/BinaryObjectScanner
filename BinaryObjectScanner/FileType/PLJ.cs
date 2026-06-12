@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Wrappers;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType

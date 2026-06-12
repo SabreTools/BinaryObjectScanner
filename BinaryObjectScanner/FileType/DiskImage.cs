@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.IO.Extensions;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Collections.Extensions;
+using SabreTools.Wrappers;
 
 #pragma warning disable IDE0290 // Use primary constructor
 namespace BinaryObjectScanner.FileType

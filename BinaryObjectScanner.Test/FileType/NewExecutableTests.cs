@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class NewExecutableTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.NewExecutable wrapper
+        private static readonly SabreTools.Wrappers.NewExecutable wrapper
             = new(new SabreTools.Data.Models.NewExecutable.Executable(), new MemoryStream(new byte[1024]));
 
         [Fact]

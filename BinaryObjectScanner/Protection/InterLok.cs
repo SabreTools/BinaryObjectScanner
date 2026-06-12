@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Wrappers;
 
 #pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
 namespace BinaryObjectScanner.Protection

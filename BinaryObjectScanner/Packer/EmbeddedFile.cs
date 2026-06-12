@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Data.Models.PortableExecutable.Resource.Entries;
 using SabreTools.IO.Extensions;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Matching;
+using SabreTools.Numerics.Extensions;
+using SabreTools.Wrappers;
 
 namespace BinaryObjectScanner.Packer
 {

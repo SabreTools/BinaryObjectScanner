@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class RealArcadeInstallerTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.RealArcadeInstaller wrapper
+        private static readonly SabreTools.Wrappers.RealArcadeInstaller wrapper
             = new(new SabreTools.Data.Models.RealArcade.RgsFile(), new MemoryStream(new byte[1024]));
 
         [Fact]

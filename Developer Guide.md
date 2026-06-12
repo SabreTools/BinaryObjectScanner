@@ -36,7 +36,7 @@ Adding a new checker or format should happen in a few distinct steps:
 
     - If it is a new supported game engine or standard library, create the file in `BinaryObjectScanner.GameEngine`. By default, you will need to implement `BinaryObjectScanner.Interfaces.IExecutableCheck<T>`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
 
-    - If it is a new supported executable packer, compressor, or installer format, create the file in `BinaryObjectScanner.Packer`. By default, you will need to implement a new Wrapper in `SabreTools.Serialization.Wrappers`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
+    - If it is a new supported executable packer, compressor, or installer format, create the file in `BinaryObjectScanner.Packer`. By default, you will need to implement a new Wrapper in `SabreTools.Wrappers`. It is exceptionally rare to need to implement `BinaryObjectScanner.Interfaces.IPathCheck`.
 
     - If it is a new supported DRM scheme, copy protection, or obfuscator, create the file in `BinaryObjectScanner.Protection`. By default, you will need to implement at least one of: `BinaryObjectScanner.Interfaces.IExecutableCheck<T>` or `BinaryObjectScanner.Interfaces.IPathCheck`.
 

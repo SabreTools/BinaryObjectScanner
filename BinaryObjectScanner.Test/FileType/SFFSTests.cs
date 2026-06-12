@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class SFFSTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.SFFS wrapper
+        private static readonly SabreTools.Wrappers.SFFS wrapper
             = new(new SabreTools.Data.Models.StarForce.FileSystem(), new MemoryStream(new byte[1024]));
 
         [Fact]

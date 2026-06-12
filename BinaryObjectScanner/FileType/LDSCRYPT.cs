@@ -6,10 +6,10 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Link Data Security encrypted file
     /// </summary>
-    public class LDSCRYPT : DetectableBase<SabreTools.Serialization.Wrappers.LDSCRYPT>
+    public class LDSCRYPT : DetectableBase<SabreTools.Wrappers.LDSCRYPT>
     {
         /// <inheritdoc/>
-        public LDSCRYPT(SabreTools.Serialization.Wrappers.LDSCRYPT wrapper) : base(wrapper) { }
+        public LDSCRYPT(SabreTools.Wrappers.LDSCRYPT wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

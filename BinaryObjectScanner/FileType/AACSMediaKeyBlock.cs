@@ -6,10 +6,10 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// AACS media key block
     /// </summary>
-    public class AACSMediaKeyBlock : DetectableBase<SabreTools.Serialization.Wrappers.AACSMediaKeyBlock>
+    public class AACSMediaKeyBlock : DetectableBase<SabreTools.Wrappers.AACSMediaKeyBlock>
     {
         /// <inheritdoc/>
-        public AACSMediaKeyBlock(SabreTools.Serialization.Wrappers.AACSMediaKeyBlock wrapper) : base(wrapper) { }
+        public AACSMediaKeyBlock(SabreTools.Wrappers.AACSMediaKeyBlock wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

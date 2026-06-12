@@ -8,10 +8,10 @@ namespace BinaryObjectScanner.FileType
     ///
     /// TODO: Add further parsing, game ID and name should be possible to parse.
     /// </summary>
-    public class RealArcadeInstaller : DetectableBase<SabreTools.Serialization.Wrappers.RealArcadeInstaller>
+    public class RealArcadeInstaller : DetectableBase<SabreTools.Wrappers.RealArcadeInstaller>
     {
         /// <inheritdoc/>
-        public RealArcadeInstaller(SabreTools.Serialization.Wrappers.RealArcadeInstaller wrapper) : base(wrapper) { }
+        public RealArcadeInstaller(SabreTools.Wrappers.RealArcadeInstaller wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

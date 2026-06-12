@@ -8,10 +8,10 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// MS-DOS executable (MZ)
     /// </summary>
-    public class MSDOS : Executable<SabreTools.Serialization.Wrappers.MSDOS>
+    public class MSDOS : Executable<SabreTools.Wrappers.MSDOS>
     {
         /// <inheritdoc/>
-        public MSDOS(SabreTools.Serialization.Wrappers.MSDOS wrapper) : base(wrapper) { }
+        public MSDOS(SabreTools.Wrappers.MSDOS wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

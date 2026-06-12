@@ -1,4 +1,4 @@
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Wrappers;
 
 namespace BinaryObjectScanner.Interfaces
 {

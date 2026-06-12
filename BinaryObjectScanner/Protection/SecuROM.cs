@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Data.Models.ISO9660;
-using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Matching;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Matching;
+using SabreTools.Numerics.Extensions;
+using SabreTools.Text.Extensions;
+using SabreTools.Wrappers;
 using static SabreTools.Data.Models.SecuROM.Constants;
 
 #pragma warning disable IDE0059 // Unnecessary assignment of value

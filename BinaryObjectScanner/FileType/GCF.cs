@@ -5,10 +5,10 @@ namespace BinaryObjectScanner.FileType
     /// <summary>
     /// Game Cache File (GCF)
     /// </summary>
-    public class GCF : DetectableBase<SabreTools.Serialization.Wrappers.GCF>
+    public class GCF : DetectableBase<SabreTools.Wrappers.GCF>
     {
         /// <inheritdoc/>
-        public GCF(SabreTools.Serialization.Wrappers.GCF wrapper) : base(wrapper) { }
+        public GCF(SabreTools.Wrappers.GCF wrapper) : base(wrapper) { }
 
         /// <inheritdoc/>
         public override string? Detect(Stream stream, string file, bool includeDebug)

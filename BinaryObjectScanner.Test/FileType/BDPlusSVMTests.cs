@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class BDPlusSVMTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.BDPlusSVM wrapper
+        private static readonly SabreTools.Wrappers.BDPlusSVM wrapper
             = new(new SabreTools.Data.Models.BDPlus.SVM(), new MemoryStream(new byte[1024]));
 
         [Fact]

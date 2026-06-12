@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class AACSMediaKeyBlockTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.AACSMediaKeyBlock wrapper
+        private static readonly SabreTools.Wrappers.AACSMediaKeyBlock wrapper
             = new(new SabreTools.Data.Models.AACS.MediaKeyBlock(), new MemoryStream(new byte[1024]));
 
         [Fact]

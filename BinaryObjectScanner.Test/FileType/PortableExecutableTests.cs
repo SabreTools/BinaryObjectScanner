@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class PortableExecutableTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.PortableExecutable wrapper
+        private static readonly SabreTools.Wrappers.PortableExecutable wrapper
             = new(new SabreTools.Data.Models.PortableExecutable.Executable(), new MemoryStream(new byte[1024]));
 
         [Fact]

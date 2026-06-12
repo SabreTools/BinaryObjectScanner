@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using SabreTools.Hashing;
-using SabreTools.IO;
-using SabreTools.IO.Extensions;
-using SabreTools.IO.Matching;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Matching;
+using SabreTools.Text.Extensions;
+using SabreTools.Wrappers;
 
 #pragma warning disable IDE0060 // Remove unused parameter
 namespace BinaryObjectScanner.Protection

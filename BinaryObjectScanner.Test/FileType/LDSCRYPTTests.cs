@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class LDSCRYPTTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.LDSCRYPT wrapper
+        private static readonly SabreTools.Wrappers.LDSCRYPT wrapper
             = new(new SabreTools.Data.Models.LDSCRYPT.EncryptedFile(), new MemoryStream(new byte[1024]));
 
         [Fact]

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Data.Models.ISO9660;
-using SabreTools.IO;
 using SabreTools.IO.Extensions;
-using SabreTools.IO.Matching;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Matching;
+using SabreTools.Numerics.Extensions;
+using SabreTools.Text.Extensions;
+using SabreTools.Wrappers;
 
 #pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'
 namespace BinaryObjectScanner.Protection

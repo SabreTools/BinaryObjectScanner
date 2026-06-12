@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Wrappers;
 
 #pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'

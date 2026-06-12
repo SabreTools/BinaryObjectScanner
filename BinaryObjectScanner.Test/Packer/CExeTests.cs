@@ -12,7 +12,7 @@ namespace BinaryObjectScanner.Test.Packer
             string file = "filename";
             SabreTools.Data.Models.PortableExecutable.Executable model = new();
             Stream source = new MemoryStream(new byte[1024]);
-            SabreTools.Serialization.Wrappers.PortableExecutable exe = new(model, source);
+            SabreTools.Wrappers.PortableExecutable exe = new(model, source);
 
             var checker = new CExe();
             string? actual = checker.CheckExecutable(file, exe, includeDebug: false);

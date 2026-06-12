@@ -6,7 +6,7 @@ namespace BinaryObjectScanner.Test.FileType
 {
     public class DiskImageTests
     {
-        private static readonly SabreTools.Serialization.Wrappers.ISO9660 wrapper
+        private static readonly SabreTools.Wrappers.ISO9660 wrapper
             = new(new SabreTools.Data.Models.ISO9660.Volume(), new MemoryStream(new byte[1024]));
 
         [Fact]

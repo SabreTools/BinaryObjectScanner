@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BinaryObjectScanner.Interfaces;
-using SabreTools.IO;
-using SabreTools.IO.Extensions;
-using SabreTools.IO.Matching;
-using SabreTools.Serialization.Wrappers;
+using SabreTools.Matching;
+using SabreTools.Text.Extensions;
+using SabreTools.Wrappers;
 using OHMN = SabreTools.Data.Models.COFF.OptionalHeaderMagicNumber;
 
 #pragma warning disable IDE0230 // Use UTF-8 string literal
