@@ -363,7 +363,7 @@ namespace BinaryObjectScanner.Protection
             // This file is present in most, if not all, SafeDisc protected discs. It seems to have very consistent file sizes, only being found to use three different file sizes in it's entire run.
             // A rough estimate of the product and version can be gotten by checking the file size.
             // One filesize is known to overlap with both SafeDisc and CDS-300, and so is detected separately here.
-            return firstMatchedString.FileSize() switch
+            return firstMatchedString.GetFileSize() switch
             {
                 // Found in Redump entries 37832 and 66005.
                 20 => "SafeDisc 1.00.025-1.41.001",
@@ -384,7 +384,7 @@ namespace BinaryObjectScanner.Protection
             if (string.IsNullOrEmpty(firstMatchedString) || !File.Exists(firstMatchedString))
                 return string.Empty;
 
-            return firstMatchedString.FileSize() switch
+            return firstMatchedString.GetFileSize() switch
             {
                 // Found in Redump entry 63488.
                 0 => "(Empty File)",

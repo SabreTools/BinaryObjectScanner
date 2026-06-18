@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -19,7 +20,7 @@ namespace BinaryObjectScanner.Protection
                 var ifofiles = files.FindAll(s => s.EndsWith(".ifo"));
                 for (int i = 0; i < ifofiles.Count; i++)
                 {
-                    if (ifofiles[i].FileSize() == 0)
+                    if (ifofiles[i].GetFileSize() == 0)
                     {
                         protections.Add("Protect DVD-Video (Unconfirmed - Please report to us on Github)");
                         break;

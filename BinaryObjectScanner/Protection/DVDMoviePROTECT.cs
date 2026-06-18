@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using BinaryObjectScanner.Interfaces;
+using SabreTools.IO.Extensions;
 
 namespace BinaryObjectScanner.Protection
 {
@@ -28,7 +29,7 @@ namespace BinaryObjectScanner.Protection
 #else
                     string ifofile = Path.Combine(bupfile.DirectoryName, bupfile.Name.Substring(0, bupfile.Name.Length - bupfile.Extension.Length) + ".ifo");
 #endif
-                    if (bupfile.Length != ifofile.FileSize())
+                    if (bupfile.Length != ifofile.GetFileSize())
                     {
                         protections.Add("DVD-Movie-PROTECT (Unconfirmed - Please report to us on Github)");
                         break;
