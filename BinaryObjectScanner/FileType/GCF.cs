@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace BinaryObjectScanner.FileType
@@ -20,11 +21,11 @@ namespace BinaryObjectScanner.FileType
 
             // While there is a depot-level encrypted flag on the GCF, it's unfortunately completely unreliable.
             // Technically speaking, there are some known GCFs that only have some files encrypted. HL2 discs from
-            // 2004 have a base_source_engine.gcf (depot 200) like this. However, currently unsure of the performance
-            // impacts of looping the entirety of _wrapper.Files[] just to cover a fairly niche edge case
+            // 2004 have several GCFs like this, one being base_source_engine.gcf (depot 200). Thus, it's necessary
+            // to iterate all file info to check if any files are encrypted
             bool encrypted = false;
             if (_wrapper.Files != null && _wrapper.Files.Length > 0)
-                encrypted = _wrapper.Files[0].Encrypted;
+                encrypted = Array.Exists(_wrapper.Files, fileInfo => fileInfo.Encrypted);
 
             // Only note encryption status if the GCF is encrypted
             string encryptedString = encrypted ? ", encrypted" : "";
