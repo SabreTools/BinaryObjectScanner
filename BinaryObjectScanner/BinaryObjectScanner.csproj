@@ -52,9 +52,9 @@
     <ItemGroup>
         <PackageReference Include="GrindCore.SharpCompress" Version="0.48.0" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
         <PackageReference Include="MinThreadingBridge" Version="0.11.4" Condition="$(TargetFramework.StartsWith(`net2`)) OR $(TargetFramework.StartsWith(`net3`)) OR $(TargetFramework.StartsWith(`net40`))" />
-        <PackageReference Include="SabreTools.Hashing" Version="[2.0.0]" />
-        <PackageReference Include="SabreTools.IO" Version="[2.1.0]" />
-        <PackageReference Include="SabreTools.Serialization" Version="[3.0.1]" />
+        <PackageReference Include="SabreTools.Hashing" Version="2.0.0" />
+        <PackageReference Include="SabreTools.IO" Version="2.2.0" />
+        <PackageReference Include="SabreTools.Serialization" Version="3.1.0" />
         <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.9" Condition="!$(TargetFramework.StartsWith(`net2`)) AND !$(TargetFramework.StartsWith(`net3`)) AND !$(TargetFramework.StartsWith(`net40`)) AND !$(TargetFramework.StartsWith(`net452`))" />
     </ItemGroup>
 
