@@ -46,6 +46,22 @@ namespace BinaryObjectScanner
 
         #endregion
 
+        #region Static Variables
+
+        /// <summary>
+        /// Path to the temporary directory
+        /// </summary>
+        /// <remarks>Value has trailing directory separators trimmed</remarks>
+        private static readonly string TempFilePath = Path.GetTempPath().TrimEnd('\\', '/');
+
+        /// <summary>
+        /// Template for determining if a file is a temporary extracted path
+        /// </summary>
+        /// <remarks>Value has trailing directory separators trimmed and the GUID value itself does not matter</remarks>
+        private static readonly string TempFilePathWithGuid = Path.Combine(TempFilePath, Guid.NewGuid().ToString()).TrimEnd('\\', '/');
+
+        #endregion
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -123,10 +139,6 @@ namespace BinaryObjectScanner
             // Checkpoint
             _fileProgress?.Report(new ProtectionProgress(null, depth, 0, null));
 
-            // Temp variables for reporting
-            string tempFilePath = Path.GetTempPath();
-            string tempFilePathWithGuid = Path.Combine(tempFilePath, Guid.NewGuid().ToString());
-
             // Loop through each path and get the returned values
             var protections = new ProtectionDictionary();
             foreach (string path in paths)
@@ -152,13 +164,7 @@ namespace BinaryObjectScanner
                         string file = files[i];
 
                         // Get the reportable file name
-                        string reportableFileName = file;
-                        if (reportableFileName.StartsWith(tempFilePath))
-#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
-                            reportableFileName = reportableFileName[tempFilePathWithGuid.Length..];
-#else
-                            reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
-#endif
+                        string reportableFileName = GetReportableFileName(file);
 
                         // Checkpoint
                         _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, i / (float)files.Count, "Checking file" + (file != reportableFileName ? " from archive" : string.Empty)));
@@ -193,13 +199,7 @@ namespace BinaryObjectScanner
                 else if (File.Exists(path))
                 {
                     // Get the reportable file name
-                    string reportableFileName = path;
-                    if (reportableFileName.StartsWith(tempFilePath))
-#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
-                        reportableFileName = reportableFileName[tempFilePathWithGuid.Length..];
-#else
-                        reportableFileName = reportableFileName.Substring(tempFilePathWithGuid.Length);
-#endif
+                    string reportableFileName = GetReportableFileName(path);
 
                     // Checkpoint
                     _fileProgress?.Report(new ProtectionProgress(reportableFileName, depth, 0, "Checking file" + (path != reportableFileName ? " from archive" : string.Empty)));
@@ -515,6 +515,44 @@ namespace BinaryObjectScanner
                 },
 #pragma warning restore IDE0072
             };
+        }
+
+        /// <summary>
+        /// Get the reportable file name by determining if the file was
+        /// likely extracted as a part of the scanning run.
+        /// </summary>
+        /// <param name="path">File path to check</param>
+        /// <returns>Trimmed file path if it should be an extracted file, the full path as passed in otherwise</returns>
+        /// <remarks>
+        /// This will be a false positive if intentionally scanning a path that
+        /// fits the pattern of '%TEMP%/{GUID}/{file}'.
+        private static string GetReportableFileName(string path)
+        {
+            // If the file is not in the temp directory
+            if (!path.StartsWith(TempFilePath))
+                return path;
+
+            // If the filename isn't longer than the template path
+            if (path.Length < TempFilePathWithGuid.Length)
+                return path;
+
+            // Check if we're in a GUID subdirectory
+            string possibleGuid = path.Substring(TempFilePath.Length + 1, 36);
+#if NET20 || NET35
+            if (System.Text.RegularExpressions.Regex.IsMatch(possibleGuid, @"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"))
+#else
+            if (Guid.TryParse(possibleGuid, out _))
+#endif
+            {
+#if NETCOREAPP || NETSTANDARD2_1_OR_GREATER
+                return path[TempFilePathWithGuid.Length..];
+#else
+                return path.Substring(TempFilePathWithGuid.Length);
+#endif
+            }
+
+            // Otherwise, return the path as given
+            return path;
         }
 
         #endregion
