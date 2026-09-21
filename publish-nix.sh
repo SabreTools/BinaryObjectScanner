@@ -15,7 +15,7 @@ NO_BUILD=false
 NO_ARCHIVE=false
 HAS_VERSION=false
 VERSION="NONE"
-while getopts "udba" OPTION; do
+while getopts "udbav:" OPTION; do
     case $OPTION in
     u)
         USE_ALL=true
