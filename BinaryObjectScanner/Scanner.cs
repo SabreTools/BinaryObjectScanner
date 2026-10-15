@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using BinaryObjectScanner.Data;
 using BinaryObjectScanner.Interfaces;
 using SabreTools.Collections.Extensions;
@@ -44,6 +45,11 @@ namespace BinaryObjectScanner
         /// </summary>
         private readonly IProgress<ProtectionProgress>? _fileProgress;
 
+        /// <summary>
+        /// Optional cancellation token for interrupting scans
+        /// </summary>
+        private readonly CancellationToken? _cancellationToken;
+
         #endregion
 
         #region Static Variables
@@ -71,12 +77,14 @@ namespace BinaryObjectScanner
         /// <param name="scanSubdirectories">Enable scanning subdirectories</param>
         /// <param name="includeDebug">Enable including debug information</param>
         /// <param name="fileProgress">Optional progress callback</param>
+        /// <param name="cancellationToken">Optional cancellation token</param>
         public Scanner(bool scanArchives,
             bool scanContents,
             bool scanPaths,
             bool scanSubdirectories,
             bool includeDebug,
-            IProgress<ProtectionProgress>? fileProgress = null)
+            IProgress<ProtectionProgress>? fileProgress = null,
+            CancellationToken? cancellationToken = null)
         {
             _scanArchives = scanArchives;
             _scanContents = scanContents;
@@ -84,6 +92,7 @@ namespace BinaryObjectScanner
             _scanSubdirectories = scanSubdirectories;
             _includeDebug = includeDebug;
             _fileProgress = fileProgress;
+            _cancellationToken = cancellationToken;
 
 #if NET462_OR_GREATER || NETCOREAPP || NETSTANDARD2_0_OR_GREATER
             // Register the codepages
@@ -143,6 +152,19 @@ namespace BinaryObjectScanner
             var protections = new ProtectionDictionary();
             foreach (string path in paths)
             {
+                // Check for cancellation
+                if (_cancellationToken?.IsCancellationRequested == true)
+                {
+                    // Clear out any empty keys
+                    protections.ClearEmptyKeys();
+
+                    // If we're in debug, output the elasped time to console
+                    if (_includeDebug)
+                        Console.WriteLine($"Time elapsed: {DateTime.UtcNow.Subtract(startTime)}");
+
+                    return protections;
+                }
+
                 // Directories scan each internal file individually
                 if (Directory.Exists(path))
                 {
@@ -160,6 +182,19 @@ namespace BinaryObjectScanner
                     // Scan each file in directory separately
                     for (int i = 0; i < files.Count; i++)
                     {
+                        // Check for cancellation
+                        if (_cancellationToken?.IsCancellationRequested == true)
+                        {
+                            // Clear out any empty keys
+                            protections.ClearEmptyKeys();
+
+                            // If we're in debug, output the elasped time to console
+                            if (_includeDebug)
+                                Console.WriteLine($"Time elapsed: {DateTime.UtcNow.Subtract(startTime)}");
+
+                            return protections;
+                        }
+
                         // Get the current file
                         string file = files[i];
 
