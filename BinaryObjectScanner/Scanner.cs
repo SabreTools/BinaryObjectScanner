@@ -435,7 +435,7 @@ namespace BinaryObjectScanner
                 }
                 finally
                 {
-                    // Remove the output path, also after a failed extraction
+                    // If temp directory cleanup fails
                     try
                     {
                         if (Directory.Exists(tempPath))
