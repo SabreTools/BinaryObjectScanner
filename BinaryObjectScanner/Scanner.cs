@@ -405,11 +405,13 @@ namespace BinaryObjectScanner
             // If we're scanning archives
             if (_scanArchives && wrapper is IExtractable extractable)
             {
+                // Get the output path
+                string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
                 // If the extractable file itself fails
                 try
                 {
-                    // Extract and get the output path
-                    string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    // Extract to the output path
                     Directory.CreateDirectory(tempPath);
                     _ = extractable.Extract(tempPath, _includeDebug);
 
@@ -426,8 +428,14 @@ namespace BinaryObjectScanner
                         // Append the values
                         protections.Append(subProtections);
                     }
-
-                    // If temp directory cleanup fails
+                }
+                catch (Exception ex)
+                {
+                    if (_includeDebug) Console.Error.WriteLine(ex);
+                }
+                finally
+                {
+                    // Remove the output path, also after a failed extraction
                     try
                     {
                         if (Directory.Exists(tempPath))
@@ -437,10 +445,6 @@ namespace BinaryObjectScanner
                     {
                         if (_includeDebug) Console.Error.WriteLine(ex);
                     }
-                }
-                catch (Exception ex)
-                {
-                    if (_includeDebug) Console.Error.WriteLine(ex);
                 }
             }
 
