@@ -240,6 +240,9 @@ namespace BinaryObjectScanner.Data
         /// <returns>Set of protections parsed, empty on error</returns>
         internal static List<string> ProcessProtectionString(string? protection)
         {
+            // Trim the protection string, if possible
+            protection = protection?.Trim();
+
             // If we have an invalid protection string
             if (string.IsNullOrEmpty(protection))
                 return [];
@@ -254,8 +257,26 @@ namespace BinaryObjectScanner.Data
             if (protection!.Contains(";"))
 #endif
             {
+#if NETFRAMEWORK || NETSTANDARD
                 var splitProtections = protection.Split(';');
+                foreach (var subProtection in splitProtections)
+                {
+                    var subProtectionTrimmed = subProtection.Trim();
+                    if (subProtectionTrimmed.Length > 0)
+                        protections.Add(subProtectionTrimmed);
+                }
+#elif NETCOREAPP3_1
+                var splitProtections = protection.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var subProtection in splitProtections)
+                {
+                    var subProtectionTrimmed = subProtection.Trim();
+                    if (subProtectionTrimmed.Length > 0)
+                        protections.Add(subProtectionTrimmed);
+                }
+#else
+                var splitProtections = protection.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 protections.AddRange(splitProtections);
+#endif
             }
             else
             {
