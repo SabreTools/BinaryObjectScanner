@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+
 #if NETCOREAPP
 using System.Text.Json;
 #endif
@@ -76,6 +78,11 @@ namespace ProtectionScan.Features
         public bool Nested { get; private set; }
 #endif
 
+        /// <summary>
+        /// Cancellation token source for cancelling a scan
+        /// </summary>
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+
         public MainFeature()
             : base(DisplayName, _flags, _description)
         {
@@ -100,6 +107,9 @@ namespace ProtectionScan.Features
             var fileProgress = new Progress<ProtectionProgress>();
             fileProgress.ProgressChanged += Changed;
 
+            // Register handler for console cancellation
+            Console.CancelKeyPress += CancelScan;
+
             // Get the options from the arguments
             Debug = GetBoolean(_debugName);
             FileOnly = GetBoolean(_fileOnlyName);
@@ -115,7 +125,8 @@ namespace ProtectionScan.Features
                 !GetBoolean(_noPathsName),
                 !GetBoolean(_noSubdirsName),
                 GetBoolean(_debugName),
-                fileProgress);
+                fileProgress,
+                _cancellationTokenSource.Token);
 
             // Loop through the input paths
             for (int i = 0; i < Inputs.Count; i++)
@@ -129,6 +140,12 @@ namespace ProtectionScan.Features
 
         /// <inheritdoc/>
         public override bool VerifyInputs() => Inputs.Count > 0;
+
+        /// <summary>
+        /// Cancel an existing scan by capturing a cancel key press
+        /// </summary>
+        private void CancelScan(object? sender, ConsoleCancelEventArgs e)
+            => _cancellationTokenSource.Cancel();
 
         /// <summary>
         /// Protection progress changed handler
