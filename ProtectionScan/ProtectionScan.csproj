@@ -8,9 +8,19 @@
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
+        <SelfContained>true</SelfContained>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Version>3.10.0</Version>
+    </PropertyGroup>
+
+    <!-- Publishing Modifications -->
+    <PropertyGroup Condition="$(TargetFramework.StartsWith(`net5`)) OR $(TargetFramework.StartsWith(`net6`)) OR $(TargetFramework.StartsWith(`net7`)) OR $(TargetFramework.StartsWith(`net8`)) OR $(TargetFramework.StartsWith(`net9`)) OR $(TargetFramework.StartsWith(`net10`)) OR $(TargetFramework.StartsWith(`net11`))">
+        <PublishSingleFile>true</PublishSingleFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>
     </PropertyGroup>
 
     <!-- Support All Frameworks -->
