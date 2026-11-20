@@ -1,17 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- Assembly Properties -->
         <TargetFrameworks>net20;net35;net40;net452;net462;net472;net48;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0;net10.0;net11.0</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <CheckEolTargetFramework>false</CheckEolTargetFramework>
-        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <SelfContained>true</SelfContained>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <Version>3.10.0</Version>
+
+        <!-- Publishing -->
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <PublishSelfContained>true</PublishSelfContained>
     </PropertyGroup>
 
     <!-- Publishing Modifications -->
