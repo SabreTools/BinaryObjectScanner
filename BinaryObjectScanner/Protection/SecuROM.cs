@@ -186,8 +186,26 @@ namespace BinaryObjectScanner.Protection
             if (name.OptionalEquals("Content Activation Library") && exe.LegalCopyright.OptionalContains("Sony DADC Austria AG"))
                 return $"SecuROM Content Activation v{exe.GetInternalVersion()}";
 
+            List<string>? strs;
             if (exe.ContainsSection(".dsstext", exact: true))
+            {
+                // Get the Srdata section strings, if they exist
+                strs = exe.GetFirstSectionStrings("Srdata");
+                if (strs is not null)
+                {
+                    // Handles Redump entry 140157, which has /secuexp in Srdata and the version in .dsstext.
+                    // SecuExp.exe hasn't been seen yet, but it's included here since the rdata White Label discs also
+                    // work this way.
+                    if (strs.Exists(s => s.Contains("/secuexp")) || strs.Exists(s => s.Contains("SecuExp.exe")))
+                    {
+                        // Get .dsstext, if it exists.
+                        var dataSectionRaw = exe.GetFirstSectionData(".dsstext");
+                        return $"SecuROM {GetV8WhiteLabelVersion(dataSectionRaw)} (White Label)";
+                    }
+                }
+
                 return $"SecuROM 8.03.03+";
+            }
 
             // Get the .securom section, if it exists
             if (exe.ContainsSection(".securom", exact: true))
@@ -232,14 +250,16 @@ namespace BinaryObjectScanner.Protection
             }
 
             // Get the .rdata section strings, if they exist
-            var strs = exe.GetFirstSectionStrings(".rdata");
+            strs = exe.GetFirstSectionStrings(".rdata");
             if (strs is not null)
             {
                 // Both have the identifier found within `.rdata` but the version is within `.data`
-                if (strs.Exists(s => s.Contains("/secuexp")))
-                    return $"SecuROM {GetV8WhiteLabelVersion(exe)} (White Label)";
-                else if (strs.Exists(s => s.Contains("SecuExp.exe")))
-                    return $"SecuROM {GetV8WhiteLabelVersion(exe)} (White Label)";
+                if (strs.Exists(s => s.Contains("/secuexp")) || strs.Exists(s => s.Contains("SecuExp.exe")))
+                {
+                    // Get the .data/DATA section, if it exists
+                    var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
+                    return $"SecuROM {GetV8WhiteLabelVersion(dataSectionRaw)} (White Label)";
+                }
             }
 
             // Get the .cms_d and .cms_t sections, if they exist -- TODO: Confirm if both are needed or either/or is fine
@@ -433,10 +453,8 @@ namespace BinaryObjectScanner.Protection
         /// Try to get the SecuROM v8 (White Label) version from the .data section, if possible
         /// </summary>
         /// <returns>The version on success, null otherwise</returns>
-        private static string GetV8WhiteLabelVersion(PortableExecutable exe)
+        private static string GetV8WhiteLabelVersion(byte[]? dataSectionRaw)
         {
-            // Get the .data/DATA section, if it exists
-            var dataSectionRaw = exe.GetFirstSectionData(".data") ?? exe.GetFirstSectionData("DATA");
             if (dataSectionRaw is null)
                 return "8";
 
